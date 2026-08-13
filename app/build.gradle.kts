@@ -7,6 +7,9 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":shared"))
+    implementation(project(":domain"))
+
     implementation(compose.desktop.currentOs)
     implementation(compose.material3)
     implementation(compose.materialIconsExtended)
