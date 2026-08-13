@@ -7,8 +7,8 @@ import java.nio.file.Path
 class AppEnvironment private constructor(
     private val store: SettingsStore,
     initialSettings: Settings,
-    isFirstRun: Boolean,
-    loadProblem: String?
+    val isFirstRun: Boolean,
+    val loadProblem: String?
 ) {
     var settings: Settings = initialSettings
         private set
