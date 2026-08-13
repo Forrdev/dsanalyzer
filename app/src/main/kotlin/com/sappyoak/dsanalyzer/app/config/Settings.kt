@@ -1,6 +1,9 @@
 package com.sappyoak.dsanalyzer.app.config
 
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.*
 import kotlinx.serialization.Serializable
+import java.awt.GraphicsEnvironment
 
 import com.sappyoak.dsanalyzer.domain.GameIdentity
 import com.sappyoak.dsanalyzer.domain.GameVersion
@@ -65,10 +68,36 @@ data class WindowSettings(
     val lastPlacement: String? = null
 ) {
     @Serializable
-    class Dimensions(val width: Int, val height: Int)
+    data class Dimensions(val width: Int, val height: Int)
+
+    fun getWindowPosition(): WindowPosition {
+        return if (restoreLastState && lastX != null && lastY != null && areCoordinatesOnAnyScreen(lastX, lastY)) {
+            WindowPosition(lastX.dp, lastY.dp)
+        } else WindowPosition.PlatformDefault
+    }
+
+    fun getWindowPlacement(): WindowPlacement {
+        if (!restoreLastState) return WindowPlacement.Floating
+        if (lastPlacement == null) return WindowPlacement.Floating
+        return when (lastPlacement) {
+            WindowPlacement.Maximized.name -> WindowPlacement.Maximized
+            WindowPlacement.Fullscreen.name -> WindowPlacement.Fullscreen
+            else -> WindowPlacement.Floating
+        }
+    }
 
     val targetDimensions: Dimensions get() {
         val target = if (restoreLastState) lastDimensions else dimensions
         return target ?: dimensions
+    }
+
+    private fun areCoordinatesOnAnyScreen(x: Int, y: Int): Boolean {
+        val env = GraphicsEnvironment.getLocalGraphicsEnvironment()
+        val screens = env.screenDevices
+        for (screen in screens) {
+            val bounds = screen.defaultConfiguration.bounds
+            if (bounds.contains(x, y)) return true
+        }
+        return false
     }
 }
