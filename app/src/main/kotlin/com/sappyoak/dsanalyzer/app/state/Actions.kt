@@ -1,5 +1,6 @@
 package com.sappyoak.dsanalyzer.app.state
 
+import androidx.compose.ui.input.key.*
 import kotlinx.serialization.Serializable
 
 import com.sappyoak.dsanalyzer.app.config.HotKeyBinding
@@ -17,6 +18,8 @@ sealed interface Action {
         data class Bound(val binding: HotKeyBinding, val keyCode: Long) : HotKey
         @Serializable
         data object ResetToDefaults : HotKey
+        @Serializable
+        data object CaptureCancelled : HotKey
     }
 
     @Serializable
@@ -31,11 +34,28 @@ sealed interface Action {
  * Every method is one dispatch. To dispatch multiple actions an effect should be used
  */
 class AppActions(private val dispatch: DispatchFn) {
-    fun bindHotKey(binding: HotKeyBinding, keyCode: Long) =
+    fun bindHotkey(binding: HotKeyBinding, keyCode: Long) =
         dispatch(Action.HotKey.Bound(binding, keyCode))
 
-    fun resetHotKeys() = dispatch(Action.HotKey.ResetToDefaults)
-
+    fun resetHotkeys() = dispatch(Action.HotKey.ResetToDefaults)
+    fun cancelHotkeyCapture() = dispatch(Action.HotKey.CaptureCancelled)
 
     fun reportProblem(message: String) = dispatch(Action.ProblemReported(message))
 }
+
+fun AppActions.handleKeyEvent(event: KeyEvent, capturingHotKey: HotKeyBinding? = null): Boolean {
+    if (event.type != KeyEventType.KeyDown) return false
+    if (capturingHotKey != null) {
+        val keyCode = event.key.keyCode
+        if (keyCode == Key.Escape.keyCode) {
+            cancelHotkeyCapture()
+            return true
+        }
+
+        bindHotkey(capturingHotKey, keyCode)
+        return true
+    }
+
+    return false
+}
+

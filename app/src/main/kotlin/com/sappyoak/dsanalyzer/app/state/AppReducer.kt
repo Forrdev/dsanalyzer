@@ -20,6 +20,8 @@ fun Store.reduce(state: AppState, action: Action): AppState = when (action) {
         capturingHotKey = null
     )
 
+    Action.HotKey.CaptureCancelled -> state.copy(capturingHotKey = null)
+
     is Action.ProblemReported -> state.copy(
         health = state.health.copy(
             problems = state.health.problems + action.message
