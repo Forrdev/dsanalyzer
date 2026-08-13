@@ -27,5 +27,6 @@ plugins {
 rootProject.name = "dsanalyzer"
 
 
+include(":shared")
 include(":domain")
 include(":app")
