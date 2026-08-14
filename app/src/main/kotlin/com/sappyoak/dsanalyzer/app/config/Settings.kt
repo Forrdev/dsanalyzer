@@ -4,6 +4,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import kotlinx.serialization.Serializable
 import java.awt.GraphicsEnvironment
+import java.nio.file.Path
 
 import com.sappyoak.dsanalyzer.domain.GameIdentity
 import com.sappyoak.dsanalyzer.domain.GameVersion
@@ -12,7 +13,7 @@ import com.sappyoak.dsanalyzer.domain.GameVersion
 data class Settings(
     val version: Int = CURRENT_VERSION,
     /** Whether the tool keeps its own files */
-    val dataPath: String? = null,
+    val dataPath: Path? = null,
     /**
      * Per-installation state, keyed by [GameIdentity.pathSegment]
      *
@@ -21,6 +22,7 @@ data class Settings(
      */
     val installations: Map<String, InstallationSettings> = emptyMap(),
     val activeInstallation: String? = null,
+
     val overlay: OverlaySettings = OverlaySettings(),
     val window: WindowSettings = WindowSettings(),
     val hotkeys: HotKeySettings = HotKeySettings()
