@@ -4,16 +4,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import kotlinx.serialization.Serializable
 import java.awt.GraphicsEnvironment
-import java.nio.file.Path
 
 import com.sappyoak.dsanalyzer.domain.GameIdentity
 import com.sappyoak.dsanalyzer.domain.GameVersion
+import com.sappyoak.dsanalyzer.shared.serialization.SNullablePath
 
 @Serializable
 data class Settings(
     val version: Int = CURRENT_VERSION,
     /** Whether the tool keeps its own files */
-    val dataPath: Path? = null,
+    val dataPath: SNullablePath? = null,
     /**
      * Per-installation state, keyed by [GameIdentity.pathSegment]
      *

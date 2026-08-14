@@ -8,7 +8,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
 import com.sappyoak.dsanalyzer.app.config.AppEnvironment
-import kotlin.math.exp
+
 
 class AppServices private constructor(
     val environment: AppEnvironment,
