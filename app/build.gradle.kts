@@ -15,6 +15,7 @@ dependencies {
     implementation(compose.materialIconsExtended)
 
     implementation(libs.kotlinx.coroutines.swing)
+    implementation(libs.bundles.ktor.client)
 }
 
 compose.desktop {

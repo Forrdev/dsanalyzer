@@ -5,12 +5,12 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 
-import com.sappyoak.dsanalyzer.app.config.AppEnvironment
 import com.sappyoak.dsanalyzer.app.state.*
 import com.sappyoak.dsanalyzer.app.ui.AppShell
 
 fun main() {
-    val environment = AppEnvironment.load()
+    val services = AppServices.create()
+    val environment = services.environment
 
     application {
         val scope = rememberCoroutineScope()

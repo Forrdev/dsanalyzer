@@ -6,6 +6,7 @@ import com.sappyoak.dsanalyzer.domain.GameIdentity
 import com.sappyoak.dsanalyzer.domain.GameVersion
 
 import com.sappyoak.dsanalyzer.app.data.JsonStore
+import kotlinx.serialization.json.Json
 
 class AppEnvironment private constructor(
     private val store: JsonStore<Settings>,
@@ -97,8 +98,13 @@ class AppEnvironment private constructor(
             return environment
         }
 
-        fun load(): AppEnvironment {
-            val store = JsonStore<Settings>(ToolPaths.Default.settings, jsonSerializer, { Settings() })
+        fun load(json: Json): AppEnvironment {
+            val store = JsonStore<Settings>(
+                location = ToolPaths.Default.settings,
+                jsonSerializer = json,
+                default = { Settings() }
+            )
+
             return load(store)
         }
     }
