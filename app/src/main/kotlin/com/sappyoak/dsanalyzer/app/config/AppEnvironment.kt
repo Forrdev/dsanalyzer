@@ -80,7 +80,7 @@ class AppEnvironment private constructor(
     }
 
     private fun pathsFor(settings: Settings): ToolPaths =
-        settings.dataPath?.let { ToolPaths(Path.of(it)) } ?: ToolPaths.Default
+        settings.dataPath?.let { ToolPaths(it) } ?: ToolPaths.Default
 
     companion object {
         fun load(store: JsonStore<Settings>): AppEnvironment {
