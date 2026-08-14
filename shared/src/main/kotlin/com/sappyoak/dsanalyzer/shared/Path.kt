@@ -1,5 +1,6 @@
 package com.sappyoak.dsanalyzer.shared
 
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import kotlinx.serialization.json.encodeToStream
@@ -9,39 +10,77 @@ import kotlin.io.path.createDirectories
 import kotlin.io.path.deleteIfExists
 import kotlin.io.path.moveTo
 import kotlin.io.path.outputStream
-import kotlin.io.path.writeText
 import java.io.BufferedOutputStream
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
 import kotlin.io.path.inputStream
 
+const val DEFAULT_BUFFER_SIZE = 8192
 
-fun Path.writeFile(content: String): Result<Path> {
-    parent?.createDirectories()
-    val tempFile = resolveSibling("$fileName.tmp")
+fun Path.writeFile(
+    content: String,
+    bufferSize: Int = DEFAULT_BUFFER_SIZE
+) = writeFile(content.toByteArray(), bufferSize)
 
-    return runCatching {
-        tempFile.writeText(content)
-        tempFile.moveTo(
-            this,
-            StandardCopyOption.REPLACE_EXISTING,
-            StandardCopyOption.ATOMIC_MOVE
-        )
-    }.also { tempFile.deleteIfExists() }
+fun Path.writeFile(
+    content: ByteArray,
+    bufferSize: Int = DEFAULT_BUFFER_SIZE
+) = writeFileAtomic(bufferSize) {
+    stream -> stream.write(content)
+}
+
+fun <T> Path.writeFile(
+    data: T,
+    serializer: KSerializer<T>,
+    jsonSerializer: Json,
+    bufferSize: Int = DEFAULT_BUFFER_SIZE
+) = writeFileAtomic(bufferSize) {
+    stream -> jsonSerializer.encodeToStream(serializer, data, stream)
 }
 
 inline fun <reified T> Path.writeFile(
-    json: Json,
     data: T,
-    bufferSize: Int = 8192
+    jsonSerializer: Json,
+    bufferSize: Int = DEFAULT_BUFFER_SIZE
+) = writeFile(data, serializer<T>(), jsonSerializer, bufferSize)
+
+
+fun Path.readBytes(count: Int? = null, bufferSize: Int = DEFAULT_BUFFER_SIZE): Result<ByteArray> {
+    if (count != null) {
+        require(count >= 0) { "Count must be greater or equal to zero. Received: $count" }
+    }
+
+    return readFile { stream ->
+        count?.let { stream.readNBytes(it) } ?: stream.readBytes()
+    }
+}
+
+fun <T> Path.readFile(
+    serializer: KSerializer<T>,
+    jsonSerializer: Json,
+    bufferSize: Int = DEFAULT_BUFFER_SIZE
+) = readFile(bufferSize) {
+    stream -> jsonSerializer.decodeFromStream(serializer, stream)
+}
+
+inline fun <reified T> Path.readFile(
+    jsonSerializer: Json,
+    bufferSize: Int = DEFAULT_BUFFER_SIZE
+) = readFile(serializer<T>(), jsonSerializer, bufferSize)
+
+
+@PublishedApi
+internal fun Path.writeFileAtomic(
+    bufferSize: Int = DEFAULT_BUFFER_SIZE,
+    block: (BufferedOutputStream) -> Unit
 ): Result<Path> {
     parent?.createDirectories()
 
     val tempFile = resolveSibling("$fileName.tmp")
 
     return runCatching {
-        BufferedOutputStream(tempFile.outputStream(), bufferSize).use { stream ->
-            json.encodeToStream(serializer<T>(), data, stream)
+        BufferedOutputStream(tempFile.outputStream(), bufferSize).use {
+                stream -> block(stream)
         }
 
         tempFile.moveTo(
@@ -52,13 +91,12 @@ inline fun <reified T> Path.writeFile(
     }.also { tempFile.deleteIfExists() }
 }
 
-inline fun <reified T> Path.readFile(
-    json: Json,
-    bufferSize: Int = 8192
-): Result<T> {
-    return runCatching {
-        BufferedInputStream(inputStream(), bufferSize).use { stream ->
-            json.decodeFromStream(serializer<T>(), stream)
-        }
+@PublishedApi
+internal fun <T> Path.readFile(
+    bufferSize: Int = DEFAULT_BUFFER_SIZE,
+    block: (BufferedInputStream) -> T
+): Result<T> = runCatching {
+    BufferedInputStream(inputStream(), bufferSize).use { stream ->
+        block(stream)
     }
 }

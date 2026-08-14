@@ -1,11 +1,14 @@
 package com.sappyoak.dsanalyzer.app.config
 
-import com.sappyoak.dsanalyzer.domain.GameIdentity
-import com.sappyoak.dsanalyzer.domain.GameVersion
 import java.nio.file.Path
 
+import com.sappyoak.dsanalyzer.domain.GameIdentity
+import com.sappyoak.dsanalyzer.domain.GameVersion
+
+import com.sappyoak.dsanalyzer.app.data.JsonStore
+
 class AppEnvironment private constructor(
-    private val store: SettingsStore,
+    private val store: JsonStore<Settings>,
     initialSettings: Settings,
     val isFirstRun: Boolean,
     val loadProblem: String?
@@ -79,19 +82,24 @@ class AppEnvironment private constructor(
         settings.dataPath?.let { ToolPaths(Path.of(it)) } ?: ToolPaths.Default
 
     companion object {
-        fun load(store: SettingsStore = SettingsStore()): AppEnvironment {
+        fun load(store: JsonStore<Settings>): AppEnvironment {
             val loaded = store.load()
             val environment = AppEnvironment(
                 store = store,
-                initialSettings = loaded.settings,
+                initialSettings = loaded.value,
                 isFirstRun = loaded.isFirstRun,
                 loadProblem = loaded.problem
             )
 
             environment.paths.ensureExists()
-            if (loaded.isFirstRun) store.save(loaded.settings)
+            if (loaded.isFirstRun) store.save(loaded.value)
 
             return environment
+        }
+
+        fun load(): AppEnvironment {
+            val store = JsonStore<Settings>(ToolPaths.Default.settings, jsonSerializer, { Settings() })
+            return load(store)
         }
     }
 }
