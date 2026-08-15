@@ -59,6 +59,10 @@ class SetupEffects(private val services: AppServices) {
                 }
             }
 
+            is Action.Setup.InstallationRemoved -> {
+                environment.forgetInstallation(action.key)
+            }
+
             else -> Unit
         }
     }
