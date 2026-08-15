@@ -1,5 +1,7 @@
 package com.sappyoak.dsanalyzer.app.state.readiness
 
+import com.sappyoak.dsanalyzer.app.state.Action
+
 /**
  * Decides whether the tool is even in a usable state or not.
  * HealthState tracks problems that might have an effect on certain parts of the app,
@@ -36,6 +38,7 @@ data class Blocker(
     /** Something actional a user can do about a blocker */
     data class Resolution(
         val label: String,
+        val action: Action,
         val isPrimary: Boolean = true
     )
 }

@@ -1,6 +1,8 @@
 package com.sappyoak.dsanalyzer.app.state.readiness
 
+import com.sappyoak.dsanalyzer.app.state.Action
 import com.sappyoak.dsanalyzer.app.state.AppState
+import com.sappyoak.dsanalyzer.domain.GameVersion
 
 /**
  * Works out what is blocking the application from state.
@@ -22,9 +24,9 @@ object ReadinessChecker {
                             "which looks like a game with no bugs in it rather than a tool that " +
                             "has not been pointed anywhere",
                     resolutions = buildList {
-                        add(Blocker.Resolution("Browse for game"))
+                        add(Blocker.Resolution("Browse for game", Action.Setup.GamePathRequested))
                         if (setup.suggestedPaths.isNotEmpty()) {
-                            add(Blocker.Resolution("Use a detected installation"))
+                            add(Blocker.Resolution("Use a detected installation", Action.Setup.InstallationsRequested))
                         }
                     }
                 ))
@@ -41,10 +43,15 @@ object ReadinessChecker {
                     consequences = "The recorded path does not resolve. A drive may not be " +
                             "mounted, or the game may have moved",
                     resolutions = listOf(
-                        Blocker.Resolution("Point at the game again"),
-                        Blocker.Resolution("Choose a different installation"),
-                        Blocker.Resolution("Forget this installation", isPrimary = false)
-                    )
+                        Blocker.Resolution("Point at the game again", Action.Setup.GamePathRequested),
+                        Blocker.Resolution("Choose a different installation", Action.Setup.InstallationsRequested),
+                        Blocker.Resolution(
+                            "Forget this installation",
+                            setup.activeInstallation?.let { Action.Setup.InstallationRemoved(it) } ?: Action.Setup.InstallationsRequested,
+                            false
+                        )
+                    ),
+                    installationKey = setup.activeInstallation
                 ))
                 return@buildList
             }
@@ -59,10 +66,10 @@ object ReadinessChecker {
                             "frame means, and how memory is accessed all follow from the version. " +
                             "This isn't something we can guess",
                     resolutions = listOf(
-                        Blocker.Resolution("It is Prepare to Die Edition"),
-                        Blocker.Resolution("It is Remastered"),
-                        Blocker.Resolution("Choose a different directory", isPrimary = false)
-                    )
+                        Blocker.Resolution("It is Prepare to Die Edition", Action.Setup.GameVersionOverridden(GameVersion.PTDE)),
+                        Blocker.Resolution("It is Remastered", Action.Setup.GameVersionOverridden(GameVersion.Remastered)),
+                        Blocker.Resolution("Choose a different directory", Action.Setup.GamePathRequested, false)
+                    ),
                 ))
             }
 
@@ -76,7 +83,7 @@ object ReadinessChecker {
                     consequences = "No archive header or loose game files could be opened. The " +
                             "directory looks like an installation but nothing inside it is readable, " +
                             "possibly a permissions problem or a partial copy",
-                    resolutions = listOf(Blocker.Resolution("Choose a different directory"))
+                    resolutions = listOf(Blocker.Resolution("Choose a different directory", Action.Setup.GamePathRequested))
                 ))
             }
 
@@ -87,7 +94,7 @@ object ReadinessChecker {
                     consequences = "The tool needs a place to save all of its data. Things like " +
                             "Reports, captured sessions, testing verdicts. The current data path selected " +
                             "is not writable",
-                    resolutions = listOf(Blocker.Resolution("Choose another location"))
+                    resolutions = listOf(Blocker.Resolution("Choose another location", Action.Setup.DataPathRequested))
                 ))
             }
         }
