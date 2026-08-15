@@ -37,6 +37,11 @@ fun Store.reduce(state: AppState, action: Action): AppState = when (action) {
     )
 
     Action.Setup.InstallationsRequested -> state
+
+    is Action.Setup.InstallationsListed -> state.copy(
+        setup = state.setup.copy(installations = action.installations)
+    )
+
     is Action.Setup.InstallationSelected -> state.copy(
         setup = state.setup.copy(
             activeInstallation = action.key,
