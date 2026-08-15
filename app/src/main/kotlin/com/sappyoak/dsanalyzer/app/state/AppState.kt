@@ -5,6 +5,7 @@ import com.sappyoak.dsanalyzer.app.config.HotKeyBinding
 import com.sappyoak.dsanalyzer.app.config.HotKeySettings
 
 data class AppState(
+    val setup: SetupState = SetupState(),
     val hotkeys: HotKeySettings = HotKeySettings(),
     /** Set while waiting for the user to press a key */
     val capturingHotKey: HotKeyBinding? = null,
