@@ -61,6 +61,8 @@ class AppEffects(
         key: String,
         dispatch: DispatchFn
     ) {
-
+        environment.activeInstallation(key)
+        dispatch(Action.Setup.CacheSizeRequested)
+        dispatch(Action.Setup.InstallationsRequested)
     }
 }

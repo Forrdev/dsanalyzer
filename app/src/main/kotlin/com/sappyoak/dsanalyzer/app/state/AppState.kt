@@ -11,7 +11,8 @@ data class AppState(
     val hotkeys: HotKeySettings = HotKeySettings(),
     /** Set while waiting for the user to press a key */
     val capturingHotKey: HotKeyBinding? = null,
-    val health: HealthState = HealthState()
+    val health: HealthState = HealthState(),
+    val cacheSizeBytes: Long = 0L
 ) {
     val readiness: Readiness get() = ReadinessChecker.evaluate(this)
     val needsFirstRunSetup: Boolean get() = !readiness.isReady

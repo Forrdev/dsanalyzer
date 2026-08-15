@@ -68,6 +68,9 @@ fun Store.reduce(state: AppState, action: Action): AppState = when (action) {
         setup = state.setup.copy(version = action.version)
     )
 
+    Action.Setup.CacheSizeRequested -> state
+    is Action.Setup.CacheSizeMeasured -> state.copy(cacheSizeBytes = action.bytes)
+
     is Action.HotKey.Bound -> state.copy(
         hotkeys = state.hotkeys.with(action.binding, action.keyCode),
         capturingHotKey = null

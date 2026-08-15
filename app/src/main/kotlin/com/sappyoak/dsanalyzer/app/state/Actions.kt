@@ -45,6 +45,9 @@ sealed interface Action {
 
         @Serializable
         data class GameVersionOverridden(val version: GameVersion) : Setup
+
+        @Serializable data object CacheSizeRequested : Setup
+        @Serializable data class CacheSizeMeasured(val bytes: Long) : Setup
     }
 
     @Serializable
@@ -83,6 +86,7 @@ class AppActions(val dispatch: DispatchFn) {
     }
 
     fun browseInstallations() = dispatch(Action.Setup.InstallationsRequested)
+
     fun selectInstallation(key: String) {
         dispatch(Action.Setup.InstallationSelected(key))
     }

@@ -12,7 +12,9 @@ import com.sappyoak.dsanalyzer.app.ui.components.FilePickers
 import com.sappyoak.dsanalyzer.domain.GameIdentity
 import com.sappyoak.dsanalyzer.domain.Problem
 import com.sappyoak.dsanalyzer.domain.ProblemResolution
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.time.Instant
 
 
@@ -32,6 +34,10 @@ class SetupEffects(private val services: AppServices) {
                 }
             }
 
+            is Action.Setup.GamePathChosen -> {
+                dispatch(Action.Setup.CacheSizeRequested)
+            }
+
             Action.Setup.DataPathRequested -> {
                 FilePickers.chooseDirectory(
                     "Where to store the tools output files",
@@ -45,15 +51,6 @@ class SetupEffects(private val services: AppServices) {
                 }
             }
 
-            Action.Setup.ExtractPathRequested -> {
-                FilePickers.chooseDirectory(
-                    "Where to extract game files to if running PTDE",
-                    startAt = state.setup.extractedPath
-                )?.let { path ->
-                    dispatch(Action.Setup.ExtractPathChosen(path, path.freeSpaceAt()))
-                }
-            }
-
             is Action.Setup.DataPathChosen -> {
                 if (!action.path.isWritable()) {
                     dispatch(Action.ProblemReported(Problem.critical(
@@ -62,6 +59,16 @@ class SetupEffects(private val services: AppServices) {
                         consequence = "The Tool cannot function. It will not write any output files",
                         resolutions = listOf(ProblemResolution("Choose another directory", "Action.Setup.DataPathRequested"))
                     )))
+                }
+                dispatch(Action.Setup.CacheSizeRequested)
+            }
+
+            Action.Setup.ExtractPathRequested -> {
+                FilePickers.chooseDirectory(
+                    "Where to extract game files to if running PTDE",
+                    startAt = state.setup.extractedPath
+                )?.let { path ->
+                    dispatch(Action.Setup.ExtractPathChosen(path, path.freeSpaceAt()))
                 }
             }
 
@@ -74,6 +81,13 @@ class SetupEffects(private val services: AppServices) {
 
             is Action.Setup.InstallationsRequested -> scope.launch {
                 dispatch(Action.Setup.InstallationsListed(listInstallations()))
+            }
+
+            Action.Setup.CacheSizeRequested -> scope.launch {
+                val size = withContext(Dispatchers.IO) {
+                    environment.identity?.let { environment.paths.cacheSize(it) } ?: 0L
+                }
+                dispatch(Action.Setup.CacheSizeMeasured(size))
             }
 
             else -> Unit
