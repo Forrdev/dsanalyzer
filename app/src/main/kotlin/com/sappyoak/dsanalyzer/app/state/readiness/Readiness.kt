@@ -1,4 +1,4 @@
-package com.sappyoak.dsanalyzer.app.state
+package com.sappyoak.dsanalyzer.app.state.readiness
 
 /**
  * Decides whether the tool is even in a usable state or not.
@@ -21,7 +21,7 @@ data class Blocker(
     val kind: Kind,
     val summary: String,
     val consequences: String,
-    val resolution: List<Resolution>,
+    val resolutions: List<Resolution>,
     val installationKey: String? = null
 ) {
     /** Ordered by how fundamental the problem is */
