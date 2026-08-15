@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 
 import com.sappyoak.dsanalyzer.app.config.HotKeyBinding
 import com.sappyoak.dsanalyzer.domain.GameVersion
+import com.sappyoak.dsanalyzer.domain.Problem
 
 typealias DispatchFn = (Action) -> Unit
 
@@ -34,8 +35,8 @@ sealed interface Action {
         @Serializable
         data class ExtractPathChosen(
             val path: Path,
-            val freeSpaceBinding: HotKeyBinding,
-        )
+            val freeSpaceBytes: Long
+        ) : Setup
 
         @Serializable data object InstallationsRequested : Setup
         @Serializable data class InstallationSelected(val key: String) : Setup
@@ -56,7 +57,7 @@ sealed interface Action {
     }
 
     @Serializable
-    data class ProblemReported(val message: String) : Action
+    data class ProblemReported(val problem: Problem) : Action
 }
 
 /**
@@ -66,14 +67,39 @@ sealed interface Action {
  *
  * Every method is one dispatch. To dispatch multiple actions an effect should be used
  */
-class AppActions(private val dispatch: DispatchFn) {
+class AppActions(val dispatch: DispatchFn) {
+    fun chooseGamePath() = dispatch(Action.Setup.GamePathRequested)
+    fun useGamePath(path: Path) = dispatch(Action.Setup.GamePathChosen(path))
+
+    fun chooseDataPath() = dispatch(Action.Setup.DataPathRequested)
+    fun useDataPath(path: Path, freeSpaceBytes: Long, writable: Boolean) {
+        dispatch(Action.Setup.DataPathChosen(path, freeSpaceBytes, writable))
+    }
+
+    fun chooseExtractPath() = dispatch(Action.Setup.ExtractPathRequested)
+    fun useExtractPath(path: Path, freeSpaceBytes: Long) {
+        dispatch(Action.Setup.ExtractPathChosen(path, freeSpaceBytes))
+    }
+
+    fun browseInstallations() = dispatch(Action.Setup.InstallationsRequested)
+    fun selectInstallation(key: String) {
+        dispatch(Action.Setup.InstallationSelected(key))
+    }
+    fun removeInstallation(key: String) {
+        dispatch(Action.Setup.InstallationRemoved(key))
+    }
+
+    fun overrideGameVersion(version: GameVersion) {
+        dispatch(Action.Setup.GameVersionOverridden(version))
+    }
+
     fun bindHotkey(binding: HotKeyBinding, keyCode: Long) =
         dispatch(Action.HotKey.Bound(binding, keyCode))
 
     fun resetHotkeys() = dispatch(Action.HotKey.ResetToDefaults)
     fun cancelHotkeyCapture() = dispatch(Action.HotKey.CaptureCancelled)
 
-    fun reportProblem(message: String) = dispatch(Action.ProblemReported(message))
+    fun reportProblem(problem: Problem) = dispatch(Action.ProblemReported(problem))
 }
 
 fun AppActions.handleKeyEvent(event: KeyEvent, capturingHotKey: HotKeyBinding? = null): Boolean {

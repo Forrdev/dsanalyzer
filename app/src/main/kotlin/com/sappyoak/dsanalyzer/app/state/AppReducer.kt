@@ -10,6 +10,59 @@ import com.sappyoak.dsanalyzer.app.config.HotKeySettings
  * change here, and the work happens in any effect classes alongside, never inside the function
  */
 fun Store.reduce(state: AppState, action: Action): AppState = when (action) {
+    Action.Setup.GamePathRequested -> state
+    is Action.Setup.GamePathChosen -> state.copy(
+        setup = state.setup.copy(
+            gamePath = action.path,
+            gamePathResolves = true,
+            suggestedPaths = emptyList()
+        )
+    )
+
+    Action.Setup.DataPathRequested -> state
+    is Action.Setup.DataPathChosen -> state.copy(
+        setup = state.setup.copy(
+            dataPath = action.path,
+            freeSpaceBytes = action.freeSpaceBytes,
+            dataPathWritable = action.writable
+        )
+    )
+
+    Action.Setup.ExtractPathRequested -> state
+    is Action.Setup.ExtractPathChosen -> state.copy(
+        setup = state.setup.copy(
+            extractedPath = action.path,
+            freeSpaceBytes = action.freeSpaceBytes
+        )
+    )
+
+    Action.Setup.InstallationsRequested -> state
+    is Action.Setup.InstallationSelected -> state.copy(
+        setup = state.setup.copy(
+            activeInstallation = action.key,
+            // Cleared here so readiness will re-evaluate against the newly selected installation rather
+            // than carrying the previous one's answers
+            gamePath = null,
+            gamePathResolves = false,
+            version = null,
+            identityUnknown = false
+        ),
+        health = HealthState()
+    )
+
+    is Action.Setup.InstallationRemoved -> state.copy(
+        setup = state.setup.copy(
+            activeInstallation = state.setup.activeInstallation?.let {
+                if (it == action.key) null else it
+            } ?: state.setup.activeInstallation,
+            installations = state.setup.installations.filterNot { it.key == action.key }
+        )
+    )
+
+    is Action.Setup.GameVersionOverridden -> state.copy(
+        setup = state.setup.copy(version = action.version)
+    )
+
     is Action.HotKey.Bound -> state.copy(
         hotkeys = state.hotkeys.with(action.binding, action.keyCode),
         capturingHotKey = null
@@ -24,7 +77,7 @@ fun Store.reduce(state: AppState, action: Action): AppState = when (action) {
 
     is Action.ProblemReported -> state.copy(
         health = state.health.copy(
-            problems = state.health.problems + action.message
+            problems = state.health.problems + action.problem
         )
     )
 }
