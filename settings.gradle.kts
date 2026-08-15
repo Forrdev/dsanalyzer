@@ -29,4 +29,5 @@ rootProject.name = "dsanalyzer"
 
 include(":shared")
 include(":domain")
+include(":game")
 include(":app")

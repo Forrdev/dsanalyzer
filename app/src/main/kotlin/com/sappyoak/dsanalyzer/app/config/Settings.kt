@@ -7,7 +7,8 @@ import java.awt.GraphicsEnvironment
 
 import com.sappyoak.dsanalyzer.domain.GameIdentity
 import com.sappyoak.dsanalyzer.domain.GameVersion
-import com.sappyoak.dsanalyzer.shared.serialization.SNullablePath
+import com.sappyoak.dsanalyzer.shared.SNullablePath
+import com.sappyoak.dsanalyzer.shared.SInstant
 
 @Serializable
 data class Settings(
@@ -51,7 +52,7 @@ data class InstallationSettings(
     val buildId: String? = null,
     /** Overridden only when the cache is put somewhere other than the data directory */
     val extractedPath: SNullablePath? = null,
-    val lastScannedMillis: Long = 0
+    val lastScannedAt: SInstant
 )
 
 @Serializable
