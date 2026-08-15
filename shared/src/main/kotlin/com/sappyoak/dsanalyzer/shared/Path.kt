@@ -13,6 +13,8 @@ import kotlin.io.path.outputStream
 import java.io.BufferedOutputStream
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
+import kotlin.io.path.exists
+import kotlin.io.path.fileSize
 import kotlin.io.path.inputStream
 
 const val DEFAULT_BUFFER_SIZE = 8192
@@ -100,3 +102,8 @@ internal fun <T> Path.readFile(
         block(stream)
     }
 }
+
+
+fun Path.freeSpaceAt(): Long = runCatching {
+    if (exists()) fileSize() else (parent ?: Path.of("/")).fileSize()
+}.getOrDefault(0L)
