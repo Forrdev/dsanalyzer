@@ -46,11 +46,11 @@ data class Settings(
  */
 @Serializable
 data class InstallationSettings(
-    val gamePath: String? = null,
+    val gamePath: SNullablePath? = null,
     val version: GameVersion? = null,
     val buildId: String? = null,
     /** Overridden only when the cache is put somewhere other than the data directory */
-    val extractedPath: String? = null
+    val extractedPath: SNullablePath? = null
 )
 
 @Serializable
