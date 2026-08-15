@@ -8,21 +8,15 @@ data class AppState(
     val hotkeys: HotKeySettings = HotKeySettings(),
     /** Set while waiting for the user to press a key */
     val capturingHotKey: HotKeyBinding? = null,
-    val health: AppHealth = AppHealth()
+    val health: HealthState = HealthState()
 ) {
     companion object {
         fun from(environment: AppEnvironment): AppState {
             val settings = environment.settings
             return AppState(
                 hotkeys = settings.hotkeys,
-                health = AppHealth(
-                    problems = listOfNotNull(environment.loadProblem)
-                )
+                health = HealthState()
             )
         }
     }
 }
-
-data class AppHealth(
-    val problems: List<String> = emptyList()
-)

@@ -12,7 +12,6 @@ class AppEnvironment private constructor(
     private val store: JsonStore<Settings>,
     initialSettings: Settings,
     val isFirstRun: Boolean,
-    val loadProblem: String?
 ) {
     var settings: Settings = initialSettings
         private set
@@ -88,8 +87,7 @@ class AppEnvironment private constructor(
             val environment = AppEnvironment(
                 store = store,
                 initialSettings = loaded.value,
-                isFirstRun = loaded.isFirstRun,
-                loadProblem = loaded.problem
+                isFirstRun = loaded.isFirstRun
             )
 
             environment.paths.ensureExists()
