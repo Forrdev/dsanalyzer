@@ -70,6 +70,10 @@ object GameAssetPaths {
         "chr/c0000.anibnd"
     )
 
+    val REMASTERED_ONLY_FILE_MARKERS = listOf(
+        "map/m18_01_00_00",
+        "sfx/frpg_sfxbnd_m18.ffxbnd.dcx"
+    )
 
     val CommonEMEVD = GameAsset("/event/common.emevd$DCX_EXTENSION")
     val GameParam = GameAsset("/param/gameparam/gameparam.parambnd$DCX_EXTENSION")
@@ -103,6 +107,8 @@ object GameAssetPaths {
     fun characterChrbnd(chrId: String) = GameAsset("/chr/$chrId.chrbnd$DCX_EXTENSION")
     fun playerCategoryAnibnd(decade: Int) = GameAsset("/chr/c0000_at${decade}x.anibnd$DCX_EXTENSION")
     fun playerPairedAnibnd(enemyChrId: String) = GameAsset("/chr/c0000_$enemyChrId.anibnd$DCX_EXTENSION")
+
+    fun getArchivePairs(): List<Pair<String, String>> = ARCHIVE_NAMES.map(::archiveFilePair)
 
     private fun collisionHeader(mapId: String, low: Boolean): GameAsset {
         val prefix = if (low) "l" else "h"
