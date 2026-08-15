@@ -5,6 +5,8 @@ import java.nio.file.Path
 import kotlinx.serialization.Serializable
 
 import com.sappyoak.dsanalyzer.app.config.HotKeyBinding
+import com.sappyoak.dsanalyzer.app.install.InstallInspection
+import com.sappyoak.dsanalyzer.app.install.InstallProbe
 import com.sappyoak.dsanalyzer.domain.GameVersion
 import com.sappyoak.dsanalyzer.domain.Problem
 
@@ -20,7 +22,7 @@ sealed interface Action {
     sealed interface Setup : Action {
 
         @Serializable data object GamePathRequested : Setup
-        @Serializable data class GamePathChosen(val path: Path) : Setup
+        @Serializable data class GamePathChosen(val path: Path, val inspection: InstallInspection) : Setup
 
         @Serializable data object DataPathRequested : Setup
         @Serializable
@@ -73,7 +75,7 @@ sealed interface Action {
  */
 class AppActions(val dispatch: DispatchFn) {
     fun chooseGamePath() = dispatch(Action.Setup.GamePathRequested)
-    fun useGamePath(path: Path) = dispatch(Action.Setup.GamePathChosen(path))
+    fun useGamePath(path: Path) = dispatch(Action.Setup.GamePathChosen(path, InstallProbe.inspect(path)))
 
     fun chooseDataPath() = dispatch(Action.Setup.DataPathRequested)
     fun useDataPath(path: Path, freeSpaceBytes: Long, writable: Boolean) {

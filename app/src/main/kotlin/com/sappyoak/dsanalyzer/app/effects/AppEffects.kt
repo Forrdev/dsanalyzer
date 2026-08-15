@@ -46,6 +46,12 @@ class AppEffects(
      */
     private fun persist(action: Action) {
         when (action) {
+            is Action.Setup.GamePathChosen -> {
+                action.inspection.identity?.let { identity ->
+                    environment.selectInstallation(identity, action.path)
+                }
+            }
+
             is Action.Setup.DataPathChosen -> environment.update {
                 it.copy(dataPath = action.path)
             }

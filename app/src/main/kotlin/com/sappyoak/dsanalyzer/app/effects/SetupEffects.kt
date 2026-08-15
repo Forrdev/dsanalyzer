@@ -4,18 +4,20 @@ import kotlinx.coroutines.CoroutineScope
 import java.nio.file.Path
 import kotlin.io.path.exists
 import kotlin.io.path.isWritable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlin.time.Instant
+
 
 import com.sappyoak.dsanalyzer.shared.freeSpaceAt
 import com.sappyoak.dsanalyzer.app.AppServices
+import com.sappyoak.dsanalyzer.app.install.InstallProbe
 import com.sappyoak.dsanalyzer.app.state.*
 import com.sappyoak.dsanalyzer.app.ui.components.FilePickers
 import com.sappyoak.dsanalyzer.domain.GameIdentity
 import com.sappyoak.dsanalyzer.domain.Problem
 import com.sappyoak.dsanalyzer.domain.ProblemResolution
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlin.time.Instant
 
 
 class SetupEffects(private val services: AppServices) {
@@ -30,7 +32,7 @@ class SetupEffects(private val services: AppServices) {
         when (action) {
             Action.Setup.GamePathRequested -> {
                 FilePickers.chooseDirectory("Select the game's Directory. For PTDE this will be the DATA dir inside of the main folder")?.let { path ->
-                    dispatch(Action.Setup.GamePathChosen(path))
+                    dispatch(Action.Setup.GamePathChosen(path, InstallProbe.inspect(path)))
                 }
             }
 

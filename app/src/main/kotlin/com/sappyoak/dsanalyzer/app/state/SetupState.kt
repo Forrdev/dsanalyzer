@@ -1,5 +1,7 @@
 package com.sappyoak.dsanalyzer.app.state
 
+import com.sappyoak.dsanalyzer.app.install.InstallInspection
+import com.sappyoak.dsanalyzer.app.install.InstallKind
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlin.time.Instant
@@ -23,6 +25,8 @@ data class SetupState(
      * will be set to a location inside the dataPath folder unless the user explicitly modifies it
      */
     val extractedPath: Path? = null,
+    val installKind: InstallKind = InstallKind.Unknown,
+    val inspection: InstallInspection? = null,
     /** Default install locations that exist */
     val suggestedPaths: List<String> = emptyList(),
     /** The estimates bytes that extraction would take up */
@@ -52,7 +56,11 @@ data class SetupState(
     /** Whether the selected data path is writable */
     val dataPathWritable: Boolean = true,
     val freeSpaceBytes: Long = 0L
-)
+) {
+    val installSummary: String? get() = inspection?.let { it.warning ?: it.summary }
+    val readyToScan: Boolean get() = gamePath != null && installKind != InstallKind.Unknown
+    val canExtract: Boolean get() = installKind == InstallKind.Packed
+}
 
 @Serializable
 data class InstallationEntry(

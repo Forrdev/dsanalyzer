@@ -14,7 +14,11 @@ fun Store.reduce(state: AppState, action: Action): AppState = when (action) {
     is Action.Setup.GamePathChosen -> state.copy(
         setup = state.setup.copy(
             gamePath = action.path,
+            installKind = action.inspection.kind,
+            inspection = action.inspection,
             gamePathResolves = true,
+            version = action.inspection.version,
+            identityUnknown = action.inspection.identity?.buildId == "unknown",
             suggestedPaths = emptyList()
         )
     )
@@ -52,7 +56,8 @@ fun Store.reduce(state: AppState, action: Action): AppState = when (action) {
             version = null,
             identityUnknown = false
         ),
-        health = HealthState()
+        health = HealthState(),
+        cacheSizeBytes = 0
     )
 
     is Action.Setup.InstallationRemoved -> state.copy(
