@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.serialization.Serializable
 
+import com.sappyoak.dsanalyzer.app.effects.AppEffects
 /**
  * Holds the application state and routes actions to [reduce] and to effects.
  *

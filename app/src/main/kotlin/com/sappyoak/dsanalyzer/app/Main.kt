@@ -5,6 +5,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 
+import com.sappyoak.dsanalyzer.app.effects.*
 import com.sappyoak.dsanalyzer.app.state.*
 import com.sappyoak.dsanalyzer.app.ui.AppShell
 
@@ -19,7 +20,8 @@ fun main() {
                 initialState = AppState.from(environment),
                 scope = scope,
                 effects = AppEffects(
-                    environment = environment
+                    services = services,
+                    setup = SetupEffects(services)
                 )
             )
         }
