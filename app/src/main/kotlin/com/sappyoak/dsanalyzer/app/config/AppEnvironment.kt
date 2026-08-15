@@ -34,8 +34,7 @@ class AppEnvironment private constructor(
         get() = installation?.version ?: GameVersion.PTDE
 
     val extractedPath: Path? get() =
-        installation?.extractedPath?.let { Path.of(it) }
-            ?: identity?.let { paths.extracted(it) }
+        installation?.extractedPath ?: identity?.let { paths.extracted(it) }
 
     val definitionsPath: Path? get() =
             installation?.version?.let { paths.definitions(it) }
@@ -57,19 +56,19 @@ class AppEnvironment private constructor(
 
     fun selectInstallation(
         identity: GameIdentity,
-        gamePath: String
+        gamePath: Path
     ) {
-        update { settings ->
-            settings
-                .copy(activeInstallation = identity.pathSegment)
-                .withInstallation(identity.pathSegment) {
-                    it.copy(
-                        gamePath = gamePath,
-                        version = identity.version,
-                        buildId = identity.buildId
-                    )
-                }
+        update { settings -> settings
+            .copy(activeInstallation = identity.pathSegment)
+            .withInstallation(identity.pathSegment) {
+                it.copy(
+                    gamePath = gamePath,
+                    version = identity.version,
+                    buildId = identity.buildId
+                )
+            }
         }
+
         paths.ensureExists(identity)
     }
 
@@ -77,6 +76,21 @@ class AppEnvironment private constructor(
         val key = settings.activeInstallation ?: return
         update { it.withInstallation(key, block) }
     }
+
+    /** Makes an existing installation active */
+    fun activeInstallation(key: String) {
+        if (settings.installations[key] == null) return
+        update { it.copy(activeInstallation = key) }
+        identity?.let { paths.ensureExists(it) }
+    }
+
+    fun forgetInstallation(key: String) {
+        update { it.copy(
+            installations = it.installations - key,
+            activeInstallation = if (it.activeInstallation == key) null else it.activeInstallation
+        )}
+    }
+
 
     private fun pathsFor(settings: Settings): ToolPaths =
         settings.dataPath?.let { ToolPaths(it) } ?: ToolPaths.Default
