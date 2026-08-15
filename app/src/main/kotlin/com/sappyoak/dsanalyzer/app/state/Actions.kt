@@ -1,9 +1,11 @@
 package com.sappyoak.dsanalyzer.app.state
 
 import androidx.compose.ui.input.key.*
+import java.nio.file.Path
 import kotlinx.serialization.Serializable
 
 import com.sappyoak.dsanalyzer.app.config.HotKeyBinding
+import com.sappyoak.dsanalyzer.domain.GameVersion
 
 typealias DispatchFn = (Action) -> Unit
 
@@ -12,6 +14,37 @@ typealias DispatchFn = (Action) -> Unit
  */
 @Serializable
 sealed interface Action {
+
+    @Serializable
+    sealed interface Setup : Action {
+
+        @Serializable data object GamePathRequested : Setup
+        @Serializable data class GamePathChosen(val path: Path) : Setup
+
+        @Serializable data object DataPathRequested : Setup
+        @Serializable
+        data class DataPathChosen(
+            val path: Path,
+            val freeSpaceBytes: Long,
+            val writable: Boolean
+        ) : Setup
+
+
+        @Serializable data object ExtractPathRequested : Setup
+        @Serializable
+        data class ExtractPathChosen(
+            val path: Path,
+            val freeSpaceBinding: HotKeyBinding,
+        )
+
+        @Serializable data object InstallationsRequested : Setup
+        @Serializable data class InstallationSelected(val key: String) : Setup
+        @Serializable data class InstallationRemoved(val key: String) : Setup
+
+        @Serializable
+        data class GameVersionOverridden(val version: GameVersion) : Setup
+    }
+
     @Serializable
     sealed interface HotKey : Action {
         @Serializable
