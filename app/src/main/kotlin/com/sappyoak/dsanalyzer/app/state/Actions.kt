@@ -39,6 +39,7 @@ sealed interface Action {
         ) : Setup
 
         @Serializable data object InstallationsRequested : Setup
+        @Serializable data class InstallationsListed(val installations: List<InstallationEntry>) : Setup
         @Serializable data class InstallationSelected(val key: String) : Setup
         @Serializable data class InstallationRemoved(val key: String) : Setup
 

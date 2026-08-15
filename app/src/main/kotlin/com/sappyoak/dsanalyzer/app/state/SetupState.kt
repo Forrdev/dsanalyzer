@@ -1,9 +1,11 @@
 package com.sappyoak.dsanalyzer.app.state
 
-import com.sappyoak.dsanalyzer.domain.GameVersion
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.Serializable
 import kotlin.time.Instant
 import java.nio.file.Path
 
+import com.sappyoak.dsanalyzer.domain.GameVersion
 
 data class SetupState(
     val gamePath: Path? = null,
@@ -52,6 +54,7 @@ data class SetupState(
     val freeSpaceBytes: Long = 0L
 )
 
+@Serializable
 data class InstallationEntry(
     val key: String,
     val path: Path,
@@ -59,7 +62,7 @@ data class InstallationEntry(
     val buildId: String?,
     val isActive: Boolean,
     val isAvailable: Boolean,
-    val lastScannedAt: Instant,
+    @Contextual val lastScannedAt: Instant,
     val cacheSizeBytes: Long
 ) {
     val displayName: String get() = buildString {

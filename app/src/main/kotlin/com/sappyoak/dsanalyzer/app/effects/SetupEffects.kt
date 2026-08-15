@@ -1,14 +1,20 @@
 package com.sappyoak.dsanalyzer.app.effects
 
 import kotlinx.coroutines.CoroutineScope
+import java.nio.file.Path
+import kotlin.io.path.exists
+import kotlin.io.path.isWritable
 
 import com.sappyoak.dsanalyzer.shared.freeSpaceAt
 import com.sappyoak.dsanalyzer.app.AppServices
 import com.sappyoak.dsanalyzer.app.state.*
 import com.sappyoak.dsanalyzer.app.ui.components.FilePickers
+import com.sappyoak.dsanalyzer.domain.GameIdentity
 import com.sappyoak.dsanalyzer.domain.Problem
 import com.sappyoak.dsanalyzer.domain.ProblemResolution
-import kotlin.io.path.isWritable
+import kotlinx.coroutines.launch
+import kotlin.time.Instant
+
 
 class SetupEffects(private val services: AppServices) {
     private val environment = services.environment
@@ -61,9 +67,37 @@ class SetupEffects(private val services: AppServices) {
 
             is Action.Setup.InstallationRemoved -> {
                 environment.forgetInstallation(action.key)
+                scope.launch {
+                    dispatch(Action.Setup.InstallationsListed(listInstallations()))
+                }
+            }
+
+            is Action.Setup.InstallationsRequested -> scope.launch {
+                dispatch(Action.Setup.InstallationsListed(listInstallations()))
             }
 
             else -> Unit
         }
+    }
+
+    private fun listInstallations(): List<InstallationEntry> {
+        val settings = environment.settings
+        return settings.installations.map { (key, install) ->
+            val version = install.version
+            InstallationEntry(
+                key = key,
+                path = install.gamePath ?: Path.of(""),
+                version = version,
+                buildId = install.buildId,
+                isActive = key == settings.activeInstallation,
+                isAvailable = install.gamePath?.exists() ?: false,
+                lastScannedAt = Instant.fromEpochMilliseconds(install.lastScannedMillis),
+                cacheSizeBytes = version?.let {
+                    install.buildId?.let { build ->
+                        environment.paths.cacheSize(GameIdentity(it, build))
+                    }
+                } ?: 0L
+            )
+        }.sortedWith(compareByDescending<InstallationEntry> { it.isActive }.thenByDescending { it.lastScannedAt.toEpochMilliseconds() })
     }
 }

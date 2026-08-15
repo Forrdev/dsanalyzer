@@ -11,6 +11,7 @@ import kotlin.io.path.deleteIfExists
 import kotlin.io.path.moveTo
 import kotlin.io.path.outputStream
 import java.io.BufferedOutputStream
+import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
 import kotlin.io.path.exists
@@ -107,3 +108,19 @@ internal fun <T> Path.readFile(
 fun Path.freeSpaceAt(): Long = runCatching {
     if (exists()) fileSize() else (parent ?: Path.of("/")).fileSize()
 }.getOrDefault(0L)
+
+fun Path.recursiveSizeOf(): Long = runCatching {
+    if (!exists()) 0L else Files.walk(this).use { stream ->
+        stream.filter(Files::isRegularFile)
+            .mapToLong { runCatching { Files.size(it) }.getOrDefault(0L) }
+            .sum()
+    }
+}.getOrDefault(0L)
+
+fun Path.deleteTree(): Result<Unit> = runCatching {
+    if (!exists()) return@runCatching
+    Files.walk(this).use { stream ->
+        stream.sorted(Comparator.reverseOrder())
+            .forEach { it.deleteIfExists() }
+    }
+}

@@ -50,7 +50,8 @@ data class InstallationSettings(
     val version: GameVersion? = null,
     val buildId: String? = null,
     /** Overridden only when the cache is put somewhere other than the data directory */
-    val extractedPath: SNullablePath? = null
+    val extractedPath: SNullablePath? = null,
+    val lastScannedMillis: Long = 0
 )
 
 @Serializable
