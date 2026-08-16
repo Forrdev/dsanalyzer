@@ -8,8 +8,8 @@ import com.sappyoak.dsanalyzer.game.assets.GameAssetPaths
 import com.sappyoak.dsanalyzer.game.identity.*
 
 class InstallationInspector(
-    private val identityProbe: GameIdentityProbe,
-    private val versionDetector: GameVersionDetector
+    private val identityProbe: GameIdentityProbe = GameIdentityProbe(),
+    private val versionDetector: GameVersionDetector = GameVersionDetector()
 ) {
     fun inspect(path: Path): InstallInspectionResult {
         if (!path.exists()) {

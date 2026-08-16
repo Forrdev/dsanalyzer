@@ -1,13 +1,14 @@
 package com.sappyoak.dsanalyzer.app.state
 
-import com.sappyoak.dsanalyzer.app.install.InstallInspection
-import com.sappyoak.dsanalyzer.app.install.InstallKind
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
-import kotlin.time.Instant
 import java.nio.file.Path
 
-import com.sappyoak.dsanalyzer.domain.GameVersion
+import com.sappyoak.dsanalyzer.game.identity.GameBuildId
+import com.sappyoak.dsanalyzer.game.identity.GameVersion
+import com.sappyoak.dsanalyzer.game.install.InstallInspectionResult
+import com.sappyoak.dsanalyzer.game.install.InstallKind
+import com.sappyoak.dsanalyzer.shared.SInstant
+
 
 data class SetupState(
     val gamePath: Path? = null,
@@ -26,7 +27,7 @@ data class SetupState(
      */
     val extractedPath: Path? = null,
     val installKind: InstallKind = InstallKind.Unknown,
-    val inspection: InstallInspection? = null,
+    val inspection: InstallInspectionResult? = null,
     /** Default install locations that exist */
     val suggestedPaths: List<String> = emptyList(),
     /** The estimates bytes that extraction would take up */
@@ -67,10 +68,10 @@ data class InstallationEntry(
     val key: String,
     val path: Path,
     val version: GameVersion?,
-    val buildId: String?,
+    val buildId: GameBuildId?,
     val isActive: Boolean,
     val isAvailable: Boolean,
-    @Contextual val lastScannedAt: Instant,
+    val lastScannedAt: SInstant?,
     val cacheSizeBytes: Long
 ) {
     val displayName: String get() = buildString {

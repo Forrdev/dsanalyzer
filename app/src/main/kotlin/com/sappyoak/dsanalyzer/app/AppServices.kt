@@ -7,13 +7,15 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
+import com.sappyoak.dsanalyzer.game.install.InstallationInspector
 import com.sappyoak.dsanalyzer.app.config.AppEnvironment
 
 
 class AppServices private constructor(
     val environment: AppEnvironment,
     val http: HttpClient,
-    val json: Json
+    val json: Json,
+    val gameInstallInspector: InstallationInspector
 ) : AutoCloseable {
     override fun close() {
         http.close()
@@ -42,10 +44,13 @@ class AppServices private constructor(
                 expectSuccess = false
             }
 
+            val installInspector = InstallationInspector()
+
             return AppServices(
                 environment,
                 http,
-                json
+                json,
+                installInspector
             )
         }
     }

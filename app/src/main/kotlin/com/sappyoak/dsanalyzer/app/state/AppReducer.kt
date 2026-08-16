@@ -18,7 +18,7 @@ fun Store.reduce(state: AppState, action: Action): AppState = when (action) {
             inspection = action.inspection,
             gamePathResolves = true,
             version = action.inspection.version,
-            identityUnknown = action.inspection.identity?.buildId == "unknown",
+            identityUnknown = action.inspection.identity?.buildId?.isUnknown ?: true,
             suggestedPaths = emptyList()
         )
     )

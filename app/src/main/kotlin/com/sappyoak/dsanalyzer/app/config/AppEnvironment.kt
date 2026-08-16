@@ -1,12 +1,14 @@
 package com.sappyoak.dsanalyzer.app.config
 
+import kotlinx.serialization.json.Json
 import java.nio.file.Path
 
-import com.sappyoak.dsanalyzer.domain.GameIdentity
-import com.sappyoak.dsanalyzer.domain.GameVersion
+import com.sappyoak.dsanalyzer.game.identity.GameBuildId
+import com.sappyoak.dsanalyzer.game.identity.GameIdentity
+import com.sappyoak.dsanalyzer.game.identity.GameVersion
 
 import com.sappyoak.dsanalyzer.app.data.JsonStore
-import kotlinx.serialization.json.Json
+
 
 class AppEnvironment private constructor(
     private val store: JsonStore<Settings>,
@@ -26,7 +28,7 @@ class AppEnvironment private constructor(
         val version = active.version ?: return null
         return GameIdentity(
             version = version,
-            buildId = active.buildId ?: "unknown"
+            buildId = active.buildId ?: GameBuildId.Unknown
         )
     }
 

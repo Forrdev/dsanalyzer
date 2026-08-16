@@ -2,7 +2,7 @@ package com.sappyoak.dsanalyzer.app.state.readiness
 
 import com.sappyoak.dsanalyzer.app.state.Action
 import com.sappyoak.dsanalyzer.app.state.AppState
-import com.sappyoak.dsanalyzer.domain.GameVersion
+import com.sappyoak.dsanalyzer.game.identity.GameVersion
 
 /**
  * Works out what is blocking the application from state.

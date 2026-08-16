@@ -2,13 +2,15 @@ package com.sappyoak.dsanalyzer.app.config
 
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
+import com.sappyoak.dsanalyzer.game.identity.GameBuildId
 import kotlinx.serialization.Serializable
 import java.awt.GraphicsEnvironment
 
-import com.sappyoak.dsanalyzer.domain.GameIdentity
-import com.sappyoak.dsanalyzer.domain.GameVersion
+import com.sappyoak.dsanalyzer.game.identity.GameIdentity
+import com.sappyoak.dsanalyzer.game.identity.GameVersion
 import com.sappyoak.dsanalyzer.shared.SNullablePath
 import com.sappyoak.dsanalyzer.shared.SInstant
+import kotlin.time.Instant
 
 @Serializable
 data class Settings(
@@ -49,10 +51,10 @@ data class Settings(
 data class InstallationSettings(
     val gamePath: SNullablePath? = null,
     val version: GameVersion? = null,
-    val buildId: String? = null,
+    val buildId: GameBuildId? = null,
     /** Overridden only when the cache is put somewhere other than the data directory */
     val extractedPath: SNullablePath? = null,
-    val lastScannedAt: SInstant
+    val lastScannedAt: SInstant = Instant.DISTANT_PAST
 )
 
 @Serializable

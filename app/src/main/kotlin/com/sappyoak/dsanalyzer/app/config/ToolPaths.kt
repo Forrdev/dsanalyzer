@@ -6,8 +6,8 @@ import kotlin.io.path.listDirectoryEntries
 import java.nio.file.Files
 import java.nio.file.Path
 
-import com.sappyoak.dsanalyzer.domain.GameIdentity
-import com.sappyoak.dsanalyzer.domain.GameVersion
+import com.sappyoak.dsanalyzer.game.identity.GameIdentity
+import com.sappyoak.dsanalyzer.game.identity.GameVersion
 import com.sappyoak.dsanalyzer.shared.OS
 import com.sappyoak.dsanalyzer.shared.recursiveSizeOf
 

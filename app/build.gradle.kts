@@ -9,6 +9,7 @@ plugins {
 dependencies {
     implementation(project(":shared"))
     implementation(project(":domain"))
+    implementation(project(":game"))
 
     implementation(compose.desktop.currentOs)
     implementation(compose.material3)

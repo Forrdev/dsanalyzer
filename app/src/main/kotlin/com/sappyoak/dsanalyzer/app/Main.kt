@@ -27,7 +27,7 @@ fun main() {
         }
 
         val state by store.state.collectAsState()
-        val actions = remember { AppActions(store::dispatch) }
+        val actions = remember { AppActions(services.gameInstallInspector, store::dispatch) }
 
         val windowSettings = environment.settings.window
         val (width, height) = windowSettings.targetDimensions

@@ -1,23 +1,22 @@
 package com.sappyoak.dsanalyzer.app.effects
 
 import kotlinx.coroutines.CoroutineScope
-import java.nio.file.Path
-import kotlin.io.path.exists
-import kotlin.io.path.isWritable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.io.path.exists
+import kotlin.io.path.isWritable
 import kotlin.time.Instant
+import java.nio.file.Path
 
-
-import com.sappyoak.dsanalyzer.shared.freeSpaceAt
-import com.sappyoak.dsanalyzer.app.AppServices
-import com.sappyoak.dsanalyzer.app.install.InstallProbe
-import com.sappyoak.dsanalyzer.app.state.*
-import com.sappyoak.dsanalyzer.app.ui.components.FilePickers
-import com.sappyoak.dsanalyzer.domain.GameIdentity
+import com.sappyoak.dsanalyzer.game.identity.GameIdentity
 import com.sappyoak.dsanalyzer.domain.Problem
 import com.sappyoak.dsanalyzer.domain.ProblemResolution
+import com.sappyoak.dsanalyzer.shared.freeSpaceAt
+
+import com.sappyoak.dsanalyzer.app.AppServices
+import com.sappyoak.dsanalyzer.app.state.*
+import com.sappyoak.dsanalyzer.app.ui.components.FilePickers
 
 
 class SetupEffects(private val services: AppServices) {
@@ -32,7 +31,7 @@ class SetupEffects(private val services: AppServices) {
         when (action) {
             Action.Setup.GamePathRequested -> {
                 FilePickers.chooseDirectory("Select the game's Directory. For PTDE this will be the DATA dir inside of the main folder")?.let { path ->
-                    dispatch(Action.Setup.GamePathChosen(path, InstallProbe.inspect(path)))
+                    dispatch(Action.Setup.GamePathChosen(path, services.gameInstallInspector.inspect(path)))
                 }
             }
 
@@ -107,7 +106,7 @@ class SetupEffects(private val services: AppServices) {
                 buildId = install.buildId,
                 isActive = key == settings.activeInstallation,
                 isAvailable = install.gamePath?.exists() ?: false,
-                lastScannedAt = Instant.fromEpochMilliseconds(install.lastScannedMillis),
+                lastScannedAt = install.lastScannedAt,
                 cacheSizeBytes = version?.let {
                     install.buildId?.let { build ->
                         environment.paths.cacheSize(GameIdentity(it, build))
