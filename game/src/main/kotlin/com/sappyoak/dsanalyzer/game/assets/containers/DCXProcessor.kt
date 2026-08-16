@@ -105,6 +105,12 @@ object DCXProcessor {
     }
 
     sealed class Outcome {
+        val bytesOrNull: ByteArray? get() = when (this) {
+            is Decompressed -> data
+            is Uncompressed -> data
+            else -> null
+        }
+
         class Decompressed(val data: ByteArray) : Outcome()
         class Uncompressed(val data: ByteArray) : Outcome()
         data class Failure(val reason: String, val error: Throwable? = null) : Outcome()
