@@ -40,6 +40,7 @@ sealed interface Action {
             val freeSpaceBytes: Long
         ) : Setup
 
+        @Serializable data object ExtractionRequested : Setup
         @Serializable
         data class ExtractionProgress(val current: String, val done: Int, val total: Int) : Setup
         @Serializable
@@ -56,6 +57,7 @@ sealed interface Action {
 
         @Serializable data object CacheSizeRequested : Setup
         @Serializable data class CacheSizeMeasured(val bytes: Long) : Setup
+        @Serializable data object CacheClearRequested : Setup
     }
 
     @Serializable

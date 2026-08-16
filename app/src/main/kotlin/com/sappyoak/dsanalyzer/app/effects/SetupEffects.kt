@@ -2,6 +2,7 @@ package com.sappyoak.dsanalyzer.app.effects
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.io.path.exists
@@ -9,18 +10,22 @@ import kotlin.io.path.isWritable
 import kotlin.time.Instant
 import java.nio.file.Path
 
+import com.sappyoak.dsanalyzer.game.assets.fs.ExtractionCacheWarmer
 import com.sappyoak.dsanalyzer.game.identity.GameIdentity
 import com.sappyoak.dsanalyzer.domain.Problem
 import com.sappyoak.dsanalyzer.domain.ProblemResolution
 import com.sappyoak.dsanalyzer.shared.freeSpaceAt
 
 import com.sappyoak.dsanalyzer.app.AppServices
+import com.sappyoak.dsanalyzer.app.data.Resources
 import com.sappyoak.dsanalyzer.app.state.*
 import com.sappyoak.dsanalyzer.app.ui.components.FilePickers
+import com.sappyoak.dsanalyzer.shared.deleteTree
 
 
-class SetupEffects(private val services: AppServices) {
+class SetupEffects(private val services: AppServices) : AutoCloseable {
     private val environment = services.environment
+    private var warmJob: Job? = null
 
     fun handle(
         action: Action.Setup,
@@ -73,6 +78,13 @@ class SetupEffects(private val services: AppServices) {
                 }
             }
 
+            Action.Setup.ExtractionRequested -> startWarm(state, scope, dispatch)
+
+            Action.Setup.ExtractionCancelled -> {
+                warmJob?.cancel()
+                warmJob = null
+            }
+
             is Action.Setup.InstallationRemoved -> {
                 environment.forgetInstallation(action.key)
                 scope.launch {
@@ -91,8 +103,14 @@ class SetupEffects(private val services: AppServices) {
                 dispatch(Action.Setup.CacheSizeMeasured(size))
             }
 
+            Action.Setup.CacheClearRequested -> clearCache(state, scope, dispatch)
+
             else -> Unit
         }
+    }
+
+    override fun close() {
+        warmJob?.cancel()
     }
 
     private fun listInstallations(): List<InstallationEntry> {
@@ -115,4 +133,49 @@ class SetupEffects(private val services: AppServices) {
             )
         }.sortedWith(compareByDescending<InstallationEntry> { it.isActive }.thenByDescending { it.lastScannedAt?.toEpochMilliseconds() })
     }
+
+    private fun startWarm(state: AppState, scope: CoroutineScope, dispatch: DispatchFn) {
+        val gamePath = state.setup.gamePath ?: return
+        val outputPath = state.setup.extractedPath ?: return
+
+
+        warmJob?.cancel()
+        warmJob = scope.launch {
+            val result = withContext(Dispatchers.IO) {
+                runCatching {
+                    val warmer = ExtractionCacheWarmer(
+                        gamePath = gamePath,
+                        extractedPath = outputPath,
+                        paths = Resources.loadPathDictionaries()
+                    )
+                    val warmed = warmer.warm(
+                        onProgress = { done, total, current ->
+                            dispatch(Action.Setup.ExtractionProgress(current, done, total))
+                        },
+                        shouldContinue = { warmJob?.isCancelled == false }
+                    )
+
+                    if (warmed.error != null) ExtractionState.Failed(warmed.error!!)
+                    else ExtractionState.Complete(warmed.written, warmed.skipped)
+                }.getOrElse { ExtractionState.Failed(it.message ?: "Extraction failed", it) }
+            }
+
+            dispatch(Action.Setup.ExtractionFinished(result))
+            dispatch(Action.Setup.CacheSizeRequested)
+        }
+    }
+
+    private fun clearCache(state: AppState, scope: CoroutineScope, dispatch: DispatchFn) {
+        val path = state.setup.extractedPath ?: return
+
+        scope.launch {
+            withContext(Dispatchers.IO) {
+                path.deleteTree()
+            }
+            dispatch(Action.Setup.ExtractionFinished(ExtractionState.NotStarted))
+            dispatch(Action.Setup.CacheSizeRequested)
+        }
+    }
+
+
 }
