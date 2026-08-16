@@ -23,6 +23,7 @@ class GameAssetResolver(val root: Path) {
 
     fun target(asset: GameAsset): Path = root.resolve(asset.extracted)
     fun exists(asset: GameAsset): Boolean = resolve(asset) != null
+
     fun read(asset: GameAsset): ByteArray? =
         resolve(asset)?.readBytes()?.getOrNull()
 
@@ -32,3 +33,7 @@ class GameAssetResolver(val root: Path) {
 
     override fun toString() = "assets at $root"
 }
+
+fun GameAssetResolver.read(path: String): ByteArray? = read(GameAsset(path))
+fun GameAssetResolver.exists(path: String): Boolean = exists(GameAsset(path))
+fun GameAssetResolver.target(path: String): Path = target(GameAsset(path))
