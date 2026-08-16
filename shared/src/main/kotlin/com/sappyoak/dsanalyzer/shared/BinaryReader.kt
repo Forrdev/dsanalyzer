@@ -3,6 +3,14 @@ package com.sappyoak.dsanalyzer.shared
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
+fun ByteArray.toReader(
+    littleEndian: Boolean = true,
+    position: Int = 0,
+    lenient: Boolean = true
+): BinaryReader =
+    if (lenient) LenientBinaryReader(this, littleEndian, position)
+    else StrictBinaryReader(this, littleEndian, position)
+
 /**
  * Random-access, endian-aware reader over a byte array backed by [ByteBuffer]
  *
@@ -97,6 +105,20 @@ abstract class BinaryReader(
     }
 
     fun fixedString(count: Int): String = ascii(count).substringBefore('\u0000')
+
+    fun cStringAt(offset: Int, maxLength: Int = 512): String? {
+        if (offset <= 0 || offset >= bytes.size) return null
+        val builder = StringBuilder()
+        var index = offset
+        while (index < bytes.size && builder.length < maxLength) {
+            val byte = bytes[index].toInt() and 0xFF
+            if (byte == 0 || byte > 0x80) break
+            builder.append(byte.toChar())
+            index++
+        }
+
+        return builder.toString().ifEmpty { null }
+    }
 
     fun slice(offset: Int, count: Int): ByteArray {
         if (offset < 0 || count <= 0) return ByteArray(0)
