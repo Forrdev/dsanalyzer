@@ -34,6 +34,7 @@ class GameAssetResolver(val root: Path) {
     override fun toString() = "assets at $root"
 }
 
+fun GameAssetResolver.resolve(path: String): Path? = resolve(GameAsset(path))
 fun GameAssetResolver.read(path: String): ByteArray? = read(GameAsset(path))
 fun GameAssetResolver.exists(path: String): Boolean = exists(GameAsset(path))
 fun GameAssetResolver.target(path: String): Path = target(GameAsset(path))

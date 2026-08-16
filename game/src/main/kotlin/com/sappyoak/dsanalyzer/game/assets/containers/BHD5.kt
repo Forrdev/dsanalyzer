@@ -87,11 +87,11 @@ class BHD5Header(
 ) {
     val fileCount: Int get() = records.size
 
-    fun find(path: String): BHD5Record? = records[BHD5HeaderReader.hashPath(path)]
-    fun findByHash(hash: UInt): BHD5Record? = records[hash]
+    operator fun get(path: String): BHD5Record? = records[BHD5HeaderReader.hashPath(path)]
+    operator fun get(hash: UInt): BHD5Record? = records[hash]
 
-    operator fun contains(path: String): Boolean = find(path) != null
-    operator fun contains(hash: UInt): Boolean = records[hash] != null
+    operator fun contains(path: String): Boolean = this[path] != null
+    operator fun contains(hash: UInt): Boolean = this[hash] != null
 
     fun hashes(): Set<UInt> = records.keys
 

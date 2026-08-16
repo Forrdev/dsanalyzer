@@ -12,7 +12,7 @@ import java.nio.channels.FileChannel
  * sit close enough to that limit to cross it. So the file is  mapped in overlapping windows
  * rather than whole, and reads that straddle a boundary fall back to a channel read.
  */
-class PackedArchive(private val path: Path) : AutoCloseable {
+class MappedArchive(private val path: Path) : AutoCloseable {
     private val file = RandomAccessFile(path.toFile(), "r")
     private val channel: FileChannel = file.channel
 
