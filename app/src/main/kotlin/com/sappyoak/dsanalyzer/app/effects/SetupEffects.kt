@@ -113,6 +113,6 @@ class SetupEffects(private val services: AppServices) {
                     }
                 } ?: 0L
             )
-        }.sortedWith(compareByDescending<InstallationEntry> { it.isActive }.thenByDescending { it.lastScannedAt.toEpochMilliseconds() })
+        }.sortedWith(compareByDescending<InstallationEntry> { it.isActive }.thenByDescending { it.lastScannedAt?.toEpochMilliseconds() })
     }
 }

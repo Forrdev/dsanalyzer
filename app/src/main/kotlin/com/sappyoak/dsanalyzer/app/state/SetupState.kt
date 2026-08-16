@@ -27,6 +27,7 @@ data class SetupState(
      */
     val extractedPath: Path? = null,
     val installKind: InstallKind = InstallKind.Unknown,
+    val extraction: ExtractionState = ExtractionState.NotStarted,
     val inspection: InstallInspectionResult? = null,
     /** Default install locations that exist */
     val suggestedPaths: List<String> = emptyList(),
@@ -61,6 +62,12 @@ data class SetupState(
     val installSummary: String? get() = inspection?.let { it.warning ?: it.summary }
     val readyToScan: Boolean get() = gamePath != null && installKind != InstallKind.Unknown
     val canExtract: Boolean get() = installKind == InstallKind.Packed
+
+    val extractionRationale: String get() = buildString {
+        append("This is optional -- the archives are read directly. ")
+        append("Extracting avoids re-inflating on later scan and makes several diagnostics/displays easier and ")
+        append("lets other tools read the files. ")
+    }
 }
 
 @Serializable

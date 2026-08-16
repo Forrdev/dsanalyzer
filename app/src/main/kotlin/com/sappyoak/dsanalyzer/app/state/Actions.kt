@@ -40,6 +40,12 @@ sealed interface Action {
             val freeSpaceBytes: Long
         ) : Setup
 
+        @Serializable
+        data class ExtractionProgress(val current: String, val done: Int, val total: Int) : Setup
+        @Serializable
+        data class ExtractionFinished(val result: ExtractionState) : Setup
+        @Serializable data object ExtractionCancelled : Setup
+
         @Serializable data object InstallationsRequested : Setup
         @Serializable data class InstallationsListed(val installations: List<InstallationEntry>) : Setup
         @Serializable data class InstallationSelected(val key: String) : Setup

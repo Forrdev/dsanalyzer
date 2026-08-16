@@ -40,6 +40,18 @@ fun Store.reduce(state: AppState, action: Action): AppState = when (action) {
         )
     )
 
+    is Action.Setup.ExtractionProgress -> state.copy(
+        setup = state.setup.copy(extraction = ExtractionState.Running(action.current, action.done, action.total))
+    )
+
+    is Action.Setup.ExtractionFinished -> state.copy(
+        setup = state.setup.copy(extraction = action.result)
+    )
+
+    Action.Setup.ExtractionCancelled -> state.copy(
+        setup = state.setup.copy(extraction = ExtractionState.NotStarted)
+    )
+
     Action.Setup.InstallationsRequested -> state
 
     is Action.Setup.InstallationsListed -> state.copy(
