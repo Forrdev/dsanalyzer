@@ -120,6 +120,18 @@ abstract class BinaryReader(
         return builder.toString().ifEmpty { null }
     }
 
+    fun wideStringAt(offset: Int, maxLength: Int = 512): String? {
+        if (offset <= 0 || offset >= bytes.size) return null
+        var end = offset
+        while (end + 1 < bytes.size && end - offset < maxLength * 2) {
+            if (bytes[end].toInt() == 0 && bytes[end + 1].toInt() == 0) break
+            end += 2
+        }
+        if (end <= offset) return null
+
+        return String(bytes, offset, end - offset, if (littleEndian) Charsets.UTF_16LE else Charsets.UTF_16BE).ifEmpty { null }
+    }
+
     fun slice(offset: Int, count: Int): ByteArray {
         if (offset < 0 || count <= 0) return ByteArray(0)
         val end = (offset + count).coerceAtMost(size)

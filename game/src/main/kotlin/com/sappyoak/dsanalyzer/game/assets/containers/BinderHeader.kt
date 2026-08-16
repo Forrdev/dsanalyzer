@@ -51,22 +51,23 @@ internal object BinderHeader {
         }
         return result
     }
+
+    internal enum class Flags(val flag: Byte) {
+        FormatBigEndian(0b0000_0001),
+        FormatIds(0b0000_0010),
+        FormatNames1(0b0000_0100),
+        FormatNames2(0b0000_1000),
+        FormatLongOffsets(0b0001_0000),
+        FormatCompression(0b0010_0000);
+
+        infix fun or(other: Flags): Int = flag.toInt() or other.flag.toInt()
+    }
 }
 
 
 
-private enum class Flags(val flag: Byte) {
-    FormatBigEndian(0b0000_0001),
-    FormatIds(0b0000_0010),
-    FormatNames1(0b0000_0100),
-    FormatNames2(0b0000_1000),
-    FormatLongOffsets(0b0001_0000),
-    FormatCompression(0b0010_0000);
 
-    infix fun or(other: Flags): Int = flag.toInt() or other.flag.toInt()
-}
-
-private infix fun Int.and(flag: Flags): Int = this and flag.flag.toInt()
+internal infix fun Int.and(flag: BinderHeader.Flags): Int = this and flag.flag.toInt()
 
 internal data class BinderInfo(
     val version: String,
@@ -75,10 +76,10 @@ internal data class BinderInfo(
     val fileCount: Int,
     val entriesOffset: Int
 ) {
-    val hasIds: Boolean get(): Boolean = (format and Flags.FormatIds) != 0
-    val hasNames: Boolean get() = (format and (Flags.FormatNames1 or Flags.FormatNames2)) != 0
-    val hasCompression: Boolean get() = (format and Flags.FormatCompression) != 0
-    val hasLongOffsets: Boolean get() = (format and Flags.FormatLongOffsets) != 0
+    val hasIds: Boolean get(): Boolean = (format and BinderHeader.Flags.FormatIds) != 0
+    val hasNames: Boolean get() = (format and (BinderHeader.Flags.FormatNames1 or BinderHeader.Flags.FormatNames2)) != 0
+    val hasCompression: Boolean get() = (format and BinderHeader.Flags.FormatCompression) != 0
+    val hasLongOffsets: Boolean get() = (format and BinderHeader.Flags.FormatLongOffsets) != 0
 
     /**
      * An implausible file count is the first symptom of the bit order being wrong, and the
