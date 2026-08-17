@@ -3,8 +3,10 @@ package com.sappyoak.dsanalyzer.shared.io
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
 import java.io.File
+import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
+import java.nio.file.StandardOpenOption
 import kotlin.io.path.*
 
 const val DEFAULT_BUFFER_SIZE = 8192
@@ -66,6 +68,18 @@ inline fun Path.writeFileAtomic(
 
 fun Path.writeBytesAtomic(bytes: ByteArray, bufferSize: Int = DEFAULT_BUFFER_SIZE) = writeFileAtomic(bufferSize) {
     stream -> stream.write(bytes)
+}
+
+inline fun Path.appendString(includeNewline: Boolean = true, block: () -> String): Result<Unit> = runCatching {
+    parent?.createDirectories()
+
+    val data = block()
+    Files.writeString(
+        this,
+        if (includeNewline) data + "\n" else data,
+        StandardOpenOption.CREATE,
+        StandardOpenOption.APPEND
+    )
 }
 
 fun Path.deleteTree(): Result<Unit> = runCatching {

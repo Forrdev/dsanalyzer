@@ -25,6 +25,7 @@ class ToolPaths(val root: Path) {
     val reports = root.resolve("reports")
 
     val settings = root.resolve("settings.json")
+    val workspaceJournal = root.resolve("workspaces.log")
 
     /**
      * Definition files, per game kind

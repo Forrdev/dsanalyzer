@@ -2,12 +2,16 @@ package com.sappyoak.dsanalyzer.app.config
 
 import kotlinx.serialization.json.Json
 import java.nio.file.Path
+import kotlin.io.path.exists
+import kotlin.io.path.isWritable
 
 import com.sappyoak.dsanalyzer.game.identity.GameBuildId
 import com.sappyoak.dsanalyzer.game.identity.GameIdentity
-import com.sappyoak.dsanalyzer.game.identity.GameVersion
 
 import com.sappyoak.dsanalyzer.app.data.JsonStore
+import com.sappyoak.dsanalyzer.app.state.SetupState
+import com.sappyoak.dsanalyzer.app.state.workspace.WorkspaceState
+
 
 
 class AppEnvironment private constructor(
@@ -32,11 +36,17 @@ class AppEnvironment private constructor(
         )
     }
 
-    val gameVersion: GameVersion
-        get() = installation?.version ?: GameVersion.PTDE
-
     val extractedPath: Path? get() =
         installation?.extractedPath ?: identity?.let { paths.extracted(it) }
+
+    /**
+     * Durable workspace changs, appended as they happen
+     *
+     * Separate from settings because the write pattern differs: settings are rewritten
+     * rarely and wholly, and this is appended often and in fragments
+     */
+    var journal: WorkspaceJournal = WorkspaceJournal(paths.workspaceJournal)
+        private set
 
     val definitionsPath: Path? get() =
             installation?.version?.let { paths.definitions(it) }
@@ -74,16 +84,17 @@ class AppEnvironment private constructor(
         paths.ensureExists(identity)
     }
 
-    fun updateInstallation(block: (InstallationSettings) -> InstallationSettings) {
-        val key = settings.activeInstallation ?: return
-        update { it.withInstallation(key, block) }
-    }
-
     /** Makes an existing installation active */
     fun activeInstallation(key: String) {
         if (settings.installations[key] == null) return
         update { it.copy(activeInstallation = key) }
         identity?.let { paths.ensureExists(it) }
+    }
+
+    /** Updates state for the active installation */
+    fun updateInstallation(block: (InstallationSettings) -> InstallationSettings) {
+        val key = settings.activeInstallation ?: return
+        update { it.withInstallation(key, block) }
     }
 
     fun forgetInstallation(key: String) {
@@ -93,6 +104,65 @@ class AppEnvironment private constructor(
         )}
     }
 
+    /**
+     * Records a change and folds the log back when it has grown
+     *
+     * Compaction writes settings before clearing the log. The reverse order would
+     * lose everything if the settings write then failed
+     */
+    fun recordWorkspaceChange(change: WorkspaceChange) {
+        journal.record(change)
+
+        if (journal.needsCompaction()) {
+            val folded = settings.workspaces.applyChanges(journal.replay())
+            store.save(settings.copy(workspaces = folded)).onSuccess {
+                journal.compacted()
+            }
+        }
+    }
+
+    fun restoreWorkspace(persisted: PersistedWorkspace): WorkspaceState? {
+        val install = settings.installations[persisted.installationKey] ?: return null
+        val version = install.version ?: return null
+        val identity = GameIdentity(version, buildId = install.buildId ?: GameBuildId.Unknown)
+
+        return WorkspaceState(
+            id = persisted.id,
+            identity = identity,
+            installationKey = persisted.installationKey,
+            title = persisted.title,
+            setup = SetupState(
+                gamePath = install.gamePath,
+                version = version,
+                gamePathResolves = install.gamePath?.exists() ?: false,
+                dataPathWritable = paths.root.isWritable()
+            )
+        )
+    }
+
+    /** Workspaces as of the last clean state, plus anything journaled after */
+    fun persistedWorkspaces(): List<PersistedWorkspace> =
+        settings.workspaces.applyChanges(journal.replay())
+
+
+    fun persistWorkspaces(
+        workspaces: Collection<WorkspaceState>,
+        active: String?
+    ) {
+        update { settings ->
+            settings.copy(
+                workspaces = workspaces.map { workspace ->
+                    PersistedWorkspace(
+                        id = workspace.id,
+                        installationKey = workspace.installationKey,
+                        title = workspace.title
+                    )
+                },
+                activeWorkspace = active
+            )
+        }
+        journal.compacted()
+    }
 
     private fun pathsFor(settings: Settings): ToolPaths =
         settings.dataPath?.let { ToolPaths(it) } ?: ToolPaths.Default

@@ -26,6 +26,13 @@ data class Settings(
     val installations: Map<String, InstallationSettings> = emptyMap(),
     val activeInstallation: String? = null,
 
+    /**
+     * Workspaces to reopen
+     *
+     * Persisted so a session resumes where it left off
+     */
+    val workspaces: List<PersistedWorkspace> = emptyList(),
+    val activeWorkspace: String? = null,
     val overlay: OverlaySettings = OverlaySettings(),
     val window: WindowSettings = WindowSettings(),
     val hotkeys: HotKeySettings = HotKeySettings()
@@ -62,6 +69,16 @@ data class OverlaySettings(
     val enabled: Boolean = false,
     val opacity: Float = 0.5f,
     val drawRadius: Float = 60f
+)
+
+/**
+ * A workspace as it survives a restart
+ */
+@Serializable
+data class PersistedWorkspace(
+    val id: String,
+    val installationKey: String,
+    val title: String
 )
 
 @Serializable
