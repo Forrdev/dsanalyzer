@@ -9,7 +9,7 @@ import com.sappyoak.dsanalyzer.game.install.InstallInspectionResult
 import com.sappyoak.dsanalyzer.game.install.InstallKind
 import com.sappyoak.dsanalyzer.shared.SInstant
 
-
+@Serializable
 data class SetupState(
     val gamePath: Path? = null,
 
