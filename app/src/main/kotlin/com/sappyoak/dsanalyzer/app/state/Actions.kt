@@ -5,7 +5,9 @@ import java.nio.file.Path
 import kotlinx.serialization.Serializable
 
 import com.sappyoak.dsanalyzer.app.config.HotKeyBinding
+import com.sappyoak.dsanalyzer.app.state.workspace.WorkspaceAction
 import com.sappyoak.dsanalyzer.domain.Problem
+import com.sappyoak.dsanalyzer.game.identity.GameIdentity
 import com.sappyoak.dsanalyzer.game.identity.GameVersion
 import com.sappyoak.dsanalyzer.game.install.InstallationInspector
 import com.sappyoak.dsanalyzer.game.install.InstallInspectionResult
@@ -81,7 +83,12 @@ sealed interface Action {
  *
  * Every method is one dispatch. To dispatch multiple actions an effect should be used
  */
-class AppActions(val inspector: InstallationInspector, val dispatch: DispatchFn) {
+class AppActions(val inspector: InstallationInspector, val scoped: ScopedDispatcher) {
+    val workspaceId: String get() = scoped.id
+
+    fun dispatch(action: Action) = scoped(action)
+    fun global(action: Action) = scoped.global(action)
+
     fun chooseGamePath() = dispatch(Action.Setup.GamePathRequested)
     fun useGamePath(path: Path) = dispatch(Action.Setup.GamePathChosen(path, inspector.inspect(path)))
 
@@ -109,12 +116,20 @@ class AppActions(val inspector: InstallationInspector, val dispatch: DispatchFn)
     }
 
     fun bindHotkey(binding: HotKeyBinding, keyCode: Long) =
-        dispatch(Action.HotKey.Bound(binding, keyCode))
+        global(Action.HotKey.Bound(binding, keyCode))
 
-    fun resetHotkeys() = dispatch(Action.HotKey.ResetToDefaults)
-    fun cancelHotkeyCapture() = dispatch(Action.HotKey.CaptureCancelled)
+    fun resetHotkeys() = global(Action.HotKey.ResetToDefaults)
+    fun cancelHotkeyCapture() = global(Action.HotKey.CaptureCancelled)
 
     fun reportProblem(problem: Problem) = dispatch(Action.ProblemReported(problem))
+
+    fun openWorkspace(
+        installationKey: String,
+        identity: GameIdentity,
+        title: String
+    ) = scoped.lifecycle(WorkspaceAction.Open(installationKey, identity, title))
+
+    fun closeWorkspace(id: String = workspaceId) = scoped.lifecycle(WorkspaceAction.Close(id))
 }
 
 fun AppActions.handleKeyEvent(event: KeyEvent, capturingHotKey: HotKeyBinding? = null): Boolean {

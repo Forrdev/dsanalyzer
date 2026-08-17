@@ -46,6 +46,9 @@ class Store(
     fun noOpActions(): Map<String, Int> =
         log.filterNot { it.changed }.groupingBy { it.type }.eachCount()
 
+    fun scopedTo(workspaceId: String): ScopedDispatcher =
+        ScopedDispatcher(workspaceId) { dispatch(it) }
+
     @Suppress("UNCHECKED_CAST")
     inline fun <reified T : Action> actionsOfType(): List<LoggedAction<T>> {
         val result = log.filter { it.type == T::class.simpleName }
