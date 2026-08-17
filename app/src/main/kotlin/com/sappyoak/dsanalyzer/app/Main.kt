@@ -7,6 +7,7 @@ import androidx.compose.ui.window.*
 import kotlinx.coroutines.*
 import com.sappyoak.dsanalyzer.app.effects.*
 import com.sappyoak.dsanalyzer.app.state.*
+import com.sappyoak.dsanalyzer.app.state.global.FirstRunSequence
 import com.sappyoak.dsanalyzer.app.state.workspace.WorkspaceAction
 import com.sappyoak.dsanalyzer.app.ui.AppShell
 
@@ -26,6 +27,22 @@ fun main() {
         }
 
         val state by store.state.collectAsState()
+
+        LaunchedEffect(Unit) {
+            val settings = services.environment.settings
+
+            if (settings.workspaces.isEmpty()) {
+                store.dispatchLifecycle(WorkspaceAction.FirstRunStarted(
+                    FirstRunSequence(dataPath = settings.dataPath)
+                ))
+            } else {
+                val restored = settings.workspaces.mapNotNull { persisted ->
+                    services.environment.restoreWorkspace(persisted)
+                }
+
+                store.dispatchLifecycle(WorkspaceAction.Restored(restored, settings.activeWorkspace))
+            }
+        }
 
         val firstRun = state.global.firstRun
         if (firstRun != null) {

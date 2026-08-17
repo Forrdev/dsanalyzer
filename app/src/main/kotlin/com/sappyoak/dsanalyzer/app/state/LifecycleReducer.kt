@@ -42,4 +42,16 @@ fun Store.reduceLifecycle(state: AppState, action: WorkspaceAction): AppState = 
             if (id == action.workspaceId) workspace.copy(title = action.title) else workspace
         }
     )
+
+    is WorkspaceAction.FirstRunStarted -> state.copy(
+        global = state.global.copy(firstRun = action.sequence)
+    )
+
+    is WorkspaceAction.FirstRunStepCompleted -> state.copy(
+        global = state.global.copy(firstRun = action.sequence.completed(action.step))
+    )
+
+    WorkspaceAction.FirstRunFinished -> state.copy(
+        global = state.global.copy(firstRun = null)
+    )
 }

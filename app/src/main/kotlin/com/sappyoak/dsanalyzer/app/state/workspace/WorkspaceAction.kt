@@ -3,6 +3,8 @@ package com.sappyoak.dsanalyzer.app.state.workspace
 import kotlinx.serialization.Serializable
 
 import com.sappyoak.dsanalyzer.app.state.Action
+import com.sappyoak.dsanalyzer.app.state.global.FirstRunSequence
+import com.sappyoak.dsanalyzer.app.state.global.FirstRunStep
 import com.sappyoak.dsanalyzer.game.identity.GameIdentity
 
 /**
@@ -40,4 +42,18 @@ sealed interface WorkspaceAction {
         val workspaces: List<WorkspaceState>,
         val active: String?
     ) : WorkspaceAction
+
+    // Lifecycle rather than global, because the sequence ends by creating a workspace
+    // and an action that creates one cannot be scoped to it
+    @Serializable
+    data class FirstRunStarted(val sequence: FirstRunSequence) : WorkspaceAction
+
+    @Serializable
+    data class FirstRunStepCompleted(
+        val step: FirstRunStep,
+        val sequence: FirstRunSequence
+    ) : WorkspaceAction
+
+    @Serializable
+    data object FirstRunFinished : WorkspaceAction
 }
