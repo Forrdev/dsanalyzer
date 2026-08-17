@@ -1,7 +1,8 @@
 package com.sappyoak.dsanalyzer.game.assets.containers
 
-import com.sappyoak.dsanalyzer.shared.BinaryReader
-import com.sappyoak.dsanalyzer.shared.toReader
+import com.sappyoak.dsanalyzer.shared.io.BinaryReader
+import com.sappyoak.dsanalyzer.shared.io.cStringAt
+import com.sappyoak.dsanalyzer.shared.io.toReader
 
 /**
  * Header parsing shared by BND3 and BXF3.

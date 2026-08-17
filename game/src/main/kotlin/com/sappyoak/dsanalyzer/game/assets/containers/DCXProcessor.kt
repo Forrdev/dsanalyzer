@@ -2,7 +2,7 @@ package com.sappyoak.dsanalyzer.game.assets.containers
 
 import java.util.zip.Inflater
 
-import com.sappyoak.dsanalyzer.shared.toReader
+import com.sappyoak.dsanalyzer.shared.io.toReader
 
 fun ByteArray.isDCXCompressed(): Boolean {
     if (size < 8) return false

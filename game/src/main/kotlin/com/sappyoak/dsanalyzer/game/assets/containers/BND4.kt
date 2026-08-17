@@ -1,6 +1,8 @@
 package com.sappyoak.dsanalyzer.game.assets.containers
 
-import com.sappyoak.dsanalyzer.shared.toReader
+import com.sappyoak.dsanalyzer.shared.io.cStringAt
+import com.sappyoak.dsanalyzer.shared.io.toReader
+import com.sappyoak.dsanalyzer.shared.io.wideStringAt
 
 fun ByteArray.isBND4Archive(): Boolean =
     size >= 4 && decodeToString(0, 4) == BND4ArchiveReader.MAGIC_STR

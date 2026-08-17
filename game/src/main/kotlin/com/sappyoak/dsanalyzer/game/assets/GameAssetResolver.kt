@@ -3,7 +3,7 @@ package com.sappyoak.dsanalyzer.game.assets
 import java.nio.file.Path
 import kotlin.io.path.exists
 
-import com.sappyoak.dsanalyzer.shared.readBytes
+import com.sappyoak.dsanalyzer.shared.io.readBytes
 
 /**
  * Resolves assets against one root

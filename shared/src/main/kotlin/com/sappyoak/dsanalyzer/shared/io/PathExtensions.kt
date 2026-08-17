@@ -1,8 +1,8 @@
 package com.sappyoak.dsanalyzer.shared.io
 
-import com.sappyoak.dsanalyzer.shared.DEFAULT_BUFFER_SIZE
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
+import java.io.File
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
 import kotlin.io.path.*
@@ -92,6 +92,10 @@ fun Path.sizeOfDirectory(): Long {
         .map { it.length() }
         .sum()
 }
+
+fun Path.freeSpaceOnDisk(): Long = runCatching {
+    toFile().let { if (it.exists()) it.usableSpace else File(it.parent ?: "/").usableSpace }
+}.getOrDefault(0L)
 
 fun Path.isWithin(root: Path): Boolean =
     canonical.startsWith(root.canonical)

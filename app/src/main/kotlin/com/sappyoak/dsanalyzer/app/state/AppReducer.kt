@@ -40,6 +40,8 @@ fun Store.reduce(state: AppState, action: Action): AppState = when (action) {
         )
     )
 
+    Action.Setup.ExtractionRequested -> state
+
     is Action.Setup.ExtractionProgress -> state.copy(
         setup = state.setup.copy(extraction = ExtractionState.Running(action.current, action.done, action.total))
     )
@@ -86,6 +88,7 @@ fun Store.reduce(state: AppState, action: Action): AppState = when (action) {
     )
 
     Action.Setup.CacheSizeRequested -> state
+    Action.Setup.CacheClearRequested -> state
     is Action.Setup.CacheSizeMeasured -> state.copy(cacheSizeBytes = action.bytes)
 
     is Action.HotKey.Bound -> state.copy(

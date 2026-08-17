@@ -1,6 +1,6 @@
 package com.sappyoak.dsanalyzer.game.assets.containers
 
-import com.sappyoak.dsanalyzer.shared.toReader
+import com.sappyoak.dsanalyzer.shared.io.toReader
 
 fun ByteArray.isBHD5(): Boolean =
     size >= 4 && decodeToString(0, 4) == BHD5HeaderReader.MAGIC_STR

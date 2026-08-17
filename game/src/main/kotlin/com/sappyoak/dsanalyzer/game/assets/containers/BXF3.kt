@@ -1,6 +1,6 @@
 package com.sappyoak.dsanalyzer.game.assets.containers
 
-import com.sappyoak.dsanalyzer.shared.toReader
+import com.sappyoak.dsanalyzer.shared.io.toReader
 
 fun ByteArray.isBXF3Header(): Boolean =
     size >= 4 && decodeToString(0, 4) == BXF3ArchiveReader.MAGIC_HEADER_STR

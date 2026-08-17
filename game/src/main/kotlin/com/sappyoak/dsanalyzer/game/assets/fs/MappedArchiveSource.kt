@@ -6,7 +6,7 @@ import com.sappyoak.dsanalyzer.game.assets.*
 import com.sappyoak.dsanalyzer.game.assets.containers.BHD5Header
 import com.sappyoak.dsanalyzer.game.assets.containers.BHD5HeaderReader
 import com.sappyoak.dsanalyzer.game.assets.containers.DCXProcessor
-import com.sappyoak.dsanalyzer.shared.readBytes
+import com.sappyoak.dsanalyzer.shared.io.readBytes
 
 /**
  * Reads entries straight from mapped archives, without extracting first

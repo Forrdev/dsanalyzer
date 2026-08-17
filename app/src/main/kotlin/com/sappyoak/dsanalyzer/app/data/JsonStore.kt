@@ -1,14 +1,13 @@
 package com.sappyoak.dsanalyzer.app.data
 
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.json.Json
+import kotlinx.serialization.serializer
+import kotlinx.serialization.json.*
 import java.nio.file.Path
 import kotlin.io.path.exists
 import kotlin.io.path.copyTo
 
-import com.sappyoak.dsanalyzer.shared.readFile
-import com.sappyoak.dsanalyzer.shared.writeFile
-import kotlinx.serialization.serializer
+import com.sappyoak.dsanalyzer.shared.io.*
 
 
 class JsonStore<T>(
@@ -22,19 +21,19 @@ class JsonStore<T>(
             return LoadResult(default(), false)
         }
 
-        return location.readFile(serializer, jsonSerializer).fold(
+        return location.readFile { jsonSerializer.decodeFromStream(serializer, it) }.fold(
             onSuccess = { LoadResult(it, true) },
             onFailure = { LoadResult(
                 value = default(),
                 existed = true,
-                problem = "Could not read $location, falling back to defaults (${it.message})",
-                err = it
+                problem = "Could not read $location, falling back to defaults (${it.message})"
             )}
         )
     }
 
-    fun save(value: T): Result<Path> =
-        location.writeFile(value, serializer, jsonSerializer)
+    fun save(value: T): Result<Path> = location.writeFileAtomic {
+        jsonSerializer.encodeToStream(serializer, value, it)
+    }
 
     fun backup(): Result<Unit> = runCatching {
         if (!location.exists()) return@runCatching

@@ -9,7 +9,7 @@ import java.nio.file.Path
 import com.sappyoak.dsanalyzer.game.identity.GameIdentity
 import com.sappyoak.dsanalyzer.game.identity.GameVersion
 import com.sappyoak.dsanalyzer.shared.OS
-import com.sappyoak.dsanalyzer.shared.recursiveSizeOf
+import com.sappyoak.dsanalyzer.shared.io.sizeOfDirectory
 
 /**
  * Where the tool keeps its own files.
@@ -55,7 +55,7 @@ class ToolPaths(val root: Path) {
         }
     }
 
-    fun cacheSize(identity: GameIdentity): Long = extracted(identity).recursiveSizeOf()
+    fun cacheSize(identity: GameIdentity): Long = extracted(identity).sizeOfDirectory()
 
     companion object {
         const val APP_DIRECTORY = "dsanalyzer"

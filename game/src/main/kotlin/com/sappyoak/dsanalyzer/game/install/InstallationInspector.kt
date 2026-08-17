@@ -3,9 +3,9 @@ package com.sappyoak.dsanalyzer.game.install
 import java.nio.file.Path
 import kotlin.io.path.exists
 
-import com.sappyoak.dsanalyzer.shared.readBytes
 import com.sappyoak.dsanalyzer.game.assets.GameAssetPaths
 import com.sappyoak.dsanalyzer.game.identity.*
+import com.sappyoak.dsanalyzer.shared.io.readBytes
 
 class InstallationInspector(
     private val identityProbe: GameIdentityProbe = GameIdentityProbe(),

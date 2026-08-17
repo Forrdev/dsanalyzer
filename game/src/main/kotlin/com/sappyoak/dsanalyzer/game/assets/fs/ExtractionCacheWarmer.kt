@@ -1,10 +1,11 @@
 package com.sappyoak.dsanalyzer.game.assets.fs
 
-import kotlinx.serialization.Serializable
 import java.nio.file.Path
+import kotlinx.serialization.Serializable
+import kotlin.io.path.exists
 
 import com.sappyoak.dsanalyzer.game.assets.*
-import kotlin.io.path.exists
+
 
 /**
  * A warmer than can fill the extraction cache, designed to be

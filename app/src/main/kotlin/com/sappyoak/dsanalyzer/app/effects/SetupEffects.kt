@@ -14,13 +14,12 @@ import com.sappyoak.dsanalyzer.game.assets.fs.ExtractionCacheWarmer
 import com.sappyoak.dsanalyzer.game.identity.GameIdentity
 import com.sappyoak.dsanalyzer.domain.Problem
 import com.sappyoak.dsanalyzer.domain.ProblemResolution
-import com.sappyoak.dsanalyzer.shared.freeSpaceAt
+import com.sappyoak.dsanalyzer.shared.io.*
 
 import com.sappyoak.dsanalyzer.app.AppServices
 import com.sappyoak.dsanalyzer.app.data.Resources
 import com.sappyoak.dsanalyzer.app.state.*
 import com.sappyoak.dsanalyzer.app.ui.components.FilePickers
-import com.sappyoak.dsanalyzer.shared.deleteTree
 
 
 class SetupEffects(private val services: AppServices) : AutoCloseable {
@@ -51,7 +50,7 @@ class SetupEffects(private val services: AppServices) : AutoCloseable {
                 )?.let { path ->
                     dispatch(Action.Setup.DataPathChosen(
                         path = path,
-                        freeSpaceBytes = path.freeSpaceAt(),
+                        freeSpaceBytes = path.freeSpaceOnDisk(),
                         writable = path.isWritable()
                     ))
                 }
@@ -74,7 +73,7 @@ class SetupEffects(private val services: AppServices) : AutoCloseable {
                     "Where to extract game files to if running PTDE",
                     startAt = state.setup.extractedPath
                 )?.let { path ->
-                    dispatch(Action.Setup.ExtractPathChosen(path, path.freeSpaceAt()))
+                    dispatch(Action.Setup.ExtractPathChosen(path, path.freeSpaceOnDisk()))
                 }
             }
 
