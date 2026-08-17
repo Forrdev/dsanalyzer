@@ -4,17 +4,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
-
+import kotlinx.coroutines.*
 import com.sappyoak.dsanalyzer.app.effects.*
 import com.sappyoak.dsanalyzer.app.state.*
 import com.sappyoak.dsanalyzer.app.ui.AppShell
 
 fun main() {
-    val services = AppServices.create()
-    val environment = services.environment
-
     application {
+        val services = remember { AppServices.create() }
         val scope = rememberCoroutineScope()
+
         val store = remember {
             Store(
                 scope = scope,

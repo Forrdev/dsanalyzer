@@ -9,7 +9,7 @@ import com.sappyoak.dsanalyzer.game.identity.GameBuildId
 import com.sappyoak.dsanalyzer.game.identity.GameIdentity
 
 import com.sappyoak.dsanalyzer.app.data.JsonStore
-import com.sappyoak.dsanalyzer.app.state.SetupState
+import com.sappyoak.dsanalyzer.app.state.workspace.SetupState
 import com.sappyoak.dsanalyzer.app.state.workspace.WorkspaceState
 
 
@@ -36,9 +36,6 @@ class AppEnvironment private constructor(
         )
     }
 
-    val extractedPath: Path? get() =
-        installation?.extractedPath ?: identity?.let { paths.extracted(it) }
-
     /**
      * Durable workspace changs, appended as they happen
      *
@@ -48,8 +45,12 @@ class AppEnvironment private constructor(
     var journal: WorkspaceJournal = WorkspaceJournal(paths.workspaceJournal)
         private set
 
-    val definitionsPath: Path? get() =
-            installation?.version?.let { paths.definitions(it) }
+    fun extractedPathFor(identity: GameIdentity): Path =
+        settings.installations[identity.pathSegment]?.extractedPath ?: paths.extracted(identity)
+
+    fun cacheSizeFor(identity: GameIdentity): Long = paths.cacheSize(identity)
+    fun gamePathFor(identity: GameIdentity): Path? =
+        settings.installations[identity.pathSegment]?.gamePath
 
     fun update(block: (Settings) -> Settings): Settings {
         val updated = block(settings)
@@ -91,8 +92,14 @@ class AppEnvironment private constructor(
         identity?.let { paths.ensureExists(it) }
     }
 
-    /** Updates state for the active installation */
-    fun updateInstallation(block: (InstallationSettings) -> InstallationSettings) {
+    fun updateInstallationFor(
+        identity: GameIdentity,
+        block: (InstallationSettings) -> InstallationSettings
+    ) {
+        update { it.withInstallation(identity.pathSegment, block) }
+    }
+
+    fun updateActiveInstallation(block: (InstallationSettings) -> InstallationSettings) {
         val key = settings.activeInstallation ?: return
         update { it.withInstallation(key, block) }
     }

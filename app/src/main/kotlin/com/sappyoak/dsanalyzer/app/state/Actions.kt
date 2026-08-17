@@ -5,6 +5,7 @@ import java.nio.file.Path
 import kotlinx.serialization.Serializable
 
 import com.sappyoak.dsanalyzer.app.config.HotKeyBinding
+import com.sappyoak.dsanalyzer.app.state.workspace.InstallationEntry
 import com.sappyoak.dsanalyzer.app.state.workspace.WorkspaceAction
 import com.sappyoak.dsanalyzer.domain.Problem
 import com.sappyoak.dsanalyzer.game.identity.GameIdentity
@@ -12,7 +13,7 @@ import com.sappyoak.dsanalyzer.game.identity.GameVersion
 import com.sappyoak.dsanalyzer.game.install.InstallationInspector
 import com.sappyoak.dsanalyzer.game.install.InstallInspectionResult
 
-typealias DispatchFn = (Action) -> Unit
+typealias DispatchFn = (Envelope) -> Unit
 
 /**
  * Pure typed actions describing all the ways the app state can change

@@ -1,5 +1,6 @@
-package com.sappyoak.dsanalyzer.app.state
+package com.sappyoak.dsanalyzer.app.state.workspace
 
+import com.sappyoak.dsanalyzer.app.state.ExtractionState
 import kotlinx.serialization.Serializable
 import java.nio.file.Path
 

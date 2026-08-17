@@ -2,7 +2,7 @@ package com.sappyoak.dsanalyzer.app.state.global
 
 import com.sappyoak.dsanalyzer.app.config.HotKeyBinding
 import com.sappyoak.dsanalyzer.app.config.HotKeySettings
-import com.sappyoak.dsanalyzer.app.state.InstallationEntry
+import com.sappyoak.dsanalyzer.app.state.workspace.InstallationEntry
 import kotlinx.serialization.Serializable
 
 @Serializable

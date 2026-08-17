@@ -5,111 +5,116 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.io.path.exists
-import kotlin.io.path.isWritable
-import kotlin.time.Instant
+import kotlin.io.path.*
 import java.nio.file.Path
 
 import com.sappyoak.dsanalyzer.game.assets.fs.ExtractionCacheWarmer
 import com.sappyoak.dsanalyzer.game.identity.GameIdentity
-import com.sappyoak.dsanalyzer.domain.Problem
-import com.sappyoak.dsanalyzer.domain.ProblemResolution
 import com.sappyoak.dsanalyzer.shared.io.*
 
 import com.sappyoak.dsanalyzer.app.AppServices
 import com.sappyoak.dsanalyzer.app.data.Resources
 import com.sappyoak.dsanalyzer.app.state.*
+import com.sappyoak.dsanalyzer.app.state.workspace.InstallationEntry
+import com.sappyoak.dsanalyzer.app.state.workspace.WorkspaceState
 import com.sappyoak.dsanalyzer.app.ui.components.FilePickers
+
 
 
 class SetupEffects(private val services: AppServices) : AutoCloseable {
     private val environment = services.environment
-    private var warmJob: Job? = null
+    private var extractJob: Job? = null
 
     fun handle(
-        action: Action.Setup,
-        state: AppState,
+        action: Action,
+        workspace: WorkspaceState,
         scope: CoroutineScope,
-        dispatch: DispatchFn
+        dispatch: (Action) -> Unit
     ) {
         when (action) {
-            Action.Setup.GamePathRequested -> {
-                FilePickers.chooseDirectory("Select the game's Directory. For PTDE this will be the DATA dir inside of the main folder")?.let { path ->
-                    dispatch(Action.Setup.GamePathChosen(path, services.gameInstallInspector.inspect(path)))
-                }
-            }
-
-            is Action.Setup.GamePathChosen -> {
-                dispatch(Action.Setup.CacheSizeRequested)
-            }
-
             Action.Setup.DataPathRequested -> {
-                FilePickers.chooseDirectory(
-                    "Where to store the tools output files",
-                    startAt = state.setup.dataPath
-                )?.let { path ->
-                    dispatch(Action.Setup.DataPathChosen(
-                        path = path,
-                        freeSpaceBytes = path.freeSpaceOnDisk(),
-                        writable = path.isWritable()
-                    ))
-                }
+                val path = FilePickers.chooseDirectory(
+                    title = "Where should tool data go?",
+                    startAt = workspace.setup.dataPath
+                ) ?: return
+
+                dispatch(Action.Setup.DataPathChosen(
+                    path = path,
+                    freeSpaceBytes = path.freeSpaceOnDisk(),
+                    writable = path.isWritable()
+                ))
             }
 
-            is Action.Setup.DataPathChosen -> {
-                if (!action.path.isWritable()) {
-                    dispatch(Action.ProblemReported(Problem.critical(
-                        kind = "UnwritableDataDir",
-                        summary = "Cannot write to ${action.path}. The tool needs a writable directory to write files to",
-                        consequence = "The Tool cannot function. It will not write any output files",
-                        resolutions = listOf(ProblemResolution("Choose another directory", "Action.Setup.DataPathRequested"))
-                    )))
-                }
-                dispatch(Action.Setup.CacheSizeRequested)
+
+            Action.Setup.GamePathRequested -> {
+                val path = FilePickers.chooseDirectory("Where is the game installed") ?: return
+                dispatch(Action.Setup.GamePathChosen(path, services.gameInstallInspector.inspect(path)))
             }
 
             Action.Setup.ExtractPathRequested -> {
-                FilePickers.chooseDirectory(
-                    "Where to extract game files to if running PTDE",
-                    startAt = state.setup.extractedPath
-                )?.let { path ->
-                    dispatch(Action.Setup.ExtractPathChosen(path, path.freeSpaceOnDisk()))
-                }
-            }
-
-            Action.Setup.ExtractionRequested -> startWarm(state, scope, dispatch)
-
-            Action.Setup.ExtractionCancelled -> {
-                warmJob?.cancel()
-                warmJob = null
-            }
-
-            is Action.Setup.InstallationRemoved -> {
-                environment.forgetInstallation(action.key)
-                scope.launch {
-                    dispatch(Action.Setup.InstallationsListed(listInstallations()))
-                }
-            }
-
-            is Action.Setup.InstallationsRequested -> scope.launch {
-                dispatch(Action.Setup.InstallationsListed(listInstallations()))
+                val path = FilePickers.chooseDirectory(
+                    title = "Where to extract game files",
+                    startAt = workspace.setup.extractedPath
+                ) ?: return
+                dispatch(Action.Setup.ExtractPathChosen(path, path.freeSpaceOnDisk()))
             }
 
             Action.Setup.CacheSizeRequested -> scope.launch {
                 val size = withContext(Dispatchers.IO) {
-                    environment.identity?.let { environment.paths.cacheSize(it) } ?: 0L
+                    environment.cacheSizeFor(workspace.identity)
                 }
                 dispatch(Action.Setup.CacheSizeMeasured(size))
             }
 
-            Action.Setup.CacheClearRequested -> clearCache(state, scope, dispatch)
+            Action.Setup.CacheClearRequested -> scope.launch {
+                withContext(Dispatchers.IO) {
+                    environment.extractedPathFor(workspace.identity).deleteTree()
+                }
+                dispatch(Action.Setup.ExtractionFinished(ExtractionState.NotStarted))
+                dispatch(Action.Setup.CacheSizeRequested)
+            }
 
             else -> Unit
         }
     }
 
     override fun close() {
-        warmJob?.cancel()
+        extractJob?.cancel()
+        extractJob = null
+    }
+
+    private fun extract(
+        workspace: WorkspaceState,
+        scope: CoroutineScope,
+        dispatch: (Action) -> Unit
+    ) {
+        val gamePath = environment.gamePathFor(workspace.identity) ?: return
+        val outputPath = environment.extractedPathFor(workspace.identity)
+
+        extractJob?.cancel()
+        extractJob = scope.launch {
+            val result = withContext(Dispatchers.IO) {
+                outputPath.createDirectories()
+
+                val pathDictionaries = Resources.loadPathDictionaries()
+                val warmer = ExtractionCacheWarmer(gamePath, outputPath, pathDictionaries)
+                warmer.warm(
+                    onProgress = { done, total, current ->
+                        dispatch(Action.Setup.ExtractionProgress(current, done, total))
+                    },
+                    shouldContinue = { extractJob?.isCancelled == false }
+                )
+            }
+
+            val extractionState = if (result.error != null) {
+                ExtractionState.Failed(result.error!!)
+            } else {
+                ExtractionState.Complete(result.written, result.skipped)
+            }
+
+            dispatch(Action.Setup.ExtractionFinished(extractionState))
+            dispatch(Action.Setup.CacheSizeRequested)
+        }
     }
 
     private fun listInstallations(): List<InstallationEntry> {
@@ -132,49 +137,4 @@ class SetupEffects(private val services: AppServices) : AutoCloseable {
             )
         }.sortedWith(compareByDescending<InstallationEntry> { it.isActive }.thenByDescending { it.lastScannedAt?.toEpochMilliseconds() })
     }
-
-    private fun startWarm(state: AppState, scope: CoroutineScope, dispatch: DispatchFn) {
-        val gamePath = state.setup.gamePath ?: return
-        val outputPath = state.setup.extractedPath ?: return
-
-
-        warmJob?.cancel()
-        warmJob = scope.launch {
-            val result = withContext(Dispatchers.IO) {
-                runCatching {
-                    val warmer = ExtractionCacheWarmer(
-                        gamePath = gamePath,
-                        extractedPath = outputPath,
-                        paths = Resources.loadPathDictionaries()
-                    )
-                    val warmed = warmer.warm(
-                        onProgress = { done, total, current ->
-                            dispatch(Action.Setup.ExtractionProgress(current, done, total))
-                        },
-                        shouldContinue = { warmJob?.isCancelled == false }
-                    )
-
-                    if (warmed.error != null) ExtractionState.Failed(warmed.error!!)
-                    else ExtractionState.Complete(warmed.written, warmed.skipped)
-                }.getOrElse { ExtractionState.Failed(it.message ?: "Extraction failed", it) }
-            }
-
-            dispatch(Action.Setup.ExtractionFinished(result))
-            dispatch(Action.Setup.CacheSizeRequested)
-        }
-    }
-
-    private fun clearCache(state: AppState, scope: CoroutineScope, dispatch: DispatchFn) {
-        val path = state.setup.extractedPath ?: return
-
-        scope.launch {
-            withContext(Dispatchers.IO) {
-                path.deleteTree()
-            }
-            dispatch(Action.Setup.ExtractionFinished(ExtractionState.NotStarted))
-            dispatch(Action.Setup.CacheSizeRequested)
-        }
-    }
-
-
 }

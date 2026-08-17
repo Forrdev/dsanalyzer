@@ -2,7 +2,6 @@ package com.sappyoak.dsanalyzer.app.state.workspace
 
 import kotlinx.serialization.Serializable
 
-import com.sappyoak.dsanalyzer.app.state.SetupState
 import com.sappyoak.dsanalyzer.game.identity.GameIdentity
 
 /**
