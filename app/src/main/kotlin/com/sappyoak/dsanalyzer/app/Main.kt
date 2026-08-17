@@ -9,7 +9,7 @@ import com.sappyoak.dsanalyzer.app.effects.*
 import com.sappyoak.dsanalyzer.app.state.*
 import com.sappyoak.dsanalyzer.app.state.global.FirstRunSequence
 import com.sappyoak.dsanalyzer.app.state.workspace.WorkspaceAction
-import com.sappyoak.dsanalyzer.app.ui.AppShell
+import com.sappyoak.dsanalyzer.app.ui.screens.firstrun.FirstRunWindow
 
 fun main() {
     application {
@@ -51,7 +51,7 @@ fun main() {
                 title = "DSAnalyzer -- Setup",
                 state = rememberWindowState(size = DpSize(760.dp, 620.dp))
             ) {
-                // First time window
+                FirstRunWindow(firstRun, state.global, store, services)
             }
             return@application
         }
