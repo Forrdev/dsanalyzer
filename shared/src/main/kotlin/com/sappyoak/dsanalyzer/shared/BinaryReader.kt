@@ -44,6 +44,7 @@ abstract class BinaryReader(
     }
 
     protected abstract fun <T> readCheck(size: Int, default: T): T?
+    protected abstract fun <T> readAtCheck(offset: Int, size: Int, default: T): T?
 
     abstract fun seek(offset: Int): BinaryReader
     abstract fun skip(count: Int): BinaryReader
@@ -97,6 +98,7 @@ abstract class BinaryReader(
     }
 
     fun varint(wide: Boolean): Int = if (wide) i64().toInt() else i32()
+
     fun ascii(count: Int): String {
         readCheck(count, "")?.let { return it }
         val value = bytes.decodeToString(position, position + count)
@@ -105,7 +107,9 @@ abstract class BinaryReader(
     }
 
     fun fixedString(count: Int): String = ascii(count).substringBefore('\u0000')
-
+    fun cString(maxLength: Int = 512): String? {
+        val str = cStringAt(position, maxLength)
+    }
     fun cStringAt(offset: Int, maxLength: Int = 512): String? {
         if (offset <= 0 || offset >= bytes.size) return null
         val builder = StringBuilder()
@@ -168,6 +172,10 @@ class LenientBinaryReader(
         return null
     }
 
+    override fun <T> readAtCheck(offset: Int, size: Int, default: T): T? {
+        return if (offset < 0 || offset + size > this.size) default else null
+    }
+
     override fun seek(offset: Int): BinaryReader {
         position = offset
         return this
@@ -188,6 +196,11 @@ class StrictBinaryReader(
 ): BinaryReader(bytes, littleEndian, position) {
     override fun <T> readCheck(size: Int, default: T): T? {
         requireBytes(size)
+        return null
+    }
+
+    override fun <T> readAtCheck(offset: Int, size: Int, default: T): T? {
+        if (offset < 0 || offset + size > this.size) error("Cannot read $size at $offset only $remaining bytes available")
         return null
     }
 
