@@ -7,6 +7,7 @@ import androidx.compose.ui.window.*
 import kotlinx.coroutines.*
 import com.sappyoak.dsanalyzer.app.effects.*
 import com.sappyoak.dsanalyzer.app.state.*
+import com.sappyoak.dsanalyzer.app.state.workspace.WorkspaceAction
 import com.sappyoak.dsanalyzer.app.ui.AppShell
 
 fun main() {
@@ -25,6 +26,43 @@ fun main() {
         }
 
         val state by store.state.collectAsState()
+
+        val firstRun = state.global.firstRun
+        if (firstRun != null) {
+            Window(
+                onCloseRequest = ::exitApplication,
+                title = "DSAnalyzer -- Setup",
+                state = rememberWindowState(size = DpSize(760.dp, 620.dp))
+            ) {
+                // First time window
+            }
+            return@application
+        }
+
+        state.workspaces.values.forEach { workspace ->
+            val scoped = remember(workspace.id) { store.scopedTo(workspace.id) }
+            val actions = remember(workspace.id) { AppActions(services.gameInstallInspector, scoped) }
+
+            Window(
+                onCloseRequest = {
+                    if (state.workspaces.size == 1) {
+                        services.environment.persistWorkspaces(
+                            state.workspaces.values,
+                            state.activeWorkspace
+                        )
+                        services.close()
+                        exitApplication()
+                    } else {
+                        store.dispatchLifecycle(WorkspaceAction.Close(workspace.id))
+                    }
+                },
+                title = workspace.title,
+                // need to parse previous state settings for each window now, temp until then
+                state = rememberWindowState(size = DpSize(1400.dp, 900.dp))
+            ) {
+                "Meow"
+            }
+        }
        // val actions = remember { AppActions(services.gameInstallInspector, store::dispatch) }
 
         /*

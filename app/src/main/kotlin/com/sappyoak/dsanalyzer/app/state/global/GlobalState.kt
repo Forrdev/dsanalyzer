@@ -9,5 +9,6 @@ import kotlinx.serialization.Serializable
 data class GlobalState(
     val hotkeys: HotKeySettings = HotKeySettings(),
     val capturingHotKey: HotKeyBinding? = null,
-    val installations: List<InstallationEntry> = emptyList()
+    val installations: List<InstallationEntry> = emptyList(),
+    val firstRun: FirstRunSequence? = null
 )

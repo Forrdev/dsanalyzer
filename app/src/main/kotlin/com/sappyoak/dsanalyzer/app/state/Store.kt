@@ -8,6 +8,7 @@ import kotlinx.serialization.Serializable
 
 import com.sappyoak.dsanalyzer.app.effects.AppEffects
 import com.sappyoak.dsanalyzer.app.state.global.reduceGlobal
+import com.sappyoak.dsanalyzer.app.state.workspace.WorkspaceAction
 import com.sappyoak.dsanalyzer.app.state.workspace.reduceWorkspace
 
 /**
@@ -38,8 +39,11 @@ class Store(
 
         _state.value = after
 
-        //effects.handle(action, after, scope, ::dispatch)
+        effects.handle(envelope, after, scope, ::dispatch)
     }
+
+    fun dispatchLifecycle(action: WorkspaceAction) = dispatch(Envelope.Lifecycle(action))
+    fun dispatchGlobal(action: Action) = dispatch(Envelope.Global(action))
 
     fun actionLog(): List<LoggedAction<*>> = log.toList()
 
