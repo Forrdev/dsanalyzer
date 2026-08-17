@@ -10,6 +10,12 @@ import com.sappyoak.dsanalyzer.app.state.workspace.WorkspaceAction
  */
 @Serializable
 sealed interface Envelope {
+    val targetAction get() = when (this) {
+        is Global -> action
+        is Scoped -> action
+        is Lifecycle -> action
+    }
+
     /** Applies to the whole application: hotkeys, installations, etc */
     @Serializable
     data class Global(val action: Action) : Envelope

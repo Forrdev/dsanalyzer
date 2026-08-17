@@ -17,7 +17,6 @@ fun main() {
         val scope = rememberCoroutineScope()
         val store = remember {
             Store(
-                initialState = AppState.from(environment),
                 scope = scope,
                 effects = AppEffects(
                     services = services,

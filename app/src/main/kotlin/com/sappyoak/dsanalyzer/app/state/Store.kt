@@ -7,6 +7,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.serialization.Serializable
 
 import com.sappyoak.dsanalyzer.app.effects.AppEffects
+import com.sappyoak.dsanalyzer.app.state.global.reduceGlobal
+import com.sappyoak.dsanalyzer.app.state.workspace.reduceWorkspace
+
 /**
  * Holds the application state and routes actions to [reduce] and to effects.
  *
@@ -16,7 +19,7 @@ import com.sappyoak.dsanalyzer.app.effects.AppEffects
  * have triggered
  */
 class Store(
-    initialState: AppState,
+    initialState: AppState = AppState(),
     private val scope: CoroutineScope,
     private val effects: AppEffects,
     private val logSize: Int = DEFAULT_LOG_SIZE
@@ -27,14 +30,15 @@ class Store(
     @PublishedApi
     internal val log = ArrayDeque<LoggedAction<*>>(logSize)
 
-    fun dispatch(action: Action) {
+    fun dispatch(envelope: Envelope) {
         val before = _state.value
-        val after = reduce(before, action)
+        val after = reduce(before, envelope)
 
-        record(action, changed = after != before)
+        record(envelope, changed = after != before)
 
         _state.value = after
-        effects.handle(action, after, scope, ::dispatch)
+
+        //effects.handle(action, after, scope, ::dispatch)
     }
 
     fun actionLog(): List<LoggedAction<*>> = log.toList()
@@ -48,14 +52,29 @@ class Store(
         return result as List<LoggedAction<T>>
     }
 
-    private fun record(action: Action, changed: Boolean) {
+    private fun record(envelope: Envelope, changed: Boolean) {
         if (log.size >= logSize) log.removeFirst()
         log.addLast(LoggedAction(
-            type = action::class.simpleName ?: "unknown",
+            type = envelope.targetAction::class.simpleName ?: "unknown",
             changed = changed,
             at = System.currentTimeMillis(),
-            action = action
+            action = envelope.targetAction
         ))
+    }
+
+    private fun reduce(currentState: AppState, envelope: Envelope): AppState = when (envelope) {
+        is Envelope.Global -> currentState.copy(global = reduceGlobal(currentState.global, envelope.action))
+        is Envelope.Scoped -> {
+            val workspace = currentState.workspaces[envelope.workspaceId]
+            if (workspace == null) {
+                currentState
+            } else {
+                currentState.copy(
+                    workspaces = currentState.workspaces + (envelope.workspaceId to reduceWorkspace(workspace, envelope.action))
+                )
+            }
+        }
+        is Envelope.Lifecycle -> reduceLifecycle(currentState, envelope.action)
     }
 
     companion object {
@@ -64,7 +83,7 @@ class Store(
 }
 
 @Serializable
-data class LoggedAction<T : Action>(
+data class LoggedAction<T>(
     val type: String,
     val changed: Boolean,
     val at: Long,
