@@ -39,7 +39,7 @@ data class FirstRunSequence(
 }
 
 @Serializable
-enum class FirstRunStep(val title: String, purpose: String) {
+enum class FirstRunStep(val title: String, val purpose: String) {
     DataPath(
         title = "Choose where to store tool data",
         purpose = "Extraction caches, definitions, testing and session history and everything else goes here " +
