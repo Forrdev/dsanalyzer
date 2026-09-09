@@ -12,6 +12,8 @@ dependencies {
     implementation(compose.material3)
     implementation(compose.materialIconsExtended)
 
+    implementation(project(":game"))
+
     with(libs) {
         implementation(kotlinx.coroutines.core)
         implementation(kotlinx.coroutines.swing)
