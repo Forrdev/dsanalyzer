@@ -38,6 +38,11 @@ public fun reduceStartup(
         .with(StartupEffect.ListWorkspaces)
 
     is StartupMessage.WorkspacesListed -> resume(state.copy(workspaces = message.workspaces))
+
+    StartupMessage.WorkspacePickerRequested -> state
+        .copy(phase = idlePhase(state))
+        .with()
+
     is StartupMessage.WorkspaceChosen -> state.workspaces.firstOrNull { it.id == message.id }
         ?.let(state::opening)
         ?: state.with()

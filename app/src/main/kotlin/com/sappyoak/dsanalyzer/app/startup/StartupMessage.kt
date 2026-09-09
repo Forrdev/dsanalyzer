@@ -28,6 +28,7 @@ public sealed interface StartupMessage {
     public data class InstallationsChecked(public val installations: List<Installation>) : StartupMessage
 
     public data class WorkspacesListed(public val workspaces: List<Workspace>) : StartupMessage
+    public data object WorkspacePickerRequested : StartupMessage
     public data class WorkspaceChosen(public val id: WorkspaceId) : StartupMessage
 
     public data class WorkspaceCreationRequested(
