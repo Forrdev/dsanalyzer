@@ -1,0 +1,37 @@
+<configuration>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{32} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${dsanalyzer.logDir}/dsanalyzer.jsonl</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${dsanalyzer.logDir}/dsanalyzer-%d{yyyy-MM-dd}.%i.jsonl.gz</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>14</maxHistory>
+            <totalSizeCap>250MB</totalSizeCap>
+        </rollingPolicy>
+
+        <encoder class="ch.qos.logback.classic.encoder.JsonEncoder">
+            <withSequenceNumber>false</withSequenceNumber>
+            <withNanoseconds>false</withNanoseconds>
+            <withContext>false</withContext>
+            <withMessage>false</withMessage>
+            <withArguments>false</withArguments>
+            <withFormattedMessage>true</withFormattedMessage>
+            <withKeyValuePairs>true</withKeyValuePairs>
+            <withMDC>true</withMDC>
+            <withThrowable>true</withThrowable>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+    </root>
+
+    <logger name="com.sappyoak.dsanalyzer" level="DEBUG" />
+</configuration>
