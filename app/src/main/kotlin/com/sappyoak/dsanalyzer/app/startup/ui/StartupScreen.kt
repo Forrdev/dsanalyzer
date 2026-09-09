@@ -5,13 +5,12 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.dp
-import javax.swing.JFileChooser
-import java.nio.file.Path
 
 import com.sappyoak.dsanalyzer.app.startup.*
 import com.sappyoak.dsanalyzer.app.ui.chooseInstallationDirectory
 import com.sappyoak.dsanalyzer.app.workspace.ui.NewWorkspaceDialog
 import com.sappyoak.dsanalyzer.app.workspace.ui.WorkspacePicker
+import com.sappyoak.dsanalyzer.app.workspace.ui.WorkspaceShell
 import com.sappyoak.dsanalyzer.game.RejectionReason
 
 @Composable
@@ -74,10 +73,11 @@ private fun PhaseContent(state: StartupState, store: StartupStore) {
             onAddInstallation = { chooseInstallationDirectory()?.let { store.dispatch(StartupMessage.FolderChosen(it)) } }
         )
 
-        is StartupPhase.Ready -> Centered {
-            Text("Workspace: ${phase.workspace.name}")
-            Text("The work space shell goes here")
-        }
+        is StartupPhase.Ready -> WorkspaceShell(
+            workspace = phase.workspace,
+            installation = state.installations
+                .firstOrNull { it.id == phase.workspace.installationId }
+        )
 
         else -> {}
     }
