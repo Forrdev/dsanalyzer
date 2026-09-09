@@ -1,6 +1,6 @@
 package com.sappyoak.dsanalyzer.game
 
-public interface InstallationCheck {
+public sealed interface InstallationCheck {
     public data class Valid(public val installation: Installation) : InstallationCheck
     public data class Rejected(public val reason: RejectionReason, public val err: Throwable? = null) : InstallationCheck
 }
