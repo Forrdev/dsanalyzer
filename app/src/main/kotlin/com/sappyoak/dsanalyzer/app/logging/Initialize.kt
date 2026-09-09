@@ -14,4 +14,9 @@ private const val LOG_DIRECTORY_PROPERTY = "dsanalyzer.logDir"
 
 public fun setupLogging(path: Path) {
     System.setProperty(LOG_DIRECTORY_PROPERTY, path.toString())
+
+    val logger = KotlinLogging.logger("com.sappyoak.dsanalyzer.app.CrashHandler")
+    Thread.setDefaultUncaughtExceptionHandler { thread, error ->
+        logger.error(error) { "Uncaught exception on thread: ${thread.name}" }
+    }
 }
