@@ -17,4 +17,7 @@ public interface EffectRunner<in E : Any, out M : Any> {
 
     /** Runs [effect] emitting a message for each result it produces */
     public fun execute(effect: E): Flow<M>
+
+    /** Turns a failure of [effect] into a message, or null to log it and carry on */
+    public fun onFailure(effect: E, failure: Throwable): M?
 }
