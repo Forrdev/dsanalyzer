@@ -31,6 +31,12 @@ public class StartupEffects(
     override fun execute(effect: StartupEffect): Flow<StartupMessage> =
         flow { performEffect(effect)?.let { emit(it) } }
 
+    override fun onFailure(effect: StartupEffect, failure: Throwable): StartupMessage =
+        StartupMessage.OperationFailed(
+            operation = operationOf(effect),
+            detail = failure.message?: failure.toString()
+        )
+
     /** Returns null for effects that produce no message */
     private suspend fun performEffect(effect: StartupEffect): StartupMessage? = when (effect) {
         StartupEffect.LoadSettings -> settingsFile.read().let { result ->
@@ -63,6 +69,15 @@ public class StartupEffects(
 
     private suspend fun stillUsable(installations: List<Installation>): List<Installation> = withContext(Dispatchers.IO) {
         installations.filter { inspectInstallation(it.root) is InstallationCheck.Valid }
+    }
+
+    private fun operationOf(effect: StartupEffect): FailedStartupOperation = when (effect) {
+        StartupEffect.LoadSettings -> FailedStartupOperation.LoadSettings
+        is StartupEffect.SaveSettings -> FailedStartupOperation.SaveSettings
+        is StartupEffect.InspectFolder -> FailedStartupOperation.InspectFolder(effect.folder)
+        is StartupEffect.CheckInstallations -> FailedStartupOperation.CheckInstallations
+        StartupEffect.ListWorkspaces -> FailedStartupOperation.ListWorkspaces
+        is StartupEffect.CreateWorkspace -> FailedStartupOperation.CreateWorkspace(effect.name)
     }
 }
 
