@@ -18,7 +18,9 @@ public fun FrameWindowScope.AppMenuBar(
 
     MenuBar {
         Menu("File", mnemonic = 'F') {
-            Item("New workspace") { }
+            Item("New workspace") {
+                store.dispatch(StartupMessage.NewWorkspaceRequested)
+            }
 
             Menu("Open workspace", enabled = state.workspaces.isNotEmpty()) {
                 state.workspaces.forEach { workspace ->
