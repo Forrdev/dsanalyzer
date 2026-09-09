@@ -12,9 +12,7 @@ import com.sappyoak.dsanalyzer.app.startup.*
 import com.sappyoak.dsanalyzer.game.RejectionReason
 
 @Composable
-public fun StartupScreen(store: StartupStore) {
-    val state by store.state.collectAsState()
-
+public fun StartupScreen(state: StartupState, store: StartupStore) {
     Column(modifier = Modifier.fillMaxSize()) {
         if (state.notices.isNotEmpty()) {
             NoticeBanner(state.notices) { store.dispatch(StartupMessage.NoticesDismissed) }

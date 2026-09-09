@@ -2,7 +2,7 @@ package com.sappyoak.dsanalyzer.app
 
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.*
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -40,16 +40,14 @@ fun main() {
             title = "dsanalyzer",
             state = rememberWindowState(size = DpSize(1280.dp, 800.dp))
         ) {
-            AppRoot(model)
-        }
-    }
-}
+            val state by model.startup.state.collectAsState()
 
-@Composable
-private fun AppRoot(model: AppModel) {
-    MaterialTheme {
-        Surface {
-            StartupScreen(model.startup)
+            AppMenuBar(state, model.startup, onQuit = ::exitApplication)
+            MaterialTheme {
+                Surface {
+                    StartupScreen(state, model.startup)
+                }
+            }
         }
     }
 }
