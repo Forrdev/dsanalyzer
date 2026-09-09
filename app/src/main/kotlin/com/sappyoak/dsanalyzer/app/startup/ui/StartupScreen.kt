@@ -1,4 +1,4 @@
-package com.sappyoak.dsanalyzer.app.startup.view
+package com.sappyoak.dsanalyzer.app.startup.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -9,6 +9,8 @@ import javax.swing.JFileChooser
 import java.nio.file.Path
 
 import com.sappyoak.dsanalyzer.app.startup.*
+import com.sappyoak.dsanalyzer.app.ui.chooseInstallationDirectory
+import com.sappyoak.dsanalyzer.app.workspace.ui.WorkspacePicker
 import com.sappyoak.dsanalyzer.game.RejectionReason
 
 @Composable
@@ -51,7 +53,7 @@ private fun PhaseContent(state: StartupState, store: StartupStore) {
             installations = state.installations,
             onOpen = { store.dispatch(StartupMessage.WorkspaceChosen(it)) },
             onCreate = { name, id -> store.dispatch(StartupMessage.WorkspaceCreationRequested(name, id)) },
-            onAddInstallation = { chooseDirectory()?.let { store.dispatch(StartupMessage.FolderChosen(it)) } }
+            onAddInstallation = { chooseInstallationDirectory()?.let { store.dispatch(StartupMessage.FolderChosen(it)) } }
         )
 
         is StartupPhase.Ready -> Centered {
@@ -87,21 +89,10 @@ private fun Busy(message: String) {
 @Composable
 private fun ChooseFolderButton(store: StartupStore) {
     Button(onClick = {
-        chooseDirectory()?.let { store.dispatch(StartupMessage.FolderChosen(it)) }
+        chooseInstallationDirectory()?.let { store.dispatch(StartupMessage.FolderChosen(it)) }
     }) {
         Text("Choose installation folder")
     }
-}
-
-private fun chooseDirectory(): Path? {
-    val chooser = JFileChooser().apply {
-        fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
-        dialogTitle = "Select the Dark Souls installation folder"
-    }
-
-    return if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-        chooser.selectedFile?.toPath()
-    } else null
 }
 
 private fun RejectionReason.describe(): String = when (this) {

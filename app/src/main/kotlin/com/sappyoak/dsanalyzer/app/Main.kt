@@ -15,7 +15,7 @@ import com.sappyoak.dsanalyzer.app.logging.coroutineErrorLogging
 import com.sappyoak.dsanalyzer.app.logging.setupLogging
 import com.sappyoak.dsanalyzer.app.paths.ToolPaths
 import com.sappyoak.dsanalyzer.app.startup.StartupMessage
-import com.sappyoak.dsanalyzer.app.startup.view.StartupScreen
+import com.sappyoak.dsanalyzer.app.startup.ui.StartupScreen
 
 fun main() {
     val paths = ToolPaths()

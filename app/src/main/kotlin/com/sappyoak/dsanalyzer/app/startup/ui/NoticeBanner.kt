@@ -1,4 +1,4 @@
-package com.sappyoak.dsanalyzer.app.startup.view
+package com.sappyoak.dsanalyzer.app.startup.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
