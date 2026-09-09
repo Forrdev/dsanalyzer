@@ -1,6 +1,7 @@
 package com.sappyoak.dsanalyzer.app.logging
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import kotlinx.coroutines.CoroutineExceptionHandler
 import java.nio.file.Path
 
 /**
@@ -18,5 +19,12 @@ public fun setupLogging(path: Path) {
     val logger = KotlinLogging.logger("com.sappyoak.dsanalyzer.app.CrashHandler")
     Thread.setDefaultUncaughtExceptionHandler { thread, error ->
         logger.error(error) { "Uncaught exception on thread: ${thread.name}" }
+    }
+}
+
+fun coroutineErrorLogging(loggerName: String = "com.sappyoak.dsanalyzer.app.CoroutineErrors"): CoroutineExceptionHandler {
+    val logger = KotlinLogging.logger(loggerName)
+    return CoroutineExceptionHandler { context, error ->
+        logger.error(error) { "Unhandled coroutine failure in $context" }
     }
 }
