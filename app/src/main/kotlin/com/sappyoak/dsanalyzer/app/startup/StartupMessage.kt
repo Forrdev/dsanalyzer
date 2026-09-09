@@ -5,6 +5,7 @@ import java.nio.file.Path
 import com.sappyoak.dsanalyzer.app.settings.Settings
 import com.sappyoak.dsanalyzer.app.workspace.Workspace
 import com.sappyoak.dsanalyzer.app.workspace.WorkspaceId
+import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.game.InstallationCheck
 import com.sappyoak.dsanalyzer.game.InstallationId
 
@@ -23,6 +24,8 @@ public sealed interface StartupMessage {
         public val folder: Path,
         public val check: InstallationCheck
     ) : StartupMessage
+
+    public data class InstallationsChecked(public val installations: List<Installation>) : StartupMessage
 
     public data class WorkspacesListed(public val workspaces: List<Workspace>) : StartupMessage
     public data class WorkspaceChosen(public val id: WorkspaceId) : StartupMessage
