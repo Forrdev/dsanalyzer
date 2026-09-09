@@ -7,11 +7,14 @@ import kotlin.io.path.createDirectories
 
 public class ToolPaths(public val root: Path = getDefaultRoot()) {
     val logs = root.resolve("logs")
+    val workspaces = root.resolve("workspaces")
+
     val settings = root.resolve("settings.json")
 
     init {
         root.createDirectories()
         logs.createDirectories()
+        workspaces.createDirectories()
     }
 
     companion object {
