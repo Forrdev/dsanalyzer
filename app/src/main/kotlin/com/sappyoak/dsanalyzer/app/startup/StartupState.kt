@@ -13,7 +13,8 @@ public data class StartupState(
     public val installations: List<Installation> = emptyList(),
     public val workspaces: List<Workspace> = emptyList(),
     public val lastActiveWorkspaceId: WorkspaceId? = null,
-    public val notices: List<StartupNotice> = emptyList()
+    public val notices: List<StartupNotice> = emptyList(),
+    public val creatingWorkspace: Boolean = false
 )
 
 public sealed interface StartupPhase {

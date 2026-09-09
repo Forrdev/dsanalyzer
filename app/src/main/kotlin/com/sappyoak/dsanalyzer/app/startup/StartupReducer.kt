@@ -43,6 +43,9 @@ public fun reduceStartup(
         .copy(phase = idlePhase(state))
         .with()
 
+    StartupMessage.NewWorkspaceRequested -> state.copy(creatingWorkspace = true).with()
+    StartupMessage.NewWorkspaceDismissed -> state.copy(creatingWorkspace = false).with()
+
     is StartupMessage.WorkspaceChosen -> state.workspaces.firstOrNull { it.id == message.id }
         ?.let(state::opening)
         ?: state.with()
