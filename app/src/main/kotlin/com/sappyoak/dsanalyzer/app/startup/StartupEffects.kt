@@ -47,7 +47,7 @@ public class StartupEffects(
             check = inspectFolder(effect.folder)
         )
 
-        is StartupEffect.CheckInstallation -> StartupMessage.InstallationsChecked(
+        is StartupEffect.CheckInstallations -> StartupMessage.InstallationsChecked(
             stillUsable(effect.installations)
         )
 
@@ -71,7 +71,7 @@ public sealed interface StartupEffect {
     public data class SaveSettings(public val settings: Settings) : StartupEffect
 
     public data class InspectFolder(public val folder: Path) : StartupEffect
-    public data class CheckInstallation(
+    public data class CheckInstallations(
         public val installations: List<Installation>
     ) : StartupEffect
 
