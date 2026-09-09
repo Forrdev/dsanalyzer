@@ -7,12 +7,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.*
 
+import io.github.oshai.kotlinlogging.KotlinLogging
+
 import com.sappyoak.dsanalyzer.app.logging.setupLogging
 import com.sappyoak.dsanalyzer.app.paths.ToolPaths
 
 fun main() {
     val paths = ToolPaths()
     setupLogging(paths.logs)
+
+    val logger = KotlinLogging.logger("com.sappyoak.dsanalyzer.app.Main")
+    logger.info { "dsanalyzer start. Data root: ${paths.root}" }
 
     application {
         Window(
