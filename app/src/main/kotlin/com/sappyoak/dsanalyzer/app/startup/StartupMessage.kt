@@ -30,7 +30,7 @@ public sealed interface StartupMessage {
     public data class WorkspacesListed(public val workspaces: List<Workspace>) : StartupMessage
     public data class WorkspaceChosen(public val id: WorkspaceId) : StartupMessage
 
-    public data class WorkspaceCreationRequest(
+    public data class WorkspaceCreationRequested(
         public val name: String,
         public val installationId: InstallationId
     ) : StartupMessage
