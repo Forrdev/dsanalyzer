@@ -10,6 +10,7 @@ import java.nio.file.Path
 
 import com.sappyoak.dsanalyzer.app.startup.*
 import com.sappyoak.dsanalyzer.app.ui.chooseInstallationDirectory
+import com.sappyoak.dsanalyzer.app.workspace.ui.NewWorkspaceDialog
 import com.sappyoak.dsanalyzer.app.workspace.ui.WorkspacePicker
 import com.sappyoak.dsanalyzer.game.RejectionReason
 
@@ -23,6 +24,23 @@ public fun StartupScreen(state: StartupState, store: StartupStore) {
         Box(modifier = Modifier.weight(1f)) {
             PhaseContent(state, store)
         }
+    }
+
+    if (state.creatingWorkspace) {
+        NewWorkspaceDialog(
+            installations = state.installations,
+            onCreate = { name, id ->
+                store.dispatch(StartupMessage.WorkspaceCreationRequested(name, id) )
+            },
+            onAddInstallation = {
+                chooseInstallationDirectory()?.let { store.dispatch(
+                    StartupMessage.FolderChosen(it)
+                )}
+            },
+            onDismiss = {
+                store.dispatch(StartupMessage.NewWorkspaceDismissed)
+            }
+        )
     }
 }
 
