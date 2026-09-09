@@ -2,7 +2,6 @@ package com.sappyoak.dsanalyzer.app
 
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.*
@@ -15,6 +14,8 @@ import kotlinx.coroutines.SupervisorJob
 import com.sappyoak.dsanalyzer.app.logging.coroutineErrorLogging
 import com.sappyoak.dsanalyzer.app.logging.setupLogging
 import com.sappyoak.dsanalyzer.app.paths.ToolPaths
+import com.sappyoak.dsanalyzer.app.startup.StartupMessage
+import com.sappyoak.dsanalyzer.app.startup.view.StartupScreen
 
 fun main() {
     val paths = ToolPaths()
@@ -30,22 +31,25 @@ fun main() {
         coroutineErrorLogging()
     )
 
+    val model = createAppModel(scope, paths)
+    model.startup.dispatch(StartupMessage.Start)
+
     application {
         Window(
             onCloseRequest = ::exitApplication,
             title = "dsanalyzer",
             state = rememberWindowState(size = DpSize(1280.dp, 800.dp))
         ) {
-            AppRoot()
+            AppRoot(model)
         }
     }
 }
 
 @Composable
-private fun AppRoot() {
+private fun AppRoot(model: AppModel) {
     MaterialTheme {
         Surface {
-            Text("dsanalyzer")
+            StartupScreen(model.startup)
         }
     }
 }
