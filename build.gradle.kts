@@ -1,21 +1,17 @@
+import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
+
 plugins {
-    kotlin("jvm") version "2.1.20"
+    alias(libs.plugins.kotlin.jvm) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.kotlin.compose.compiler) apply false
+    alias(libs.plugins.compose) apply false
+    alias(libs.plugins.versions)
 }
 
-group = "com.sappyoak"
-version = "1.0-SNAPSHOT"
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    testImplementation(kotlin("test"))
-}
-
-tasks.test {
-    useJUnitPlatform()
-}
-kotlin {
-    jvmToolchain(22)
+tasks.named<DependencyUpdatesTask>("dependencyUpdates") {
+    rejectVersionIf {
+        val stable = listOf("RELEASE", "FINAL", "GA").any { candidate.version.uppercase().contains(it) } ||
+                "^[0-9,.v-]+(-r)?$".toRegex().matches(candidate.version)
+        !stable
+    }
 }
