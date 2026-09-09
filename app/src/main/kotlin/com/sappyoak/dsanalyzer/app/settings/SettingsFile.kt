@@ -9,7 +9,6 @@ import java.nio.file.Path
 import java.nio.file.StandardCopyOption
 import kotlin.io.path.*
 
-import com.sappyoak.dsanalyzer.app.paths.ToolPaths
 
 public data class SettingsReadResult(
     public val settings: Settings,
@@ -17,23 +16,23 @@ public data class SettingsReadResult(
 )
 
 public class SettingsFile(
-    private val paths: ToolPaths,
+    private val location: Path,
     private val json: Json
 ) {
     private val logger = KotlinLogging.logger { }
 
     /** Loads settings, writing the file with defaults it if does not exist yet */
     public suspend fun read(): SettingsReadResult = withContext(Dispatchers.IO) {
-        if (!paths.settings.exists()) {
+        if (!location.exists()) {
             return@withContext SettingsReadResult(materializeDefaults())
         }
 
         try {
-            SettingsReadResult(json.decodeFromString<Settings>(paths.settings.readText()))
+            SettingsReadResult(json.decodeFromString<Settings>(location.readText()))
         } catch (err: SerializationException) {
-            val backup = paths.root.resolve("settings.corrupt=${System.currentTimeMillis()}.json")
-            paths.settings.moveTo(backup)
-            logger.error(err) { "Settigns.json could not be parsed: kept as $backup" }
+            val backup = location.parent.resolve("settings.corrupt=${System.currentTimeMillis()}.json")
+            location.moveTo(backup)
+            logger.error(err) { "Settings.json could not be parsed: kept as $backup" }
             SettingsReadResult(materializeDefaults(), backup)
         }
     }
@@ -50,10 +49,10 @@ public class SettingsFile(
     }
 
     private fun persist(settings: Settings) {
-        val temp = createTempFile(paths.root, "settings", ".json")
+        val temp = createTempFile(location.parent, "settings", ".json")
         temp.writeText(json.encodeToString(settings))
         temp.moveTo(
-            paths.settings,
+            location,
             StandardCopyOption.REPLACE_EXISTING,
             StandardCopyOption.ATOMIC_MOVE
         )

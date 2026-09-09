@@ -18,8 +18,8 @@ public fun createAppModel(
     scope: CoroutineScope,
     paths: ToolPaths
 ): AppModel {
-    val settings = SettingsFile(paths, jsonSerializer)
-    val workspaces = WorkspaceDirectory(paths, jsonSerializer)
+    val settings = SettingsFile(paths.settings, jsonSerializer)
+    val workspaces = WorkspaceDirectory(paths.workspaces, jsonSerializer)
 
     return AppModel(
         startup = StartupStore(

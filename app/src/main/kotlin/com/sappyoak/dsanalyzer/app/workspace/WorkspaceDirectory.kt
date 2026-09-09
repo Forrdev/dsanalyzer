@@ -7,23 +7,21 @@ import kotlinx.serialization.json.Json
 import java.nio.file.Path
 import kotlin.io.path.*
 
-
-import com.sappyoak.dsanalyzer.app.paths.ToolPaths
 import com.sappyoak.dsanalyzer.game.InstallationId
 
 /** A representation of a [Workspace] on disk */
 public class WorkspaceDirectory(
-    private val paths: ToolPaths,
+    private val location: Path,
     private val json: Json
 ) {
     private val logger = KotlinLogging.logger {  }
 
     public suspend fun list(): List<Workspace> = withContext(Dispatchers.IO) {
-        if (!paths.workspaces.exists()) {
+        if (!location.exists()) {
             return@withContext emptyList()
         }
 
-        paths.workspaces
+        location
             .listDirectoryEntries()
             .filter { it.isDirectory() }
             .mapNotNull { read(it.resolve(DESCRIPTOR_NAME)) }
@@ -36,7 +34,7 @@ public class WorkspaceDirectory(
             name = name,
             installationId = installationId
         )
-        val directory = paths.workspaces.resolve(workspace.id.value).createDirectories()
+        val directory = location.resolve(workspace.id.value).createDirectories()
         directory.resolve(DESCRIPTOR_NAME).writeText(json.encodeToString(workspace))
         workspace
     }
