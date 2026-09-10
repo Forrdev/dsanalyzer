@@ -5,12 +5,12 @@ import com.sappyoak.dsanalyzer.game.files.FileListing
 /**
  * Compares what an installation contains against what it should container
  */
-fun FileListing.verify(manifest: FileManifest): VerificationResult = when (this) {
+fun verify(manifest: FileManifest, listing: FileListing): VerificationResult = when (listing) {
     FileListing.Unsupported -> VerificationResult.ListingUnsupported
 
     is FileListing.Available -> VerificationResult.Checked(
-        missing = (manifest.paths - paths).sorted(),
-        unidentified = (paths - manifest.paths).sorted()
+        missing = (manifest.paths - listing.paths).sorted(),
+        unidentified = (listing.paths - manifest.paths).sorted()
     )
 }
 
