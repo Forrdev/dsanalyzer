@@ -4,8 +4,6 @@ import java.nio.file.Path
 import kotlin.io.path.exists
 import kotlin.io.path.isRegularFile
 
-private val PREPARE_TO_DIE_ARCHIVE_STEMS = listOf("dvdbnd0", "dvdbnd1", "dvdbnd2", "dvdbnd3")
-private val ARCHIVE_EXTENSIONS = listOf("bhd5", "bdt")
 
 public fun inspectInstallation(root: Path): InstallationCheck {
     val executable = GameEdition.entries
@@ -24,8 +22,7 @@ public fun inspectInstallation(root: Path): InstallationCheck {
 
 
 private fun inspectPrepareToDie(root: Path, executable: Path): InstallationCheck {
-    val missing = PREPARE_TO_DIE_ARCHIVE_STEMS
-        .flatMap { stem -> ARCHIVE_EXTENSIONS.map { "$stem.$it"} }
+    val missing = archiveFileNames(GameEdition.PrepareToDie)
         .filterNot { root.resolve(it).exists() }
 
     if (missing.isNotEmpty()) {

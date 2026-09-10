@@ -6,10 +6,11 @@ import kotlin.io.path.createDirectories
 
 
 public class ToolPaths(public val root: Path = getDefaultRoot()) {
-    val logs = root.resolve("logs")
-    val workspaces = root.resolve("workspaces")
+    public  val logs = root.resolve("logs")
+    public val workspaces = root.resolve("workspaces")
 
-    val settings = root.resolve("settings.json")
+    public val settings = root.resolve("settings.json")
+    public val verificationFile = root.resolve("verification.json")
 
     init {
         root.createDirectories()
