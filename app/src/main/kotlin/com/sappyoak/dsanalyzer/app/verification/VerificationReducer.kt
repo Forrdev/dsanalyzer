@@ -12,4 +12,6 @@ public fun reduceVerification(
     is VerificationMessage.CacheLoaded -> state.copy(
         statuses = message.records.mapValues { (_, record) -> VerificationStatus.Complete(record) }
     ).with()
+
+    is VerificationMessage.VerificationRequested -> state.copy(viewing = message.installation.id).with()
 }

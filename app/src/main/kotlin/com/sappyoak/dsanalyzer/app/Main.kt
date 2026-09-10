@@ -40,12 +40,12 @@ fun main() {
             title = "dsanalyzer",
             state = rememberWindowState(size = DpSize(1280.dp, 800.dp))
         ) {
-            val state by model.startup.state.collectAsState()
+            val startupState by model.startup.state.collectAsState()
 
-            AppMenuBar(state, model.startup, onQuit = ::exitApplication)
+            AppMenuBar(startupState, model.startup, model.verification, onQuit = ::exitApplication)
             MaterialTheme {
                 Surface {
-                    StartupScreen(state, model.startup)
+                    StartupScreen(startupState, model.startup)
                 }
             }
         }
