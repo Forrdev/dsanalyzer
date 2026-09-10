@@ -12,3 +12,6 @@ internal fun archiveFileNames(edition: GameEdition): List<String> = when (editio
 
     GameEdition.Remastered -> emptyList()
 }
+
+internal fun watchedFileNames(edition: GameEdition): List<String> =
+    listOf(edition.executableName) + archiveFileNames(edition)
