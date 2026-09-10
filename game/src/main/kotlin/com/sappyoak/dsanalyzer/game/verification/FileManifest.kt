@@ -8,3 +8,12 @@ public data class FileManifest(
     public val paths: Set<String>
 )
 
+/** Reads a manifest from plain text, one path per line */
+fun GameEdition.parseFileManifest(lines: Sequence<String>): FileManifest = FileManifest(
+    edition = this,
+    paths = lines
+        .map { it.trim() }
+        .filter { it.isNotEmpty() && !it.startsWith("#") }
+        .toSet()
+)
+
