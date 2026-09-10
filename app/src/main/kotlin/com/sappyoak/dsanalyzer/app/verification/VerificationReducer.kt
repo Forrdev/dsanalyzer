@@ -14,4 +14,6 @@ public fun reduceVerification(
     ).with()
 
     is VerificationMessage.VerificationRequested -> state.copy(viewing = message.installation.id).with()
+
+    VerificationMessage.Dismissed -> state.copy(viewing = null).with()
 }

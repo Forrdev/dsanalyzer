@@ -11,4 +11,6 @@ public sealed interface VerificationMessage {
     public data class CacheLoaded(
         public val records: Map<InstallationId, VerificationRecord>
     ) : VerificationMessage
+
+    public data object Dismissed : VerificationMessage
 }

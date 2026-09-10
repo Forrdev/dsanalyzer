@@ -16,6 +16,9 @@ import com.sappyoak.dsanalyzer.app.logging.setupLogging
 import com.sappyoak.dsanalyzer.app.paths.ToolPaths
 import com.sappyoak.dsanalyzer.app.startup.StartupMessage
 import com.sappyoak.dsanalyzer.app.startup.ui.StartupScreen
+import com.sappyoak.dsanalyzer.app.verification.VerificationMessage
+import com.sappyoak.dsanalyzer.app.verification.VerificationStore
+import com.sappyoak.dsanalyzer.app.verification.ui.VerificationDialog
 
 fun main() {
     val paths = ToolPaths()
@@ -41,11 +44,20 @@ fun main() {
             state = rememberWindowState(size = DpSize(1280.dp, 800.dp))
         ) {
             val startupState by model.startup.state.collectAsState()
+            val verificationState by model.verification.state.collectAsState()
 
             AppMenuBar(startupState, model.startup, model.verification, onQuit = ::exitApplication)
             MaterialTheme {
                 Surface {
                     StartupScreen(startupState, model.startup)
+
+                    verificationState.viewing
+                        ?.let { id -> startupState.installations.firstOrNull { it.id == id } }
+                        ?.let { installation -> VerificationDialog(
+                            installation = installation,
+                            status = verificationState.statuses[installation.id],
+                            onDismiss = { model.verification.dispatch(VerificationMessage.Dismissed) }
+                        ) }
                 }
             }
         }
