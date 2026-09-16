@@ -13,7 +13,7 @@ kotlin {
 
         freeCompilerArgs.addAll(
             "-Xrender-internal-diagnostic-names",
-            "-Xreturn-value-checker=full",
+            "-Xreturn-value-checker=check",
             "-Xcontext-parameters",
             "-Xannotation-default-target=param-property"
         )
@@ -22,8 +22,7 @@ kotlin {
             "kotlin.contracts.ExperimentalContracts",
             "kotlin.time.ExperimentalTime",
             "kotlin.uuid.ExperimentalUuidApi",
-            "kotlin.ExperimentalUnsignedTypes",
-            "kotlinx.serialization.ExperimentalSerializationApi"
+            "kotlin.ExperimentalUnsignedTypes"
         )
     }
 }
