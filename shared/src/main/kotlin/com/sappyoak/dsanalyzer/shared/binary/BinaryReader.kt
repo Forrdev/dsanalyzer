@@ -78,3 +78,20 @@ public fun BinaryReader.skip(count: Int): BinaryReader = skip(count.toLong())
 public fun BinaryReader.seek(offset: Int): BinaryReader = seek(offset.toLong())
 public fun BinaryReader.slice(offset: Int, length: Int): BinaryReader = slice(offset.toLong(), length.toLong())
 public fun <T> BinaryReader.at(offset: Int, block: BinaryReader.() -> T): T = at(offset.toLong(), block)
+
+/**
+ * Read a value [T] from the reader and check its equality against a provided [value]
+ */
+public fun <T> BinaryReader.expectValue(value: T, block: BinaryReader.() -> T): Boolean =
+    block() == value
+
+/**
+ * Read a value [T] from the reader and enforce its equality to [value]
+ */
+public fun <T> BinaryReader.assertValue(value: T, block: BinaryReader.() -> T) {
+    val start = position
+    val actual = block()
+    if (value != actual) {
+        throw BinaryFormatException("Expected value to be $value but was $actual", start)
+    }
+}
