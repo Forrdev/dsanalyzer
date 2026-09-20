@@ -4,6 +4,7 @@ import java.lang.foreign.MemorySegment
 import java.lang.foreign.ValueLayout.*
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import java.nio.charset.Charset
 
 /**
  * Mapped by a [MemorySegment] for cases when a [ByteBuffer] is not large enough to hold
@@ -13,7 +14,7 @@ public class MemorySegmentBinaryReader(
     private val segment: MemorySegment,
     position: Int = 0,
     order: ByteOrder = ByteOrder.LITTLE_ENDIAN,
-    public override val pointerSize: PointerSize = PointerSize.IntPointer
+    public override var pointerSize: PointerSize = PointerSize.IntPointer
 ) : BinaryReader {
     override var order: ByteOrder = order
         set(value) {
@@ -35,14 +36,14 @@ public class MemorySegmentBinaryReader(
     override val size = segment.byteSize()
     override val remaining: Long get() = size - cursor
 
-    override fun readByte(): Byte = segment.get(JAVA_BYTE, position).also { advance(1) }
-    override fun readShort(): Short = segment.get(layouts.short, position).also { advance(2) }
-    override fun readInt(): Int = segment.get(layouts.int, position).also { advance(4) }
-    override fun readLong(): Long = segment.get(layouts.long, position).also { advance(8) }
-    override fun readFloat(): Float = segment.get(layouts.float, position).also { advance(4) }
+    override fun readByte(): Byte = segment.get(JAVA_BYTE, advance(1))
+    override fun readShort(): Short = segment.get(layouts.short, advance(2))
+    override fun readInt(): Int = segment.get(layouts.int, advance(4))
+    override fun readLong(): Long = segment.get(layouts.long, advance(8))
+    override fun readFloat(): Float = segment.get(layouts.float, advance(4))
 
     override fun readBytes(count: Int): ByteArray =
-        segment.asSlice(position, count.toLong()).toArray(JAVA_BYTE).also { advance(count.toLong()) }
+        segment.asSlice(advance(count.toLong()), count.toLong()).toArray(JAVA_BYTE)
 
     override fun skip(count: Long): BinaryReader {
         advance(count)
@@ -66,11 +67,13 @@ public class MemorySegmentBinaryReader(
         )
     }
 
-    private fun advance(count: Long) {
+    private fun advance(count: Long): Long {
+        val start = position
         if (count < 0 || position + count > size) {
             throw BinaryFormatException("Read of $count byte runs past the end of the segment", position)
         }
         position += count
+        return start
     }
 }
 

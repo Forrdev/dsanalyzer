@@ -2,12 +2,13 @@ package com.sappyoak.dsanalyzer.shared.binary
 
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import java.nio.charset.Charset
 
 class ByteBufferBinaryReader(
     private val bytes: ByteArray,
     position: Int = 0,
     order: ByteOrder = ByteOrder.LITTLE_ENDIAN,
-    override val pointerSize: PointerSize = PointerSize.IntPointer
+    override var pointerSize: PointerSize = PointerSize.IntPointer
 ) : BinaryReader {
     private val buffer = ByteBuffer.wrap(bytes).also {
         it.order(order)
@@ -29,11 +30,11 @@ class ByteBufferBinaryReader(
     override val size: Long get() = bytes.size.toLong()
     override val remaining: Long get() = size - position
 
-    override fun readByte(): Byte = buffer.get(intPosition).also { advance(1) }
-    override fun readShort(): Short = buffer.getShort(intPosition).also { advance(2) }
-    override fun readInt(): Int = buffer.getInt(intPosition).also { advance(4) }
-    override fun readLong(): Long = buffer.getLong(intPosition).also { advance(8) }
-    override fun readFloat(): Float = buffer.getFloat(intPosition).also { advance(4) }
+    override fun readByte(): Byte = buffer.get(advance(1))
+    override fun readShort(): Short = buffer.getShort(advance(2))
+    override fun readInt(): Int = buffer.getInt(advance(4))
+    override fun readLong(): Long = buffer.getLong(advance(8))
+    override fun readFloat(): Float = buffer.getFloat(advance(4))
 
     override fun readBytes(count: Int): ByteArray {
         val end = (intPosition + count).coerceAtMost(bytes.size)
@@ -64,10 +65,12 @@ class ByteBufferBinaryReader(
         )
     }
 
-    private fun advance(count: Long) {
+    private fun advance(count: Long): Int {
+        val start = intPosition
         if (count < 0 || count + position > size) {
             throw BinaryFormatException("Read of $count bytes runs past the end of the buffer", position)
         }
         position += count
+        return start
     }
 }
