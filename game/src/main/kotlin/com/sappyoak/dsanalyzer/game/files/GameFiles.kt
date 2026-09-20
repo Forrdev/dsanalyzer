@@ -18,7 +18,7 @@ public interface GameFiles : AutoCloseable {
  */
 public fun openGameFiles(installation: Installation): GameFiles =
     when (installation.build.edition) {
-        GameEdition.PrepareToDie -> throw UnsupportedOperationException("PTDE installations are not readable yet")
+        GameEdition.PrepareToDie -> ArchiveGameFiles.open(installation)
         GameEdition.Remastered -> throw UnsupportedOperationException("Remastered installations are not readable yet")
     }
 

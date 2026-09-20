@@ -5,6 +5,11 @@ internal val PREPARE_TO_DIE_ARCHIVE_STEMS: List<String> =
 
 private val ARCHIVE_EXTENSIONS = listOf("bhd5", "bdt")
 
+public fun archiveStems(edition: GameEdition): List<String> = when (edition) {
+    GameEdition.PrepareToDie -> PREPARE_TO_DIE_ARCHIVE_STEMS
+    GameEdition.Remastered -> emptyList()
+}
+
 internal fun archiveFileNames(edition: GameEdition): List<String> = when (edition) {
     GameEdition.PrepareToDie -> PREPARE_TO_DIE_ARCHIVE_STEMS.flatMap { stem ->
         ARCHIVE_EXTENSIONS.map { "$stem.$it" }
