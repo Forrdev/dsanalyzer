@@ -2,6 +2,8 @@
 
  import com.sappyoak.dsanalyzer.game.GameEdition
  import com.sappyoak.dsanalyzer.game.Installation
+ import kotlinx.coroutines.Dispatchers
+ import kotlinx.coroutines.withContext
 
  /**
   * Placeholder implementation.
@@ -11,7 +13,9 @@
   */
  public class ArchiveFileIndex : InstalledFileIndex {
      override suspend fun list(installation: Installation): FileListing = when (installation.build.edition) {
-         GameEdition.PrepareToDie -> FileListing.Unsupported
+         GameEdition.PrepareToDie -> withContext(Dispatchers.IO) {
+             openGameFiles(installation).use { FileListing.Hashed(it.hashes()) }
+         }
          GameEdition.Remastered -> FileListing.Unsupported
      }
  }
