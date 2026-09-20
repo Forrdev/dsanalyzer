@@ -25,6 +25,12 @@ dependencies {
     }
 }
 
+kotlin {
+    compilerOptions {
+        optIn.add("kotlinx.serialization.ExperimentalSerializationApi")
+    }
+}
+
 compose.desktop {
     application {
         mainClass = "com.sappyoak.dsanalyzer.app.MainKt"

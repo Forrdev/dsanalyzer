@@ -5,8 +5,8 @@ plugins {
 
 dependencies {
     implementation(project(":shared"))
-    implementation(project(":formats"))
 
-    implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.serialization.json)
+
+
 }

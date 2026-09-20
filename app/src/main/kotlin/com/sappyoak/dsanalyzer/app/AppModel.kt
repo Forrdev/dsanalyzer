@@ -12,6 +12,7 @@ import com.sappyoak.dsanalyzer.app.verification.VerificationCache
 import com.sappyoak.dsanalyzer.app.verification.VerificationEffects
 import com.sappyoak.dsanalyzer.app.verification.VerificationStore
 import com.sappyoak.dsanalyzer.app.workspace.WorkspaceDirectory
+import com.sappyoak.dsanalyzer.game.files.ArchiveFileIndex
 
 public class AppModel(
     public val startup: StartupStore,
@@ -33,7 +34,9 @@ public fun createAppModel(
         verification = VerificationStore(
             scope,
             VerificationEffects(
-                cache = VerificationCache(paths.verificationFile, jsonSerializer)
+                cache = VerificationCache(paths.verificationFile, jsonSerializer),
+                // this is going to need to be dynamic
+                index = ArchiveFileIndex()
             )
         )
     )
