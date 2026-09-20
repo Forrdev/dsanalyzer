@@ -56,8 +56,8 @@ class BinaryReaderTest : FunSpec({
 
     createReaders("ab\u0000cd\u0000".toByteArray(Charsets.US_ASCII)).forEach {
         test("${it.first} reading null terminated string should consume the terminator") {
-            it.second.readString().shouldBe("ab")
-            it.second.readString().shouldBe("cd")
+            it.second.readAscii().shouldBe("ab")
+            it.second.readAscii().shouldBe("cd")
         }
     }
 
@@ -94,7 +94,7 @@ class BinaryReaderTest : FunSpec({
             val reader = it.second
 
             assertSoftly {
-                val failure = shouldThrow<BinaryFormatException> { reader.assertValue("TEST") { readString(4) } }
+                val failure = shouldThrow<BinaryFormatException> { reader.assertValue("TEST") { readAscii(4) } }
                 failure.position.shouldBe(0)
                 failure.message.orEmpty().shouldContain("TEST")
             }

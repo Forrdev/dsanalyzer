@@ -24,8 +24,12 @@ public interface BinaryReader {
     fun readBoolean(): Boolean = readByte().toInt() != 0
     fun readBytes(count: Int): ByteArray
 
-    fun readString(length: Int): String = String(readBytes(length), Charsets.US_ASCII)
-    fun readString(charset: Charset = Charsets.US_ASCII): String {
+    fun readString(charset: Charset = Charsets.US_ASCII, length: Int): String {
+        val bytes = readBytes(length)
+        return String(bytes, charset)
+    }
+
+    fun readStringTerminated(charset: Charset = Charsets.US_ASCII): String {
         val start = position
         var end = start
 
@@ -44,24 +48,47 @@ public interface BinaryReader {
         return text
     }
 
+    fun readAscii(): String = readStringTerminated()
+    fun readAscii(length: Int): String = readString(length = length)
+
+    fun readShiftJIS(): String = readStringTerminated(SHIFT_JIS)
+    fun readShiftJIS(length: Int): String = readString(SHIFT_JIS, length)
+
     /**
-     * Reads a 16-string up to and including the null-terminator using the current [order]
+     * Reads a utf16 string up to and including the null-terminator using the current [order]
      */
-    fun readWideString(): String {
+    fun readUTF16(): String {
         val text = StringBuilder()
         while (true) {
             val char = readShort().toInt().toChar()
             if (char == NULL_CHAR) {
-                return text.toString()
+                break
             }
             text.append(char)
         }
+
+        val encoding = if (order == ByteOrder.BIG_ENDIAN) Charsets.UTF_16BE else Charsets.UTF_16LE
+        return String(text.toString().toByteArray(encoding), encoding)
     }
 
-    /**
-     * Reads a null-terminated Shift-JIS
-     */
-    fun readJisString(): String = readString(SHIFT_JIS)
+    fun readFixedString(length: Int): String =
+        readAscii(length).substringBefore(NULL_CHAR)
+
+    fun readFixedShiftJis(length: Int): String = readShiftJIS(length).substringBefore(NULL_CHAR)
+
+    fun readFixedUTF16(length: Int): String {
+        val text = StringBuilder()
+        while (text.length <= length) {
+            val char = readShort().toInt().toChar()
+            if (char == NULL_CHAR) {
+                break
+            }
+            text.append(char)
+        }
+
+        val encoding = if (order == ByteOrder.BIG_ENDIAN) Charsets.UTF_16BE else Charsets.UTF_16LE
+        return String(text.toString().toByteArray(encoding), encoding)
+    }
 
     /**
      * Attempts to read a pointer at [position], using [pointerSize] as an indication of how many
@@ -105,6 +132,7 @@ public interface BinaryReader {
 
     public companion object {
         internal const val NULL_CHAR = '\u0000'
+        internal const val ZERO_BYTE = 0.toByte()
 
         private val SHIFT_JIS = Charset.forName("Shift_JIS")
 
