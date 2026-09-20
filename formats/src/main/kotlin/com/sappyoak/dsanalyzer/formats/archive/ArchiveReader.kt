@@ -1,14 +1,13 @@
 package com.sappyoak.dsanalyzer.formats.archive
 
+import java.nio.ByteOrder
+
 import com.sappyoak.dsanalyzer.shared.binary.BinaryFormatException
 import com.sappyoak.dsanalyzer.shared.binary.BinaryReader
 import com.sappyoak.dsanalyzer.shared.binary.assertValue
 import com.sappyoak.dsanalyzer.shared.binary.readUInt
-import java.nio.ByteOrder
 
 private const val ARCHIVE_MAGIC = "BHD5"
-private const val VERSION = 1
-private const val BUCKET_RECORD_SIZE = 8L
 private const val MAX_BUCKETS = 65_536
 private const val MAX_ENTRIES_PER_BUCKET = 65_536
 
@@ -16,20 +15,38 @@ public fun readArchive(reader: BinaryReader): Archive {
     reader.position = 0
     reader.assertValue(ARCHIVE_MAGIC) { readFixedString(ARCHIVE_MAGIC.length) }
     reader.order = if (reader.readBoolean()) ByteOrder.LITTLE_ENDIAN else ByteOrder.BIG_ENDIAN
-    reader.position = 0
-    reader.assertValue(VERSION) { readInt() }
+
+    reader.skip(1)
+    reader.assertValue(0) { readByte().toInt() }
+    reader.assertValue(0) { readByte().toInt() }
+    reader.assertValue(1) { readInt() }
     reader.skip(4)
 
-    val bucketCount = reader.readInt()
-    val bucketsOffset = reader.readUInt().toLong()
+    var is64Bit = false
+    if (reader.size > 0x28) {
+        reader.at(0x14) {
+            val test1 = readInt()
+            skip(4)
+            val test2 = readInt()
+
+            if (test1 == 0 && test2 == 0) {
+                is64Bit = true
+            }
+        }
+    }
+
+    val bucketCount = if (is64Bit) reader.readLong() else reader.readUInt().toLong()
+    val bucketsOffset = if (is64Bit) reader.readLong() else reader.readUInt().toLong()
 
     if (bucketCount !in 1..MAX_BUCKETS) {
         throw BinaryFormatException("Implausible archive bucket count $bucketCount", 0x10)
     }
 
+    reader.position = bucketsOffset
+
     val entries = hashMapOf<UInt, ArchiveEntry>()
     for (bucket in 0 until bucketCount) {
-        reader.at(bucketsOffset + bucket * BUCKET_RECORD_SIZE) { readBucket(entries) }
+        reader.readBucket(is64Bit, entries)
     }
 
     if (entries.isEmpty()) {
@@ -39,14 +56,19 @@ public fun readArchive(reader: BinaryReader): Archive {
     return Archive(entries)
 }
 
-private fun BinaryReader.readBucket(entries: MutableMap<UInt, ArchiveEntry>) {
+private fun BinaryReader.readBucket(is64Bit: Boolean, entries: MutableMap<UInt, ArchiveEntry>) {
     val bucketAt = position
     val entryCount = readInt()
-    val entriesOffset = readUInt().toLong()
 
     if (entryCount !in 0..MAX_ENTRIES_PER_BUCKET) {
         throw BinaryFormatException("Implausible archive entry count $entryCount", bucketAt)
     }
+
+    if (is64Bit) {
+        assertValue(1) { readInt() }
+    }
+
+    val entriesOffset = if (is64Bit) readLong() else readUInt().toLong()
 
     if (entryCount == 0) return
 
