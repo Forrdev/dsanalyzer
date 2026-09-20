@@ -28,5 +28,6 @@ plugins {
 rootProject.name = "dsanalysis"
 
 include(":shared")
+include(":formats")
 include(":game")
 include(":app")
