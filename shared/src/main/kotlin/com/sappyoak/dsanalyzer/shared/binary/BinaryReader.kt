@@ -1,6 +1,7 @@
 package com.sappyoak.dsanalyzer.shared.binary
 
 import java.nio.ByteOrder
+import java.nio.charset.Charset
 
 /**
  * A wrapper around some backing collection of bytes that provides methods for accessing its data.
@@ -22,18 +23,39 @@ public interface BinaryReader {
     fun readBoolean(): Boolean = readByte().toInt() != 0
     fun readBytes(count: Int): ByteArray
 
-    fun readString(): String
-    fun readString(length: Int): String
+    fun readString(length: Int): String = String(readBytes(length), Charsets.US_ASCII)
+    fun readString(charset: Charset = Charsets.US_ASCII): String {
+        val start = position.toInt()
+        var end = start
+        while (end < size && readBoolean()) {
+            end++
+        }
+
+        if (end.toLong() == size) error("")
+
+        val text = String(readBytes(end - start), charset)
+        position = (end + 1).toLong()
+        return text
+    }
 
     /**
      * Reads a 16-string up to and including the null-terminator using the current [order]
      */
-    fun readWideString(): String
+    fun readWideString(): String {
+        val text = StringBuilder()
+        while (true) {
+            val char = readShort().toInt().toChar()
+            if (char == NULL_CHAR) {
+                return text.toString()
+            }
+            text.append(char)
+        }
+    }
 
     /**
      * Reads a null-terminated Shift-JIS
      */
-    fun readJisString(): String
+    fun readJisString(): String = readString(SHIFT_JIS)
 
     /**
      * Attempts to read a pointer at [position], using [pointerSize] as an indication of how many
@@ -44,6 +66,7 @@ public interface BinaryReader {
         PointerSize.LongPointer -> readLong()
         else -> throw BinaryFormatException("Unsupported pointer size $pointerSize", position)
     }
+
 
     /**
      * Moves [count] bytes forward and returns this reader
@@ -64,7 +87,21 @@ public interface BinaryReader {
      * Stores the current [position] and moves to [offset] to perform some work [block],
      * returning to the original stored [position] when the block exits
      */
-    fun <T> at(offset: Long, block: BinaryReader.() -> T): T
+    fun <T> at(offset: Long, block: BinaryReader.() -> T): T {
+        val start = position
+        position = offset
+        try {
+            return block()
+        } finally {
+            position = start
+        }
+    }
+
+    public companion object {
+        const val NULL_CHAR = '\u0000'
+
+        val SHIFT_JIS = Charset.forName("Shift_JIS")
+    }
 }
 
 public fun BinaryReader.readUByte(): UByte = readByte().toUByte()
