@@ -1,5 +1,7 @@
 package com.sappyoak.dsanalyzer.formats.binder
 
+import kotlinx.serialization.Serializable
+
 import com.sappyoak.dsanalyzer.shared.binary.BinaryReader
 import com.sappyoak.dsanalyzer.shared.binary.hasFlag
 import com.sappyoak.dsanalyzer.shared.binary.readUByte
@@ -7,6 +9,7 @@ import com.sappyoak.dsanalyzer.shared.binary.reverseBits
 
 /** Flags indicating the features supported by a binder */
 @JvmInline
+@Serializable
 public value class BinderFormatFlags(public val bits: Int) {
     public val isBigEndian: Boolean get() = bits.hasFlag(BIG_ENDIAN)
     public val hasIds: Boolean get() = bits.hasFlag(HAS_IDS)
@@ -33,6 +36,7 @@ public value class BinderFormatFlags(public val bits: Int) {
 
 /** Flags indicating features for specific files within the binder */
 @JvmInline
+@Serializable
 public value class BinderEntryFlags(public val bits: Int) {
     public val hasCompression: Boolean get() = bits.hasFlag(COMPRESSION)
 
