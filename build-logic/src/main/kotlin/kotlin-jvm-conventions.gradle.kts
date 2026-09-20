@@ -27,6 +27,10 @@ kotlin {
     }
 }
 
+dependencies {
+    testImplementation(libs.bundles.jvm.testing)
+}
+
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
 }
