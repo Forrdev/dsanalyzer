@@ -1,5 +1,6 @@
 package com.sappyoak.dsanalyzer.shared.binary
 
+import java.lang.foreign.MemorySegment
 import java.nio.ByteOrder
 import java.nio.charset.Charset
 
@@ -100,9 +101,23 @@ public interface BinaryReader {
     }
 
     public companion object {
-        const val NULL_CHAR = '\u0000'
+        internal const val NULL_CHAR = '\u0000'
 
-        val SHIFT_JIS = Charset.forName("Shift_JIS")
+        private val SHIFT_JIS = Charset.forName("Shift_JIS")
+
+        public fun of(
+            bytes: ByteArray,
+            position: Int = 0,
+            order: ByteOrder = ByteOrder.LITTLE_ENDIAN,
+            pointerSize: PointerSize = PointerSize.IntPointer
+        ): BinaryReader = ByteBufferBinaryReader(bytes, position, order, pointerSize)
+
+        public fun of(
+            segment: MemorySegment,
+            position: Int = 0,
+            order: ByteOrder = ByteOrder.LITTLE_ENDIAN,
+            pointerSize: PointerSize = PointerSize.IntPointer
+        ): BinaryReader = MemorySegmentBinaryReader(segment, position, order, pointerSize)
     }
 }
 
