@@ -2,6 +2,7 @@ package com.sappyoak.dsanalyzer.formats.binder
 
 import com.sappyoak.dsanalyzer.formats.binder.v3.*
 import com.sappyoak.dsanalyzer.formats.binder.v4.*
+import com.sappyoak.dsanalyzer.formats.compression.decompress
 import com.sappyoak.dsanalyzer.shared.binary.BinaryReader
 import com.sappyoak.dsanalyzer.shared.binary.BinaryFormatException
 
@@ -26,6 +27,11 @@ public fun readBinder(reader: BinaryReader, data: BinaryReader = reader): Binder
 
         else -> throw BinaryFormatException("Not a supported binder: $magic", 0)
     }
+
+public fun BinderEntry.readData(reader: BinaryReader): ByteArray {
+    val raw = reader.at(dataOffset) { readBytes(compressedSize.toInt()) }
+    return raw.decompress()
+}
 
 private fun requireDataFile(reader: BinaryReader, data: BinaryReader) {
     if (data === reader) {

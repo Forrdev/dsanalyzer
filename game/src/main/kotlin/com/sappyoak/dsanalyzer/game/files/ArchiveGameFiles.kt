@@ -3,6 +3,7 @@ package com.sappyoak.dsanalyzer.game.files
 import com.sappyoak.dsanalyzer.formats.archive.ArchiveEntry
 import com.sappyoak.dsanalyzer.formats.archive.archivePathHash
 import com.sappyoak.dsanalyzer.formats.archive.readArchive
+import com.sappyoak.dsanalyzer.formats.compression.decompress
 import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.game.archiveStems
 import com.sappyoak.dsanalyzer.shared.binary.MappedFile
@@ -25,8 +26,8 @@ internal class ArchiveGameFiles(
             readBytes(located.entry.paddedSize)
         }
 
-        // needs DCX decompression
-        return raw
+
+        return raw.decompress()
     }
 
     override fun close() {
