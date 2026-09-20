@@ -31,7 +31,9 @@ public interface BinaryReader {
             end++
         }
 
-        if (end.toLong() == size) error("")
+        if (end.toLong() == size) {
+            throw BinaryFormatException("Unterminated string", start)
+        }
 
         val text = String(readBytes(end - start), charset)
         position = (end + 1).toLong()
