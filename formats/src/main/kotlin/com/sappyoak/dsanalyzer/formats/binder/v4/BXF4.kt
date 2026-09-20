@@ -20,7 +20,7 @@ public fun readBXF4Header(reader: BinaryReader): Binder {
     )
 }
 
-public fun checkBXF4Data(reader: BinaryReader): Binder {
+public fun checkBXF4Data(reader: BinaryReader) {
     reader.at(0) {
         assertValue(BXF4_DATA_MAGIC) { readAscii(BXF4_DATA_MAGIC.length) }
     }
