@@ -12,7 +12,7 @@ public interface BinaryReader {
     var position: Long
 
     val size: Long
-    val pointerSize: PointerSize
+    var pointerSize: PointerSize
 
     val remaining: Long get() = size - position
 
@@ -26,18 +26,21 @@ public interface BinaryReader {
 
     fun readString(length: Int): String = String(readBytes(length), Charsets.US_ASCII)
     fun readString(charset: Charset = Charsets.US_ASCII): String {
-        val start = position.toInt()
+        val start = position
         var end = start
+
         while (end < size && readBoolean()) {
             end++
         }
 
-        if (end.toLong() == size) {
+        position = start
+
+        if (end == size) {
             throw BinaryFormatException("Unterminated string", start)
         }
 
-        val text = String(readBytes(end - start), charset)
-        position = (end + 1).toLong()
+        val text = String(readBytes((end - start).toInt()), charset)
+        position = end + 1
         return text
     }
 
