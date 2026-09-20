@@ -173,10 +173,24 @@ public fun <T> BinaryReader.expectValue(value: T, block: BinaryReader.() -> T): 
 /**
  * Read a value [T] from the reader and enforce its equality to [value]
  */
-public fun <T> BinaryReader.assertValue(value: T, block: BinaryReader.() -> T) {
+public fun <T> BinaryReader.assertValue(value: T, block: BinaryReader.() -> T): T {
     val start = position
     val actual = block()
     if (value != actual) {
         throw BinaryFormatException("Expected value to be $value but was $actual", start)
     }
+    return actual
+}
+
+/**
+ * Reads a value [T] from the reader and enforces its equality to one of [value]
+ */
+public fun <T> BinaryReader.assertValues(vararg value: T, block: BinaryReader.() -> T): T {
+    val start = position
+    val actual = block()
+    for (v in value) {
+        if (v == actual) return v
+    }
+
+    throw BinaryFormatException("Expected value to be on of ${value.joinToString(", ")} but was $actual", start)
 }
