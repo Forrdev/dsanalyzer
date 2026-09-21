@@ -5,7 +5,7 @@ import java.lang.foreign.MemorySegment
 import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.native.memory.AddressRange
 import com.sappyoak.dsanalyzer.native.memory.MemoryRegion
-import com.sappyoak.dsanalyzer.shared.binary.PointerSize
+import com.sappyoak.dsanalyzer.shared.platform.PointerSize
 
 /**
  * Raw access to another process's memory

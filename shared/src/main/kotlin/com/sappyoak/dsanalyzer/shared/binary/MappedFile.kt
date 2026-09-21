@@ -7,6 +7,8 @@ import java.nio.channels.FileChannel
 import java.nio.file.Path
 import java.nio.file.StandardOpenOption
 
+import com.sappyoak.dsanalyzer.shared.platform.PointerSize
+
 /**
  * A file mapped read only into memory.
  *

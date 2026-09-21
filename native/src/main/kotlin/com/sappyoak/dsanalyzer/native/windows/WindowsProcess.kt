@@ -10,7 +10,7 @@ import com.sappyoak.dsanalyzer.native.memory.AddressRange
 import com.sappyoak.dsanalyzer.native.memory.MemoryRegion
 import com.sappyoak.dsanalyzer.native.process.AttachedProcess
 import com.sappyoak.dsanalyzer.native.process.ProcessInfo
-import com.sappyoak.dsanalyzer.shared.binary.PointerSize
+import com.sappyoak.dsanalyzer.shared.platform.PointerSize
 
 private const val STILL_ACTIVE = 259
 private const val MEM_COMMIT = 0x1000

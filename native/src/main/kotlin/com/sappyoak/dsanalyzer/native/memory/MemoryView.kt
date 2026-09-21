@@ -1,11 +1,11 @@
 package com.sappyoak.dsanalyzer.native.memory
 
-import com.sappyoak.dsanalyzer.native.process.ProcessMemory
 import java.lang.foreign.Arena
 import java.lang.foreign.MemorySegment
 import java.lang.foreign.ValueLayout.*
 
-import com.sappyoak.dsanalyzer.shared.binary.PointerSize
+import com.sappyoak.dsanalyzer.native.process.ProcessMemory
+import com.sappyoak.dsanalyzer.shared.platform.PointerSize
 
 /**
  * A reusable local copy of a span of another process's memory read by offset.

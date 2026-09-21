@@ -12,7 +12,7 @@ import com.sappyoak.dsanalyzer.native.process.ModuleInfo
 import com.sappyoak.dsanalyzer.native.process.ProcessAccessException
 import com.sappyoak.dsanalyzer.native.process.ProcessInfo
 import com.sappyoak.dsanalyzer.native.process.Processes
-import com.sappyoak.dsanalyzer.shared.binary.PointerSize
+import com.sappyoak.dsanalyzer.shared.platform.PointerSize
 
 private const val SNAP_PROCESS = 0x2
 private const val SNAP_MODULE = 0x8

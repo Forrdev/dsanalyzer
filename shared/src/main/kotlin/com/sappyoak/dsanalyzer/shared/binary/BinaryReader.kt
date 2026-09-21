@@ -4,6 +4,7 @@ import java.lang.foreign.MemorySegment
 import java.nio.ByteOrder
 import java.nio.charset.Charset
 
+import com.sappyoak.dsanalyzer.shared.platform.PointerSize
 /**
  * A wrapper around some backing collection of bytes that provides methods for accessing its data.
  */

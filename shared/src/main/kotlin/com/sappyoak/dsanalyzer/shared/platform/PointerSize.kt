@@ -1,4 +1,4 @@
-package com.sappyoak.dsanalyzer.shared.binary
+package com.sappyoak.dsanalyzer.shared.platform
 
 @JvmInline
 public value class PointerSize(public val value: Int) {
