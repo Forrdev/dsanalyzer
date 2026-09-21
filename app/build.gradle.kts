@@ -14,6 +14,7 @@ dependencies {
 
     implementation(project(":shared"))
     implementation(project(":game"))
+    implementation(project(":runtime"))
 
     with(libs) {
         implementation(kotlinx.coroutines.core)
