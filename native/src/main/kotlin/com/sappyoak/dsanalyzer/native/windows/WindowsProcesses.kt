@@ -30,7 +30,7 @@ private const val PROCESS_QUERY_INFORMATION = 0x0400
 private const val ATTACH_ACCESS =
     PROCESS_VM_OPERATION or PROCESS_VM_READ or PROCESS_VM_WRITE or PROCESS_QUERY_INFORMATION
 
-internal object WindowsProcesses : Processes {
+internal class WindowsProcesses : Processes {
     override fun list(): List<ProcessInfo> = snapshot(SNAP_PROCESS, 0, PROCESS_ENTRY) { handle, entry, first ->
         if (!Kernel32.process32(handle, entry, first)) return@snapshot null
         ProcessInfo(
@@ -54,7 +54,7 @@ internal object WindowsProcesses : Processes {
         return WindowsProcess(process, handle, pointerSize)
     }
 
-    fun modules(pid: Int): List<ModuleInfo> = snapshot(SNAP_MODULE or SNAP_MODULE_32, pid, MODULE_ENTRY) { handle, entry, first ->
+    override fun modules(pid: Int): List<ModuleInfo> = snapshot(SNAP_MODULE or SNAP_MODULE_32, pid, MODULE_ENTRY) { handle, entry, first ->
         if (!Kernel32.module32(handle, entry, first)) return@snapshot null
         ModuleInfo(
             name = entry.wideString(MODULE_ENTRY, "szModule"),

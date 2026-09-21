@@ -9,7 +9,6 @@ import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.native.memory.AddressRange
 import com.sappyoak.dsanalyzer.native.memory.MemoryRegion
 import com.sappyoak.dsanalyzer.native.process.AttachedProcess
-import com.sappyoak.dsanalyzer.native.process.ModuleInfo
 import com.sappyoak.dsanalyzer.native.process.ProcessInfo
 import com.sappyoak.dsanalyzer.shared.binary.PointerSize
 
@@ -81,8 +80,6 @@ internal class WindowsProcess(
 
         regions
     }
-
-    override fun modules(): List<ModuleInfo> = WindowsProcesses.modules(info.pid)
 
     override fun close() {
         if (closed.compareAndSet(false, true)) {

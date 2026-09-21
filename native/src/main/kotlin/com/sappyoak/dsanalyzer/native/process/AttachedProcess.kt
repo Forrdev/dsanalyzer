@@ -5,5 +5,7 @@ public interface AttachedProcess : ProcessMemory, AutoCloseable {
     public val isRunning: Boolean
 
     /** Enumerated on demand, since modules can load and unload while attached */
-    public fun modules(): List<ModuleInfo>
+    public fun modules(): List<ModuleInfo> {
+        return Processes.Current.modules(info.pid)
+    }
 }
