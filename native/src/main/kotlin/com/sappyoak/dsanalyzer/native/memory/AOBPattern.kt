@@ -20,10 +20,11 @@ public class AOBPattern private constructor(
 
     private val anchor: Int = fixed.indexOfFirst { it }
 
-    public fun findIn(buffer: ByteArray): List<Int> {
+    /** Every index in the first [size] bytes of [buffer] where this pattern matches, in order */
+    public fun findIn(buffer: ByteArray, size: Int = buffer.size): List<Int> {
         val matches = mutableListOf<Int>()
         val anchorByte = bytes[anchor]
-        for (start in 0..buffer.size - length) {
+        for (start in 0..size - length) {
             if (buffer[start + anchor] == anchorByte && matchesAt(buffer, start)) {
                 matches.add(start)
             }
