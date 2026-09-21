@@ -17,7 +17,6 @@ import com.sappyoak.dsanalyzer.app.paths.ToolPaths
 import com.sappyoak.dsanalyzer.app.startup.StartupMessage
 import com.sappyoak.dsanalyzer.app.startup.ui.StartupScreen
 import com.sappyoak.dsanalyzer.app.verification.VerificationMessage
-import com.sappyoak.dsanalyzer.app.verification.VerificationStore
 import com.sappyoak.dsanalyzer.app.verification.ui.VerificationDialog
 
 fun main() {
@@ -35,7 +34,7 @@ fun main() {
     )
 
     val model = createAppModel(scope, paths)
-    model.startup.dispatch(StartupMessage.Start)
+    model.start()
 
     application {
         Window(
