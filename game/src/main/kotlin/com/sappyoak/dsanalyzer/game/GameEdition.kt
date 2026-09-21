@@ -2,11 +2,13 @@ package com.sappyoak.dsanalyzer.game
 
 import kotlinx.serialization.Serializable
 
+import com.sappyoak.dsanalyzer.shared.platform.PointerSize
+
 @Serializable
 public enum class GameEdition(
     public val steamAppId: Int,
     public val executableName: String,
-    public val pointerSize: Int,
+    public val pointerSize: PointerSize,
     /**
      * Rate of the game's logic tick. This is the rate at which the game logic itself ticks. Deliberately not called
      * frame rate as rendering is separate from this, but in many cases they are the same
@@ -16,14 +18,14 @@ public enum class GameEdition(
     PrepareToDie(
         steamAppId = 211_420,
         executableName = "DARKSOULS.exe",
-        pointerSize = 4,
+        pointerSize = PointerSize.IntPointer,
         logicTickHz = 30
     ),
 
     Remastered(
         steamAppId = 570_940,
         executableName = "DarkSoulsRemastered.exe",
-        pointerSize = 8,
+        pointerSize = PointerSize.LongPointer,
         logicTickHz = 60
     );
 
