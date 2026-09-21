@@ -29,5 +29,6 @@ rootProject.name = "dsanalysis"
 
 include(":shared")
 include(":formats")
+include(":native")
 include(":game")
 include(":app")
