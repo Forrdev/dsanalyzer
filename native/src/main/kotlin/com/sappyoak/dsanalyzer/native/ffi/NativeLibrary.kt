@@ -44,3 +44,13 @@ public class NativeLibrary private constructor(
         public fun openOrNull(name: String): NativeLibrary? = runCatching { open(name) }.getOrNull()
     }
 }
+
+internal fun NativeLibrary.downcallWindows(
+    symbol: String,
+    descriptor: FunctionDescriptor
+): MethodHandle = downcall(symbol, descriptor, CallState.WindowsLastError)
+
+internal fun NativeLibrary.downcallLinux(
+    symbol: String,
+    descriptor: FunctionDescriptor
+): MethodHandle = downcall(symbol, descriptor, CallState.Errno)
