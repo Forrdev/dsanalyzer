@@ -5,8 +5,10 @@ import java.lang.foreign.MemorySegment
 import java.lang.foreign.StructLayout
 import java.lang.foreign.ValueLayout.*
 
-
+import com.sappyoak.dsanalyzer.native.memory.Address
+import com.sappyoak.dsanalyzer.native.memory.AddressRange
 import com.sappyoak.dsanalyzer.native.process.AttachedProcess
+import com.sappyoak.dsanalyzer.native.process.ModuleInfo
 import com.sappyoak.dsanalyzer.native.process.ProcessAccessException
 import com.sappyoak.dsanalyzer.native.process.ProcessInfo
 import com.sappyoak.dsanalyzer.native.process.Processes
@@ -52,6 +54,16 @@ internal object WindowsProcesses : Processes {
         return WindowsProcess(process, handle, pointerSize)
     }
 
+    fun modules(pid: Int): List<ModuleInfo> = snapshot(SNAP_MODULE or SNAP_MODULE_32, pid, MODULE_ENTRY) { handle, entry, first ->
+        if (!Kernel32.module32(handle, entry, first)) return@snapshot null
+        ModuleInfo(
+            name = entry.wideString(MODULE_ENTRY, "szModule"),
+            range = AddressRange(
+                Address(entry.addressField(MODULE_ENTRY, "modBaseAddr")),
+                entry.intField(MODULE_ENTRY, "modBaseSize").toUInt().toLong()
+            )
+        )
+    }
     /**
      * Walks a toolhelp snapshot. [next] reads one entry and returns null at the end.
      * Module snapshots fail with ERROR_BAD_LENGTH while the target is loading a library,

@@ -82,7 +82,7 @@ internal class WindowsProcess(
         regions
     }
 
-    override fun modules(): List<ModuleInfo> = TODO()
+    override fun modules(): List<ModuleInfo> = WindowsProcesses.modules(info.pid)
 
     override fun close() {
         if (closed.compareAndSet(false, true)) {
