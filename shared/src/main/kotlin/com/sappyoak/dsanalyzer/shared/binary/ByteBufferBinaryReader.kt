@@ -2,7 +2,8 @@ package com.sappyoak.dsanalyzer.shared.binary
 
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-import java.nio.charset.Charset
+
+import com.sappyoak.dsanalyzer.shared.platform.PointerSize
 
 class ByteBufferBinaryReader(
     private val bytes: ByteArray,

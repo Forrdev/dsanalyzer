@@ -8,6 +8,8 @@ import io.kotest.matchers.string.shouldContain
 import java.lang.foreign.MemorySegment
 import java.nio.ByteOrder
 
+import com.sappyoak.dsanalyzer.shared.platform.PointerSize
+
 fun createReaders(
     bytes: ByteArray,
     position: Int = 0,
