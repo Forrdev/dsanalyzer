@@ -25,6 +25,8 @@ public fun reduceSettings(
     }
 
     is SettingsMessage.SaveFailed -> state.copy(problem = SettingsProblem.NotSaved(message.detail)).with()
+
+    SettingsMessage.ProblemDismissed -> state.copy(problem = null).with()
 }
 
 private fun SettingsState.finishLoading(
