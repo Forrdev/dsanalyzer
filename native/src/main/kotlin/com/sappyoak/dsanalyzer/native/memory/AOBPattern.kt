@@ -8,7 +8,13 @@ private val SPLIT_REGEX = "\\s+".toRegex()
  */
 public class AOBPattern private constructor(
     private val bytes: ByteArray,
-    private val fixed: BooleanArray
+    private val fixed: BooleanArray,
+    /** Bytes from the match start to the value being extracted */
+    public val resultOffset: Int = 0,
+    /** Whether the extracted value is a RIP-relative displacement rather than an absolute address */
+    public val ripRelative: Boolean = false,
+    /** Bytes from the displacement field to the end of the instructions for RIP-relative math */
+    public val instructionLength: Int = 0
 ) {
     public val length: Int get() = bytes.size
 
@@ -34,7 +40,12 @@ public class AOBPattern private constructor(
 
     public companion object {
 
-        public fun parse(text: String): AOBPattern {
+        public fun parse(
+            text: String,
+            resultOffset: Int = 0,
+            ripRelative: Boolean = false,
+            instructionLength: Int = 0
+        ): AOBPattern {
             val tokens = text.trim().split(SPLIT_REGEX).filter { it.isNotEmpty() }
             require(tokens.isNotEmpty()) { "Empty pattern" }
 
@@ -48,7 +59,13 @@ public class AOBPattern private constructor(
                 token.toInt(16).toByte()
             }
 
-            return AOBPattern(bytes, fixed)
+            return AOBPattern(
+                bytes = bytes,
+                fixed = fixed,
+                resultOffset = resultOffset,
+                ripRelative = ripRelative,
+                instructionLength = instructionLength
+            )
         }
     }
 
