@@ -15,7 +15,6 @@ public fun reduceStartup(
 
     is StartupMessage.SettingsLoaded -> state
         .copy(lastActiveWorkspaceId = message.settings.lastActiveWorkspaceId)
-        .noting(message.recoveredFrom?.let(StartupNotice::SettingsRecovered))
         .with(StartupEffect.CheckInstallations(message.settings.installations))
 
     is StartupMessage.FolderChosen -> state
@@ -94,15 +93,13 @@ private fun StartupState.opening(workspace: Workspace): Transition<StartupState,
     ).persisting()
 
 private fun StartupState.persisting(): Transition<StartupState, StartupEffect> =
-    with(StartupEffect.SaveSettings(Settings(installations, lastActiveWorkspaceId)))
+    with(StartupEffect.Remember(StartupChoices(installations, lastActiveWorkspaceId)))
 
 private fun StartupState.noting(notice: StartupNotice?): StartupState =
     if (notice == null) this else copy(notices = notices + notice)
 
 private fun noticeFor(message: StartupMessage.OperationFailed): StartupNotice =
     when (val operation = message.operation) {
-        FailedStartupOperation.LoadSettings -> StartupNotice.SettingsUnreadable(message.detail)
-        FailedStartupOperation.SaveSettings -> StartupNotice.SettingsNotSaved(message.detail)
         is FailedStartupOperation.InspectFolder -> StartupNotice.FolderNotInspected(operation.folder, message.detail)
         FailedStartupOperation.CheckInstallations -> StartupNotice.InstallationsUncheckable(message.detail)
         FailedStartupOperation.ListWorkspaces -> StartupNotice.WorkspacesUnreadable(message.detail)
@@ -112,8 +109,6 @@ private fun noticeFor(message: StartupMessage.OperationFailed): StartupNotice =
 private fun FailedStartupOperation.recover(
     state: StartupState
 ): Transition<StartupState, StartupEffect> = when (this) {
-    FailedStartupOperation.LoadSettings -> state.with(StartupEffect.CheckInstallations(emptyList()))
-    FailedStartupOperation.SaveSettings -> state.with()
     is FailedStartupOperation.InspectFolder -> state.copy(phase = idlePhase(state)).with()
     FailedStartupOperation.CheckInstallations -> state
         .copy(installations = emptyList())

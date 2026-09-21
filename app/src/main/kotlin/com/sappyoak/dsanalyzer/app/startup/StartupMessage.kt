@@ -52,8 +52,6 @@ public sealed interface StartupMessage {
 }
 
 public sealed interface FailedStartupOperation {
-    public data object LoadSettings : FailedStartupOperation
-    public data object SaveSettings : FailedStartupOperation
     public data object CheckInstallations : FailedStartupOperation
     public data object ListWorkspaces : FailedStartupOperation
 
