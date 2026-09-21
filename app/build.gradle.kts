@@ -12,6 +12,7 @@ dependencies {
     implementation(compose.material3)
     implementation(compose.materialIconsExtended)
 
+    implementation(project(":shared"))
     implementation(project(":game"))
 
     with(libs) {

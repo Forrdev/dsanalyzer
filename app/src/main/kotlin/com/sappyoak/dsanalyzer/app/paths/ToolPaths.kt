@@ -1,7 +1,8 @@
 package com.sappyoak.dsanalyzer.app.paths
 
+import com.sappyoak.dsanalyzer.shared.platform.OS
+
 import java.nio.file.Path
-import java.util.Locale
 import kotlin.io.path.createDirectories
 
 
@@ -23,12 +24,12 @@ public class ToolPaths(public val root: Path = getDefaultRoot()) {
 
         private fun getDefaultRoot(): Path {
             val home = Path.of(System.getProperty("user.home"))
-            val os = System.getProperty("os.name").lowercase(Locale.ROOT)
+            val os = OS.current
 
             return when {
-                os.startsWith("win") -> pathFromEnvironment("LOCALAPPDATA")?.resolve(DIRECTORY_NAME)
+                os.isWindows -> pathFromEnvironment("LOCALAPPDATA")?.resolve(DIRECTORY_NAME)
                     ?: home.resolve("AppData/Local/$DIRECTORY_NAME")
-                os.startsWith("mac") -> home.resolve("Library/Application Support/$DIRECTORY_NAME")
+                os.isMac -> home.resolve("Library/Application Support/$DIRECTORY_NAME")
                 else -> pathFromEnvironment("XDG_DATA_HOME")?.resolve(DIRECTORY_NAME)
                     ?: home.resolve(".local/share/$DIRECTORY_NAME")
             }
