@@ -42,7 +42,8 @@ jvm-testing = [
     "kotlin-test",
     "kotest-assertions",
     "kotest-property",
-    "kotest-runner-junit"
+    "kotest-runner-junit",
+    "kotlinx-coroutines-test"
 ]
 
 [plugins]

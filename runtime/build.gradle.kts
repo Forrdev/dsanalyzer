@@ -11,3 +11,9 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.serialization.json)
 }
+
+kotlin {
+    compilerOptions {
+        optIn.add("kotlinx.coroutines.ExperimentalCoroutinesApi")
+    }
+}
