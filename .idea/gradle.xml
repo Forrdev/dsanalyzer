@@ -24,6 +24,7 @@
             <option value="$PROJECT_DIR$/build-logic" />
             <option value="$PROJECT_DIR$/formats" />
             <option value="$PROJECT_DIR$/game" />
+            <option value="$PROJECT_DIR$/native" />
             <option value="$PROJECT_DIR$/shared" />
           </set>
         </option>
