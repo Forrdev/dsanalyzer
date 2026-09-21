@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.flow
 import java.nio.file.Path
 
 import com.sappyoak.dsanalyzer.app.settings.Settings
+import com.sappyoak.dsanalyzer.app.settings.SettingsAccess
 import com.sappyoak.dsanalyzer.app.settings.SettingsFile
 import com.sappyoak.dsanalyzer.app.store.EffectRunner
 import com.sappyoak.dsanalyzer.app.workspace.WorkspaceDirectory
@@ -18,7 +19,7 @@ import com.sappyoak.dsanalyzer.game.inspectInstallation
 private const val INSPECTION_KEY = "inspection"
 
 public class StartupEffects(
-    private val settingsFile: SettingsFile,
+    private val settings: SettingsAccess,
     private val workspaces: WorkspaceDirectory
 ) : EffectRunner<StartupEffect, StartupMessage> {
     /**
@@ -31,20 +32,17 @@ public class StartupEffects(
     override fun execute(effect: StartupEffect): Flow<StartupMessage> =
         flow { performEffect(effect)?.let { emit(it) } }
 
-    override fun onFailure(effect: StartupEffect, failure: Throwable): StartupMessage =
-        StartupMessage.OperationFailed(
-            operation = operationOf(effect),
-            detail = failure.message?: failure.toString()
-        )
+    override fun onFailure(effect: StartupEffect, failure: Throwable): StartupMessage? =
+        operationOf(effect)?.let { operation ->
+            StartupMessage.OperationFailed(operation, failure.message ?: failure.toString())
+        }
 
     /** Returns null for effects that produce no message */
     private suspend fun performEffect(effect: StartupEffect): StartupMessage? = when (effect) {
-        StartupEffect.LoadSettings -> settingsFile.read().let { result ->
-            StartupMessage.SettingsLoaded(result.settings, result.recoveredFrom)
-        }
+        StartupEffect.LoadSettings -> StartupMessage.SettingsLoaded(settings.loaded())
 
-        is StartupEffect.SaveSettings -> {
-            settingsFile.write(effect.settings)
+        is StartupEffect.Remember -> {
+            settings.edit(effect.choices)
             null
         }
 
@@ -71,9 +69,9 @@ public class StartupEffects(
         installations.filter { inspectInstallation(it.root) is InstallationCheck.Valid }
     }
 
-    private fun operationOf(effect: StartupEffect): FailedStartupOperation = when (effect) {
-        StartupEffect.LoadSettings -> FailedStartupOperation.LoadSettings
-        is StartupEffect.SaveSettings -> FailedStartupOperation.SaveSettings
+    private fun operationOf(effect: StartupEffect): FailedStartupOperation? = when (effect) {
+        StartupEffect.LoadSettings -> null
+        is StartupEffect.Remember -> null
         is StartupEffect.InspectFolder -> FailedStartupOperation.InspectFolder(effect.folder)
         is StartupEffect.CheckInstallations -> FailedStartupOperation.CheckInstallations
         StartupEffect.ListWorkspaces -> FailedStartupOperation.ListWorkspaces
@@ -83,7 +81,7 @@ public class StartupEffects(
 
 public sealed interface StartupEffect {
     public data object LoadSettings : StartupEffect
-    public data class SaveSettings(public val settings: Settings) : StartupEffect
+    public data class Remember(public val choices: StartupChoices) : StartupEffect
 
     public data class InspectFolder(public val folder: Path) : StartupEffect
     public data class CheckInstallations(
