@@ -3,6 +3,8 @@ package com.sappyoak.dsanalyzer.app.settings
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import java.nio.file.Path
@@ -20,6 +22,7 @@ public class SettingsFile(
     private val json: Json
 ) {
     private val logger = KotlinLogging.logger { }
+    private val writing = Mutex()
 
     /** Loads settings, writing the file with defaults it if does not exist yet */
     public suspend fun read(): SettingsReadResult = withContext(Dispatchers.IO) {
@@ -37,8 +40,8 @@ public class SettingsFile(
         }
     }
 
-    public suspend fun write(settings: Settings): Unit = withContext(Dispatchers.IO) {
-        persist(settings)
+    public suspend fun write(settings: Settings): Unit = writing.withLock {
+        withContext(Dispatchers.IO) { persist(settings) }
     }
 
     private fun materializeDefaults(): Settings {
