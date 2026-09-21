@@ -21,6 +21,7 @@ public interface ProcessMemory {
     public fun read(address: Address, into: MemorySegment): Boolean
 
     public fun write(address: Address, bytes: ByteArray): Boolean
+    public fun write(address: Address, from: MemorySegment): Boolean
 
     /** The mapped regions overlapping [range], clipped to it in address order */
     public fun regions(range: AddressRange): List<MemoryRegion>
