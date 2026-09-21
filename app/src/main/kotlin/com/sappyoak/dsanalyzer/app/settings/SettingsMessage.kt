@@ -11,5 +11,6 @@ public sealed interface SettingsMessage {
     ) : SettingsMessage
 
     public data class LoadFailed(public val detail: String) : SettingsMessage
+    public data class Edited(public val edit: SettingsEdit) : SettingsMessage
     public data class SaveFailed(public val detail: String) : SettingsMessage
 }

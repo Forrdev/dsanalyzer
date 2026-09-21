@@ -14,4 +14,7 @@ public class SettingsStore(
     initial = SettingsState(),
     reduce = ::reduceSettings,
     effects = effects
-)
+), SettingsAccess {
+    override suspend fun loaded(): Settings = state.first { it.loaded }.settings
+    override fun edit(edit: SettingsEdit): Unit = dispatch(SettingsMessage.Edited(edit))
+}

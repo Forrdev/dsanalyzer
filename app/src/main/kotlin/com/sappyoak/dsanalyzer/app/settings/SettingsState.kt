@@ -5,6 +5,8 @@ import java.nio.file.Path
 public data class SettingsState(
     public val settings: Settings = Settings(),
     public val loaded: Boolean = false,
+    /** Edits that arrived before loading finished */
+    public val pending: List<SettingsEdit> = emptyList(),
     public val problem: SettingsProblem? = null
 )
 
