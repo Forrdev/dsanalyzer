@@ -14,11 +14,16 @@ import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.game.InstallationId
 
 /**
- * Keeps at most one open [GameFiles] er installation, shared by everything that reads it.
+ * Keeps at most one open [GameFiles] per installation, shared by everything that reads it.
  *
  * Access is leased through [use] rather than handed out because [GameFiles] is backed by mapped
  * memory and reading it after it closes crashes the JVM rather than throwing. An instance is never
  * closed while leased.
+ *
+ * This is the same reason that a simple monitor is used and locks on the entire map.
+ * A concurrent map would not provide sufficient atomicity around the [Held.idleClose] job potentially leading
+ * to the case where you could acquire a lease after it has been closed, and since [AutoCloseable] is non-suspending
+ * a mutex would force a deadlock
  *
  * Idle instances close after [idleTimeout]. On Windows a mapped file cannot be modified, so holding
  * the archive open for the app's entire lifetime would make Steam updates of the game fail.
