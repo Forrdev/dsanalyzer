@@ -3,6 +3,9 @@ package com.sappyoak.dsanalyzer.formats.msb.part
 import com.sappyoak.dsanalyzer.formats.msb.GroupMask
 import com.sappyoak.dsanalyzer.formats.msb.ModelIndex
 import com.sappyoak.dsanalyzer.formats.msb.asReference
+import com.sappyoak.dsanalyzer.formats.msb.assertZeroByte
+import com.sappyoak.dsanalyzer.formats.msb.assertZeroBytes
+import com.sappyoak.dsanalyzer.formats.msb.assertZeros
 import com.sappyoak.dsanalyzer.formats.msb.readEntityId
 import com.sappyoak.dsanalyzer.formats.msb.readGroupMask
 import com.sappyoak.dsanalyzer.formats.msb.readRequiredOffset
@@ -58,7 +61,7 @@ internal fun BinaryReader.readPartHeader(start: Long): PartHeader {
     val displayGroups = readGroupMask()
     val entityOffset = readRequiredOffset()
     val typeDataOffset = readRequiredOffset()
-    assertValue(0) { readInt() }
+    assertZeros(1)
 
     position = start + entityOffset
     val entityId = readEntityId()
@@ -81,9 +84,9 @@ internal fun BinaryReader.readPartHeader(start: Long): PartHeader {
 
 private fun BinaryReader.readRendering(): PartRendering {
     val ids = List(10) { readByte().toInt() }
-    assertValue(0) { readByte().toInt() }
+    assertZeroByte()
     val flags = List(7) { readBoolean() }
-    repeat(2) { assertValue(0) { readByte().toInt() } }
+    assertZeroBytes(2)
 
     return PartRendering(
         lightId = ids[0],

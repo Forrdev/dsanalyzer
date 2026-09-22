@@ -1,5 +1,6 @@
 package com.sappyoak.dsanalyzer.formats.msb.region
 
+import com.sappyoak.dsanalyzer.formats.msb.assertZeros
 import com.sappyoak.dsanalyzer.formats.msb.readCoded
 import com.sappyoak.dsanalyzer.formats.msb.readEntityId
 import com.sappyoak.dsanalyzer.formats.msb.readRequiredOffset
@@ -21,7 +22,7 @@ public data class Region(
 internal fun BinaryReader.readRegion(): Region {
     val start = position
     val nameOffset = readRequiredOffset()
-    assertValue(0) { readInt() }
+    assertZeros(1)
     skip(4)
 
     val shapeType = readCoded<ShapeType>()
@@ -31,7 +32,7 @@ internal fun BinaryReader.readRegion(): Region {
     val shapeAt = position
     val shapeOffset = readInt().toLong()
     val entityOffset = readRequiredOffset()
-    assertValue(0) { readInt() }
+    assertZeros(1)
 
     if ((shapeType != ShapeType.Point) != (shapeOffset != 0L)) {
         throw BinaryFormatException("$shapeType region has shape data offset $shapeOffset", shapeAt)

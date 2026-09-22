@@ -4,6 +4,7 @@ import com.sappyoak.dsanalyzer.formats.msb.CollisionIndex
 import com.sappyoak.dsanalyzer.formats.msb.EnvironmentIndex
 import com.sappyoak.dsanalyzer.formats.msb.RegionIndex
 import com.sappyoak.dsanalyzer.formats.msb.asReference
+import com.sappyoak.dsanalyzer.formats.msb.assertZeroByte
 import com.sappyoak.dsanalyzer.formats.msb.assertZeros
 import com.sappyoak.dsanalyzer.formats.msb.readCoded
 import com.sappyoak.dsanalyzer.formats.msb.readEntityId
@@ -65,7 +66,7 @@ private fun BinaryReader.readEnemyData(): EnemyData {
     val npcParamId = readInt()
     val talkId = readInt()
     val pointMoveType = readUByte().toInt()
-    assertValue(0) { readByte().toInt() }
+    assertZeroByte()
     val platoonId = readUShort().toInt()
     val charaInitId = readInt()
     val drawParent = readPartIndex()
