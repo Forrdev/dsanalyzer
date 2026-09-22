@@ -39,4 +39,6 @@ public value class EnvironmentIndex(public val value: Int) {
 internal fun BinaryReader.readEntityId(): Int? = readInt().takeUnless { it == NO_REFERENCE }
 
 internal fun BinaryReader.readPartIndex(): PartIndex? = readInt().asReference(::PartIndex)
+internal fun BinaryReader.readRegionIndex(): RegionIndex? = readInt().asReference(::RegionIndex)
+
 internal inline fun <T> Int.asReference(wrap: (Int) -> T): T? = if (this == NO_REFERENCE) null else wrap(this)

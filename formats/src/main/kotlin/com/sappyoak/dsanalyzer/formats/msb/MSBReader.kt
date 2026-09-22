@@ -1,5 +1,6 @@
 package com.sappyoak.dsanalyzer.formats.msb
 
+import com.sappyoak.dsanalyzer.formats.msb.event.readEvent
 import java.nio.ByteOrder
 
 import com.sappyoak.dsanalyzer.formats.msb.model.readModel
@@ -19,11 +20,11 @@ public fun readMSB(reader: BinaryReader): MSB {
     reader.position = 0
 
     val models = reader.readParamList(MODEL_PARAM, isLast = false) { readModel() }
-    reader.readParamList(EVENT_PARAM, isLast = false) { }
+    val events = reader.readParamList(EVENT_PARAM, isLast = false) { readEvent() }
     val regions = reader.readParamList(POINT_PARAM, isLast = false) { readRegion() }
     val parts = reader.readParamList(PARTS_PARAM, isLast = true) { readPart() }
 
-    return MSB(models, regions, parts)
+    return MSB(models, events, regions, parts)
 }
 
 /** An offset the format requires to point somewhere, so a zero means the data is malformed */
@@ -34,5 +35,7 @@ internal fun BinaryReader.readRequiredOffset(): Long {
 }
 
 internal fun BinaryReader.assertZeros(count: Int) = repeat(count) { assertValue(0) { readInt() } }
+internal fun BinaryReader.assertZeroByte() = assertValue(0) { readByte().toInt() }
+internal fun BinaryReader.assertZeroBytes(count: Int) = repeat(count) { assertValue(0) { readByte().toInt() } }
 internal fun BinaryReader.readStringAt(start: Long, offset: Long): String = at(start + offset) { readShiftJIS() }
 
