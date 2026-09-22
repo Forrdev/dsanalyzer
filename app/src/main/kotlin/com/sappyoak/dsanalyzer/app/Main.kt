@@ -50,8 +50,15 @@ fun main() {
             val settingsState by model.settings.state.collectAsState()
             val startupState by model.startup.state.collectAsState()
             val verificationState by model.verification.state.collectAsState()
+            val connectionState by model.connection.state.collectAsState()
 
-            AppMenuBar(startupState, model.startup, model.verification, onQuit = ::exitApplication)
+            AppMenuBar(
+                model = model,
+                state = startupState,
+                connection = connectionState,
+                autoConnect = settingsState.settings.connection.autoConnect,
+                onQuit = ::exitApplication
+            )
             MaterialTheme {
                 Surface {
                     Column(modifier = Modifier.fillMaxSize()) {

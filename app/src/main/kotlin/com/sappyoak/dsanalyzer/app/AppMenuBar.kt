@@ -3,6 +3,9 @@ package com.sappyoak.dsanalyzer.app
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.MenuBar
+
+import com.sappyoak.dsanalyzer.app.connection.ConnectionState
+import com.sappyoak.dsanalyzer.app.connection.ui.GameConnectionMenu
 import com.sappyoak.dsanalyzer.app.startup.StartupMessage
 import com.sappyoak.dsanalyzer.app.startup.StartupPhase
 import com.sappyoak.dsanalyzer.app.startup.StartupState
@@ -13,9 +16,10 @@ import com.sappyoak.dsanalyzer.app.verification.VerificationStore
 
 @Composable
 public fun FrameWindowScope.AppMenuBar(
+    model: AppModel,
     state: StartupState,
-    startupStore: StartupStore,
-    verificationStore: VerificationStore,
+    connection: ConnectionState,
+    autoConnect: Boolean,
     onQuit: () -> Unit
 ) {
     val workspaceOpen = state.phase is StartupPhase.Ready
@@ -23,19 +27,19 @@ public fun FrameWindowScope.AppMenuBar(
     MenuBar {
         Menu("File", mnemonic = 'F') {
             Item("New workspace") {
-                startupStore.dispatch(StartupMessage.NewWorkspaceRequested)
+                model.startup.dispatch(StartupMessage.NewWorkspaceRequested)
             }
 
             Menu("Open workspace", enabled = state.workspaces.isNotEmpty()) {
                 state.workspaces.forEach { workspace ->
                     Item(workspace.name) {
-                        startupStore.dispatch(StartupMessage.WorkspaceChosen(workspace.id))
+                        model.startup.dispatch(StartupMessage.WorkspaceChosen(workspace.id))
                     }
                 }
             }
 
             Item("Close workspace", enabled = workspaceOpen) {
-                startupStore.dispatch(StartupMessage.WorkspacePickerRequested)
+                model.startup.dispatch(StartupMessage.WorkspacePickerRequested)
             }
 
             Separator()
@@ -45,16 +49,18 @@ public fun FrameWindowScope.AppMenuBar(
 
         Menu("Installation", mnemonic = 'I') {
             Item("Add Installation") {
-                chooseInstallationDirectory()?.let { startupStore.dispatch(StartupMessage.FolderChosen(it)) }
+                chooseInstallationDirectory()?.let { model.startup.dispatch(StartupMessage.FolderChosen(it)) }
             }
 
             Menu("Verify", enabled = state.installations.isNotEmpty()) {
                 state.installations.forEach { installation ->
                     Item("${installation.build.edition.name} - ${installation.root}") {
-                        verificationStore.dispatch(VerificationMessage.VerificationRequested(installation))
+                        model.verification.dispatch(VerificationMessage.VerificationRequested(installation))
                     }
                 }
             }
         }
+
+        GameConnectionMenu(connection, autoConnect, model.connection)
     }
 }

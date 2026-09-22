@@ -1,8 +1,11 @@
 package com.sappyoak.dsanalyzer.app
 
+
 import kotlinx.coroutines.CoroutineScope
 
-
+import com.sappyoak.dsanalyzer.app.connection.ConnectionEffects
+import com.sappyoak.dsanalyzer.app.connection.ConnectionMessage
+import com.sappyoak.dsanalyzer.app.connection.ConnectionStore
 import com.sappyoak.dsanalyzer.app.paths.ToolPaths
 import com.sappyoak.dsanalyzer.app.serialization.jsonSerializer
 import com.sappyoak.dsanalyzer.app.settings.SettingsEffects
@@ -18,16 +21,19 @@ import com.sappyoak.dsanalyzer.app.verification.VerificationMessage
 import com.sappyoak.dsanalyzer.app.verification.VerificationStore
 import com.sappyoak.dsanalyzer.app.workspace.WorkspaceDirectory
 import com.sappyoak.dsanalyzer.game.files.ArchiveFileIndex
+import com.sappyoak.dsanalyzer.native.process.Processes
 
 public class AppModel(
     public val settings: SettingsStore,
     public val startup: StartupStore,
-    public val verification: VerificationStore
+    public val verification: VerificationStore,
+    public val connection: ConnectionStore
 ) {
     public fun start() {
         settings.dispatch(SettingsMessage.Load)
         startup.dispatch(StartupMessage.Start)
         verification.dispatch(VerificationMessage.Start)
+        connection.dispatch(ConnectionMessage.Start)
     }
 }
 
@@ -51,6 +57,10 @@ public fun createAppModel(
                 // this is going to need to be dynamic
                 index = ArchiveFileIndex()
             )
+        ),
+        connection = ConnectionStore(
+            scope,
+            ConnectionEffects(settings, processes = { Processes.Current })
         )
     )
 }
