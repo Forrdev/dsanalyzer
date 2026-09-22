@@ -84,6 +84,7 @@ public open class Store<S : Any, M : Any, E : Any>(
                 throw cancellation
             } catch (err: Throwable) {
                 logger.error(err) { "Effect: ${effect.describe()} failed" }
+                effects.onFailure(effect, err)?.let(::dispatch)
             }
         }
 
