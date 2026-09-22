@@ -13,11 +13,21 @@ import kotlin.time.Duration.Companion.seconds
 import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.game.InstallationId
 
+/**
+ * Keeps at most one open [GameFiles] er installation, shared by everything that reads it.
+ *
+ * Access is leased through [use] rather than handed out because [GameFiles] is backed by mapped
+ * memory and reading it after it closes crashes the JVM rather than throwing. An instance is never
+ * closed while leased.
+ *
+ * Idle instances close after [idleTimeout]. On Windows a mapped file cannot be modified, so holding
+ * the archive open for the app's entire lifetime would make Steam updates of the game fail.
+ */
 public class InstallationFiles(
     private val scope: CoroutineScope,
     private val idleTimeout: Duration = 30.seconds,
     private val context: CoroutineContext = Dispatchers.IO,
-    private val open: (Installation) -> GameFiles
+    private val open: (Installation) -> GameFiles = ::openGameFiles
 ) : AutoCloseable {
     private val held = mutableMapOf<InstallationId, Held>()
 
