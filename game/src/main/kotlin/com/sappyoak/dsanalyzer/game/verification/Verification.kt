@@ -8,11 +8,9 @@ import com.sappyoak.dsanalyzer.game.files.FileListing
  * Compares what an installation contains against what it should container
  */
 fun verify(manifest: FileManifest, listing: FileListing): VerificationResult = when (listing) {
-    FileListing.Unsupported -> VerificationResult.ListingUnsupported
-
     is FileListing.Hashed -> {
         val expected = manifest.paths.associateBy(::archivePathHash)
-        VerificationResult.Checked(
+        VerificationResult(
             missing = expected.filterKeys { it !in listing.hashes }.values.sorted(),
             unidentified = (listing.hashes - expected.keys)
                 .map { "0x${it.toString(16).padStart(8, '0')}" }
@@ -24,7 +22,7 @@ fun verify(manifest: FileManifest, listing: FileListing): VerificationResult = w
         val expected = manifest.paths.mapTo(mutableSetOf(), ::normalizeArchivePath)
         val actual = listing.paths.mapTo(mutableSetOf(), ::normalizeArchivePath)
 
-        VerificationResult.Checked(
+        VerificationResult(
             missing = (expected - actual).sorted(),
             unidentified = (actual - expected).sorted()
         )
@@ -32,14 +30,7 @@ fun verify(manifest: FileManifest, listing: FileListing): VerificationResult = w
 }
 
 /** Outcome of checking an installation against a manifest */
-public sealed interface VerificationResult {
-    public data class Checked(
-        public val missing: List<String>,
-        public val unidentified: List<String>
-    ) : VerificationResult {
-        public val hasAllFiles: Boolean get() = missing.isEmpty()
-    }
-
-    /** The installation could not be enumerated, so nothing was compared */
-    public data object ListingUnsupported : VerificationResult
-}
+public data class VerificationResult(
+    public val missing: List<String>,
+    public val unidentified: List<String>
+)

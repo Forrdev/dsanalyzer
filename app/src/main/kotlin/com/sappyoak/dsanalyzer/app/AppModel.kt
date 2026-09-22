@@ -20,7 +20,6 @@ import com.sappyoak.dsanalyzer.app.verification.VerificationEffects
 import com.sappyoak.dsanalyzer.app.verification.VerificationMessage
 import com.sappyoak.dsanalyzer.app.verification.VerificationStore
 import com.sappyoak.dsanalyzer.app.workspace.WorkspaceDirectory
-import com.sappyoak.dsanalyzer.game.files.ArchiveFileIndex
 import com.sappyoak.dsanalyzer.game.files.InstallationFiles
 import com.sappyoak.dsanalyzer.native.process.Processes
 
@@ -61,8 +60,7 @@ public fun createAppModel(
             scope,
             VerificationEffects(
                 cache = VerificationCache(paths.verificationFile, jsonSerializer),
-                files = installationFiles,
-                index = ArchiveFileIndex()
+                files = installationFiles
             )
         ),
         connection = ConnectionStore(

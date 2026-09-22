@@ -5,18 +5,25 @@ internal val PREPARE_TO_DIE_ARCHIVE_STEMS: List<String> =
 
 private val ARCHIVE_EXTENSIONS = listOf("bhd5", "bdt")
 
+private val REMASTERED_DATA_DIRECTORIES = listOf("chr", "event", "map", "msg", "obj", "param", "script")
+
 public fun archiveStems(edition: GameEdition): List<String> = when (edition) {
     GameEdition.PrepareToDie -> PREPARE_TO_DIE_ARCHIVE_STEMS
     GameEdition.Remastered -> emptyList()
 }
 
-internal fun archiveFileNames(edition: GameEdition): List<String> = when (edition) {
-    GameEdition.PrepareToDie -> PREPARE_TO_DIE_ARCHIVE_STEMS.flatMap { stem ->
+/**
+ * Files and folders an installation must have besides its executable to be recognized as that
+ * edition. This is deliberately not a completeness check. Inspection runs on every launch for every known
+ * installation, so it only looks for the shape. Whether every file is present is what verification answers
+ */
+internal fun requiredPaths(edition: GameEdition): List<String> = when (edition) {
+    GameEdition.PrepareToDie -> archiveStems(edition).flatMap { stem ->
         ARCHIVE_EXTENSIONS.map { "$stem.$it" }
     }
-
-    GameEdition.Remastered -> emptyList()
+    GameEdition.Remastered -> REMASTERED_DATA_DIRECTORIES
 }
 
+/** Files whose size and modification time stand in for the whole installation changing currently */
 internal fun watchedFileNames(edition: GameEdition): List<String> =
-    listOf(edition.executableName) + archiveFileNames(edition)
+    listOf(edition.executableName) + requiredPaths(edition)

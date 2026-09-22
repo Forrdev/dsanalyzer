@@ -46,8 +46,6 @@ private fun Body(status: VerificationStatus?) {
             Text("Checking")
         }
 
-        VerificationStatus.Unsupported -> Text("This edition's files cannot be listed yet")
-
         is VerificationStatus.Failed -> Text("The check could not be completed: ${status.reason}")
         is VerificationStatus.Complete -> Summary(status.record)
     }

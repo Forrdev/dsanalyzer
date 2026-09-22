@@ -26,7 +26,5 @@ public sealed interface VerificationStatus {
 
     public data class Complete(public val record: VerificationRecord) : VerificationStatus
 
-    public data object Unsupported : VerificationStatus
-
     public data class Failed(public val reason: String) : VerificationStatus
 }

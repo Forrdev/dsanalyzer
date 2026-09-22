@@ -14,25 +14,15 @@ public fun inspectInstallation(root: Path): InstallationCheck {
     val edition = GameEdition.forExecutableName(executable.fileName.toString())
         ?: return InstallationCheck.Rejected(RejectionReason.UnrecognizedExecutable(executable.fileName.toString()))
 
-    return when (edition) {
-        GameEdition.PrepareToDie -> inspectPrepareToDie(root, executable)
-        GameEdition.Remastered -> InstallationCheck.Rejected(RejectionReason.EditionNotSupportedYet(edition))
-    }
-}
-
-
-private fun inspectPrepareToDie(root: Path, executable: Path): InstallationCheck {
-    val missing = archiveFileNames(GameEdition.PrepareToDie)
-        .filterNot { root.resolve(it).exists() }
-
+    val missing = requiredPaths(edition).filterNot { root.resolve(it).exists() }
     if (missing.isNotEmpty()) {
-        return InstallationCheck.Rejected(RejectionReason.MissingArchives(missing))
+        return InstallationCheck.Rejected(RejectionReason.MissingFiles(missing))
     }
 
     return InstallationCheck.Valid(Installation(
         id = InstallationId.forRoot(root),
         root = root,
         executable = executable,
-        build = GameBuild(GameEdition.PrepareToDie)
+        build = GameBuild(edition)
     ))
 }
