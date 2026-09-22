@@ -22,3 +22,6 @@ public sealed interface ConnectionStatus {
 
     public data class Unavailable(public val reason: String) : ConnectionStatus
 }
+
+public val ConnectionStatus.watching: Boolean
+    get() = this !is ConnectionStatus.Off && this !is ConnectionStatus.Unavailable

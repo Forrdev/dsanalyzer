@@ -7,6 +7,7 @@ public sealed interface ConnectionMessage {
 
     public data object ConnectRequested : ConnectionMessage
     public data object DisconnectRequested : ConnectionMessage
+    public data class AutoConnectChanged(public val enabled: Boolean) : ConnectionMessage
 
     public data object GameSearching : ConnectionMessage
     public data class GameConnected(
@@ -18,4 +19,6 @@ public sealed interface ConnectionMessage {
         public val executableName: String,
         public val reason: String
     ) : ConnectionMessage
+
+    public data class WatchFailed(public val reason: String) : ConnectionMessage
 }
