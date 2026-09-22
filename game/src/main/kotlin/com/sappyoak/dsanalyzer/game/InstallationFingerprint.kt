@@ -9,12 +9,6 @@ import kotlin.io.path.*
 import com.sappyoak.dsanalyzer.game.files.GameFile
 import com.sappyoak.dsanalyzer.game.files.walkGameFiles
 
-@Serializable
-public data class FileStamp(
-    public val size: Long,
-    public val modifiedEpochMillis: Long
-)
-
 /**
  * A cheap answer to "has this installation changed since we last looked"
  *
@@ -27,25 +21,38 @@ public data class InstallationFingerprint(
 )
 
 
-public fun Installation.fingerprint(): InstallationFingerprint = when (build.edition.storage) {
-    GameStorage.Archived -> stampAll(
-        (listOf(build.edition.executableName) + requiredPaths(build.edition))
-            .asSequence()
-            .map { GameFile(it, root.resolve(it)) }
-            .filter { it.file.exists() }
-    )
-
-    GameStorage.Loose -> walkGameFiles(root, ::stampAll)
-}
-private fun stampAll(files: Sequence<GameFile>): InstallationFingerprint {
+public fun Installation.fingerprint(): InstallationFingerprint {
     val digest = MessageDigest.getInstance("SHA-256")
-    var count = 0
+    val fileCount = when (build.edition.storage) {
+        GameStorage.Archived -> {
+            val files = (listOf(build.edition.executableName) + requiredPaths(build.edition))
+                .asSequence()
+                .map { GameFile(it, root.resolve(it)) }
+                .filter { it.file.exists() }
 
-    files.sortedBy { it.gamePath }.forEach { (gamePath, file) ->
-        val attributes = file.readAttributes<BasicFileAttributes>()
-        digest.update("$gamePath|${attributes.size()}|${attributes.lastModifiedTime().toMillis()}\n".toByteArray())
-        count++
+            digest.stamp(files).also {
+                archiveHeaderNames(build.edition)
+                    .map(root::resolve)
+                    .filter { it.exists() }
+                    .forEach { digest.update(it.readBytes()) }
+            }
+        }
+
+        GameStorage.Loose -> walkGameFiles(root) { digest.stamp(it) }
     }
 
-    return InstallationFingerprint(count, digest.digest().toHexString())
+    return InstallationFingerprint(fileCount, digest.digest().toHexString())
+}
+/**
+ * Adds each file's path, size, and modification time returning how many there were. Sorted
+ * first, so the result does not depend on file system order
+ */
+private fun MessageDigest.stamp(files: Sequence<GameFile>): Int {
+    var count = 0
+    files.sortedBy { it.gamePath }.forEach { (gamePath, file) ->
+        val attributes = file.readAttributes<BasicFileAttributes>()
+        update("$gamePath|${attributes.size()}|${attributes.lastModifiedTime().toMillis()}\n".toByteArray())
+        count++
+    }
+    return count
 }
