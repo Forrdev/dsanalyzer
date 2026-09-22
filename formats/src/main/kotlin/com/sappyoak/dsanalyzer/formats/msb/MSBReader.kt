@@ -13,7 +13,6 @@ private const val MODEL_PARAM = "MODEL_PARAM_ST"
 private const val EVENT_PARAM = "EVENT_PARAM_ST"
 private const val POINT_PARAM = "POINT_PARAM_ST"
 private const val PARTS_PARAM = "PARTS_PARAM_ST"
-private const val NO_REFERENCE = -1
 
 public fun readMSB(reader: BinaryReader): MSB {
     reader.order = ByteOrder.LITTLE_ENDIAN
@@ -37,7 +36,3 @@ internal fun BinaryReader.readRequiredOffset(): Long {
 internal fun BinaryReader.assertZeros(count: Int) = repeat(count) { assertValue(0) { readInt() } }
 internal fun BinaryReader.readStringAt(start: Long, offset: Long): String = at(start + offset) { readShiftJIS() }
 
-internal fun BinaryReader.readEntityId(): Int? = readInt().takeUnless { it == NO_REFERENCE }
-
-internal fun BinaryReader.readPartIndex(): PartIndex? = readInt().asReference(::PartIndex)
-internal inline fun <T> Int.asReference(wrap: (Int) -> T): T? = if (this == NO_REFERENCE) null else wrap(this)
