@@ -1,6 +1,7 @@
 package com.sappyoak.dsanalyzer.formats.msb
 
 import com.sappyoak.dsanalyzer.formats.msb.model.Model
+import com.sappyoak.dsanalyzer.formats.msb.part.Part
 import com.sappyoak.dsanalyzer.formats.msb.region.Region
 
 /**
@@ -10,9 +11,14 @@ import com.sappyoak.dsanalyzer.formats.msb.region.Region
  */
 public class MSB(
     public val models: List<Model>,
-    public val regions: List<Region>
+    public val regions: List<Region>,
+    public val parts: List<Part>
 ) {
+    public val collisions: List<Part.Collision> get() = parts.filterIsInstance<Part.Collision>()
+
     public operator fun get(index: ModelIndex): Model = models[index.value]
+    public operator fun get(index: PartIndex): Part = parts[index.value]
     public operator fun get(index: RegionIndex): Region = regions[index.value]
+    public operator fun get(index: CollisionIndex): Part.Collision = collisions[index.value]
 }
 
