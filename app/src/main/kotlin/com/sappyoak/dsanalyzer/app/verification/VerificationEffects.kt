@@ -9,6 +9,7 @@ import com.sappyoak.dsanalyzer.app.store.EffectRunner
 import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.game.InstallationFingerprint
 import com.sappyoak.dsanalyzer.game.InstallationId
+import com.sappyoak.dsanalyzer.game.files.InstallationFiles
 import com.sappyoak.dsanalyzer.game.files.InstalledFileIndex
 import com.sappyoak.dsanalyzer.game.fingerprint
 import com.sappyoak.dsanalyzer.game.verification.loadFileManifest
@@ -17,6 +18,7 @@ import com.sappyoak.dsanalyzer.game.verification.verify
 
 public class VerificationEffects(
     private val cache: VerificationCache,
+    private val files: InstallationFiles,
     private val index: InstalledFileIndex
 ) : EffectRunner<VerificationEffect, VerificationMessage> {
     /** One verification per installation at a time */
@@ -52,16 +54,20 @@ public class VerificationEffects(
             }
         )
 
-        is VerificationEffect.Run -> VerificationMessage.Completed(
-            installationId = effect.installation.id,
-            fingerprint = effect.fingerprint,
-            result = verify(
-                manifest = withContext(Dispatchers.IO) {
-                    loadFileManifest(effect.installation.build.edition)
-                },
-                listing = index.list(effect.installation)
+        is VerificationEffect.Run -> {
+            // Runs only when the fingerprint changes, so any open copy of the files is stale
+            files.retire(effect.installation.id)
+            VerificationMessage.Completed(
+                installationId = effect.installation.id,
+                fingerprint = effect.fingerprint,
+                result = verify(
+                    manifest = withContext(Dispatchers.IO) {
+                        loadFileManifest(effect.installation.build.edition)
+                    },
+                    listing = index.list(effect.installation)
+                )
             )
-        )
+        }
     }
 }
 

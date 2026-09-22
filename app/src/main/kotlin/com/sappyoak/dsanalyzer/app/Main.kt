@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.*
+import com.sappyoak.dsanalyzer.app.connection.ui.ConnectionStatusBar
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
@@ -69,6 +70,8 @@ fun main() {
                         Box(modifier = Modifier.weight(1f)) {
                             StartupScreen(startupState, model.startup)
                         }
+
+                        ConnectionStatusBar(connectionState.status)
                     }
 
                     verificationState.viewing

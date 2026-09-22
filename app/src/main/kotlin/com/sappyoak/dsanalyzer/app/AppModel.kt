@@ -21,19 +21,25 @@ import com.sappyoak.dsanalyzer.app.verification.VerificationMessage
 import com.sappyoak.dsanalyzer.app.verification.VerificationStore
 import com.sappyoak.dsanalyzer.app.workspace.WorkspaceDirectory
 import com.sappyoak.dsanalyzer.game.files.ArchiveFileIndex
+import com.sappyoak.dsanalyzer.game.files.InstallationFiles
 import com.sappyoak.dsanalyzer.native.process.Processes
 
 public class AppModel(
     public val settings: SettingsStore,
     public val startup: StartupStore,
     public val verification: VerificationStore,
-    public val connection: ConnectionStore
-) {
+    public val connection: ConnectionStore,
+    private val installationFiles: InstallationFiles
+) : AutoCloseable {
     public fun start() {
         settings.dispatch(SettingsMessage.Load)
         startup.dispatch(StartupMessage.Start)
         verification.dispatch(VerificationMessage.Start)
         connection.dispatch(ConnectionMessage.Start)
+    }
+
+    override fun close() {
+        installationFiles.close()
     }
 }
 
@@ -43,6 +49,7 @@ public fun createAppModel(
 ): AppModel {
     val settings = SettingsStore(scope, SettingsEffects(SettingsFile(paths.settings, jsonSerializer)))
     val workspaces = WorkspaceDirectory(paths.workspaces, jsonSerializer)
+    val installationFiles = InstallationFiles(scope)
 
     return AppModel(
         settings = settings,
@@ -54,13 +61,14 @@ public fun createAppModel(
             scope,
             VerificationEffects(
                 cache = VerificationCache(paths.verificationFile, jsonSerializer),
-                // this is going to need to be dynamic
+                files = installationFiles,
                 index = ArchiveFileIndex()
             )
         ),
         connection = ConnectionStore(
             scope,
             ConnectionEffects(settings, processes = { Processes.Current })
-        )
+        ),
+        installationFiles = installationFiles
     )
 }
