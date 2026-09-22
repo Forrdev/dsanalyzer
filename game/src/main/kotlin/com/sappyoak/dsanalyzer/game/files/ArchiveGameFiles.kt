@@ -6,6 +6,9 @@ import com.sappyoak.dsanalyzer.formats.archive.readArchive
 import com.sappyoak.dsanalyzer.formats.compression.decompress
 import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.game.archiveStems
+import com.sappyoak.dsanalyzer.game.ARCHIVE_DATA_EXTENSION
+import com.sappyoak.dsanalyzer.game.ARCHIVE_HEADER_EXTENSION
+import com.sappyoak.dsanalyzer.shared.binary.BinaryReader
 import com.sappyoak.dsanalyzer.shared.binary.MappedFile
 
 /**
@@ -17,16 +20,13 @@ internal class ArchiveGameFiles(
 ) : GameFiles {
     override fun listing(): FileListing = FileListing.Hashed(entries.keys)
 
-    override fun exists(path: String): Boolean = archivePathHash(path) in entries
+    override fun exists(path: GamePath): Boolean = path.hash in entries
 
-    override fun read(path: String): ByteArray? {
-        val located = entries[archivePathHash(path)] ?: return null
-        val raw = data[located.archive].reader().at(located.entry.offset) {
-            readBytes(located.entry.paddedSize)
-        }
-
-
-        return raw.decompress()
+    override fun open(path: GamePath): BinaryReader? {
+        val located = entries[path.hash] ?: return null
+        return data[located.archive].reader()
+            .slice(located.entry.offset, located.entry.paddedSize.toLong())
+            .decompress()
     }
 
     override fun close() {
@@ -43,9 +43,9 @@ internal class ArchiveGameFiles(
             try {
                 archiveStems(installation.build.edition).forEach { stem ->
                     val index = opened.size
-                    opened.add(MappedFile.open(installation.root.resolve("$stem.bdt")))
+                    opened.add(MappedFile.open(installation.root.resolve("$stem.$ARCHIVE_DATA_EXTENSION")))
 
-                    val header = MappedFile.open(installation.root.resolve("$stem.bhd5"))
+                    val header = MappedFile.open(installation.root.resolve("$stem.$ARCHIVE_HEADER_EXTENSION"))
                         .use { readArchive(it.reader()) }
 
                     header.entries.forEach { entry ->

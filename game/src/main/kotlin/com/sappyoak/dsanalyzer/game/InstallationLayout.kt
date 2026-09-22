@@ -3,8 +3,8 @@ package com.sappyoak.dsanalyzer.game
 internal val PREPARE_TO_DIE_ARCHIVE_STEMS: List<String> =
     listOf("dvdbnd0", "dvdbnd1", "dvdbnd2", "dvdbnd3")
 
-private const val ARCHIVE_HEADER_EXTENSION = "bhd5"
-private const val ARCHIVE_DATA_EXTENSION = "bdt"
+internal const val ARCHIVE_HEADER_EXTENSION = "bhd5"
+internal const val ARCHIVE_DATA_EXTENSION = "bdt"
 
 private val REMASTERED_DATA_DIRECTORIES = listOf("chr", "event", "map", "msg", "obj", "param", "script")
 

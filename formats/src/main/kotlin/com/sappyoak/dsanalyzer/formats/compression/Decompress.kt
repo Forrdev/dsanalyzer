@@ -1,35 +1,22 @@
 package com.sappyoak.dsanalyzer.formats.compression
 
-import java.lang.foreign.MemorySegment
 import java.nio.ByteOrder
 
 import com.sappyoak.dsanalyzer.shared.binary.BinaryFormatException
 import com.sappyoak.dsanalyzer.shared.binary.BinaryReader
-import com.sappyoak.dsanalyzer.shared.binary.MemorySegmentBinaryReader
 import com.sappyoak.dsanalyzer.shared.binary.assertValue
 
-public fun ByteArray.decompress(): ByteArray {
-    val reader = MemorySegmentBinaryReader(MemorySegment.ofArray(this))
-    val type = reader.getCompressionType()
-    return reader.decompress(type)
-}
-
 public fun BinaryReader.isCompressed(): Boolean = getCompressionType() != CompressionType.None
-public fun BinaryReader.decompress(): ByteArray = decompress(getCompressionType())
-
-private fun BinaryReader.decompress(type: CompressionType): ByteArray {
-    order = ByteOrder.BIG_ENDIAN
-    position = 0
-
-    return when (type) {
-        CompressionType.DCX -> decompressDCX()
-        CompressionType.DCP -> decompressDCP()
-        CompressionType.ZLIB -> readBytes(remaining.toInt()).inflate(null)
-        CompressionType.None -> readBytes(remaining.toInt())
-    }
+public fun BinaryReader.decompress(): BinaryReader = when (getCompressionType()) {
+    CompressionType.None -> this
+    CompressionType.DCX -> BinaryReader.ofSegmentBytes(decompressDCX())
+    CompressionType.DCP -> BinaryReader.ofSegmentBytes(decompressDCP())
+    CompressionType.ZLIB -> BinaryReader.ofSegmentBytes(at(0) { readBytes(size.toInt()) }.inflate(null))
 }
 
 private fun BinaryReader.decompressDCX(): ByteArray {
+    order = ByteOrder.BIG_ENDIAN
+
     when (val format = at(0x28) { readAscii(4) }) {
         "DFLT" -> Unit
         else -> throw BinaryFormatException("Unsupported DCX Compression $format", 0x28)
@@ -47,6 +34,8 @@ private fun BinaryReader.decompressDCX(): ByteArray {
 }
 
 private fun BinaryReader.decompressDCP(): ByteArray {
+    order = ByteOrder.BIG_ENDIAN
+
     when (val format = at(4) { readAscii(4) }) {
         "DFLT" -> Unit
         else -> throw BinaryFormatException("Unsupported DCP compression $format", 4)

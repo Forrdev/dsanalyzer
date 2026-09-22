@@ -17,6 +17,7 @@ import com.sappyoak.dsanalyzer.game.GameBuild
 import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.game.InstallationId
+import com.sappyoak.dsanalyzer.shared.binary.BinaryReader
 
 private val IDLE = 30.seconds
 private val INSTALLATION = Installation(
@@ -31,8 +32,8 @@ private class FakeGameFiles : GameFiles {
         private set
 
     override fun listing(): FileListing = FileListing.Named(emptySet())
-    override fun read(path: String): ByteArray? = null
-    override fun exists(path: String): Boolean = false
+    override fun exists(path: GamePath): Boolean = false
+    override fun open(path: GamePath): BinaryReader? = null
     override fun close() {
         closed = true
     }
