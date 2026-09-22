@@ -28,10 +28,6 @@ public fun readBinder(reader: BinaryReader, data: BinaryReader = reader): Binder
         else -> throw BinaryFormatException("Not a supported binder: $magic", 0)
     }
 
-public fun BinderEntry.readData(reader: BinaryReader): ByteArray {
-    val raw = reader.at(dataOffset) { readBytes(compressedSize.toInt()) }
-    return raw.decompress()
-}
 
 private fun requireDataFile(reader: BinaryReader, data: BinaryReader) {
     if (data === reader) {
