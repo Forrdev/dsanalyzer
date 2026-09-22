@@ -150,6 +150,13 @@ public interface BinaryReader {
             order: ByteOrder = ByteOrder.LITTLE_ENDIAN,
             pointerSize: PointerSize = PointerSize.IntPointer
         ): BinaryReader = MemorySegmentBinaryReader(segment, position, order, pointerSize)
+
+        public fun ofSegmentBytes(
+            bytes: ByteArray,
+            position: Int = 0,
+            order: ByteOrder = ByteOrder.LITTLE_ENDIAN,
+            pointerSize: PointerSize = PointerSize.IntPointer
+        ): BinaryReader = MemorySegmentBinaryReader(bytes, position, order, pointerSize)
     }
 }
 

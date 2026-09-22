@@ -17,6 +17,13 @@ public class MemorySegmentBinaryReader(
     order: ByteOrder = ByteOrder.LITTLE_ENDIAN,
     public override var pointerSize: PointerSize = PointerSize.IntPointer
 ) : BinaryReader {
+    public constructor(
+        bytes: ByteArray,
+        position: Int = 0,
+        order: ByteOrder = ByteOrder.LITTLE_ENDIAN,
+        pointerSize: PointerSize = PointerSize.IntPointer
+    ) : this(MemorySegment.ofArray(bytes), position, order, pointerSize)
+
     override var order: ByteOrder = order
         set(value) {
             field = value
