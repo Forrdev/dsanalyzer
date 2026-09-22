@@ -7,6 +7,7 @@ import androidx.compose.ui.*
 import androidx.compose.ui.unit.dp
 
 import com.sappyoak.dsanalyzer.app.startup.*
+import com.sappyoak.dsanalyzer.app.ui.NoticeBanner
 import com.sappyoak.dsanalyzer.app.ui.chooseInstallationDirectory
 import com.sappyoak.dsanalyzer.app.workspace.ui.NewWorkspaceDialog
 import com.sappyoak.dsanalyzer.app.workspace.ui.WorkspacePicker
@@ -17,7 +18,9 @@ import com.sappyoak.dsanalyzer.game.RejectionReason
 public fun StartupScreen(state: StartupState, store: StartupStore) {
     Column(modifier = Modifier.fillMaxSize()) {
         if (state.notices.isNotEmpty()) {
-            NoticeBanner(state.notices) { store.dispatch(StartupMessage.NoticesDismissed) }
+            NoticeBanner(state.notices.map { it.describe() }) {
+                store.dispatch(StartupMessage.NoticesDismissed)
+            }
         }
 
         Box(modifier = Modifier.weight(1f)) {

@@ -16,3 +16,10 @@ public sealed interface StartupNotice {
         public val detail: String
     ) : StartupNotice
 }
+
+internal fun StartupNotice.describe(): String = when (this) {
+    is StartupNotice.WorkspacesUnreadable -> "Existing workspaces could not be listed: $detail"
+    is StartupNotice.WorkspaceNotCreated -> "The workspace $name could not be created: $detail"
+    is StartupNotice.InstallationsUncheckable -> "Saved installation could not be checked: $detail"
+    is StartupNotice.FolderNotInspected -> "$folder could not be checked: $detail"
+}
