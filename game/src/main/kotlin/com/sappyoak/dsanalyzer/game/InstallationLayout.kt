@@ -23,7 +23,3 @@ internal fun requiredPaths(edition: GameEdition): List<String> = when (edition) 
     }
     GameEdition.Remastered -> REMASTERED_DATA_DIRECTORIES
 }
-
-/** Files whose size and modification time stand in for the whole installation changing currently */
-internal fun watchedFileNames(edition: GameEdition): List<String> =
-    listOf(edition.executableName) + requiredPaths(edition)

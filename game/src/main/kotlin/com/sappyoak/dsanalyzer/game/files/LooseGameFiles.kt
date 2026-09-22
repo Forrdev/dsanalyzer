@@ -17,11 +17,8 @@ import com.sappyoak.dsanalyzer.formats.compression.decompress
 internal class LooseGameFiles(root: Path) : GameFiles {
     private val root = root.toAbsolutePath().normalize()
 
-    override fun listing(): FileListing = Files.walk(root).use { paths ->
-        FileListing.Named(paths.asSequence()
-            .filter { it.isRegularFile() }
-            .mapTo(mutableSetOf()) { "/" + root.relativize(it).invariantSeparatorsPathString }
-        )
+    override fun listing(): FileListing = walkGameFiles(root) { files ->
+        FileListing.Named(files.mapTo(mutableSetOf()) { it.gamePath })
     }
 
     override fun read(path: String): ByteArray? = locate(path)?.readBytes()?.decompress()
