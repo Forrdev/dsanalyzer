@@ -7,7 +7,7 @@ import com.sappyoak.dsanalyzer.game.Installation
  * Reads game files by path, whichever way the edition happens to store them
  */
 public interface GameFiles : AutoCloseable {
-    public fun hashes(): Set<UInt>
+    public fun listing(): FileListing
 
     public fun read(path: String): ByteArray?
     public fun exists(path: String): Boolean
@@ -19,6 +19,6 @@ public interface GameFiles : AutoCloseable {
 public fun openGameFiles(installation: Installation): GameFiles =
     when (installation.build.edition) {
         GameEdition.PrepareToDie -> ArchiveGameFiles.open(installation)
-        GameEdition.Remastered -> throw UnsupportedOperationException("Remastered installations are not readable yet")
+        GameEdition.Remastered -> LooseGameFiles(installation.root)
     }
 

@@ -15,12 +15,11 @@ internal class ArchiveGameFiles(
     private val data: List<MappedFile>,
     private val entries: Map<UInt, Located>
 ) : GameFiles {
-    override fun hashes(): Set<UInt> = entries.keys
+    override fun listing(): FileListing = FileListing.Hashed(entries.keys)
 
     override fun exists(path: String): Boolean = archivePathHash(path) in entries
 
     override fun read(path: String): ByteArray? {
-
         val located = entries[archivePathHash(path)] ?: return null
         val raw = data[located.archive].reader().at(located.entry.offset) {
             readBytes(located.entry.paddedSize)

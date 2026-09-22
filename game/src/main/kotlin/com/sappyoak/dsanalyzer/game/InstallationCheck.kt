@@ -13,7 +13,7 @@ public sealed interface RejectionReason {
     public data class UnrecognizedExecutable(public val name: String) : RejectionReason
 
     /** The executable is recognized but expected archives/ files are absent */
-    public data class MissingArchives(public val names: List<String>) : RejectionReason
+    public data class MissingFiles(public val names: List<String>) : RejectionReason
 
     /** A real installation of an edition the tool does not handle yet */
     public data class EditionNotSupportedYet(public val edition: GameEdition) : RejectionReason

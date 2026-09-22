@@ -31,18 +31,15 @@ public fun reduceVerification(
         }
     }
 
-    is VerificationMessage.Completed -> when (val result = message.result) {
-        VerificationResult.ListingUnsupported -> state.setting(message.installationId, VerificationStatus.Unsupported).with()
-        is VerificationResult.Checked -> {
-            val record = VerificationRecord(
-                fingerprint = message.fingerprint,
-                missing = result.missing,
-                unidentified = result.unidentified
-            )
+    is VerificationMessage.Completed -> {
+        val record = VerificationRecord(
+            fingerprint = message.fingerprint,
+            missing = message.result.missing,
+            unidentified = message.result.unidentified
+        )
 
-            val next = state.setting(message.installationId, VerificationStatus.Complete(record))
-            next.with(VerificationEffect.SaveCache(next.records()))
-        }
+        val next = state.setting(message.installationId, VerificationStatus.Complete(record))
+        next.with(VerificationEffect.SaveCache(next.records()))
     }
 
     is VerificationMessage.Failed -> state
