@@ -8,8 +8,6 @@ import com.sappyoak.dsanalyzer.shared.binary.BinaryReader
  * so the two can never be mixed up. An index of -1 means no reference and is read as null
  */
 
-private const val NO_REFERENCE = -1
-
 @JvmInline
 public value class ModelIndex(public val value: Int) {
     override fun toString(): String = value.toString()
@@ -35,4 +33,3 @@ public value class CollisionIndex(public val value: Int) {
 public value class EnvironmentIndex(public val value: Int) {
     override fun toString(): String = value.toString()
 }
-

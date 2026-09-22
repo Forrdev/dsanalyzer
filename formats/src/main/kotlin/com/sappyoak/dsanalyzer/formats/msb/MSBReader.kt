@@ -17,3 +17,6 @@ internal fun BinaryReader.assertZeros(count: Int) = repeat(count) { assertValue(
 internal fun BinaryReader.readStringAt(start: Long, offset: Long): String = at(start + offset) { readShiftJIS() }
 
 internal fun BinaryReader.readEntityId(): Int? = readInt().takeUnless { it == NO_REFERENCE }
+
+internal fun BinaryReader.readPartIndex(): PartIndex? = readInt().asReference(::PartIndex)
+internal inline fun <T> Int.asReference(wrap: (Int) -> T): T? = if (this == NO_REFERENCE) null else wrap(this)
