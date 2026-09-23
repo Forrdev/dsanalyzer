@@ -9,7 +9,7 @@ import com.sappyoak.dsanalyzer.game.world.EntryKind
 import com.sappyoak.dsanalyzer.game.world.WorldRef
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
 
-/** One row in a map's entry list */
+/** One row in a map's entry list, what it is called, what it is, and where to find it */
 public data class EntrySummary(
     public val ref: WorldRef.Entry,
     public val name: String,
@@ -17,6 +17,13 @@ public data class EntrySummary(
     public val entityId: Int?
 ) {
     public val kind: EntryKind get() = ref.kind
+
+    /** Whether the row matches a typed query, by name or entity id */
+    public fun matches(query: String): Boolean =
+        query.isBlank() ||
+        name.contains(query, ignoreCase = true) ||
+        subtype.contains(query, ignoreCase = true) ||
+        entityId?.toString()?.startsWith(query) == true
 }
 
 /**
@@ -29,9 +36,11 @@ public class MapContents(
     public val map: MapId,
     public val msb: MSB,
     public val entries: List<EntrySummary>,
-    private val collisionIndices: List<Int>
+    private val collisionIndices: List<Int>,
+    private val environmentIndices: List<Int>
 ) {
     public fun collisionPart(index: Int): Int? = collisionIndices.getOrNull(index)
+    public fun environmentEvent(index: Int): Int? = environmentIndices.getOrNull(index)
 }
 
 
@@ -50,7 +59,8 @@ public fun MSB.summarize(map: MapId): MapContents {
         map = map,
         msb = this,
         entries = entries,
-        collisionIndices = parts.indicesOf<Part.Collision>()
+        collisionIndices = parts.indicesOf<Part.Collision>(),
+        environmentIndices = events.indicesOf<Event.Environment>()
     )
 }
 
