@@ -1,6 +1,7 @@
 package com.sappyoak.dsanalyzer.game.world
 
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
+import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
 
 /** The kinds of entries a map's layout holds */
 public enum class EntryKind {
@@ -22,4 +23,10 @@ public sealed interface WorldRef {
     ) : WorldRef
 
     public data class Entity(public val entityId: Int) : WorldRef
+
+    /** An event in one of the event scripts, name by the id its caller uses */
+    public data class ScriptEvent(
+        public val script: ScriptId,
+        public val eventId: Long
+    ) : WorldRef
 }
