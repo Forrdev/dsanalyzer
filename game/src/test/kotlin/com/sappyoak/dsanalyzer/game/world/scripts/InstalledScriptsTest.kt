@@ -9,6 +9,7 @@ import java.nio.file.Path
 import kotlin.time.measureTime
 
 import com.sappyoak.dsanalyzer.formats.emevd.Emevd
+import com.sappyoak.dsanalyzer.formats.emevd.emedf.decode
 import com.sappyoak.dsanalyzer.game.GameBuild
 import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.game.Installation
@@ -16,12 +17,11 @@ import com.sappyoak.dsanalyzer.game.InstallationId
 import com.sappyoak.dsanalyzer.game.files.GameFiles
 import com.sappyoak.dsanalyzer.game.files.openGameFiles
 import com.sappyoak.dsanalyzer.game.verification.loadFileManifest
-import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.game.world.maps.availableMaps
 
 private val ROOT: Path? = System.getenv("DS1_PTDE_PATH")?.let(Path::of)
 
-private fun <T> withInstalledScripts(block: (GameFiles, List<MapId>) -> T): T {
+private fun <T> withInstalledScripts(block: (GameFiles, List<ScriptId>) -> T): T {
     val root = checkNotNull(ROOT)
     val installation = Installation(
         id = InstallationId.forRoot(root),
@@ -30,7 +30,8 @@ private fun <T> withInstalledScripts(block: (GameFiles, List<MapId>) -> T): T {
         build = GameBuild(GameEdition.PrepareToDie)
     )
     return openGameFiles(installation).use { files ->
-        block(files, files.availableMaps(loadFileManifest(GameEdition.PrepareToDie)))
+        val maps = files.availableMaps(loadFileManifest(GameEdition.PrepareToDie))
+        block(files, files.availableScripts(maps))
     }
 }
 
@@ -43,25 +44,22 @@ private fun Emevd.danglingParameters(): List<String> = events.flatMap { event ->
 
 class InstalledScriptsTest : FunSpec({
     test("the common script and every map's script parse").config(enabled = ROOT != null) {
-        withInstalledScripts { files, maps ->
-            val scripts: Map<String, Emevd>
+        withInstalledScripts { files, scripts ->
+            val parsed: Map<ScriptId, Emevd>
             val elapsed = measureTime {
-                scripts = buildMap {
-                    put("common", checkNotNull(files.loadCommonEventScript()))
-                    maps.forEach { map -> put(map.name, checkNotNull(files.loadEventScript(map))) }
-                }
+                parsed = scripts.associateWith { checkNotNull(files.loadScript(it)) }
             }
             println(
-                "parsed ${scripts.size} scripts in $elapsed, " +
-                        "${scripts.values.sumOf { it.events.size }} events, " +
-                        "${scripts.values.sumOf { script -> script.events.sumOf { it.instructions.size } }} instructions"
+                "parsed ${parsed.size} scripts in $elapsed, " +
+                        "${parsed.values.sumOf { it.events.size }} events, " +
+                        "${parsed.values.sumOf { script -> script.events.sumOf { it.instructions.size } }} instructions"
             )
 
             assertSoftly {
-                scripts.forEach { (name, script) ->
-                    withClue(name) {
-                        script.events.shouldNotBeEmpty()
-                        script.danglingParameters() shouldBe emptyList()
+                parsed.forEach { (script, emevd) ->
+                    withClue(script.label) {
+                        emevd.events.shouldNotBeEmpty()
+                        emevd.danglingParameters() shouldBe emptyList()
                     }
                 }
             }
@@ -69,10 +67,48 @@ class InstalledScriptsTest : FunSpec({
     }
 
     test("a map script links the common script it draws instructions from").config(enabled = ROOT != null) {
-        withInstalledScripts { files, maps ->
-            val script = checkNotNull(files.loadEventScript(maps.first()))
-            println("${maps.first()} links ${script.linkedFiles}")
-            script.linkedFiles.shouldNotBeEmpty()
+        withInstalledScripts { files, scripts ->
+            val map = scripts.first { it is ScriptId.Of }
+            val emevd = checkNotNull(files.loadScript(map))
+            println("${map.label} links ${emevd.linkedFiles}")
+            emevd.linkedFiles.shouldNotBeEmpty()
+        }
+    }
+
+    test("every instruction decodes against the bundled definitions").config(enabled= ROOT != null) {
+        withInstalledScripts { files, scripts ->
+            val emedf = loadInstructionDefinitions()
+            val decoded = scripts.flatMap { script ->
+                checkNotNull(files.loadScript(script)).events.flatMap { it.decode(emedf) }
+            }
+            val undefined = decoded.filter { it.definition == null }.groupingBy { it.instruction.toString() }.eachCount()
+            val mismatched = decoded.filter { it.sizeMismatch }
+                .groupingBy { "${it.instruction} (${it.instruction.args.size} bytes)" }
+                .eachCount()
+
+            println("decoded ${decoded.size} instructions against ${emedf.size} definitions")
+            println("undefined opcodes: ${undefined.ifEmpty { "none" }}")
+            println("argument size mismatches: ${mismatched.ifEmpty { "none" }}")
+
+            // nothing is asserted about coverage. The definitions are community data, and what they
+            // miss is worth seeing rather than failing the build over
+            decoded.shouldNotBeEmpty()
+        }
+    }
+
+    test("event names load and match the events they name").config(enabled = ROOT != null) {
+        withInstalledScripts { files, scripts ->
+            val named = scripts.mapNotNull { script ->
+                val names = files.loadScriptNames(script) ?: return@mapNotNull null
+                val emevd = checkNotNull(files.loadScript(script))
+                script to emevd.events.mapNotNull { event -> names[event.id]?.let { event.id to it } }
+            }
+
+            println("named events: " + named.joinToString { (script, names) -> "${script.label}=${names.size}" })
+
+            named.firstOrNull { it.second.isNotEmpty() }?.let { (script, names) ->
+                println("${script.label} sample: " + names.take(5).joinToString { "${it.first} ${it.second}" })
+            }
         }
     }
 })
