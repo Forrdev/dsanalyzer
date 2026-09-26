@@ -8,7 +8,6 @@ import com.sappyoak.dsanalyzer.formats.msb.part.readPart
 import com.sappyoak.dsanalyzer.formats.msb.region.readRegion
 import com.sappyoak.dsanalyzer.shared.binary.BinaryFormatException
 import com.sappyoak.dsanalyzer.shared.binary.BinaryReader
-import com.sappyoak.dsanalyzer.shared.binary.assertValue
 
 private const val MODEL_PARAM = "MODEL_PARAM_ST"
 private const val EVENT_PARAM = "EVENT_PARAM_ST"
@@ -34,8 +33,4 @@ internal fun BinaryReader.readRequiredOffset(): Long {
         ?: throw BinaryFormatException("required offset is zero", at)
 }
 
-internal fun BinaryReader.assertZeros(count: Int) = repeat(count) { assertValue(0) { readInt() } }
-internal fun BinaryReader.assertZeroByte() = assertValue(0) { readByte().toInt() }
-internal fun BinaryReader.assertZeroBytes(count: Int) = repeat(count) { assertValue(0) { readByte().toInt() } }
-internal fun BinaryReader.readStringAt(start: Long, offset: Long): String = at(start + offset) { readShiftJIS() }
 

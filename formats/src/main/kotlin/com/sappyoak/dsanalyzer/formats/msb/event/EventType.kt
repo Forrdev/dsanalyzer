@@ -1,6 +1,6 @@
 package com.sappyoak.dsanalyzer.formats.msb.event
 
-import com.sappyoak.dsanalyzer.formats.msb.Coded
+import com.sappyoak.dsanalyzer.shared.binary.Coded
 
 internal enum class EventType(override val code: Int) : Coded {
     Light(0),

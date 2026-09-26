@@ -1,7 +1,7 @@
 package com.sappyoak.dsanalyzer.formats.msb.region
 
-import com.sappyoak.dsanalyzer.formats.msb.Coded
 import com.sappyoak.dsanalyzer.shared.binary.BinaryReader
+import com.sappyoak.dsanalyzer.shared.binary.Coded
 
 public sealed interface Shape {
     public data object Point : Shape

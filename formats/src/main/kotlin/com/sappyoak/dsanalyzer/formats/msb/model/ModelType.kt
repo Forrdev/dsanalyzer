@@ -1,6 +1,6 @@
 package com.sappyoak.dsanalyzer.formats.msb.model
 
-import com.sappyoak.dsanalyzer.formats.msb.Coded
+import com.sappyoak.dsanalyzer.shared.binary.Coded
 
 public enum class ModelType(override val code: Int) : Coded {
     MapPiece(0),

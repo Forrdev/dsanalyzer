@@ -1,6 +1,6 @@
 package com.sappyoak.dsanalyzer.formats.msb.part
 
-import com.sappyoak.dsanalyzer.formats.msb.Coded
+import com.sappyoak.dsanalyzer.shared.binary.Coded
 
 internal enum class PartType(override val code: Int) : Coded {
     MapPiece(0),

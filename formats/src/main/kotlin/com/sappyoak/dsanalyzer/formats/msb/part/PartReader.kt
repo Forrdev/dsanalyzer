@@ -4,16 +4,10 @@ import com.sappyoak.dsanalyzer.formats.msb.CollisionIndex
 import com.sappyoak.dsanalyzer.formats.msb.EnvironmentIndex
 import com.sappyoak.dsanalyzer.formats.msb.RegionIndex
 import com.sappyoak.dsanalyzer.formats.msb.asReference
-import com.sappyoak.dsanalyzer.formats.msb.assertZeroByte
-import com.sappyoak.dsanalyzer.formats.msb.assertZeros
-import com.sappyoak.dsanalyzer.formats.msb.readCoded
 import com.sappyoak.dsanalyzer.formats.msb.readEntityId
 import com.sappyoak.dsanalyzer.formats.msb.readGroupMask
 import com.sappyoak.dsanalyzer.formats.msb.readPartIndex
-import com.sappyoak.dsanalyzer.shared.binary.BinaryReader
-import com.sappyoak.dsanalyzer.shared.binary.assertValue
-import com.sappyoak.dsanalyzer.shared.binary.readUByte
-import com.sappyoak.dsanalyzer.shared.binary.readUShort
+import com.sappyoak.dsanalyzer.shared.binary.*
 
 private const val TYPE_CODE_OFFSET = 4
 
