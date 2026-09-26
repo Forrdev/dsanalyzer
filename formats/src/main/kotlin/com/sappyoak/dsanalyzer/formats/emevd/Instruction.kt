@@ -21,7 +21,7 @@ public data class Instruction(
  * An instruction's argument bytes, undecoded
  */
 public class ArgData(private val bytes: ByteArray) {
-    private val size: Int get() = bytes.size
+    public val size: Int get() = bytes.size
 
     public fun toByteArray(): ByteArray = bytes.copyOf()
     public fun reader(): BinaryReader = BinaryReader.of(bytes)
@@ -45,5 +45,6 @@ public data class Parameter(
     public val instructionIndex: Int,
     public val targetStartByte: Int,
     public val sourceStartByte: Int,
-    public val byteCount: Int
+    public val byteCount: Int,
+    public val unkId: Int
 )

@@ -137,5 +137,6 @@ private fun BinaryReader.readParameter(): Parameter = Parameter(
     instructionIndex = readInt(),
     targetStartByte = readInt(),
     sourceStartByte = readInt(),
-    byteCount = readInt()
-).also { skip(4) }
+    byteCount = readInt(),
+    unkId = readInt()
+)
