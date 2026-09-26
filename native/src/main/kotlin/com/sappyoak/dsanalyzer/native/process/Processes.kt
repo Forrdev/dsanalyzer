@@ -1,5 +1,6 @@
 package com.sappyoak.dsanalyzer.native.process
 
+import com.sappyoak.dsanalyzer.native.linux.LinuxProcesses
 import com.sappyoak.dsanalyzer.native.windows.WindowsProcesses
 import com.sappyoak.dsanalyzer.shared.platform.OS
 
@@ -18,6 +19,7 @@ public interface Processes {
         val Current: Processes by lazy(LazyThreadSafetyMode.PUBLICATION) {
             when {
                 OS.current.isWindows -> WindowsProcesses()
+                OS.current.isLinux -> LinuxProcesses()
                 else -> throw ProcessAccessException("Process access is not supported on ${OS.current.name} yet")
             }
         }
