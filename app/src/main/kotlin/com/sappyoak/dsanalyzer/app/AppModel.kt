@@ -9,6 +9,8 @@ import com.sappyoak.dsanalyzer.app.connection.ConnectionStore
 import com.sappyoak.dsanalyzer.app.maps.MapsEffects
 import com.sappyoak.dsanalyzer.app.maps.MapsStore
 import com.sappyoak.dsanalyzer.app.paths.ToolPaths
+import com.sappyoak.dsanalyzer.app.scripts.ScriptsEffects
+import com.sappyoak.dsanalyzer.app.scripts.ScriptsStore
 import com.sappyoak.dsanalyzer.app.serialization.jsonSerializer
 import com.sappyoak.dsanalyzer.app.settings.SettingsEffects
 import com.sappyoak.dsanalyzer.app.settings.SettingsFile
@@ -28,6 +30,7 @@ import com.sappyoak.dsanalyzer.native.process.Processes
 public class AppModel(
     public val settings: SettingsStore,
     public val maps: MapsStore,
+    public val scripts: ScriptsStore,
     public val startup: StartupStore,
     public val verification: VerificationStore,
     public val connection: ConnectionStore,
@@ -56,6 +59,7 @@ public fun createAppModel(
     return AppModel(
         settings = settings,
         maps = MapsStore(scope, MapsEffects(installationFiles)),
+        scripts = ScriptsStore(scope, ScriptsEffects(installationFiles)),
         startup = StartupStore(
             scope,
             StartupEffects(settings, workspaces)
