@@ -1,5 +1,7 @@
 package com.sappyoak.dsanalyzer.formats.emevd
 
+import com.sappyoak.dsanalyzer.shared.binary.Coded
+
 /** A numbered routine of instructions, with the arguments its callers pass in */
 public data class ScriptEvent(
     public val id: Long,
@@ -13,8 +15,8 @@ public data class ScriptEvent(
 )
 
 /** What happens to a running event when the player rests at a bonfire */
-public enum class RestBehavior {
-    Default,
-    Restart,
-    End;
+public enum class RestBehavior(override val code: Int) : Coded {
+    Default(0),
+    Restart(1),
+    End(2);
 }
