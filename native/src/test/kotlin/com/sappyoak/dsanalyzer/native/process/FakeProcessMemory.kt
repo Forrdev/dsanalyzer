@@ -1,7 +1,7 @@
 package com.sappyoak.dsanalyzer.native.process
 
 import java.lang.foreign.MemorySegment
-import java.lang.foreign.ValueLayout.*
+import java.lang.foreign.ValueLayout
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
@@ -17,7 +17,7 @@ import com.sappyoak.dsanalyzer.shared.platform.PointerSize
 internal class FakeProcessMemory(
     private val base: Address,
     size: Int,
-    override val pointerSize: PointerSize = PointerSize.LongPointer,
+    override val pointerSize: PointerSize = PointerSize.Companion.LongPointer,
     private val unreadable: List<AddressRange> = emptyList()
 ) : ProcessMemory {
     private val bytes = ByteArray(size)
@@ -47,7 +47,7 @@ internal class FakeProcessMemory(
     override fun read(address: Address, into: MemorySegment): Boolean {
         reads++
         if (!accessible(address, into.byteSize())) return false
-        MemorySegment.copy(bytes, index(address), into, JAVA_BYTE, 0, into.byteSize().toInt())
+        MemorySegment.copy(bytes, index(address), into, ValueLayout.JAVA_BYTE, 0, into.byteSize().toInt())
         return true
     }
 
@@ -61,7 +61,7 @@ internal class FakeProcessMemory(
 
     override fun write(address: Address, from: MemorySegment): Boolean {
         if (!accessible(address, from.byteSize())) return false
-        this[address] = from.toArray(JAVA_BYTE)
+        this[address] = from.toArray(ValueLayout.JAVA_BYTE)
         return true
     }
 
