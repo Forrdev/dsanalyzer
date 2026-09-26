@@ -25,20 +25,42 @@ import androidx.compose.ui.unit.dp
 import com.sappyoak.dsanalyzer.app.maps.MapsMessage
 import com.sappyoak.dsanalyzer.app.maps.MapsStore
 import com.sappyoak.dsanalyzer.app.maps.ui.MapsScreen
+import com.sappyoak.dsanalyzer.app.scripts.ScriptsMessage
+import com.sappyoak.dsanalyzer.app.scripts.ScriptsStore
+import com.sappyoak.dsanalyzer.app.scripts.ui.ScriptsScreen
 import com.sappyoak.dsanalyzer.app.workspace.Workspace
 import com.sappyoak.dsanalyzer.app.workspace.WorkspaceTab
 import com.sappyoak.dsanalyzer.game.Installation
+import com.sappyoak.dsanalyzer.game.world.WorldRef
 
 @Composable
 public fun WorkspaceShell(
     workspace: Workspace,
     installation: Installation?,
-    maps: MapsStore
+    maps: MapsStore,
+    scripts: ScriptsStore
 ) {
     var tab by remember { mutableStateOf(WorkspaceTab.Maps) }
 
     LaunchedEffect(installation?.id) {
-        installation?.let { maps.dispatch(MapsMessage.Opened(it)) }
+        installation?.let {
+            maps.dispatch(MapsMessage.Opened(it))
+            scripts.dispatch(ScriptsMessage.Opened(it))
+        }
+    }
+
+    val follow: (WorldRef) -> Unit = { ref ->
+        when (ref) {
+            is WorldRef.ScriptEvent -> {
+                scripts.dispatch(ScriptsMessage.Navigated(ref))
+                tab = WorkspaceTab.Scripts
+            }
+
+            else -> {
+                maps.dispatch(MapsMessage.Navigated(ref))
+                tab = WorkspaceTab.Maps
+            }
+        }
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -65,6 +87,11 @@ public fun WorkspaceShell(
                     WorkspaceTab.Maps -> {
                         val state by maps.state.collectAsState()
                         MapsScreen(state, maps)
+                    }
+
+                    WorkspaceTab.Scripts -> {
+                        val state by scripts.state.collectAsState()
+                        ScriptsScreen(state, scripts, follow)
                     }
                 }
             }
