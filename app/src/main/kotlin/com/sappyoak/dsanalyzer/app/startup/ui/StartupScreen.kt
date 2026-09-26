@@ -7,6 +7,7 @@ import androidx.compose.ui.*
 import androidx.compose.ui.unit.dp
 
 import com.sappyoak.dsanalyzer.app.maps.MapsStore
+import com.sappyoak.dsanalyzer.app.scripts.ScriptsStore
 import com.sappyoak.dsanalyzer.app.startup.*
 import com.sappyoak.dsanalyzer.app.ui.NoticeBanner
 import com.sappyoak.dsanalyzer.app.ui.chooseInstallationDirectory
@@ -16,7 +17,7 @@ import com.sappyoak.dsanalyzer.app.workspace.ui.WorkspaceShell
 import com.sappyoak.dsanalyzer.game.RejectionReason
 
 @Composable
-public fun StartupScreen(state: StartupState, store: StartupStore, maps: MapsStore) {
+public fun StartupScreen(state: StartupState, store: StartupStore, maps: MapsStore, scripts: ScriptsStore) {
     Column(modifier = Modifier.fillMaxSize()) {
         if (state.notices.isNotEmpty()) {
             NoticeBanner(state.notices.map { it.describe() }) {
@@ -25,7 +26,7 @@ public fun StartupScreen(state: StartupState, store: StartupStore, maps: MapsSto
         }
 
         Box(modifier = Modifier.weight(1f)) {
-            PhaseContent(state, store, maps)
+            PhaseContent(state, store, maps, scripts)
         }
     }
 
@@ -48,7 +49,7 @@ public fun StartupScreen(state: StartupState, store: StartupStore, maps: MapsSto
 }
 
 @Composable
-private fun PhaseContent(state: StartupState, store: StartupStore, maps: MapsStore) {
+private fun PhaseContent(state: StartupState, store: StartupStore, maps: MapsStore, scripts: ScriptsStore) {
     when (val phase = state.phase) {
         StartupPhase.Loading -> Centered { Busy("Loading") }
 
@@ -81,7 +82,8 @@ private fun PhaseContent(state: StartupState, store: StartupStore, maps: MapsSto
             workspace = phase.workspace,
             installation = state.installations
                 .firstOrNull { it.id == phase.workspace.installationId },
-            maps = maps
+            maps = maps,
+            scripts = scripts
         )
 
         else -> {}
