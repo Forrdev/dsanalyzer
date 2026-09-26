@@ -26,6 +26,16 @@ class GameConnectionTest : FunSpec({
             .shouldBeInstanceOf<ConnectResult.Connected>()
     }
 
+    test("refuses a process whose own module cannot be found") {
+        val processes = FakeProcesses(loaded = emptyList())
+        val result = processes.connect(GameProcess(PTDE, GameEdition.PrepareToDie))
+
+        assertSoftly {
+            result.shouldBeInstanceOf<ConnectResult.Refused>()
+            processes.attached.single().closed shouldBe true
+        }
+    }
+
     test("refuses and closes a process whose pointer size does not match") {
         val processes = FakeProcesses(PointerSize.LongPointer)
         val result = processes.connect(GameProcess(PTDE, GameEdition.PrepareToDie))

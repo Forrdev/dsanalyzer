@@ -12,9 +12,12 @@ import com.sappyoak.dsanalyzer.native.process.ProcessInfo
 import com.sappyoak.dsanalyzer.native.process.Processes
 import com.sappyoak.dsanalyzer.shared.platform.PointerSize
 
+internal val PTDE_MODULE = ModuleInfo("DARKSOULS.exe", AddressRange(Address(0x400000), 0x300000))
+
 internal class FakeProcesses(
     private val pointerSize: PointerSize = PointerSize.IntPointer,
-    private val denied: Set<Int> = emptySet()
+    private val denied: Set<Int> = emptySet(),
+    private val loaded: List<ModuleInfo> = listOf(PTDE_MODULE)
 ) : Processes {
     val running = mutableListOf<ProcessInfo>()
     val attached = mutableListOf<FakeAttachedProcess>()
@@ -23,7 +26,7 @@ internal class FakeProcesses(
     override fun modules(pid: Int): List<ModuleInfo> = emptyList()
     override fun attach(process: ProcessInfo): AttachedProcess {
         if (process.pid in denied) throw ProcessAccessException("Access Denied", 5)
-        return FakeAttachedProcess(process, pointerSize) { running.any { it.pid == process.pid } }
+        return FakeAttachedProcess(process, pointerSize, loaded) { running.any { it.pid == process.pid } }
             .also(attached::add)
     }
 }
@@ -31,12 +34,15 @@ internal class FakeProcesses(
 internal class FakeAttachedProcess(
     override val info: ProcessInfo,
     override val pointerSize: PointerSize,
+    private val loaded: List<ModuleInfo>,
     private val alive: () -> Boolean
 ) : AttachedProcess {
     var closed = false
         private set
 
     override val isRunning: Boolean get() = !closed && alive()
+
+    override fun modules(): List<ModuleInfo> = loaded
 
     override fun read(address: Address, length: Int): ByteArray? = null
     override fun read(address: Address, into: MemorySegment): Boolean = false
