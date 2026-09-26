@@ -40,7 +40,7 @@ class ConnectionReducerTest : FunSpec({
 
     test("a report while watching becomes the status") {
         reduceConnection(SEARCHING, ConnectionMessage.GameConnected(10, GameEdition.PrepareToDie))
-            .state shouldBe ConnectionStatus.Connected(10, GameEdition.PrepareToDie)
+            .state.status shouldBe ConnectionStatus.Connected(10, GameEdition.PrepareToDie)
     }
 
     test("enabling auto-connect remembers it and starts watching") {
