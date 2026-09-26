@@ -1,13 +1,8 @@
 package com.sappyoak.dsanalyzer.formats.msb.region
 
-import com.sappyoak.dsanalyzer.formats.msb.assertZeros
-import com.sappyoak.dsanalyzer.formats.msb.readCoded
 import com.sappyoak.dsanalyzer.formats.msb.readEntityId
 import com.sappyoak.dsanalyzer.formats.msb.readRequiredOffset
-import com.sappyoak.dsanalyzer.formats.msb.readStringAt
-import com.sappyoak.dsanalyzer.shared.binary.BinaryFormatException
-import com.sappyoak.dsanalyzer.shared.binary.BinaryReader
-import com.sappyoak.dsanalyzer.shared.binary.assertValue
+import com.sappyoak.dsanalyzer.shared.binary.*
 import com.sappyoak.dsanalyzer.shared.math.Vec3
 import com.sappyoak.dsanalyzer.shared.math.readVec3
 

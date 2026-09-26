@@ -202,3 +202,8 @@ public fun <T> BinaryReader.assertValues(vararg value: T, block: BinaryReader.()
 
     throw BinaryFormatException("Expected value to be on of ${value.joinToString(", ")} but was $actual", start)
 }
+
+public fun BinaryReader.assertZeros(count: Int): Unit = repeat(count) { assertValue(0) { readInt() }}
+public fun BinaryReader.assertZeroByte() = assertValue(0) { readByte().toInt() }
+public fun BinaryReader.assertZeroBytes(count: Int) = repeat(count) { assertValue(0) { readByte().toInt() } }
+public fun BinaryReader.readStringAt(start: Long, offset: Long): String = at(start + offset) { readShiftJIS() }

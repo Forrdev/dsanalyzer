@@ -38,8 +38,8 @@ class ByteBufferBinaryReader(
     override fun readFloat(): Float = buffer.getFloat(advance(4))
 
     override fun readBytes(count: Int): ByteArray {
-        val end = (intPosition + count).coerceAtMost(bytes.size)
-        return bytes.copyOfRange(intPosition, end)
+        val start = advance(count.toLong())
+        return bytes.copyOfRange(start, start + count)
     }
 
     override fun skip(count: Long): BinaryReader {

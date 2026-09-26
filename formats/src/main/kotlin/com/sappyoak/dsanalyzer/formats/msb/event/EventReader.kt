@@ -1,17 +1,11 @@
 package com.sappyoak.dsanalyzer.formats.msb.event
 
-import com.sappyoak.dsanalyzer.formats.msb.assertZeroBytes
-import com.sappyoak.dsanalyzer.formats.msb.assertZeros
-import com.sappyoak.dsanalyzer.formats.msb.readCoded
+
 import com.sappyoak.dsanalyzer.formats.msb.readEntityId
 import com.sappyoak.dsanalyzer.formats.msb.readPartIndex
 import com.sappyoak.dsanalyzer.formats.msb.readRegionIndex
 import com.sappyoak.dsanalyzer.formats.msb.readRequiredOffset
-import com.sappyoak.dsanalyzer.formats.msb.readStringAt
-import com.sappyoak.dsanalyzer.shared.binary.BinaryReader
-import com.sappyoak.dsanalyzer.shared.binary.assertValue
-import com.sappyoak.dsanalyzer.shared.binary.readUByte
-import com.sappyoak.dsanalyzer.shared.binary.skip
+import com.sappyoak.dsanalyzer.shared.binary.*
 import com.sappyoak.dsanalyzer.shared.math.readVec3
 
 private const val ENVIRONMENT_UNKNOWN_FIELD_PADDING = 0x18

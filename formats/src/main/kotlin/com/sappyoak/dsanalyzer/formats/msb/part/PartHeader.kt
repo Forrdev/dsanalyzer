@@ -3,15 +3,10 @@ package com.sappyoak.dsanalyzer.formats.msb.part
 import com.sappyoak.dsanalyzer.formats.msb.GroupMask
 import com.sappyoak.dsanalyzer.formats.msb.ModelIndex
 import com.sappyoak.dsanalyzer.formats.msb.asReference
-import com.sappyoak.dsanalyzer.formats.msb.assertZeroByte
-import com.sappyoak.dsanalyzer.formats.msb.assertZeroBytes
-import com.sappyoak.dsanalyzer.formats.msb.assertZeros
 import com.sappyoak.dsanalyzer.formats.msb.readEntityId
 import com.sappyoak.dsanalyzer.formats.msb.readGroupMask
 import com.sappyoak.dsanalyzer.formats.msb.readRequiredOffset
-import com.sappyoak.dsanalyzer.formats.msb.readStringAt
-import com.sappyoak.dsanalyzer.shared.binary.BinaryReader
-import com.sappyoak.dsanalyzer.shared.binary.assertValue
+import com.sappyoak.dsanalyzer.shared.binary.*
 import com.sappyoak.dsanalyzer.shared.math.Vec3
 import com.sappyoak.dsanalyzer.shared.math.readVec3
 
