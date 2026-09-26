@@ -9,7 +9,7 @@ import com.sappyoak.dsanalyzer.shared.binary.at
 public class StringTable(private val bytes: ByteArray) {
     public val size: Int get() = bytes.size
 
-    public fun shiftJisAt(offset: Int): String = BinaryReader.of(bytes).at(offset) { readShiftJIS() }
+    public fun shiftJisAt(offset: Int): String = BinaryReader.of(bytes).at(offset) { readStringTerminated(Charsets.UTF_8) }
     public fun toByteArray(): ByteArray = bytes.copyOf()
 
     public companion object {

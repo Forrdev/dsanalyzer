@@ -3,7 +3,7 @@ package com.sappyoak.dsanalyzer.game.world.maps
 import com.sappyoak.dsanalyzer.game.files.GamePath
 import com.sappyoak.dsanalyzer.game.files.SplitBinderPaths
 
-internal const val MAP_STUDIO_DIRECTORY = "/map/mapstudio"
+internal const val MAP_STUDIO_DIRECTORY = "/map/mapstudio/"
 internal const val MSB_EXTENSION = ".msb"
 
 public enum class CollisionDetail(internal val prefix: Char) {
