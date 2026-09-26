@@ -28,7 +28,7 @@ class VerificationTest : FunSpec({
         val listing = FileListing.Hashed(setOf(archivePathHash("/chr/c0000.esd"), 0x1u))
 
         verify(MANIFEST, listing) shouldBe VerificationResult(
-            missing = listOf("DarkSoulsRemastered.exe"),
+            missing = listOf("/darksoulsremastered.exe"),
             unidentified = listOf("0x00000001")
         )
     }
