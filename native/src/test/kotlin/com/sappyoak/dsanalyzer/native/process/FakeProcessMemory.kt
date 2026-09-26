@@ -18,10 +18,12 @@ internal class FakeProcessMemory(
     private val base: Address,
     size: Int,
     override val pointerSize: PointerSize = PointerSize.Companion.LongPointer,
-    private val unreadable: List<AddressRange> = emptyList()
+    private val unreadable: List<AddressRange> = emptyList(),
+    code: List<AddressRange>? = null
 ) : ProcessMemory {
     private val bytes = ByteArray(size)
     private val mapped = AddressRange(base, size.toLong())
+    private val executable = code ?: listOf(mapped)
 
     public var reads: Int = 0
         private set
@@ -66,14 +68,19 @@ internal class FakeProcessMemory(
     }
 
     override fun regions(range: AddressRange): List<MemoryRegion> {
-        val boundaries = (listOf(mapped.start, mapped.end) + unreadable.flatMap { listOf(it.start, it.end) })
+        val edges = listOf(mapped) + unreadable + executable
+        val boundaries = edges.flatMap { listOf(it.start, it.end) }
             .map { it.value.coerceIn(range.start.value, range.end.value) }
             .distinct()
             .sorted()
 
         return boundaries.zipWithNext { start, end ->
             val span = AddressRange(Address(start), end - start)
-            MemoryRegion(span, unreadable.none { it.overlaps(span) })
+            MemoryRegion(
+                range = span,
+                readable = unreadable.none { it.overlaps(span) },
+                executable = executable.any { it.overlaps(span) }
+            )
         }.filter { it.range.size > 0 }
     }
 

@@ -1,9 +1,9 @@
 package com.sappyoak.dsanalyzer.native.memory
 
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
 
 import com.sappyoak.dsanalyzer.native.process.FakeProcessMemory
-import io.kotest.matchers.shouldBe
 
 private val BASE = Address(0x400000)
 private val SIGNATURE = byteArrayOf(0x11, 0x22, 0x33, 0x44)
@@ -38,6 +38,15 @@ class ScannerTest : FunSpec({
         memory.scan(AddressRange(BASE, 256), PATTERN, chunkSize = 32).shouldBe(
             listOf(BASE + 8, BASE + 180)
         )
+    }
+
+    test("only looks in the regions it is asked for") {
+        val memory = FakeProcessMemory(BASE, 256, code = listOf(AddressRange(BASE, 100)))
+        memory[BASE + 10] = SIGNATURE
+        memory[BASE + 200] = SIGNATURE
+
+        memory.scan(AddressRange(BASE, 256), PATTERN) { it.readable && it.executable }
+            .shouldBe(listOf(BASE + 10))
     }
 
     test("respects the requested range") {
