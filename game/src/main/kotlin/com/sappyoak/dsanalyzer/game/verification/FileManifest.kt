@@ -1,7 +1,10 @@
 package com.sappyoak.dsanalyzer.game.verification
 
+import java.util.concurrent.ConcurrentHashMap
+
 import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.game.PREPARE_TO_DIE_ARCHIVE_STEMS
+import com.sappyoak.dsanalyzer.game.bundled
 import com.sappyoak.dsanalyzer.game.files.GamePath
 
 private const val RESOURCE_ROOT = "/manifests"
@@ -13,7 +16,12 @@ public data class FileManifest(
     public val paths: Set<GamePath>
 )
 
-public fun loadFileManifest(edition: GameEdition): FileManifest = FileManifest(
+private val manifests = ConcurrentHashMap<GameEdition, FileManifest>()
+
+public fun loadFileManifest(edition: GameEdition): FileManifest =
+    manifests.computeIfAbsent(edition, ::readManifests)
+
+private fun readManifests(edition: GameEdition): FileManifest = FileManifest(
     edition = edition,
     paths = manifestResourceNames(edition).flatMapTo(mutableSetOf(), ::readEntries)
 )
@@ -23,14 +31,8 @@ private fun manifestResourceNames(edition: GameEdition): List<String> = when (ed
     GameEdition.Remastered -> listOf(DSR_MANIFEST_FILE_NAME)
 }
 
-private fun readEntries(name: String): Set<GamePath> {
-    val resource = "$RESOURCE_ROOT/$name"
-    val stream = checkNotNull(FileManifest::class.java.getResourceAsStream(resource)) {
-        "Bundled manifest $resource is missing"
-    }
-
-    return stream.bufferedReader().use { parseManifestEntries(it.lineSequence()) }
-}
+private fun readEntries(name: String): Set<GamePath> =
+    bundled("$RESOURCE_ROOT/$name") { parseManifestEntries(it.lineSequence()) }
 
 private fun parseManifestEntries(lines: Sequence<String>): Set<GamePath> = lines
     .map { it.trim() }
