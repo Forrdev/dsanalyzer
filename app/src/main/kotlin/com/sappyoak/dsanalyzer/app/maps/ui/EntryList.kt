@@ -63,7 +63,7 @@ internal fun EntryList(
     }
 
     LazyColumn(modifier = Modifier.fillMaxSize()) {
-        items(entries, key = { "${it.kind}-${it.ref.index}" }) { entry ->
+        items(entries, key = { it.ref }) { entry ->
             EntryRow(entry, selected = entry.ref == focused, onSelect = { onSelect(entry.ref) })
         }
     }

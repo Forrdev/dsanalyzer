@@ -39,6 +39,10 @@ public class MapContents(
     private val collisionIndices: List<Int>,
     private val environmentIndices: List<Int>
 ) {
+    private val byRef: Map<WorldRef.Entry, EntrySummary> = entries.associateBy { it.ref }
+
+    public fun entryAt(ref: WorldRef.Entry): EntrySummary? = byRef[ref]
+
     public fun collisionPart(index: Int): Int? = collisionIndices.getOrNull(index)
     public fun environmentEvent(index: Int): Int? = environmentIndices.getOrNull(index)
 }

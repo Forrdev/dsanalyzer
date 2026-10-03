@@ -14,9 +14,11 @@ public data class ScriptsState(
     public val pending: Long? = null,
     public val problem: String? = null
 ) {
-    public val visible: List<EventSummary>
-        get() = contents?.events.orEmpty().filter { it.matches(query) }
+    public val visible: List<EventSummary> by lazy {
+        contents?.events.orEmpty().filter { it.matches(query) }
+    }
 
-    public val focusedEvent: EventSummary?
-        get() = focused?.let { id -> contents?.events?.firstOrNull { it.id == id } }
+    public val focusedEvent: EventSummary? by lazy {
+        focused?.let { id -> contents?.event(id) }
+    }
 }

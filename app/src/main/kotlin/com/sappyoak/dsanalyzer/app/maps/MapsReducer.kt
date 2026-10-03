@@ -32,7 +32,11 @@ public fun reduceMaps(
         pending = null
     ).with()
 
-    is MapsMessage.EntitiesIndexed -> state.copy(entities = message.index).with()
+    is MapsMessage.EntitiesIndexed -> state.copy(
+        entities = message.index,
+        problem = message.skipped.takeIf { it.isNotEmpty() }?.let(::describeSkipped) ?: state.problem
+    ).with()
+
     is MapsMessage.Navigated -> state.navigate(message.ref)
 
     MapsMessage.BackRequested -> state.step(from = state.back, onto = state.forward) { back, forward ->
@@ -56,7 +60,7 @@ private fun MapsState.navigate(ref: WorldRef): Transition<MapsState, MapsEffect>
     is WorldRef.Map -> show(ref.map, focus = null)
     is WorldRef.Entry -> show(ref.map, focus = ref)
     is WorldRef.Entity -> entities[ref.entityId].firstOrNull()
-        ?.let { show(it.ref.map, focus = it.ref) }
+        ?.let { show(it.map, focus = it) }
         ?: copy(problem = "No entry has entity id ${ref.entityId}").with()
     is WorldRef.ScriptEvent -> with()
     is WorldRef.EventFlag -> with()
@@ -105,3 +109,6 @@ private inline fun MapsState.step(
         ).with(MapsEffect.LoadMap(installation, target.map))
     }
 }
+
+private fun describeSkipped(maps: List<MapId>): String =
+    "No layout file for ${maps.joinToString()}, so entity search will not cover " + if (maps.size == 1) "it" else "them"

@@ -38,13 +38,15 @@ public class MapsEffects(private val files: InstallationFiles) : EffectRunner<Ma
             }
         )
 
-        is MapsEffect.IndexEntities -> MapsMessage.EntitiesIndexed(
-            files.use(effect.installation) { games ->
-                withContext(Dispatchers.IO) {
-                    EntityIndex.of(effect.maps.map(games::contents))
-                }
+        is MapsEffect.IndexEntities -> files.use(effect.installation) { games ->
+            withContext(Dispatchers.IO) {
+                val read = effect.maps.associateWith { games.loadMSB(it)?.summarize(it) }
+                MapsMessage.EntitiesIndexed(
+                    index = EntityIndex.of(read.values.filterNotNull()),
+                    skipped = read.filterValues { it == null }.keys.toList()
+                )
             }
-        )
+        }
     }
 }
 

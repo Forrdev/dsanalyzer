@@ -23,11 +23,13 @@ public data class MapsState(
     public val problem: String? = null
 ) {
     /** The entries the list shows from this map narrowed by the kind filter and the query */
-    public val visible: List<EntrySummary>
-        get() = contents?.entries.orEmpty().filter { it.kind in kinds && it.matches(query) }
+    public val visible: List<EntrySummary> by lazy {
+        contents?.entries.orEmpty().filter { it.kind in kinds && it.matches(query) }
+    }
 
-    public val focusedEntry: EntrySummary?
-        get() = focused?.let { ref -> contents?.entries?.firstOrNull { it.ref == ref } }
+    public val focusedEntry: EntrySummary? by lazy {
+        focused?.let { ref -> contents?.entryAt(ref) }
+    }
 
     public val canGoBack: Boolean get() = back.isNotEmpty()
     public val canGoForward: Boolean get() = forward.isNotEmpty()

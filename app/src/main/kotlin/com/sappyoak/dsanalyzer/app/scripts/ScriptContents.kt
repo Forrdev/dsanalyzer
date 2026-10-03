@@ -36,8 +36,12 @@ public class ScriptContents(
     public val definitions: Emedf,
     private val decoded: Map<Long, List<DecodedInstruction>>
 ) {
+    private val byId: Map<Long, EventSummary> = events.associateBy { it.id }
+
     /** Instructions the definitions do not cover */
     public val undefinedCount: Int get() = decoded.values.sumOf { event -> event.count { it.definition == null } }
+
+    public fun event(eventId: Long): EventSummary? = byId[eventId]
 
     public fun instructions(eventId: Long): List<DecodedInstruction> = decoded[eventId].orEmpty()
 
