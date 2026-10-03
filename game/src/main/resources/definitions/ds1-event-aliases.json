@@ -1,0 +1,3710 @@
+{
+ "instructions": [
+  {
+   "bank": 0,
+   "id": 0,
+   "name": "IfConditionState",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "state"
+    },
+    {
+     "name": "input_condition"
+    }
+   ]
+  },
+  {
+   "bank": 0,
+   "id": 1,
+   "name": "IfValueComparison",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "comparison_type"
+    },
+    {
+     "name": "left"
+    },
+    {
+     "name": "right"
+    }
+   ]
+  },
+  {
+   "bank": 1,
+   "id": 0,
+   "name": "IfTimeElapsed",
+   "summary": "Time since event started.",
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "seconds"
+    }
+   ]
+  },
+  {
+   "bank": 1,
+   "id": 1,
+   "name": "IfFramesElapsed",
+   "summary": "Frames since event started.",
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "frames"
+    }
+   ]
+  },
+  {
+   "bank": 1,
+   "id": 2,
+   "name": "IfRandomTimeElapsed",
+   "summary": "Not used in vanilla DS1. Requires a random amount of time since event began.",
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "min_seconds"
+    },
+    {
+     "name": "max_seconds"
+    }
+   ]
+  },
+  {
+   "bank": 1,
+   "id": 3,
+   "name": "IfRandomFramesElapsed",
+   "summary": "Not used in vanilla DS1. Requires a random amount of frames since event began.",
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "min_frames"
+    },
+    {
+     "name": "max_frames"
+    }
+   ]
+  },
+  {
+   "bank": 3,
+   "id": 0,
+   "name": "IfFlagState",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "state"
+    },
+    {
+     "name": "flag_type"
+    },
+    {
+     "name": "flag",
+     "reference": "Flag"
+    }
+   ]
+  },
+  {
+   "bank": 3,
+   "id": 1,
+   "name": "IfFlagRangeState",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "state"
+    },
+    {
+     "name": "flag_type"
+    },
+    {
+     "name": "first_flag",
+     "reference": "Flag"
+    },
+    {
+     "name": "last_flag",
+     "reference": "Flag"
+    }
+   ]
+  },
+  {
+   "bank": 3,
+   "id": 2,
+   "name": "IfCharacterRegionState",
+   "summary": "Not sure if this works for objects.",
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "state"
+    },
+    {
+     "name": "character",
+     "reference": "Entity"
+    },
+    {
+     "name": "region",
+     "reference": "Region"
+    }
+   ]
+  },
+  {
+   "bank": 3,
+   "id": 3,
+   "name": "IfEntityDistanceState",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "state"
+    },
+    {
+     "name": "entity",
+     "reference": "Entity"
+    },
+    {
+     "name": "other_entity",
+     "reference": "Entity"
+    },
+    {
+     "name": "radius"
+    }
+   ]
+  },
+  {
+   "bank": 3,
+   "id": 4,
+   "name": "IfPlayerItemStateExcludingStorage",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "item_type"
+    },
+    {
+     "name": "item",
+     "reference": "Item"
+    },
+    {
+     "name": "state"
+    }
+   ]
+  },
+  {
+   "bank": 3,
+   "id": 5,
+   "name": "IfActionButtonBasic",
+   "summary": "Generates an 'action button' prompt and waits for the player to activate it.\n\n            Basic (not \"boss\") version with no line intersection check.",
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "anchor_type"
+    },
+    {
+     "name": "anchor_entity",
+     "reference": "Entity"
+    },
+    {
+     "name": "facing_angle"
+    },
+    {
+     "name": "dummy_id"
+    },
+    {
+     "name": "max_distance"
+    },
+    {
+     "name": "prompt_text",
+     "reference": "Text"
+    },
+    {
+     "name": "trigger_attribute"
+    },
+    {
+     "name": "button"
+    }
+   ]
+  },
+  {
+   "bank": 3,
+   "id": 6,
+   "name": "IfMultiplayerState",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "state"
+    }
+   ]
+  },
+  {
+   "bank": 3,
+   "id": 7,
+   "name": "IfAllPlayersRegionState",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "state"
+    },
+    {
+     "name": "region",
+     "reference": "Region"
+    }
+   ]
+  },
+  {
+   "bank": 3,
+   "id": 8,
+   "name": "IfMapPresenceState",
+   "summary": "Conditions upon player's presence in a particular game map.",
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "state"
+    },
+    {
+     "name": "area_id"
+    },
+    {
+     "name": "block_id"
+    }
+   ]
+  },
+  {
+   "bank": 3,
+   "id": 9,
+   "name": "IfMultiplayerEvent",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "event_id"
+    }
+   ]
+  },
+  {
+   "bank": 3,
+   "id": 10,
+   "name": "IfEnabledFlagCountComparison",
+   "summary": "Conditions upon a comparison with the number of enabled flags in the given range (inclusive).",
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "flag_type"
+    },
+    {
+     "name": "first_flag",
+     "reference": "Flag"
+    },
+    {
+     "name": "last_flag",
+     "reference": "Flag"
+    },
+    {
+     "name": "comparison_type"
+    },
+    {
+     "name": "value"
+    }
+   ]
+  },
+  {
+   "bank": 3,
+   "id": 11,
+   "name": "IfWorldTendencyComparison",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "world_tendency_type"
+    },
+    {
+     "name": "comparison_type"
+    },
+    {
+     "name": "value"
+    }
+   ]
+  },
+  {
+   "bank": 3,
+   "id": 12,
+   "name": "IfEventValueComparison",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "flag",
+     "reference": "Flag"
+    },
+    {
+     "name": "bit_count"
+    },
+    {
+     "name": "comparison_type"
+    },
+    {
+     "name": "value"
+    }
+   ]
+  },
+  {
+   "bank": 3,
+   "id": 13,
+   "name": "IfActionButtonBoss",
+   "summary": "Generates an 'action button' prompt and waits for the player to activate it.\n\n            Boss (not \"basic\") version with no line intersection check.",
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "anchor_type"
+    },
+    {
+     "name": "anchor_entity",
+     "reference": "Entity"
+    },
+    {
+     "name": "facing_angle"
+    },
+    {
+     "name": "dummy_id"
+    },
+    {
+     "name": "max_distance"
+    },
+    {
+     "name": "prompt_text",
+     "reference": "Text"
+    },
+    {
+     "name": "trigger_attribute"
+    },
+    {
+     "name": "button"
+    }
+   ]
+  },
+  {
+   "bank": 3,
+   "id": 14,
+   "name": "IfAnyItemDroppedInRegion",
+   "summary": "Check if any item has been dropped in the specified region. Not sensitive to what the item is.",
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "region",
+     "reference": "Region"
+    }
+   ]
+  },
+  {
+   "bank": 3,
+   "id": 15,
+   "name": "IfItemDropped",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "item_type"
+    },
+    {
+     "name": "item",
+     "reference": "Item"
+    }
+   ]
+  },
+  {
+   "bank": 3,
+   "id": 16,
+   "name": "IfPlayerItemStateIncludingStorage",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "item_type"
+    },
+    {
+     "name": "item",
+     "reference": "Item"
+    },
+    {
+     "name": "state"
+    }
+   ]
+  },
+  {
+   "bank": 3,
+   "id": 17,
+   "name": "IfNewGameCycleComparison",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "comparison_type"
+    },
+    {
+     "name": "completion_count"
+    }
+   ]
+  },
+  {
+   "bank": 3,
+   "id": 18,
+   "name": "IfActionButtonBasicLineIntersect",
+   "summary": "Generates an 'action button' prompt and waits for the player to activate it.\n\n            Basic (not \"boss\") version with a line intersection check.",
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "anchor_type"
+    },
+    {
+     "name": "anchor_entity",
+     "reference": "Entity"
+    },
+    {
+     "name": "facing_angle"
+    },
+    {
+     "name": "dummy_id"
+    },
+    {
+     "name": "max_distance"
+    },
+    {
+     "name": "prompt_text",
+     "reference": "Text"
+    },
+    {
+     "name": "trigger_attribute"
+    },
+    {
+     "name": "button"
+    },
+    {
+     "name": "line_intersects"
+    }
+   ]
+  },
+  {
+   "bank": 3,
+   "id": 19,
+   "name": "IfActionButtonBossLineIntersect",
+   "summary": "Generates an 'action button' prompt and waits for the player to activate it.\n\n            Boss (not \"basic\") version with a line intersection check.",
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "anchor_type"
+    },
+    {
+     "name": "anchor_entity",
+     "reference": "Entity"
+    },
+    {
+     "name": "facing_angle"
+    },
+    {
+     "name": "dummy_id"
+    },
+    {
+     "name": "max_distance"
+    },
+    {
+     "name": "prompt_text",
+     "reference": "Text"
+    },
+    {
+     "name": "trigger_attribute"
+    },
+    {
+     "name": "button"
+    },
+    {
+     "name": "line_intersects"
+    }
+   ]
+  },
+  {
+   "bank": 3,
+   "id": 20,
+   "name": "IfEventsComparison",
+   "summary": "Check comparison of two event flag values. Haven't bothered adding shortcut functions for this.",
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "left_flag",
+     "reference": "Flag"
+    },
+    {
+     "name": "left_bit_count"
+    },
+    {
+     "name": "comparison_type"
+    },
+    {
+     "name": "right_flag",
+     "reference": "Flag"
+    },
+    {
+     "name": "right_bit_count"
+    }
+   ]
+  },
+  {
+   "bank": 3,
+   "id": 21,
+   "name": "IfDLCState",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "is_owned"
+    }
+   ]
+  },
+  {
+   "bank": 3,
+   "id": 22,
+   "name": "IfOnlineState",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "state"
+    }
+   ]
+  },
+  {
+   "bank": 4,
+   "id": 0,
+   "name": "IfCharacterDeathState",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "is_dead"
+    }
+   ]
+  },
+  {
+   "bank": 4,
+   "id": 1,
+   "name": "IfAttacked",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "attacked_entity",
+     "reference": "Character"
+    },
+    {
+     "name": "attacker",
+     "reference": "Character"
+    }
+   ]
+  },
+  {
+   "bank": 4,
+   "id": 2,
+   "name": "IfHealthRatioComparison",
+   "summary": "Conditions upon a comparison to character health ratio (0-1).",
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "comparison_type"
+    },
+    {
+     "name": "value"
+    }
+   ]
+  },
+  {
+   "bank": 4,
+   "id": 3,
+   "name": "IfCharacterIsType",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "character_type"
+    }
+   ]
+  },
+  {
+   "bank": 4,
+   "id": 4,
+   "name": "IfCharacterTargetingState",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "targeting_character",
+     "reference": "Character"
+    },
+    {
+     "name": "targeted_character",
+     "reference": "Character"
+    },
+    {
+     "name": "state"
+    }
+   ]
+  },
+  {
+   "bank": 4,
+   "id": 5,
+   "name": "IfCharacterSpecialEffectState",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "special_effect"
+    },
+    {
+     "name": "state"
+    }
+   ]
+  },
+  {
+   "bank": 4,
+   "id": 6,
+   "name": "IfCharacterPartHealthComparison",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "npc_part_id"
+    },
+    {
+     "name": "value"
+    },
+    {
+     "name": "comparison_type"
+    }
+   ]
+  },
+  {
+   "bank": 4,
+   "id": 7,
+   "name": "IfCharacterBackreadState",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "state"
+    }
+   ]
+  },
+  {
+   "bank": 4,
+   "id": 8,
+   "name": "IfCharacterTAEEventState",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "tae_event_id"
+    },
+    {
+     "name": "state"
+    }
+   ]
+  },
+  {
+   "bank": 4,
+   "id": 9,
+   "name": "IfHasAIStatus",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "ai_status"
+    }
+   ]
+  },
+  {
+   "bank": 4,
+   "id": 10,
+   "name": "IfSkullLanternState",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "state"
+    }
+   ]
+  },
+  {
+   "bank": 4,
+   "id": 11,
+   "name": "IfPlayerClass",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "class_type"
+    }
+   ]
+  },
+  {
+   "bank": 4,
+   "id": 12,
+   "name": "IfPlayerCovenant",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "covenant"
+    }
+   ]
+  },
+  {
+   "bank": 4,
+   "id": 13,
+   "name": "IfPlayerLevelComparison",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "comparison_type"
+    },
+    {
+     "name": "value"
+    }
+   ]
+  },
+  {
+   "bank": 4,
+   "id": 14,
+   "name": "IfHealthValueComparison",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "comparison_type"
+    },
+    {
+     "name": "value"
+    }
+   ]
+  },
+  {
+   "bank": 5,
+   "id": 0,
+   "name": "IfObjectDestructionState",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "state"
+    },
+    {
+     "name": "obj",
+     "reference": "Object"
+    }
+   ]
+  },
+  {
+   "bank": 5,
+   "id": 1,
+   "name": "IfObjectDamaged",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "obj",
+     "reference": "Object"
+    },
+    {
+     "name": "attacker",
+     "reference": "Character"
+    }
+   ]
+  },
+  {
+   "bank": 5,
+   "id": 2,
+   "name": "IfObjectActivated",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "obj_act_id"
+    }
+   ]
+  },
+  {
+   "bank": 5,
+   "id": 3,
+   "name": "IfObjectHealthValueComparison",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "obj",
+     "reference": "Object"
+    },
+    {
+     "name": "comparison_type"
+    },
+    {
+     "name": "value"
+    }
+   ]
+  },
+  {
+   "bank": 11,
+   "id": 0,
+   "name": "IfPlayerMovingOnCollision",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "collision",
+     "reference": "Collision"
+    }
+   ]
+  },
+  {
+   "bank": 11,
+   "id": 1,
+   "name": "IfPlayerRunningOnCollision",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "collision",
+     "reference": "Collision"
+    }
+   ]
+  },
+  {
+   "bank": 11,
+   "id": 2,
+   "name": "IfPlayerStandingOnCollision",
+   "summary": null,
+   "args": [
+    {
+     "name": "condition"
+    },
+    {
+     "name": "collision",
+     "reference": "Collision"
+    }
+   ]
+  },
+  {
+   "bank": 1000,
+   "id": 0,
+   "name": "AwaitConditionState",
+   "summary": "Not sure if this is ever really used over `IfConditionState`.",
+   "args": [
+    {
+     "name": "state"
+    },
+    {
+     "name": "input_condition"
+    }
+   ]
+  },
+  {
+   "bank": 1000,
+   "id": 1,
+   "name": "SkipLinesIfConditionState",
+   "summary": null,
+   "args": [
+    {
+     "name": "line_count"
+    },
+    {
+     "name": "state"
+    },
+    {
+     "name": "input_condition"
+    }
+   ]
+  },
+  {
+   "bank": 1000,
+   "id": 2,
+   "name": "ReturnIfConditionState",
+   "summary": null,
+   "args": [
+    {
+     "name": "event_return_type"
+    },
+    {
+     "name": "state"
+    },
+    {
+     "name": "input_condition"
+    }
+   ]
+  },
+  {
+   "bank": 1000,
+   "id": 3,
+   "name": "SkipLines",
+   "summary": "Unconditional line skip.",
+   "args": [
+    {
+     "name": "line_count"
+    }
+   ]
+  },
+  {
+   "bank": 1000,
+   "id": 4,
+   "name": "Return",
+   "summary": null,
+   "args": [
+    {
+     "name": "event_return_type"
+    }
+   ]
+  },
+  {
+   "bank": 1000,
+   "id": 5,
+   "name": "SkipLinesIfValueComparison",
+   "summary": null,
+   "args": [
+    {
+     "name": "line_count"
+    },
+    {
+     "name": "comparison_type"
+    },
+    {
+     "name": "left"
+    },
+    {
+     "name": "right"
+    }
+   ]
+  },
+  {
+   "bank": 1000,
+   "id": 6,
+   "name": "ReturnIfValueComparison",
+   "summary": null,
+   "args": [
+    {
+     "name": "event_return_type"
+    },
+    {
+     "name": "comparison_type"
+    },
+    {
+     "name": "left"
+    },
+    {
+     "name": "right"
+    }
+   ]
+  },
+  {
+   "bank": 1000,
+   "id": 7,
+   "name": "SkipLinesIfLastConditionResultState",
+   "summary": "Skip some number of lines if the last result of the given condition (without re-evaluating) is `state`.",
+   "args": [
+    {
+     "name": "line_count"
+    },
+    {
+     "name": "state"
+    },
+    {
+     "name": "input_condition"
+    }
+   ]
+  },
+  {
+   "bank": 1000,
+   "id": 8,
+   "name": "ReturnIfLastConditionResultState",
+   "summary": "End or restart event if last condition result (without re-evaluating) is the given `state`.",
+   "args": [
+    {
+     "name": "event_return_type"
+    },
+    {
+     "name": "state"
+    },
+    {
+     "name": "input_condition"
+    }
+   ]
+  },
+  {
+   "bank": 1000,
+   "id": 9,
+   "name": "WaitForNetworkApproval",
+   "summary": "Wait for network to approve event (up to `max_seconds` seconds).",
+   "args": [
+    {
+     "name": "max_seconds"
+    }
+   ]
+  },
+  {
+   "bank": 1001,
+   "id": 0,
+   "name": "Wait",
+   "summary": "Wait for some number of seconds.",
+   "args": [
+    {
+     "name": "seconds"
+    }
+   ]
+  },
+  {
+   "bank": 1001,
+   "id": 1,
+   "name": "WaitFrames",
+   "summary": "Wait for some number of frames.",
+   "args": [
+    {
+     "name": "frames"
+    }
+   ]
+  },
+  {
+   "bank": 1001,
+   "id": 2,
+   "name": "WaitRandomSeconds",
+   "summary": "Wait for a random number of seconds between min and max. I assume the distribution is inclusive and uniform.",
+   "args": [
+    {
+     "name": "min_seconds"
+    },
+    {
+     "name": "max_seconds"
+    }
+   ]
+  },
+  {
+   "bank": 1001,
+   "id": 3,
+   "name": "WaitRandomFrames",
+   "summary": "Wait for a random number of seconds between min and max. I assume the distribution is inclusive and uniform.",
+   "args": [
+    {
+     "name": "min_frames"
+    },
+    {
+     "name": "max_frames"
+    }
+   ]
+  },
+  {
+   "bank": 1003,
+   "id": 0,
+   "name": "AwaitFlagState",
+   "summary": "Not sure if this is really used rather than `IfFlagState` with MAIN condition (0).",
+   "args": [
+    {
+     "name": "state"
+    },
+    {
+     "name": "flag_type"
+    },
+    {
+     "name": "flag",
+     "reference": "Flag"
+    }
+   ]
+  },
+  {
+   "bank": 1003,
+   "id": 1,
+   "name": "SkipLinesIfFlagState",
+   "summary": "Skip some number of lines if the specified flag (absolute, event-relative, or slot-relative) has the \n            specified state.",
+   "args": [
+    {
+     "name": "line_count"
+    },
+    {
+     "name": "state"
+    },
+    {
+     "name": "flag_type"
+    },
+    {
+     "name": "flag",
+     "reference": "Flag"
+    }
+   ]
+  },
+  {
+   "bank": 1003,
+   "id": 2,
+   "name": "ReturnIfFlagState",
+   "summary": null,
+   "args": [
+    {
+     "name": "event_return_type"
+    },
+    {
+     "name": "state"
+    },
+    {
+     "name": "flag_type"
+    },
+    {
+     "name": "flag",
+     "reference": "Flag"
+    }
+   ]
+  },
+  {
+   "bank": 1003,
+   "id": 3,
+   "name": "SkipLinesIfFlagRangeState",
+   "summary": null,
+   "args": [
+    {
+     "name": "line_count"
+    },
+    {
+     "name": "state"
+    },
+    {
+     "name": "flag_type"
+    },
+    {
+     "name": "first_flag",
+     "reference": "Flag"
+    },
+    {
+     "name": "last_flag",
+     "reference": "Flag"
+    }
+   ]
+  },
+  {
+   "bank": 1003,
+   "id": 4,
+   "name": "ReturnIfFlagRangeState",
+   "summary": null,
+   "args": [
+    {
+     "name": "event_return_type"
+    },
+    {
+     "name": "state"
+    },
+    {
+     "name": "flag_type"
+    },
+    {
+     "name": "first_flag",
+     "reference": "Flag"
+    },
+    {
+     "name": "last_flag",
+     "reference": "Flag"
+    }
+   ]
+  },
+  {
+   "bank": 1003,
+   "id": 5,
+   "name": "SkipLinesIfMultiplayerState",
+   "summary": null,
+   "args": [
+    {
+     "name": "line_count"
+    },
+    {
+     "name": "state"
+    }
+   ]
+  },
+  {
+   "bank": 1003,
+   "id": 6,
+   "name": "ReturnIfMultiplayerState",
+   "summary": null,
+   "args": [
+    {
+     "name": "event_return_type"
+    },
+    {
+     "name": "state"
+    }
+   ]
+  },
+  {
+   "bank": 1003,
+   "id": 7,
+   "name": "SkipLinesIfMapPresenceState",
+   "summary": null,
+   "args": [
+    {
+     "name": "line_count"
+    },
+    {
+     "name": "state"
+    },
+    {
+     "name": "area_id"
+    },
+    {
+     "name": "block_id"
+    }
+   ]
+  },
+  {
+   "bank": 1003,
+   "id": 8,
+   "name": "ReturnIfMapPresenceState",
+   "summary": null,
+   "args": [
+    {
+     "name": "event_return_type"
+    },
+    {
+     "name": "state"
+    },
+    {
+     "name": "area_id"
+    },
+    {
+     "name": "block_id"
+    }
+   ]
+  },
+  {
+   "bank": 1005,
+   "id": 0,
+   "name": "AwaitObjectDestructionState",
+   "summary": null,
+   "args": [
+    {
+     "name": "state"
+    },
+    {
+     "name": "obj",
+     "reference": "Object"
+    }
+   ]
+  },
+  {
+   "bank": 1005,
+   "id": 1,
+   "name": "SkipLinesIfObjectDestructionState",
+   "summary": null,
+   "args": [
+    {
+     "name": "line_count"
+    },
+    {
+     "name": "state"
+    },
+    {
+     "name": "obj",
+     "reference": "Object"
+    }
+   ]
+  },
+  {
+   "bank": 1005,
+   "id": 2,
+   "name": "ReturnIfObjectDestructionState",
+   "summary": null,
+   "args": [
+    {
+     "name": "event_return_type"
+    },
+    {
+     "name": "state"
+    },
+    {
+     "name": "obj",
+     "reference": "Object"
+    }
+   ]
+  },
+  {
+   "bank": 2000,
+   "id": 0,
+   "name": "RunEvent",
+   "summary": "Initialize an instance (slot) of an event script with the given (optional) arguments.",
+   "args": [
+    {
+     "name": "slot"
+    },
+    {
+     "name": "event_id"
+    },
+    {
+     "name": "args"
+    }
+   ]
+  },
+  {
+   "bank": 2000,
+   "id": 1,
+   "name": "TerminateEvent",
+   "summary": "Delete an instance (slot) of an event script.",
+   "args": [
+    {
+     "name": "event_slot"
+    },
+    {
+     "name": "event_id"
+    }
+   ]
+  },
+  {
+   "bank": 2000,
+   "id": 2,
+   "name": "SetNetworkSyncState",
+   "summary": null,
+   "args": [
+    {
+     "name": "state"
+    }
+   ]
+  },
+  {
+   "bank": 2000,
+   "id": 3,
+   "name": "ClearMainCondition",
+   "summary": "Likely clears all conditions currently loaded into the main condition (0).",
+   "args": [
+    {
+     "name": "dummy"
+    }
+   ]
+  },
+  {
+   "bank": 2000,
+   "id": 4,
+   "name": "IssuePrefetchRequest",
+   "summary": "No idea what this does.",
+   "args": [
+    {
+     "name": "request_id"
+    }
+   ]
+  },
+  {
+   "bank": 2000,
+   "id": 5,
+   "name": "SaveRequest",
+   "summary": "Request the game to save player progress.",
+   "args": [
+    {
+     "name": "dummy"
+    }
+   ]
+  },
+  {
+   "bank": 2002,
+   "id": 1,
+   "name": "PlayCutsceneToAll",
+   "summary": null,
+   "args": [
+    {
+     "name": "cutscene_id"
+    },
+    {
+     "name": "cutscene_flags"
+    }
+   ]
+  },
+  {
+   "bank": 2002,
+   "id": 2,
+   "name": "PlayCutsceneAndMovePlayer",
+   "summary": null,
+   "args": [
+    {
+     "name": "cutscene_id"
+    },
+    {
+     "name": "cutscene_flags"
+    },
+    {
+     "name": "move_to_region",
+     "reference": "Region"
+    },
+    {
+     "name": "area_id"
+    },
+    {
+     "name": "block_id"
+    }
+   ]
+  },
+  {
+   "bank": 2002,
+   "id": 3,
+   "name": "PlayCutsceneToPlayer",
+   "summary": null,
+   "args": [
+    {
+     "name": "cutscene_id"
+    },
+    {
+     "name": "cutscene_flags"
+    },
+    {
+     "name": "player_id"
+    }
+   ]
+  },
+  {
+   "bank": 2002,
+   "id": 4,
+   "name": "PlayCutsceneAndMoveSpecificPlayer",
+   "summary": null,
+   "args": [
+    {
+     "name": "cutscene_id"
+    },
+    {
+     "name": "cutscene_flags"
+    },
+    {
+     "name": "move_to_region",
+     "reference": "Region"
+    },
+    {
+     "name": "area_id"
+    },
+    {
+     "name": "block_id"
+    },
+    {
+     "name": "player_id"
+    }
+   ]
+  },
+  {
+   "bank": 2002,
+   "id": 5,
+   "name": "PlayCutsceneAndRotatePlayer",
+   "summary": null,
+   "args": [
+    {
+     "name": "cutscene_id"
+    },
+    {
+     "name": "cutscene_flags"
+    },
+    {
+     "name": "relative_rotation_axis_x"
+    },
+    {
+     "name": "relative_rotation_axis_z"
+    },
+    {
+     "name": "rotation"
+    },
+    {
+     "name": "vertical_translation"
+    },
+    {
+     "name": "player_id"
+    }
+   ]
+  },
+  {
+   "bank": 2003,
+   "id": 1,
+   "name": "RequestAnimation",
+   "summary": "Not used very often, in favor of ForceAnimation below.",
+   "args": [
+    {
+     "name": "entity",
+     "reference": "Entity"
+    },
+    {
+     "name": "animation_id"
+    },
+    {
+     "name": "loop"
+    },
+    {
+     "name": "wait_for_completion"
+    }
+   ]
+  },
+  {
+   "bank": 2003,
+   "id": 2,
+   "name": "SetFlagState",
+   "summary": "Enable, disable, or toggle (change) a binary flag.",
+   "args": [
+    {
+     "name": "flag",
+     "reference": "Flag"
+    },
+    {
+     "name": "state"
+    }
+   ]
+  },
+  {
+   "bank": 2003,
+   "id": 3,
+   "name": "SetSpawnerState",
+   "summary": "e.g. the baby skeletons in Tomb of the Giants.",
+   "args": [
+    {
+     "name": "entity",
+     "reference": "Entity"
+    },
+    {
+     "name": "state"
+    }
+   ]
+  },
+  {
+   "bank": 2003,
+   "id": 4,
+   "name": "AwardItemLotToAllPlayers",
+   "summary": null,
+   "args": [
+    {
+     "name": "item_lot"
+    }
+   ]
+  },
+  {
+   "bank": 2003,
+   "id": 5,
+   "name": "ShootProjectile",
+   "summary": "The owner entity sets the 'team' of the projectile (i.e. who it can hurt).\n\n            You can use this to directly spawn bullets by setting `source_entity` to `owner_entity`.\n\n            Note that the angle arguments are all integers.",
+   "args": [
+    {
+     "name": "owner_entity",
+     "reference": "Entity"
+    },
+    {
+     "name": "source_entity",
+     "reference": "Entity"
+    },
+    {
+     "name": "dummy_id"
+    },
+    {
+     "name": "behavior_id"
+    },
+    {
+     "name": "launch_angle_x"
+    },
+    {
+     "name": "launch_angle_y"
+    },
+    {
+     "name": "launch_angle_z"
+    }
+   ]
+  },
+  {
+   "bank": 2003,
+   "id": 8,
+   "name": "SetEventState",
+   "summary": "Stop or restart a particular slot (default of 0) of the given event ID. Note that you cannot restart events \n            that have already ended.",
+   "args": [
+    {
+     "name": "event_id"
+    },
+    {
+     "name": "event_slot"
+    },
+    {
+     "name": "event_return_type"
+    }
+   ]
+  },
+  {
+   "bank": 2003,
+   "id": 11,
+   "name": "SetBossHealthBarState",
+   "summary": "Note: slot number can be 0-1 in DS1.",
+   "args": [
+    {
+     "name": "state"
+    },
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "bar_slot"
+    },
+    {
+     "name": "name"
+    }
+   ]
+  },
+  {
+   "bank": 2003,
+   "id": 12,
+   "name": "KillBoss",
+   "summary": "The name is slightly misleading, as this doesn't actually kill any entity. Instead, it marks that you have\n            cleared an 'area', as defined by the Game Area params, and is always manually called in EMEVD when you kill \n            the boss of that area.\n\n            Among other things, this awards your souls for killing the boss (which is why they are delayed and why the \n            game will keep trying to give them to you on map load) and prevents you from summoning other players.\n\n            The Game Area params ID is generally identical to the entity ID of the appropriate boss. This is just \n            convention, but it's one you should stick to for a sensible setup (and for the name of the instruction to \n            make sense).",
+   "args": [
+    {
+     "name": "game_area_param_id"
+    }
+   ]
+  },
+  {
+   "bank": 2003,
+   "id": 13,
+   "name": "SetNavmeshFaceFlag",
+   "summary": "Set given navmesh type.",
+   "args": [
+    {
+     "name": "navmesh_id"
+    },
+    {
+     "name": "navmesh_type"
+    },
+    {
+     "name": "operation"
+    }
+   ]
+  },
+  {
+   "bank": 2003,
+   "id": 14,
+   "name": "WarpToMap",
+   "summary": "Warp the main player to the given player entity ID, which is in the Players tab of the MSB, in some map. By\n            default, this warps to the 'default position' in the map (-1), which is the same point you would spawn at if \n            the game lost track of your stable footing (e.g. in 'wrong warp' glitches).",
+   "args": [
+    {
+     "name": "area_id"
+    },
+    {
+     "name": "block_id"
+    },
+    {
+     "name": "player_start"
+    }
+   ]
+  },
+  {
+   "bank": 2003,
+   "id": 15,
+   "name": "HandleMinibossDefeat",
+   "summary": "Called instead of `KillBoss` for bosses that aren't the final boss of the area.\n\n            Not used in DS1, and I don't know what it would do.",
+   "args": [
+    {
+     "name": "miniboss_id"
+    }
+   ]
+  },
+  {
+   "bank": 2003,
+   "id": 16,
+   "name": "TriggerMultiplayerEvent",
+   "summary": "Used to make the Bell of Awakening sounds, for example.",
+   "args": [
+    {
+     "name": "event_id"
+    }
+   ]
+  },
+  {
+   "bank": 2003,
+   "id": 17,
+   "name": "SetRandomFlagInRange",
+   "summary": "Set the state of a random flag from a given range (inclusive).",
+   "args": [
+    {
+     "name": "first_flag",
+     "reference": "Flag"
+    },
+    {
+     "name": "last_flag",
+     "reference": "Flag"
+    },
+    {
+     "name": "state"
+    }
+   ]
+  },
+  {
+   "bank": 2003,
+   "id": 18,
+   "name": "ForceAnimation",
+   "summary": "Used a lot. Standard way to make a Character or Object perform an animation.",
+   "args": [
+    {
+     "name": "entity",
+     "reference": "Entity"
+    },
+    {
+     "name": "animation_id"
+    },
+    {
+     "name": "loop"
+    },
+    {
+     "name": "wait_for_completion"
+    },
+    {
+     "name": "skip_transition"
+    }
+   ]
+  },
+  {
+   "bank": 2003,
+   "id": 19,
+   "name": "SetMapDrawParamSlot",
+   "summary": "Each map area (NOT each map) can have two sets of DrawParams (0 and 1), and this can be used to switch\n            between them. Originally only used for Dark Anor Londo.\n\n            Note that there's some funny business with how this works in m15 in Dark Souls Remastered, presumably \n            because the developers didn't want to bother modifying both slots when they re-did all the DrawParams.",
+   "args": [
+    {
+     "name": "map_area_id"
+    },
+    {
+     "name": "draw_param_slot"
+    }
+   ]
+  },
+  {
+   "bank": 2003,
+   "id": 21,
+   "name": "IncrementNewGameCycle",
+   "summary": "This is manually called at the end of the game. You can call it anytime, but note that there is no way to\n            decrement it with events.\n\n            The dummy argument is always 0 or 1; not sure if or how it matters.",
+   "args": [
+    {
+     "name": "dummy_arg"
+    }
+   ]
+  },
+  {
+   "bank": 2003,
+   "id": 22,
+   "name": "SetFlagRangeState",
+   "summary": "Set the state of an entire flag range (inclusive).",
+   "args": [
+    {
+     "name": "first_flag",
+     "reference": "Flag"
+    },
+    {
+     "name": "last_flag",
+     "reference": "Flag"
+    },
+    {
+     "name": "state"
+    }
+   ]
+  },
+  {
+   "bank": 2003,
+   "id": 23,
+   "name": "SetRespawnPoint",
+   "summary": "Respawn point is an event set in the MSB.",
+   "args": [
+    {
+     "name": "respawn_point"
+    }
+   ]
+  },
+  {
+   "bank": 2003,
+   "id": 24,
+   "name": "RemoveItemFromPlayer",
+   "summary": "Item type is automatically detected. This instruction has a 'quantity' argument, but it seems broken, so you\n            always have to remove *all* instances of the item. (Strangely, the similar command used in EzState doesn't \n            seem to have this bug.)\n\n            WARNING: don't confuse 'Item' with the specific item type 'Good'.",
+   "args": [
+    {
+     "name": "item_type"
+    },
+    {
+     "name": "item",
+     "reference": "Item"
+    },
+    {
+     "name": "quantity"
+    }
+   ]
+  },
+  {
+   "bank": 2003,
+   "id": 25,
+   "name": "PlaceSummonSign",
+   "summary": "If you set a black summon sign, the specified NPC will try to invade automatically.",
+   "args": [
+    {
+     "name": "sign_type"
+    },
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "region",
+     "reference": "Region"
+    },
+    {
+     "name": "summon_flag",
+     "reference": "Flag"
+    },
+    {
+     "name": "dismissal_flag",
+     "reference": "Flag"
+    }
+   ]
+  },
+  {
+   "bank": 2003,
+   "id": 26,
+   "name": "SetSoapstoneMessageState",
+   "summary": "Enable or disable developer message.",
+   "args": [
+    {
+     "name": "message_id"
+    },
+    {
+     "name": "state"
+    }
+   ]
+  },
+  {
+   "bank": 2003,
+   "id": 28,
+   "name": "AwardAchievement",
+   "summary": "For obvious reasons, I *highly* discourage you from abusing this, except in the interest of maintaining the\n            accessibility of existing achievements. This interacts with Steam, which is always dangerous.",
+   "args": [
+    {
+     "name": "achievement_id"
+    }
+   ]
+  },
+  {
+   "bank": 2003,
+   "id": 30,
+   "name": "SetVagrantSpawningState",
+   "summary": "Note inverted bool.",
+   "args": [
+    {
+     "name": "spawning_disabled"
+    }
+   ]
+  },
+  {
+   "bank": 2003,
+   "id": 31,
+   "name": "IncrementEventValue",
+   "summary": "You can use a contiguous array of flags as a single value. Use this to increment that value by 1.\n\n            The array begins at `flag` and extends for `bit_count`. For example, a 'bit_count' of 8 gives you a \n            theoretical maximum of 256. You can set a 'max_value' less than that to limit the value. (I'm not sure if it \n            ticks over back to zero if `max_value` is greater than the possible value given the bit count.)\n        \n            The most significant bit is represented at `flag`, and the least significant bit at `flag + bit_count - 1`.\n        \n            This is used for counters in the vanilla game, such as the number of bosses killed while Rhea is at Undead \n            Parish.",
+   "args": [
+    {
+     "name": "flag",
+     "reference": "Flag"
+    },
+    {
+     "name": "bit_count"
+    },
+    {
+     "name": "max_value"
+    }
+   ]
+  },
+  {
+   "bank": 2003,
+   "id": 32,
+   "name": "ClearEventValue",
+   "summary": "Clears the given multi-flag. This is basically like disabling `bit_count` flags in a row, starting at \n            `flag`.",
+   "args": [
+    {
+     "name": "flag",
+     "reference": "Flag"
+    },
+    {
+     "name": "bit_count"
+    }
+   ]
+  },
+  {
+   "bank": 2003,
+   "id": 33,
+   "name": "SetNextSnugglyTrade",
+   "summary": "Sets the flag for the next drop based on the item you deposit into the nest.",
+   "args": [
+    {
+     "name": "flag",
+     "reference": "Flag"
+    }
+   ]
+  },
+  {
+   "bank": 2003,
+   "id": 34,
+   "name": "SnugglyItemDrop",
+   "summary": "Makes Snuggly drop an item. There are complex limitations to this in the engine, so be careful. (The list of\n            available Snuggly flags is a hard-coded limit, for example.)",
+   "args": [
+    {
+     "name": "item_lot",
+     "reference": "Item"
+    },
+    {
+     "name": "region",
+     "reference": "Region"
+    },
+    {
+     "name": "flag",
+     "reference": "Flag"
+    },
+    {
+     "name": "collision",
+     "reference": "Collision"
+    }
+   ]
+  },
+  {
+   "bank": 2003,
+   "id": 35,
+   "name": "MoveRemains",
+   "summary": "Move all bloodstains and dropped items from one region to another (I assume). Used to move your\n            remains out of Gwyndolin's endless corridor.",
+   "args": [
+    {
+     "name": "source_region",
+     "reference": "Region"
+    },
+    {
+     "name": "destination_region",
+     "reference": "Region"
+    }
+   ]
+  },
+  {
+   "bank": 2003,
+   "id": 36,
+   "name": "AwardItemLotToHostOnly",
+   "summary": "You can simply call AwardItemLot() with the same argument, which will redirect here, as you'll almost never\n            *not* want to award an item lot to the host only.",
+   "args": [
+    {
+     "name": "item_lot"
+    }
+   ]
+  },
+  {
+   "bank": 2003,
+   "id": 37,
+   "name": "ArenaRankingRequest1v1",
+   "summary": null,
+   "args": []
+  },
+  {
+   "bank": 2003,
+   "id": 38,
+   "name": "ArenaRankingRequest2v2",
+   "summary": null,
+   "args": []
+  },
+  {
+   "bank": 2003,
+   "id": 39,
+   "name": "ArenaRankingRequestFFA",
+   "summary": null,
+   "args": []
+  },
+  {
+   "bank": 2003,
+   "id": 40,
+   "name": "ArenaExitRequest",
+   "summary": null,
+   "args": []
+  },
+  {
+   "bank": 2003,
+   "id": 41,
+   "name": "ActivateKillplaneForModel",
+   "summary": "Not used much. Activates a horizontal killplane that only affects a particular model ID.",
+   "args": [
+    {
+     "name": "area_id"
+    },
+    {
+     "name": "block_id"
+    },
+    {
+     "name": "y_threshold"
+    },
+    {
+     "name": "target_model_id"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 1,
+   "name": "SetAIState",
+   "summary": "Enable or disable battle AI of character. Does not affect logic AI (e.g. for patrolling).",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "state"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 2,
+   "name": "SetTeamType",
+   "summary": null,
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "new_team"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 3,
+   "name": "MoveToEntity",
+   "summary": "Basic move. I recommend you use the combined `Move` function. Valid `dummy_id` MUST be supplied for \n            character destinations (and possibly objects) or no movement will occur.",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "destination_type"
+    },
+    {
+     "name": "destination",
+     "reference": "Entity"
+    },
+    {
+     "name": "dummy_id"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 4,
+   "name": "Kill",
+   "summary": "Technically a kill 'request.'",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "award_souls"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 5,
+   "name": "SetCharacterState",
+   "summary": null,
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "state"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 6,
+   "name": "EzstateAIRequest",
+   "summary": "Slot number ranges from 0 to 3.",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "command_id"
+    },
+    {
+     "name": "command_slot"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 7,
+   "name": "CreateProjectileOwner",
+   "summary": "A 'bullet owner' that will spawn things according to the Spawner section of the MSB.",
+   "args": [
+    {
+     "name": "entity",
+     "reference": "Entity"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 8,
+   "name": "AddSpecialEffect",
+   "summary": "'Special effect' as in a buff/debuff, not graphical effects (though they may come with one).",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "special_effect"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 9,
+   "name": "SetStandbyAnimationSettings",
+   "summary": "Sets entity's default standby animations. -1 is default for each category.",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "standby_animation"
+    },
+    {
+     "name": "damage_animation"
+    },
+    {
+     "name": "cancel_animation"
+    },
+    {
+     "name": "death_animation"
+    },
+    {
+     "name": "standby_exit_animation"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 10,
+   "name": "SetGravityState",
+   "summary": "Simply determines if the character loses height as it moves around. They will still gain height by running \n            up slopes.",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "state"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 11,
+   "name": "SetCharacterEventTarget",
+   "summary": "Likely refers to patrolling behavior.",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "entity",
+     "reference": "Entity"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 12,
+   "name": "SetImmortalityState",
+   "summary": "Character will take damage, but not die (i.e. cannot go below 1 HP).",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "state"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 13,
+   "name": "SetNest",
+   "summary": "Home point for entity AI.",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "region",
+     "reference": "Region"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 14,
+   "name": "FaceEntity",
+   "summary": "Rotate a character to face a target map entity of any type.\n            WARNING: This instruction will crash its event script (silently) if used on a disabled character! (In DS1 at \n            least.)",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "target_entity",
+     "reference": "Entity"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 15,
+   "name": "SetInvincibilityState",
+   "summary": "Character cannot take damage or die.\n            \n            NOTE: Disabling invincibility will also disable immortality.",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "state"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 16,
+   "name": "ClearTargetList",
+   "summary": "Clear list of targets from character AI.",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 17,
+   "name": "AICommand",
+   "summary": "The given `command_id` can be accessed in AI Lua scripts with `ai:GetEventRequest(slot)`.",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "command_id"
+    },
+    {
+     "name": "command_slot"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 18,
+   "name": "SetEventPoint",
+   "summary": "Not sure what the usage of this is, but it is likely used to change patrol behavior.",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "region",
+     "reference": "Region"
+    },
+    {
+     "name": "reaction_range"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 19,
+   "name": "SetAIParamID",
+   "summary": "Change character's AI parameter index.",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "ai_param_id"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 20,
+   "name": "ReplanAI",
+   "summary": "Clear current AI goal list and force character to replan it.",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 21,
+   "name": "RemoveSpecialEffect",
+   "summary": "'Special effect' as in a buff/debuff, not graphical effects (though they may come with one).",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "special_effect"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 22,
+   "name": "CreateNPCPart",
+   "summary": "Complex. Sets specific damage parameters for part of an NPC model. Further changes to the specific part can \n            be made using the events below. The part is specified using the NPCPartType slot. Look at usage in tail cut \n            events to understand these more.",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "npc_part_id"
+    },
+    {
+     "name": "part_index"
+    },
+    {
+     "name": "part_health"
+    },
+    {
+     "name": "damage_correction"
+    },
+    {
+     "name": "body_damage_correction"
+    },
+    {
+     "name": "is_invincible"
+    },
+    {
+     "name": "start_in_stop_state"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 23,
+   "name": "SetNPCPartHealth",
+   "summary": "You must create the part first.",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "npc_part_id"
+    },
+    {
+     "name": "desired_health"
+    },
+    {
+     "name": "overwrite_max"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 24,
+   "name": "SetNPCPartEffects",
+   "summary": "Attach material effects to an NPC part.",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "npc_part_id"
+    },
+    {
+     "name": "material_sfx_id"
+    },
+    {
+     "name": "material_vfx_id"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 25,
+   "name": "SetNPCPartBulletDamageScaling",
+   "summary": "Scale the damage dealt to the part. Usually used to set damage to zero, e.g. Smough's hammer.",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "npc_part_id"
+    },
+    {
+     "name": "desired_scaling"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 26,
+   "name": "SetDisplayMask",
+   "summary": "Different bits correspond to different parts of the character model. You can see the initial values for \n            these in the NPC params. This is generally used to disable tails when they are cut off.\n\n            `switch_type` can be 0 (off), 1 (on), or 2 (change).",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "bit_index"
+    },
+    {
+     "name": "switch_type"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 27,
+   "name": "SetCollisionMask",
+   "summary": "See above. This affects the NPC's Collision, not appearance.",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "bit_index"
+    },
+    {
+     "name": "switch_type"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 28,
+   "name": "SetNetworkUpdateAuthority",
+   "summary": "Complex; look at existing usage. Authority level must be 'Normal' or 'Forced'.",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "authority_level"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 29,
+   "name": "SetBackreadState",
+   "summary": "I'm not 100% certain how this differs from the standard Enable(), but I imagine controlling the 'backread' \n            of a character has a larger effect on game resources. It is used, for example, to disable the Fair Lady and \n            Eingyi during the Demon Firesage boss fight.\n\n            Also note reversed bool.",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "remove"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 30,
+   "name": "SetHealthBarState",
+   "summary": "Normal health bar that appears above character.",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "state"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 31,
+   "name": "SetCharacterCollisionState",
+   "summary": "Note that the bool is inverted from what you might expect.",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "is_disabled"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 32,
+   "name": "AIEvent",
+   "summary": "I have no idea what this does.",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "command_id"
+    },
+    {
+     "name": "command_slot"
+    },
+    {
+     "name": "first_event_flag",
+     "reference": "Flag"
+    },
+    {
+     "name": "last_event_flag",
+     "reference": "Flag"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 33,
+   "name": "ReferDamageToEntity",
+   "summary": "All damage dealt to the first character will *also* (not *only*) be dealt to the target entity. I'm not 100%\n            sure if the target entity can be an Object.\n\n            Only used by the Four Kings in the vanilla game.",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "target_entity",
+     "reference": "Character"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 34,
+   "name": "SetNetworkUpdateRate",
+   "summary": "Not sure what 'is_fixed' does. I believe only 'Always' and 'Never' are used in the vanilla game.",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "is_fixed"
+    },
+    {
+     "name": "update_rate"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 35,
+   "name": "SetBackreadStateAlternate",
+   "summary": "I have no idea how this differs from the standard backread function above.",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "state"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 36,
+   "name": "HellkiteBreathControl",
+   "summary": "I don't recommend you mess with this. It seems to be used to create the fire VFX and damaging effect when \n            the Hellkite breathes fire on the bridge, with (otherwise invisible) object model o1060. It may simply \n            trigger a certain behavior param ID.\n\n            Unclear whether the animation applies to the character or object (which is probably an invisible \"burning\" \n            plane).",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "obj",
+     "reference": "Object"
+    },
+    {
+     "name": "animation_id"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 37,
+   "name": "DropMandatoryTreasure",
+   "summary": "This will disable the character and spawn any treasure they would drop. It's possible that it only spawns\n            treasure that has a 100% drop rate, hence the name, but I haven't confirmed this.",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 38,
+   "name": "BetrayCurrentCovenant",
+   "summary": "Dummy argument does nothing.",
+   "args": [
+    {
+     "name": "dummy"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 39,
+   "name": "SetAnimationsState",
+   "summary": null,
+   "args": [
+    {
+     "name": "entity",
+     "reference": "Entity"
+    },
+    {
+     "name": "state"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 40,
+   "name": "MoveAndSetDrawParent",
+   "summary": null,
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "destination_type"
+    },
+    {
+     "name": "destination",
+     "reference": "Entity"
+    },
+    {
+     "name": "dummy_id"
+    },
+    {
+     "name": "set_draw_parent"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 41,
+   "name": "ShortMove",
+   "summary": null,
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "destination_type"
+    },
+    {
+     "name": "destination",
+     "reference": "Entity"
+    },
+    {
+     "name": "dummy_id"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 42,
+   "name": "MoveAndCopyDrawParent",
+   "summary": null,
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "destination_type"
+    },
+    {
+     "name": "destination",
+     "reference": "Entity"
+    },
+    {
+     "name": "dummy_id"
+    },
+    {
+     "name": "copy_draw_parent",
+     "reference": "Entity"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 43,
+   "name": "ResetAnimation",
+   "summary": "Cancels an animation. Note the inverted bool for controlling interpolation.",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "disable_interpolation"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 44,
+   "name": "SetTeamTypeAndExitStandbyAnimation",
+   "summary": "Two for the price of one. Often used when NPCs with resting animations become hostile.",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "team_type"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 45,
+   "name": "HumanityRegistration",
+   "summary": "I believe this designates the first event flag in a range of eight, which tracks how much humanity an NPC \n            has for draining with Dark Hand. These flags are all in the 8000 range, and tightly packed, so you'll need \n            to find your own range if you want to replicate this.\n\n            I can confirm that NOT doing this for a new NPC means you can't drain any humanity from them, rather than \n            being able to drain unlimited humanity.",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "event_flag",
+     "reference": "Flag"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 46,
+   "name": "IncrementPvPSin",
+   "summary": "Normally only happens when you kill an NPC.",
+   "args": [
+    {
+     "name": "dummy"
+    }
+   ]
+  },
+  {
+   "bank": 2004,
+   "id": 47,
+   "name": "EqualRecovery",
+   "summary": "Unknown effect. Only used in Battle of Stoicism, so likely useless to you.",
+   "args": []
+  },
+  {
+   "bank": 2005,
+   "id": 1,
+   "name": "DestroyObject",
+   "summary": "Technically 'requests' the object's destruction. No idea what the slot number does.",
+   "args": [
+    {
+     "name": "obj",
+     "reference": "Object"
+    },
+    {
+     "name": "request_slot"
+    }
+   ]
+  },
+  {
+   "bank": 2005,
+   "id": 2,
+   "name": "RestoreObject",
+   "summary": "The opposite of destruction. Restores it to its original MSB coordinates.",
+   "args": [
+    {
+     "name": "obj",
+     "reference": "Object"
+    }
+   ]
+  },
+  {
+   "bank": 2005,
+   "id": 3,
+   "name": "SetObjectState",
+   "summary": null,
+   "args": [
+    {
+     "name": "obj",
+     "reference": "Object"
+    },
+    {
+     "name": "state"
+    }
+   ]
+  },
+  {
+   "bank": 2005,
+   "id": 4,
+   "name": "SetTreasureState",
+   "summary": null,
+   "args": [
+    {
+     "name": "obj",
+     "reference": "Object"
+    },
+    {
+     "name": "state"
+    }
+   ]
+  },
+  {
+   "bank": 2005,
+   "id": 5,
+   "name": "ActivateObject",
+   "summary": "Manually call a specific ObjAct event attached to this object. I believe 'relative_index' refers to the \n            points on the object at which it can be activated (e.g. which side of a gate you are on).\n\n            Note that this will 'grab' a nearby NPC and force the appropriate animation from ObjAct params, which is how \n            the game gets Patches to pull the lever in the Catacombs.",
+   "args": [
+    {
+     "name": "obj",
+     "reference": "Object"
+    },
+    {
+     "name": "obj_act_id"
+    },
+    {
+     "name": "relative_index"
+    }
+   ]
+  },
+  {
+   "bank": 2005,
+   "id": 6,
+   "name": "SetObjectActivation",
+   "summary": "Sets whether the object can be activated (1) or not activated (0).",
+   "args": [
+    {
+     "name": "obj",
+     "reference": "Object"
+    },
+    {
+     "name": "obj_act_id"
+    },
+    {
+     "name": "state"
+    }
+   ]
+  },
+  {
+   "bank": 2005,
+   "id": 7,
+   "name": "EndOfAnimation",
+   "summary": "Sets entity to whatever state it would have after the given animation. Used often to open doors that have\n            already been opened when you reload the map, etc. I doubt it can be used with characters, but haven't \n            confirmed.",
+   "args": [
+    {
+     "name": "obj",
+     "reference": "Object"
+    },
+    {
+     "name": "animation_id"
+    }
+   ]
+  },
+  {
+   "bank": 2005,
+   "id": 8,
+   "name": "PostDestruction",
+   "summary": "Sets the object to whatever appearance it would have after being destroyed. Again, not sure what 'slot' \n            does, but it's literally *always* 1 in vanilla scripts (and from my testing, the instruction doesn't work \n            with `slot=0`).",
+   "args": [
+    {
+     "name": "obj",
+     "reference": "Object"
+    },
+    {
+     "name": "request_slot"
+    }
+   ]
+  },
+  {
+   "bank": 2005,
+   "id": 9,
+   "name": "CreateHazard",
+   "summary": "Turn an object into an environmental hazard. It deals damage when touched according to the NPC Behavior \n            params you give it. The dummy_id determines which part of the object is hazardous (with the given radius \n            and life, relative to the time this instruction occurs).\n\n            An example is the large fire in the Lower Undead Burg, or near the first Armored Tusk.\n\n            'target_type' determines what the hazard can damage (Character and/or Map).",
+   "args": [
+    {
+     "name": "obj_flag",
+     "reference": "Flag"
+    },
+    {
+     "name": "obj",
+     "reference": "Object"
+    },
+    {
+     "name": "dummy_id"
+    },
+    {
+     "name": "behavior_param_id"
+    },
+    {
+     "name": "target_type"
+    },
+    {
+     "name": "radius"
+    },
+    {
+     "name": "life"
+    },
+    {
+     "name": "repetition_time"
+    }
+   ]
+  },
+  {
+   "bank": 2005,
+   "id": 10,
+   "name": "RegisterStatue",
+   "summary": "Creates a petrified or crystallized statue. I believe this is so it can be seen by other players online.",
+   "args": [
+    {
+     "name": "obj",
+     "reference": "Object"
+    },
+    {
+     "name": "area_id"
+    },
+    {
+     "name": "block_id"
+    },
+    {
+     "name": "statue_type"
+    }
+   ]
+  },
+  {
+   "bank": 2005,
+   "id": 11,
+   "name": "MoveObjectToCharacter",
+   "summary": "Move an object to a character.",
+   "args": [
+    {
+     "name": "obj",
+     "reference": "Object"
+    },
+    {
+     "name": "character",
+     "reference": "Character"
+    },
+    {
+     "name": "dummy_id"
+    }
+   ]
+  },
+  {
+   "bank": 2005,
+   "id": 12,
+   "name": "RemoveObjectFlag",
+   "summary": "No idea what this does. I believe it might undo the CreateHazard instruction, at least.",
+   "args": [
+    {
+     "name": "obj_flag",
+     "reference": "Flag"
+    }
+   ]
+  },
+  {
+   "bank": 2005,
+   "id": 13,
+   "name": "SetObjectInvulnerabilityState",
+   "summary": "1 = invulnerable.",
+   "args": [
+    {
+     "name": "obj",
+     "reference": "Object"
+    },
+    {
+     "name": "state"
+    }
+   ]
+  },
+  {
+   "bank": 2005,
+   "id": 14,
+   "name": "SetObjectActivationWithIdx",
+   "summary": "Similar to SetObjectActivation, but you can provide the relative index to disable (e.g. one side of a door).",
+   "args": [
+    {
+     "name": "obj",
+     "reference": "Object"
+    },
+    {
+     "name": "obj_act_id"
+    },
+    {
+     "name": "relative_index"
+    },
+    {
+     "name": "state"
+    }
+   ]
+  },
+  {
+   "bank": 2005,
+   "id": 15,
+   "name": "EnableTreasureCollection",
+   "summary": "Forces an object to spawn its treasure, even if the treasure's ItemLot flag is already enabled.\n\n            Useful if you want some treasure to reappear (after, say, taking it from the player and disabling the \n            ItemLot flag) without the player needing to reload the map.",
+   "args": [
+    {
+     "name": "obj",
+     "reference": "Object"
+    }
+   ]
+  },
+  {
+   "bank": 2006,
+   "id": 1,
+   "name": "DeleteVFX",
+   "summary": "Delete visual VFX. If 'erase_root_only' is True (default), effect particles already emitted will live out \n            the rest of their lifetimes (e.g. making a fog gate disappear organically). The ID is given in the MSB.",
+   "args": [
+    {
+     "name": "vfx_id"
+    },
+    {
+     "name": "erase_root_only"
+    }
+   ]
+  },
+  {
+   "bank": 2006,
+   "id": 2,
+   "name": "CreateVFX",
+   "summary": "Create visual VFX. The ID is given in the MSB (e.g. fog effect for boss gates and checkpoints).",
+   "args": [
+    {
+     "name": "vfx_id"
+    }
+   ]
+  },
+  {
+   "bank": 2006,
+   "id": 3,
+   "name": "CreateTemporaryVFX",
+   "summary": "Create one-off visual VFX (an FFX ID) attached to the given 'anchor_entity'. The VFX, of course, must be\n            currently loaded (or in common effects).",
+   "args": [
+    {
+     "name": "anchor_type"
+    },
+    {
+     "name": "anchor_entity",
+     "reference": "Entity"
+    },
+    {
+     "name": "dummy_id"
+    },
+    {
+     "name": "vfx_id"
+    }
+   ]
+  },
+  {
+   "bank": 2006,
+   "id": 4,
+   "name": "CreateObjectVFX",
+   "summary": null,
+   "args": [
+    {
+     "name": "obj",
+     "reference": "Object"
+    },
+    {
+     "name": "vfx_id"
+    },
+    {
+     "name": "dummy_id"
+    }
+   ]
+  },
+  {
+   "bank": 2006,
+   "id": 5,
+   "name": "DeleteObjectVFX",
+   "summary": "Note `erase_root` vs. `erase_root_only` for map SFX.",
+   "args": [
+    {
+     "name": "obj",
+     "reference": "Object"
+    },
+    {
+     "name": "erase_root"
+    }
+   ]
+  },
+  {
+   "bank": 2007,
+   "id": 1,
+   "name": "DisplayDialog",
+   "summary": "Display a dialog box at the bottom of the screen. You can't use this to get player input, but you can \n            display short simple messages. It defaults to a box with no buttons (which is still dismissed when you press \n            A).\n\n            The 'display_distance' argument specifies how far you can move away from the 'anchor_entity' before the \n            message automatically disappears. If `anchor_entity=-1` (default), some kind of default anchor is used \n            (probably just the position where the player was standing).",
+   "args": [
+    {
+     "name": "text",
+     "reference": "Text"
+    },
+    {
+     "name": "button_type"
+    },
+    {
+     "name": "number_buttons"
+    },
+    {
+     "name": "anchor_entity",
+     "reference": "Entity"
+    },
+    {
+     "name": "display_distance"
+    }
+   ]
+  },
+  {
+   "bank": 2007,
+   "id": 2,
+   "name": "DisplayBanner",
+   "summary": "Display a pre-rendered banner. You'll have to change the textures (in menu_local.tpf) to change them.",
+   "args": [
+    {
+     "name": "banner_type"
+    }
+   ]
+  },
+  {
+   "bank": 2007,
+   "id": 3,
+   "name": "DisplayStatus",
+   "summary": "Displays a large message that appears at the top of the screen, such as the message that tells you how to\n            remove your curse, or that the golden fog gates block your path. If 'pad_enabled' is False, you can't get \n            rid of the message until it times out on its own.",
+   "args": [
+    {
+     "name": "text",
+     "reference": "Text"
+    },
+    {
+     "name": "pad_enabled"
+    }
+   ]
+  },
+  {
+   "bank": 2007,
+   "id": 4,
+   "name": "DisplayBattlefieldMessage",
+   "summary": "Displays a flashing messages at the bottom of the screen that does not block player input.",
+   "args": [
+    {
+     "name": "text",
+     "reference": "Text"
+    },
+    {
+     "name": "display_location_index"
+    }
+   ]
+  },
+  {
+   "bank": 2007,
+   "id": 5,
+   "name": "ArenaSetNametag1",
+   "summary": null,
+   "args": [
+    {
+     "name": "player_id"
+    }
+   ]
+  },
+  {
+   "bank": 2007,
+   "id": 6,
+   "name": "ArenaSetNametag2",
+   "summary": null,
+   "args": [
+    {
+     "name": "player_id"
+    }
+   ]
+  },
+  {
+   "bank": 2007,
+   "id": 7,
+   "name": "ArenaSetNametag3",
+   "summary": null,
+   "args": [
+    {
+     "name": "player_id"
+    }
+   ]
+  },
+  {
+   "bank": 2007,
+   "id": 8,
+   "name": "ArenaSetNametag4",
+   "summary": null,
+   "args": [
+    {
+     "name": "player_id"
+    }
+   ]
+  },
+  {
+   "bank": 2007,
+   "id": 9,
+   "name": "DisplayArenaDissolutionMessage",
+   "summary": null,
+   "args": [
+    {
+     "name": "text",
+     "reference": "Text"
+    }
+   ]
+  },
+  {
+   "bank": 2008,
+   "id": 1,
+   "name": "ChangeCamera",
+   "summary": null,
+   "args": [
+    {
+     "name": "normal_camera_id"
+    },
+    {
+     "name": "locked_camera_id"
+    }
+   ]
+  },
+  {
+   "bank": 2008,
+   "id": 2,
+   "name": "SetCameraVibration",
+   "summary": null,
+   "args": [
+    {
+     "name": "vibration_id"
+    },
+    {
+     "name": "anchor_type"
+    },
+    {
+     "name": "anchor_entity",
+     "reference": "Entity"
+    },
+    {
+     "name": "dummy_id"
+    },
+    {
+     "name": "decay_start_distance"
+    },
+    {
+     "name": "decay_end_distance"
+    }
+   ]
+  },
+  {
+   "bank": 2008,
+   "id": 3,
+   "name": "SetLockedCameraSlot",
+   "summary": "Switch between one of two camera slots associated with the player's current collision in the MSB.",
+   "args": [
+    {
+     "name": "area_id"
+    },
+    {
+     "name": "block_id"
+    },
+    {
+     "name": "camera_slot"
+    }
+   ]
+  },
+  {
+   "bank": 2009,
+   "id": 0,
+   "name": "RegisterLadder",
+   "summary": "Don't mess with these flags, generally; you can just delay when this is called after map load to disable\n            certain ladders (which is kind of weird anyway).",
+   "args": [
+    {
+     "name": "start_climbing_flag",
+     "reference": "Flag"
+    },
+    {
+     "name": "stop_climbing_flag",
+     "reference": "Flag"
+    },
+    {
+     "name": "obj",
+     "reference": "Object"
+    }
+   ]
+  },
+  {
+   "bank": 2009,
+   "id": 1,
+   "name": "InitializeWanderingDemon",
+   "summary": "Unused. Probably a Demon's Souls remnant.",
+   "args": [
+    {
+     "name": "flag",
+     "reference": "Flag"
+    },
+    {
+     "name": "demon_entity",
+     "reference": "Character"
+    },
+    {
+     "name": "appearance_flag",
+     "reference": "Flag"
+    }
+   ]
+  },
+  {
+   "bank": 2009,
+   "id": 2,
+   "name": "RegisterWanderingDemon",
+   "summary": "Unused. Probably a Demon's Souls remnant.",
+   "args": [
+    {
+     "name": "flag",
+     "reference": "Flag"
+    },
+    {
+     "name": "demon_entity",
+     "reference": "Character"
+    },
+    {
+     "name": "unknown_entity",
+     "reference": "Entity"
+    }
+   ]
+  },
+  {
+   "bank": 2009,
+   "id": 3,
+   "name": "RegisterBonfire",
+   "summary": "Register a bonfire, which creates the flame VFX and allows you to interact with it (via the MSB entity with \n            ID (obj + 1000).\n\n            I believe the bonfire flag tells the game where to keep track of its kindle level, or something like that. I\n            don't recommend messing around with this much. The reaction distance, angle, and initial kindle level are \n            all set to their standard defaults for bonfires.\n\n            Note that, for some reason, kindle level is defined in increments of 10, so the number of Estus Flasks given\n            is (initial_kindle_level / 2) + 5.\n\n            There also seems to be an issue with registering a bonfire that has already been registered with a greater \n            initial kindle level. Beware of this, if you find that you can't interact with bonfires or get them to even \n            register.",
+   "args": [
+    {
+     "name": "bonfire_flag",
+     "reference": "Flag"
+    },
+    {
+     "name": "obj",
+     "reference": "Object"
+    },
+    {
+     "name": "reaction_distance"
+    },
+    {
+     "name": "reaction_angle"
+    },
+    {
+     "name": "initial_kindle_level"
+    }
+   ]
+  },
+  {
+   "bank": 2009,
+   "id": 4,
+   "name": "ActivateMultiplayerBuffs",
+   "summary": "Used to strengthen bosses based on the number of summons you have. Not sure if it works for every NPC. It\n            could also be tied to certain special effects; haven't checked that yet.",
+   "args": [
+    {
+     "name": "character",
+     "reference": "Character"
+    }
+   ]
+  },
+  {
+   "bank": 2009,
+   "id": 5,
+   "name": "RegisterHealingFountain",
+   "summary": "No idea what this is. Clearly unused. The Bloodborne version has more arguments.",
+   "args": [
+    {
+     "name": "flag",
+     "reference": "Flag"
+    },
+    {
+     "name": "obj",
+     "reference": "Object"
+    }
+   ]
+  },
+  {
+   "bank": 2009,
+   "id": 6,
+   "name": "NotifyBossBattleStart",
+   "summary": "Sends the message to all summons that the host has challenged the boss.",
+   "args": [
+    {
+     "name": "dummy"
+    }
+   ]
+  },
+  {
+   "bank": 2010,
+   "id": 1,
+   "name": "SetBackgroundMusic",
+   "summary": null,
+   "args": [
+    {
+     "name": "state"
+    },
+    {
+     "name": "music_slot"
+    },
+    {
+     "name": "entity",
+     "reference": "Entity"
+    },
+    {
+     "name": "sound_type"
+    },
+    {
+     "name": "sound_id"
+    }
+   ]
+  },
+  {
+   "bank": 2010,
+   "id": 2,
+   "name": "PlaySoundEffect",
+   "summary": "Anchor entity determines sound position and the sound type is used to look up the source.",
+   "args": [
+    {
+     "name": "anchor_entity",
+     "reference": "Entity"
+    },
+    {
+     "name": "sound_type"
+    },
+    {
+     "name": "sound_id"
+    }
+   ]
+  },
+  {
+   "bank": 2010,
+   "id": 3,
+   "name": "SetSoundEventState",
+   "summary": "The sound ID is in the MSB. Includes boss music, which is obviously the most common use, and ambiance.",
+   "args": [
+    {
+     "name": "sound_id"
+    },
+    {
+     "name": "state"
+    }
+   ]
+  },
+  {
+   "bank": 2011,
+   "id": 1,
+   "name": "SetMapCollisionState",
+   "summary": "Enable or disable a map collision (HKX). The ID is specified in the MSB. Note that a Collision doesn't have \n            to be solid ground, but could be anything triggered by collision, such as a kill plane (which this is often \n            used to disable).",
+   "args": [
+    {
+     "name": "collision",
+     "reference": "Collision"
+    },
+    {
+     "name": "state"
+    }
+   ]
+  },
+  {
+   "bank": 2011,
+   "id": 2,
+   "name": "SetMapCollisionBackreadMaskState",
+   "summary": "Unused.",
+   "args": [
+    {
+     "name": "collision",
+     "reference": "Collision"
+    },
+    {
+     "name": "state"
+    }
+   ]
+  },
+  {
+   "bank": 2012,
+   "id": 1,
+   "name": "SetMapPieceState",
+   "summary": "Set the visibility of individual map pieces (e.g. all the crystals in Seath's tower).",
+   "args": [
+    {
+     "name": "map_piece_id"
+    },
+    {
+     "name": "state"
+    }
+   ]
+  }
+ ]
+}

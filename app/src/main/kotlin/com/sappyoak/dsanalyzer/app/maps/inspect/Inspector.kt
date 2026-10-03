@@ -29,8 +29,9 @@ internal fun MutableList<InspectorRow>.row(label: String, value: Any?, link: Wor
 }
 
 internal fun MutableList<InspectorRow>.reference(label: String, contents: MapContents, ref: WorldRef.Entry?) {
-    val name = ref?.let { target -> contents.entries.firstOrNull { it.ref == target }?.name }
-    add(InspectorRow(label, name ?: "none", ref))
+    val entry = ref?.let(contents::entryAt)
+    val shown = entry?.let { it.description?.let { desc -> "${it.name} - $desc" } ?: it.name }
+    add(InspectorRow(label, shown ?: "none", ref))
 }
 
 internal fun MutableList<InspectorRow>.entityRow(label: String, entityId: Int?) {

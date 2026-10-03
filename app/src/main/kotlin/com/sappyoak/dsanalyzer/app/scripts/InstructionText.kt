@@ -19,6 +19,8 @@ public fun DecodedInstruction.title(): String = when (val named = definition) {
     else -> "$instruction ${named.name}" + if (sizeMismatch) " [extra bytes]" else ""
 }
 
+public fun DecodedInstruction.summary(): String? = definition?.summary
+
 public fun DecodedInstruction.argumentLines(emedf: Emedf): List<ArgumentLine> = when (definition) {
     null -> listOf(ArgumentLine("bytes", instruction.args.toString(), null))
     else -> args.map { it.line(emedf) }
@@ -27,10 +29,19 @@ public fun DecodedInstruction.argumentLines(emedf: Emedf): List<ArgumentLine> = 
 private fun DecodedArg.line(emedf: Emedf): ArgumentLine = ArgumentLine(
     label = definition.name,
     value = describe(emedf),
-    link = (value as? ArgValue.Literal)
-        ?.takeIf { definition.reference == ArgReference.Entity }
-        ?.let { WorldRef.Entity(it.raw.toInt()) }
+    link = (value as? ArgValue.Literal)?.let { definition.reference?.linkTo(it.raw) }
 )
+
+private fun ArgReference.linkTo(raw: Long): WorldRef? {
+    val id = raw.toInt()
+    if (id <= 0) return null
+
+    return when {
+        placed -> WorldRef.Entity(id)
+        this == ArgReference.EventFlag -> WorldRef.EventFlag(id)
+        else -> null
+    }
+}
 
 private fun DecodedArg.describe(emedf: Emedf): String = when (val argValue = value) {
     is ArgValue.FromCaller -> "passed in by the caller, byte ${argValue.sourceStartByte}"

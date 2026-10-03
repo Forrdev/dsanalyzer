@@ -33,7 +33,7 @@ public fun readEmedf(text: String): Emedf {
 }
 
 @OptIn(ExperimentalSerializationApi::class)
-private val emedfJsonSerializer = Json {
+internal val emedfJsonSerializer = Json {
     allowComments = true
     allowTrailingComma = true
     ignoreUnknownKeys = true

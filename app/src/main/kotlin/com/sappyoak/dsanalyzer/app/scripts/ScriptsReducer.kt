@@ -3,6 +3,7 @@ package com.sappyoak.dsanalyzer.app.scripts
 import com.sappyoak.dsanalyzer.app.store.Transition
 import com.sappyoak.dsanalyzer.app.store.with
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
+import com.sappyoak.dsanalyzer.game.world.scripts.title
 
 public fun reduceScripts(
     state: ScriptsState,
@@ -61,7 +62,7 @@ private fun ScriptsState.focusFlag(flagId: Int): Transition<ScriptsState, Script
     val event = open.eventUsing(flagId)
 
     return if (event == null) {
-        copy(problem = "Flag $flagId is not named by ${open.script.label}").with()
+        copy(problem = "Flag $flagId is not named by ${open.script.title}").with()
     } else {
         copy(focused = event, problem = null).with()
     }

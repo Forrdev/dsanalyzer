@@ -21,6 +21,9 @@ public class Emedf(
     /** The name a definition gives [value] for this argument's enum when there is one */
     public fun enumValue(enumName: String?, value: Long): String? = enums[enumName]?.get(value.toInt())
 
+    public fun mapDefinitions(change: (InstructionDefinition) -> InstructionDefinition): Emedf =
+        Emedf(definitions.mapValues { (_, definition) -> change(definition) }, enums)
+
     public companion object {
         public val Empty: Emedf = Emedf(emptyMap(), emptyMap())
     }

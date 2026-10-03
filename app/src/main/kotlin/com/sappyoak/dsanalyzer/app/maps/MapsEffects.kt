@@ -10,11 +10,15 @@ import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.game.files.GameFiles
 import com.sappyoak.dsanalyzer.game.files.InstallationFiles
 import com.sappyoak.dsanalyzer.game.verification.loadFileManifest
+import com.sappyoak.dsanalyzer.game.world.maps.CharacterModels
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.game.world.maps.availableMaps
+import com.sappyoak.dsanalyzer.game.world.maps.loadCharacterModels
 import com.sappyoak.dsanalyzer.game.world.maps.loadMSB
 
 public class MapsEffects(private val files: InstallationFiles) : EffectRunner<MapsEffect, MapsMessage> {
+    private val characters by lazy { loadCharacterModels() }
+
     /** One load of each sort at a time, so switching maps quickly cancels the load being replaced */
     override fun keyOf(effect: MapsEffect): Any? = effect::class
 
@@ -34,13 +38,13 @@ public class MapsEffects(private val files: InstallationFiles) : EffectRunner<Ma
 
         is MapsEffect.LoadMap -> MapsMessage.MapLoaded(
             files.use(effect.installation) { games ->
-                withContext(Dispatchers.IO) { games.contents(effect.map) }
+                withContext(Dispatchers.IO) { games.contents(effect.map, characters) }
             }
         )
 
         is MapsEffect.IndexEntities -> files.use(effect.installation) { games ->
             withContext(Dispatchers.IO) {
-                val read = effect.maps.associateWith { games.loadMSB(it)?.summarize(it) }
+                val read = effect.maps.associateWith { games.loadMSB(it)?.summarize(it, characters) }
                 MapsMessage.EntitiesIndexed(
                     index = EntityIndex.of(read.values.filterNotNull()),
                     skipped = read.filterValues { it == null }.keys.toList()
@@ -50,8 +54,8 @@ public class MapsEffects(private val files: InstallationFiles) : EffectRunner<Ma
     }
 }
 
-private fun GameFiles.contents(map: MapId): MapContents =
-    checkNotNull(loadMSB(map)) { "$map has no layout file" }.summarize(map)
+private fun GameFiles.contents(map: MapId, characters: CharacterModels): MapContents =
+    checkNotNull(loadMSB(map)) { "$map has no layout file" }.summarize(map, characters)
 
 public sealed interface MapsEffect {
     public data class LoadCatalog(public val installation: Installation) : MapsEffect

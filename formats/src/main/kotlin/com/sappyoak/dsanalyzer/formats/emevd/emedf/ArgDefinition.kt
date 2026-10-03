@@ -6,10 +6,9 @@ public data class ArgDefinition(
     /** Names a set of known values for this argument */
     public val enumName: String?,
     /** what the game uses when the instruction leaves this argument off the end */
-    public val default: Double
-) {
+    public val default: Double,
     public val reference: ArgReference? = ArgReference.of(name)
-}
+)
 
 /** THe primitive types an argument can hold */
 public enum class ArgType(public val size: Int, public val signed: Boolean) {

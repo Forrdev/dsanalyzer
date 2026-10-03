@@ -81,7 +81,11 @@ private fun EntryRow(
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)) {
-            Text(entry.name, style = MaterialTheme.typography.bodyMedium)
+            Text(
+                text = entry.description?.let { "${entry.name} - $it" } ?: entry.name,
+                style = MaterialTheme.typography.bodyMedium
+            )
+
             Text(
                 text = entry.entityId?.let { "${entry.subtype} - entity $it" } ?: entry.subtype,
                 style = MaterialTheme.typography.bodySmall,

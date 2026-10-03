@@ -7,6 +7,7 @@ import com.sappyoak.dsanalyzer.formats.msb.region.Region
 import com.sappyoak.dsanalyzer.formats.msb.region.Shape
 import com.sappyoak.dsanalyzer.game.world.EntryKind
 import com.sappyoak.dsanalyzer.game.world.WorldRef
+import com.sappyoak.dsanalyzer.game.world.maps.CharacterModels
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
 
 /** One row in a map's entry list, what it is called, what it is, and where to find it */
@@ -14,7 +15,8 @@ public data class EntrySummary(
     public val ref: WorldRef.Entry,
     public val name: String,
     public val subtype: String,
-    public val entityId: Int?
+    public val entityId: Int?,
+    public val description: String? = null
 ) {
     public val kind: EntryKind get() = ref.kind
 
@@ -23,7 +25,8 @@ public data class EntrySummary(
         query.isBlank() ||
         name.contains(query, ignoreCase = true) ||
         subtype.contains(query, ignoreCase = true) ||
-        entityId?.toString()?.startsWith(query) == true
+        entityId?.toString()?.startsWith(query) == true ||
+        description?.contains(query, ignoreCase = true) == true
 }
 
 /**
@@ -48,9 +51,9 @@ public class MapContents(
 }
 
 
-public fun MSB.summarize(map: MapId): MapContents {
+public fun MSB.summarize(map: MapId, characters: CharacterModels = CharacterModels.Empty): MapContents {
     val entries = models.mapIndexed { index, model ->
-        summary(map, EntryKind.Model, index, model.name, model.type.name, null)
+        summary(map, EntryKind.Model, index, model.name, model.type.name, null, characters.describe(model.name))
     } + events.mapIndexed { index, event ->
         summary(map, EntryKind.Event, index, event.header.name, event.subtype(), event.header.entityId)
     } + regions.mapIndexed { index, region ->
@@ -74,8 +77,9 @@ private fun summary(
     index: Int,
     name: String,
     subtype: String,
-    entityId: Int?
-): EntrySummary = EntrySummary(WorldRef.Entry(map, kind, index), name, subtype, entityId)
+    entityId: Int?,
+    description: String? = null
+): EntrySummary = EntrySummary(WorldRef.Entry(map, kind, index), name, subtype, entityId, description)
 
 internal fun Part.subtype(): String = this::class.simpleName.orEmpty()
 internal fun Event.subtype(): String = this::class.simpleName.orEmpty()

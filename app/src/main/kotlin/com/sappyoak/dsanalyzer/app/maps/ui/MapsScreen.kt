@@ -23,6 +23,7 @@ import com.sappyoak.dsanalyzer.app.maps.MapsState
 import com.sappyoak.dsanalyzer.app.maps.MapsStore
 import com.sappyoak.dsanalyzer.game.world.WorldRef
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
+import com.sappyoak.dsanalyzer.game.world.maps.label
 
 private val MAP_LIST_WIDTH = 200.dp
 private val ENTRY_LIST_WIDTH = 320.dp
@@ -70,13 +71,19 @@ private fun MapList(
             items(maps) { map ->
                 TextButton(onClick = { onSelect(map) }, modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = map.name,
+                        text = map.label,
                         style = MaterialTheme.typography.bodyMedium,
                         color = if (map == selected) {
                             MaterialTheme.colorScheme.primary
                         } else {
                             MaterialTheme.colorScheme.onSurface
                         }
+                    )
+
+                    Text(
+                        text = map.name,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }

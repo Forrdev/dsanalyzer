@@ -8,5 +8,7 @@ import com.sappyoak.dsanalyzer.game.verification.FileManifest
  */
 public fun GameFiles.availableMaps(manifest: FileManifest): List<MapId> = manifest.paths
     .mapNotNull { MapId.parse(it.value.removeSurrounding(MAP_STUDIO_DIRECTORY, MSB_EXTENSION)) }
+    .map { it.canonical }
+    .distinct()
     .filter { exists(it.msbPath) }
     .sortedBy { it.name }

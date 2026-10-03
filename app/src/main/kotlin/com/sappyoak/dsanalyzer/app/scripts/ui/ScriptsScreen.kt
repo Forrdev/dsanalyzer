@@ -26,6 +26,7 @@ import com.sappyoak.dsanalyzer.app.scripts.ScriptsState
 import com.sappyoak.dsanalyzer.app.scripts.ScriptsStore
 import com.sappyoak.dsanalyzer.game.world.WorldRef
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
+import com.sappyoak.dsanalyzer.game.world.scripts.title
 
 private val SCRIPT_LIST_WIDTH = 200.dp
 private val EVENT_LIST_WIDTH = 280.dp
@@ -80,7 +81,7 @@ private fun ScriptList(scripts: List<ScriptId>, selected: ScriptId?, onSelect: (
             items(scripts) { script ->
                 TextButton(onClick = { onSelect(script) }, modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = script.label,
+                        text = script.title,
                         style = MaterialTheme.typography.bodyMedium,
                         color = if (script == selected) {
                             MaterialTheme.colorScheme.primary

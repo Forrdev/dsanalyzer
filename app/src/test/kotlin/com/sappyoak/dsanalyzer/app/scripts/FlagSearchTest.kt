@@ -16,6 +16,7 @@ import com.sappyoak.dsanalyzer.formats.emevd.emedf.Emedf
 import com.sappyoak.dsanalyzer.game.world.WorldRef
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
+import com.sappyoak.dsanalyzer.game.world.scripts.title
 
 private const val FLAG = 11_010_902
 private const val OTHER_FLAG = 11_020_000
@@ -86,7 +87,7 @@ class FlagSearchTest : FunSpec({
 
         assertSoftly {
             transition.state.focused shouldBe null
-            transition.state.problem shouldBe "Flag $OTHER_FLAG is not named by ${PARISH.label}"
+            transition.state.problem shouldBe "Flag $OTHER_FLAG is not named by ${PARISH.title}"
         }
     }
 
