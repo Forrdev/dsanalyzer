@@ -36,4 +36,13 @@ class CharacterModelsTest : FunSpec({
             MODELS.describe("") shouldBe null
         }
     }
+
+    test("a name that only starts like a model describes nothing") {
+        assertSoftly {
+            MODELS.describe("c") shouldBe null
+            MODELS.describe("c2230B1") shouldBe null
+            MODELS.describe("c22a0") shouldBe null
+            MODELS.describe("c22300000000000") shouldBe null
+        }
+    }
 })
