@@ -17,6 +17,7 @@ public sealed interface ScriptsMessage {
     /** Following a link, a list selection, or a finding */
     public data class Navigated(public val ref: WorldRef.ScriptEvent) : ScriptsMessage
 
+    public data class FlagRequested(public val flagId: Int) : ScriptsMessage
     public data class QueryChanged(public val query: String) : ScriptsMessage
 
     public data class Failed(public val reason: String) : ScriptsMessage

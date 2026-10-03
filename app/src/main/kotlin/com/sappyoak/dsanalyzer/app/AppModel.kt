@@ -9,6 +9,10 @@ import com.sappyoak.dsanalyzer.app.connection.ConnectionStore
 import com.sappyoak.dsanalyzer.app.maps.MapsEffects
 import com.sappyoak.dsanalyzer.app.maps.MapsStore
 import com.sappyoak.dsanalyzer.app.paths.ToolPaths
+import com.sappyoak.dsanalyzer.app.runtime.GameLink
+import com.sappyoak.dsanalyzer.app.runtime.RuntimeEffects
+import com.sappyoak.dsanalyzer.app.runtime.RuntimeMessage
+import com.sappyoak.dsanalyzer.app.runtime.RuntimeStore
 import com.sappyoak.dsanalyzer.app.scripts.ScriptsEffects
 import com.sappyoak.dsanalyzer.app.scripts.ScriptsStore
 import com.sappyoak.dsanalyzer.app.serialization.jsonSerializer
@@ -31,6 +35,7 @@ public class AppModel(
     public val settings: SettingsStore,
     public val maps: MapsStore,
     public val scripts: ScriptsStore,
+    public val runtime: RuntimeStore,
     public val startup: StartupStore,
     public val verification: VerificationStore,
     public val connection: ConnectionStore,
@@ -41,6 +46,7 @@ public class AppModel(
         startup.dispatch(StartupMessage.Start)
         verification.dispatch(VerificationMessage.Start)
         connection.dispatch(ConnectionMessage.Start)
+        runtime.dispatch(RuntimeMessage.Opened)
     }
 
     override fun close() {
@@ -55,11 +61,13 @@ public fun createAppModel(
     val settings = SettingsStore(scope, SettingsEffects(SettingsFile(paths.settings, jsonSerializer)))
     val workspaces = WorkspaceDirectory(paths.workspaces, jsonSerializer)
     val installationFiles = InstallationFiles(scope)
+    val link = GameLink(scope, processes = { Processes.Current })
 
     return AppModel(
         settings = settings,
         maps = MapsStore(scope, MapsEffects(installationFiles)),
         scripts = ScriptsStore(scope, ScriptsEffects(installationFiles)),
+        runtime = RuntimeStore(scope, RuntimeEffects(link)),
         startup = StartupStore(
             scope,
             StartupEffects(settings, workspaces)
@@ -73,7 +81,7 @@ public fun createAppModel(
         ),
         connection = ConnectionStore(
             scope,
-            ConnectionEffects(settings, processes = { Processes.Current })
+            ConnectionEffects(settings, link)
         ),
         installationFiles = installationFiles
     )

@@ -1,12 +1,19 @@
 package com.sappyoak.dsanalyzer.runtime.ptde
 
+import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.native.memory.Signature
 import com.sappyoak.dsanalyzer.native.memory.SignatureTarget
 import com.sappyoak.dsanalyzer.runtime.pointers.GamePointer
 import com.sappyoak.dsanalyzer.runtime.pointers.Lifetime
 
-/** The game's logic tick, which in-game time advances by one of every 1000 / 30 milliseconds */
-private const val TICK_MILLIS = 1000.0 / 30.0
+/**
+ * Counted in integers on purpose.
+ *
+ * Dividing by a fractional tick length looses a frame exactly on the boundaries. 66000ms at 30HZ
+ * comes out as 1979.9999999999998, and truncating that reports frame 1979 for a moment that is
+ * frame 1980
+ */
+private val TICK_HZ = GameEdition.PrepareToDie.logicTickHz
 
 public object GameDataMan {
     public val Pointer: GamePointer = GamePointer(
@@ -25,5 +32,6 @@ public object GameDataMan {
     public const val InGameTimeMillis: Int = 0x68
 
     /** The logic tick in-game time has reached, for talking about a moment rather than a duration */
-    public fun frameOf(inGameTimeMillis: Int): Long = (inGameTimeMillis / TICK_MILLIS).toLong()
+    public fun frameOf(inGameTimeMillis: Int): Long =
+        inGameTimeMillis.toLong() * TICK_HZ / 1000
 }

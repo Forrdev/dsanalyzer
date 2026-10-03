@@ -1,24 +1,22 @@
 package com.sappyoak.dsanalyzer.app.connection
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.onStart
 
+import com.sappyoak.dsanalyzer.app.runtime.GameLink
+import com.sappyoak.dsanalyzer.app.runtime.RuntimeEffects
 import com.sappyoak.dsanalyzer.app.settings.SettingsAccess
 import com.sappyoak.dsanalyzer.app.settings.SettingsEdit
 import com.sappyoak.dsanalyzer.app.store.EffectRunner
-import com.sappyoak.dsanalyzer.game.GameEdition
-import com.sappyoak.dsanalyzer.native.process.Processes
-import com.sappyoak.dsanalyzer.runtime.ConnectionEvent
-import com.sappyoak.dsanalyzer.runtime.watchForGame
+import com.sappyoak.dsanalyzer.runtime.session.RuntimeEvent
 
-private val WATCHED_EDITIONS = GameEdition.entries.toSet()
 private val WATCH_KEY = "watch"
 
 public class ConnectionEffects(
     private val settings: SettingsAccess,
-    private val processes: () -> Processes
+    private val link: GameLink
 ) : EffectRunner<ConnectionEffect, ConnectionMessage> {
     /** Starting and stopping share a key, so either one cancels a running watch */
     override fun keyOf(effect: ConnectionEffect): Any? = when (effect) {
@@ -31,8 +29,8 @@ public class ConnectionEffects(
             if (settings.loaded().connection.autoConnect) emit(ConnectionMessage.ConnectRequested)
         }
 
-        ConnectionEffect.Watch -> processes().watchForGame(WATCHED_EDITIONS).map(::toMessage)
-        ConnectionEffect.StopWatching -> emptyFlow()
+        ConnectionEffect.Watch -> link.events.onStart { link.start() }.mapNotNull(::toMessage)
+        ConnectionEffect.StopWatching -> flow { link.stop() }
         is ConnectionEffect.EditSettings -> flow { settings.edit(effect.edit) }
     }
 
@@ -40,12 +38,23 @@ public class ConnectionEffects(
         if (effect is ConnectionEffect.Watch) ConnectionMessage.WatchFailed(failure.message ?: failure.toString())
         else null
 
-    private fun toMessage(event: ConnectionEvent): ConnectionMessage = when (event) {
-        ConnectionEvent.Searching -> ConnectionMessage.GameSearching
-        is ConnectionEvent.Connected -> event.connection.game.let {
-            ConnectionMessage.GameConnected(it.process.pid, it.edition)
-        }
-        is ConnectionEvent.Refused -> ConnectionMessage.GameRefused(event.game.process.executableName, event.reason)
+
+    private fun toMessage(event: RuntimeEvent): ConnectionMessage? = when (event) {
+        RuntimeEvent.Searching -> ConnectionMessage.GameSearching
+        is RuntimeEvent.Attached -> ConnectionMessage.GameConnected(
+            pid = event.game.process.pid,
+            edition = event.game.edition
+        )
+
+        is RuntimeEvent.Refused -> ConnectionMessage.GameRefused(event.game.process.executableName, event.reason)
+
+        is RuntimeEvent.Unsupported -> ConnectionMessage.GameRefused(
+            executableName = event.game.process.executableName,
+            reason = "${event.game.edition.name} is not read yet"
+        )
+
+        is RuntimeEvent.Failed -> ConnectionMessage.WatchFailed(event.reason)
+        is RuntimeEvent.Sampled -> null
     }
 }
 
