@@ -9,7 +9,7 @@ import java.lang.invoke.MethodHandle
 
 import com.sappyoak.dsanalyzer.native.ffi.CallState
 import com.sappyoak.dsanalyzer.native.ffi.NativeLibrary
-import com.sappyoak.dsanalyzer.native.ffi.downcallWindows
+import com.sappyoak.dsanalyzer.native.ffi.capturingLastError
 import com.sappyoak.dsanalyzer.native.process.ProcessAccessException
 
 private const val INVALID_HANDLE = -1L
@@ -17,75 +17,73 @@ private const val INVALID_HANDLE = -1L
 internal object Kernel32 {
     private val library = NativeLibrary.open("kernel32")
 
-    private val openProcessCall = library.downcallWindows(
+    private val openProcessCall = library.capturingLastError(
         "OpenProcess",
         FunctionDescriptor.of(ADDRESS, JAVA_INT, JAVA_INT, JAVA_INT)
     )
 
-    private val createSnapshotCall = library.downcallWindows(
+    private val createSnapshotCall = library.capturingLastError(
         "CreateToolhelp32Snapshot",
         FunctionDescriptor.of(ADDRESS, JAVA_INT, JAVA_INT)
     )
 
-    private val closeHandleCall = library.downcallWindows(
+    private val closeHandleCall = library.downcall(
         "CloseHandle",
         FunctionDescriptor.of(JAVA_INT, ADDRESS)
     )
 
-    private val process32FirstCall = library.downcallWindows(
+    private val process32FirstCall = library.downcall(
         "Process32FirstW",
         FunctionDescriptor.of(JAVA_INT, ADDRESS, ADDRESS)
     )
 
-    private val process32NextCall = library.downcallWindows(
+    private val process32NextCall = library.downcall(
         "Process32NextW",
         FunctionDescriptor.of(JAVA_INT, ADDRESS, ADDRESS)
     )
 
-    private val module32FirstCall = library.downcallWindows(
+    private val module32FirstCall = library.downcall(
         "Module32FirstW",
         FunctionDescriptor.of(JAVA_INT, ADDRESS, ADDRESS)
     )
 
-    private val module32NextCall = library.downcallWindows(
+    private val module32NextCall = library.downcall(
         "Module32NextW",
         FunctionDescriptor.of(JAVA_INT, ADDRESS, ADDRESS)
     )
 
-    private val readProcessMemoryCall = library.downcallWindows(
+    private val readProcessMemoryCall = library.downcall(
         "ReadProcessMemory",
         FunctionDescriptor.of(JAVA_INT, ADDRESS, ADDRESS, ADDRESS, JAVA_LONG, ADDRESS)
     )
 
-    private val writeProcessMemoryCall = library.downcallWindows(
+    private val writeProcessMemoryCall = library.downcall(
         "WriteProcessMemory",
         FunctionDescriptor.of(JAVA_INT, ADDRESS, ADDRESS, ADDRESS, JAVA_LONG, ADDRESS)
     )
 
-    private val virtualQueryExCall = library.downcallWindows(
+    private val virtualQueryExCall = library.downcall(
         "VirtualQueryEx",
         FunctionDescriptor.of(JAVA_LONG, ADDRESS, ADDRESS, ADDRESS, JAVA_LONG)
     )
 
-    private val getExitCodeProcessCall = library.downcallWindows(
+    private val getExitCodeProcessCall = library.downcall(
         "GetExitCodeProcess",
         FunctionDescriptor.of(JAVA_INT, ADDRESS, ADDRESS)
     )
 
-    private val isWow64ProcessCall = library.downcallWindows(
+    private val isWow64ProcessCall = library.downcall(
         "IsWow64Process",
         FunctionDescriptor.of(JAVA_INT, ADDRESS, ADDRESS)
     )
 
-    public fun openProcess(access: Int, pid: Int): MemorySegment = Arena.ofConfined().use { arena ->
-        val state = arena.allocate(CallState.layout)
+    public fun openProcess(access: Int, pid: Int): MemorySegment = capturing { state ->
         val handle = openProcessCall.invokeExact(state, access, 0, pid) as MemorySegment
         if (handle.address() == 0L) throw failure("OpenProcess", state)
         handle
     }
 
-    public fun createSnapshot(flags: Int, pid: Int): MemorySegment = Arena.ofConfined().use { arena ->
-        val state = arena.allocate(CallState.layout)
+    public fun createSnapshot(flags: Int, pid: Int): MemorySegment = capturing { state ->
         val handle = createSnapshotCall.invokeExact(state, flags, pid) as MemorySegment
         if (handle.address() == INVALID_HANDLE) throw failure("CreateToolhelp32Snapshot", state)
         handle
@@ -145,6 +143,9 @@ internal object Kernel32 {
         val result = function.invokeExact(process, remote, local, local.byteSize(), MemorySegment.NULL) as Int
         return result != 0
     }
+
+    private inline fun <T> capturing(call: (MemorySegment) -> T): T =
+        Arena.ofConfined().use { arena -> call(arena.allocate(CallState.layout))}
 
     private fun failure(function: String, state: MemorySegment): ProcessAccessException {
         val code = CallState.WindowsLastError.read(state)

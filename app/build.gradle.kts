@@ -42,6 +42,8 @@ compose.desktop {
             targetFormats(TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Dmg)
             packageName = "dsanalyzer"
             packageVersion = "0.1.0"
+
+            jvmArgs("--enable-native-access=ALL-UNNAMED")
         }
     }
 }

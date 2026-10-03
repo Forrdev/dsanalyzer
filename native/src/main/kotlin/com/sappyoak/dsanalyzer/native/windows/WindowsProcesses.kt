@@ -30,6 +30,12 @@ private const val PROCESS_QUERY_INFORMATION = 0x0400
 private const val ATTACH_ACCESS =
     PROCESS_VM_OPERATION or PROCESS_VM_READ or PROCESS_VM_WRITE or PROCESS_QUERY_INFORMATION
 
+private class Snapshot(val handle: MemorySegment) : AutoCloseable {
+    override fun close() {
+        Kernel32.closeHandle(handle)
+    }
+}
+
 internal class WindowsProcesses : Processes {
     override fun list(): List<ProcessInfo> = snapshot(SNAP_PROCESS, 0, PROCESS_ENTRY) { handle, entry, first ->
         if (!Kernel32.process32(handle, entry, first)) return@snapshot null
@@ -74,16 +80,13 @@ internal class WindowsProcesses : Processes {
         pid: Int,
         layout: StructLayout,
         next: (snapshot: MemorySegment, entry: MemorySegment, first: Boolean) -> T?
-    ): List<T> {
-        val handle = openSnapshot(flags, pid)
-        try {
-            return Arena.ofConfined().use { arena ->
-                val entry = arena.allocate(layout)
-                entry.set(JAVA_INT, 0, layout.byteSize().toInt())
-                generateSequence(next(handle, entry, true)) { next(handle, entry, false) }.toList()
-            }
-        } finally {
-            Kernel32.closeHandle(handle)
+    ): List<T> = Snapshot(openSnapshot(flags, pid)).use { snapshot ->
+        Arena.ofConfined().use { arena ->
+            val entry = arena.allocate(layout)
+            entry.set(JAVA_INT, 0, layout.byteSize().toInt())
+            generateSequence(next(snapshot.handle, entry, true)) {
+                next(snapshot.handle, entry, false)
+            }.toList()
         }
     }
 

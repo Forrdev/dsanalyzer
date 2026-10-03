@@ -56,7 +56,7 @@ public class GameLink(
             } catch (cancellation: CancellationException) {
                 throw cancellation
             } catch (err: Throwable) {
-                record(RuntimeEvent.Failed(err.message ?: err.toString()))
+                record(RuntimeEvent.Failed(err.toString()))
             }
         }
     }

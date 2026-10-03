@@ -3,6 +3,7 @@ package com.sappyoak.dsanalyzer.native.ffi
 import java.lang.foreign.Arena
 import java.lang.foreign.FunctionDescriptor
 import java.lang.foreign.Linker
+import java.lang.foreign.MemorySegment
 import java.lang.foreign.SymbolLookup
 import java.lang.invoke.MethodHandle
 import java.util.concurrent.ConcurrentHashMap
@@ -18,19 +19,32 @@ public class NativeLibrary private constructor(
 
     public operator fun contains(symbol: String): Boolean = lookup.find(symbol).isPresent
 
-    public fun downcall(
+
+    public fun downcall(symbol: String, descriptor: FunctionDescriptor): MethodHandle =
+        handle(symbol, "$symbol:$descriptor") { address ->
+            linker.downcallHandle(address, descriptor)
+        }
+
+    /**
+     * A handle that captures the platform's error state as the call returns
+     *
+     * A handle takes a **leading** [MemorySegment] holding that state, ahead of everything
+     * [descriptor] declares, and [CallState.read] reads the code out of it once the call returns
+     */
+    public fun downcallCapturing(
         symbol: String,
         descriptor: FunctionDescriptor,
         capture: CallState
-    ): MethodHandle = handles.computeIfAbsent("$symbol:$descriptor") {
-        linker.downcallHandle(
-            lookup.find(symbol).orElseThrow {
-                UnsatisfiedLinkError("$name!$symbol no found")
-            },
-            descriptor,
-            Linker.Option.captureCallState(capture.captureName)
-        )
+    ): MethodHandle = handle(symbol, "$symbol:$descriptor:${capture.captureName}") { address ->
+        linker.downcallHandle(address, descriptor, Linker.Option.captureCallState(capture.captureName))
     }
+
+    private fun handle(symbol: String, key: String, bind: (MemorySegment) -> MethodHandle): MethodHandle =
+        handles.computeIfAbsent(key) {
+            bind(lookup.find(symbol).orElseThrow {
+                UnsatisfiedLinkError("$name!$symbol not found")
+            })
+        }
 
     public companion object {
         private val linker: Linker = Linker.nativeLinker()
@@ -50,12 +64,12 @@ public class NativeLibrary private constructor(
     }
 }
 
-internal fun NativeLibrary.downcallWindows(
+internal fun NativeLibrary.capturingLastError(
     symbol: String,
     descriptor: FunctionDescriptor
-): MethodHandle = downcall(symbol, descriptor, CallState.WindowsLastError)
+): MethodHandle = downcallCapturing(symbol, descriptor, CallState.WindowsLastError)
 
-internal fun NativeLibrary.downcallLinux(
+internal fun NativeLibrary.capturingErrno(
     symbol: String,
     descriptor: FunctionDescriptor
-): MethodHandle = downcall(symbol, descriptor, CallState.Errno)
+): MethodHandle = downcallCapturing(symbol, descriptor, CallState.Errno)

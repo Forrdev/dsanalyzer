@@ -9,7 +9,7 @@ import java.lang.invoke.MethodHandle
 
 import com.sappyoak.dsanalyzer.native.ffi.CallState
 import com.sappyoak.dsanalyzer.native.ffi.NativeLibrary
-import com.sappyoak.dsanalyzer.native.ffi.downcallLinux
+import com.sappyoak.dsanalyzer.native.ffi.capturingErrno
 
 /** struct iovec, a pointer to a buffer and how much of it to move */
 private val IOVEC: MemoryLayout = MemoryLayout.structLayout(
@@ -39,11 +39,11 @@ internal object LibC {
     val available: Boolean = "process_vm_readv" in library
 
     private val readCall: MethodHandle by lazy {
-        library.downcallLinux("process_vm_readyv", DESCRIPTOR)
+        library.capturingErrno("process_vm_readyv", DESCRIPTOR)
     }
 
     private val writeCall: MethodHandle by lazy {
-        library.downcallLinux("process_vm_writev", DESCRIPTOR)
+        library.capturingErrno("process_vm_writev", DESCRIPTOR)
     }
 
     /** Bytes copied out of [pid] or the negated errno the kernel refused with */
