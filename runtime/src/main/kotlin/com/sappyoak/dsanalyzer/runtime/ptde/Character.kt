@@ -47,6 +47,8 @@ public object CharFlags1 {
 
 public object CharFlags2 {
     public const val NoGoodsConsume: Int = 0x01000000
+    public const val DrawCounter: Int = 0x00200000
+    public const val DrawDirection: Int = 0x00004000
     public const val NoUpdate: Int = 0x00008000
     public const val NoMPConsume: Int = 0x00000800
     public const val NoStaminaConsume: Int = 0x00000400
@@ -55,4 +57,5 @@ public object CharFlags2 {
     public const val NoHit: Int = 0x00000080
     public const val NoDamage: Int = 0x00000040
     public const val NoDead: Int = 0x00000020
+    public const val DrawHit: Int = 0x00000004
 }
