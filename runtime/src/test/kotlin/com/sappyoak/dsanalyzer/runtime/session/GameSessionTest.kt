@@ -128,6 +128,22 @@ class GameSessionTest : FunSpec({
         }
     }
 
+    test("a flag that moves before a character exists is read but not reported") {
+        val fixture = PTDEFixture().apply { populate() }
+        fixture.deallocateCharacter()
+        val session = fixture.session()
+
+        session.sample()
+        fixture.setFlag(SAMPLE_FLAG, true)
+        val snapshot = session.sample()
+
+        assertSoftly {
+            snapshot.player shouldBe null
+            snapshot.flagChanges.shouldBeEmpty()
+            session.isFlagSet(SAMPLE_FLAG) shouldBe true
+        }
+    }
+
     test("a reload does not report the repopulated flag block as a burst of changes") {
         val fixture = PTDEFixture().apply { populate() }
         val session = fixture.session()

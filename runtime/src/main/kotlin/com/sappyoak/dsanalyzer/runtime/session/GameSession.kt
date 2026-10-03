@@ -64,11 +64,17 @@ public class GameSession internal constructor(
         var present = if (areaPresent) 1 else 0
         present += rest.count { it.refresh(memory) }
 
+        // Fetched whether or not there is a loaded character because the comparison is only worth anything
+        // against what was there a tick ago. Reported only once there is a character, since the
+        // flags that move through the title screen and the load belong to nobody
+        // This possibly might be useful to have in the future though if we can manipulate
+        // flags in those scenarios
         val changes = flags.refresh(memory)
         if (flags.isPresent) {
             present++
         }
 
+        val player = player()
         val time = if (gameData.isPresent) gameData.int(GameDataMan.InGameTimeMillis) else 0
 
         return RuntimeSnapshot(
@@ -76,9 +82,9 @@ public class GameSession internal constructor(
             frame = GameDataMan.frameOf(time),
             map = map,
             reloaded = reloaded,
-            player = player(),
+            player = player,
             world = world(),
-            flagChanges = changes,
+            flagChanges = if (player == null) emptyList() else changes,
             cost = SampleCost(started.elapsedNow(), present, STRUCTURES)
         )
     }
