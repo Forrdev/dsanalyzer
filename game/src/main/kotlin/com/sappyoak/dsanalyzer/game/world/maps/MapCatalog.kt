@@ -41,3 +41,10 @@ public val MapId.named: NamedMap? get() = BY_ID[withoutVariant]
 public val MapId.msbName: String get() = named?.msbName ?: name
 
 public val MapId.canonical: MapId get() = BY_MSB_NAME[name]?.id ?: this
+
+/**
+ * Whether this names a map the game actually ships.
+ *
+ * The running game parks on 'm255_255_00_00' whenever no world is loaded.
+ */
+public val MapId.exists: Boolean get() = named != null

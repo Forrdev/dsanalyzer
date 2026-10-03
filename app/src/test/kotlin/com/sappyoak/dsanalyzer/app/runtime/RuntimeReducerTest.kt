@@ -7,10 +7,12 @@ import io.kotest.matchers.shouldBe
 import kotlin.time.Duration.Companion.milliseconds
 
 import com.sappyoak.dsanalyzer.game.GameEdition
+import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.runtime.ptde.FlagChange
 import com.sappyoak.dsanalyzer.runtime.ptde.PTDEBuild
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.SampleCost
+import com.sappyoak.dsanalyzer.runtime.session.WorldPlace
 
 private val GAME = AttachedGame(
     executableName = "DARKSOULS.exe",
@@ -20,10 +22,17 @@ private val GAME = AttachedGame(
     unresolved = emptyList()
 )
 
-private fun snapshot(frame: Long, vararg changes: FlagChange) = RuntimeSnapshot(
+private val FIRELINK = WorldPlace.InWorld(MapId.of(area = 10, block = 2))
+
+private fun snapshot(
+    frame: Long,
+    vararg changes: FlagChange,
+    place: WorldPlace = FIRELINK
+) = RuntimeSnapshot(
     inGameTimeMillis = (frame * 1000 / 30).toInt(),
     frame = frame,
-    map = null,
+    place = place,
+    loaded = place is WorldPlace.InWorld,
     reloaded = false,
     player = null,
     world = null,
@@ -54,8 +63,8 @@ class RuntimeReducerTest : FunSpec({
         val second = tick(first, LinkState(attached = GAME, snapshot = snapshot(2, FlagChange(11_020_000, false))))
 
         second.flagLog shouldBe listOf(
-            FlagEntry(11_020_000, false, 2, null),
-            FlagEntry(11_010_902, true, 1, null)
+            FlagEntry(11_020_000, false, 2, FIRELINK),
+            FlagEntry(11_010_902, true, 1, FIRELINK)
         )
     }
 

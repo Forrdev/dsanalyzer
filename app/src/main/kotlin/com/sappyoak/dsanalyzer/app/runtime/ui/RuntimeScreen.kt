@@ -88,10 +88,17 @@ private fun Attachment(state: RuntimeState, onFollow: (WorldRef) -> Unit) {
                     text = "frame ${snapshot.frame} - ${snapshot.cost.present}/${snapshot.cost.expected} read in ${snapshot.cost.elapsed}",
                     style = MaterialTheme.typography.bodySmall
                 )
-                snapshot.map?.let { map ->
+                val map = snapshot.map
+                if (map != null) {
                     TextButton(onClick = { onFollow(WorldRef.Map(map)) }) {
                         Text(map.name)
                     }
+                } else {
+                    Text(
+                        text = snapshot.place.label,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
                 }
             }
         }

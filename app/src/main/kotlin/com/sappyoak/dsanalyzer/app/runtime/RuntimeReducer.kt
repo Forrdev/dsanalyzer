@@ -24,6 +24,6 @@ private fun RuntimeState.logAfter(link: LinkState): List<FlagEntry> {
     val snapshot = link.snapshot ?: return carried
     if (snapshot.flagChanges.isEmpty()) return carried
 
-    val added = snapshot.flagChanges.map { FlagEntry(it.flagId, it.set, snapshot.frame, snapshot.map) }
+    val added = snapshot.flagChanges.map { FlagEntry(it.flagId, it.set, snapshot.frame, snapshot.place) }
     return (added + carried).take(LOG_LIMIT)
 }

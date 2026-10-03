@@ -8,15 +8,11 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
-import com.sappyoak.dsanalyzer.runtime.ptde.AnimData
 import com.sappyoak.dsanalyzer.runtime.ptde.CharData
 import com.sappyoak.dsanalyzer.runtime.ptde.CharFlags2
 import com.sappyoak.dsanalyzer.runtime.ptde.CharMapData
 import com.sappyoak.dsanalyzer.runtime.ptde.CharPosData
 import com.sappyoak.dsanalyzer.runtime.ptde.FlagChange
-import com.sappyoak.dsanalyzer.runtime.ptde.GameDataMan
-import com.sappyoak.dsanalyzer.runtime.ptde.PlayerStats
-import com.sappyoak.dsanalyzer.runtime.ptde.WorldState
 import com.sappyoak.dsanalyzer.shared.math.Vec3
 
 private const val SAMPLE_FLAG = 11_010_902
@@ -29,7 +25,8 @@ class GameSessionTest : FunSpec({
 
         assertSoftly {
             snapshot.cost.complete shouldBe true
-            snapshot.map shouldBe MapId.parse("m10_02_00_00")
+            snapshot.place shouldBe WorldPlace.InWorld(checkNotNull(MapId.parse("m10_02_00_00")))
+            snapshot.loaded shouldBe true
             snapshot.inGameTimeMillis shouldBe 66_000
             snapshot.frame shouldBe 1980
             snapshot.reloaded shouldBe false
@@ -109,8 +106,49 @@ class GameSessionTest : FunSpec({
             snapshot.player shouldBe null
             snapshot.map shouldNotBe null
             snapshot.world shouldNotBe null
-            snapshot.inWorld shouldBe false
+            snapshot.loaded shouldBe true
             snapshot.cost.complete shouldBe false
+        }
+    }
+
+    /**
+     * The game leaves the last character's structures in place on a quit to the menu, so every walk
+     * to them keeps resolving and the player reads as still standing in the area they left. This
+     * test ensures against that
+     */
+    test("a quit to the menu drops the player even though the structures still read") {
+        val fixture = PTDEFixture().apply { populate() }
+        val session = fixture.session()
+        session.sample().player shouldNotBe null
+
+        fixture.quitToMenu()
+        val snapshot = session.sample()
+
+        assertSoftly {
+            snapshot.loaded shouldBe false
+            snapshot.player shouldBe null
+            snapshot.place shouldBe WorldPlace.Loading(MapId.of(area = 255, block = 255))
+            snapshot.map shouldBe null
+            snapshot.inWorld shouldBe false
+        }
+    }
+
+    test("leaving a world is as much a reload as arriving in another one") {
+        val fixture = PTDEFixture().apply { populate() }
+        val session = fixture.session()
+        session.sample()
+
+        fixture.quitToMenu()
+        val onMenu = session.sample()
+
+        fixture.loadInto(world = 13, area = 0)
+        val loadedIn = session.sample()
+
+        assertSoftly {
+            onMenu.reloaded shouldBe true
+            loadedIn.reloaded shouldBe true
+            loadedIn.loaded shouldBe true
+            loadedIn.place shouldBe WorldPlace.InWorld(checkNotNull(MapId.parse("m13_00_00_00")))
         }
     }
 
@@ -140,6 +178,27 @@ class GameSessionTest : FunSpec({
         assertSoftly {
             snapshot.player shouldBe null
             snapshot.flagChanges.shouldBeEmpty()
+            session.isFlagSet(SAMPLE_FLAG) shouldBe true
+        }
+    }
+
+    /**
+     * A quit-out writes several flags from the menu
+     */
+    test("a flag that moves with no world loaded is reported against the load screen") {
+        val fixture = PTDEFixture().apply { populate() }
+        val session = fixture.session()
+        session.sample()
+        fixture.quitToMenu()
+        session.sample()
+
+        fixture.setFlag(SAMPLE_FLAG, true)
+        val snapshot = session.sample()
+
+        assertSoftly {
+            snapshot.player shouldBe null
+            snapshot.flagChanges.shouldContainExactly(FlagChange(SAMPLE_FLAG, true))
+            snapshot.place.loadedMap shouldBe null
             session.isFlagSet(SAMPLE_FLAG) shouldBe true
         }
     }

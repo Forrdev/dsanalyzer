@@ -2,7 +2,7 @@ package com.sappyoak.dsanalyzer.runtime.session
 
 import kotlin.time.TimeSource
 
-import com.sappyoak.dsanalyzer.game.world.maps.MapId
+import com.sappyoak.dsanalyzer.game.world.maps.exists
 import com.sappyoak.dsanalyzer.runtime.GameConnection
 import com.sappyoak.dsanalyzer.runtime.GameProcess
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
@@ -17,6 +17,7 @@ import com.sappyoak.dsanalyzer.runtime.ptde.CharMapData
 import com.sappyoak.dsanalyzer.runtime.ptde.CharPosData
 import com.sappyoak.dsanalyzer.runtime.ptde.DeathCam
 import com.sappyoak.dsanalyzer.runtime.ptde.EventFlagBlock
+import com.sappyoak.dsanalyzer.runtime.ptde.FollowCam
 import com.sappyoak.dsanalyzer.runtime.ptde.GameDataMan
 import com.sappyoak.dsanalyzer.runtime.ptde.PlayerStats
 import com.sappyoak.dsanalyzer.runtime.ptde.WorldArea
@@ -29,6 +30,7 @@ public class GameSession internal constructor(
     public val pointers: ResolvedPointers,
     private val memory: GameMemory
 ) {
+    private val followCam = StructView(FollowCam.Pointer)
     private val worldArea = StructView(WorldArea.Pointer)
     private val character = StructView(CharData.Pointer)
     private val position = StructView(CharPosData.Pointer)
@@ -42,58 +44,60 @@ public class GameSession internal constructor(
 
     private val rest = listOf(character, position, placement, animation, attributes, worldState, deathCam, gameData)
 
-    private var lastMap: MapId? = null
-
-    public fun isFlagSet(flagId: Int): Boolean? = flags.isSet(flagId)
+    private var lastPlace: WorldPlace? = null
 
     public fun sample(): RuntimeSnapshot {
         val started = TimeSource.Monotonic.markNow()
+        val loaded = followCam.refresh(memory)
 
         val areaPresent = worldArea.refresh(memory)
-        val map = if (areaPresent) currentMap() else null
-        val reloaded = map != null && lastMap != null && map != lastMap
+        val place = place(areaPresent)
+
+        val reloaded = lastPlace != null && place != lastPlace
         if (reloaded) {
             memory.invalidate(Lifetime.World)
             flags.reset()
         }
 
-        if (map != null) {
-            lastMap = map
-        }
+        lastPlace = place
 
-        var present = if (areaPresent) 1 else 0
+        var present = if (loaded) 1 else 0
+        present += if (areaPresent) 1 else 0
         present += rest.count { it.refresh(memory) }
 
-        // Fetched whether or not there is a loaded character because the comparison is only worth anything
-        // against what was there a tick ago. Reported only once there is a character, since the
-        // flags that move through the title screen and the load belong to nobody
-        // This possibly might be useful to have in the future though if we can manipulate
-        // flags in those scenarios
         val changes = flags.refresh(memory)
         if (flags.isPresent) {
             present++
         }
 
-        val player = player()
         val time = if (gameData.isPresent) gameData.int(GameDataMan.InGameTimeMillis) else 0
 
         return RuntimeSnapshot(
             inGameTimeMillis = time,
             frame = GameDataMan.frameOf(time),
-            map = map,
+            place = place,
+            loaded = loaded,
             reloaded = reloaded,
-            player = player,
+            player = if (loaded) player() else null,
             world = world(),
-            flagChanges = if (player == null) emptyList() else changes,
+            flagChanges = changes,
             cost = SampleCost(started.elapsedNow(), present, STRUCTURES)
         )
     }
 
-    private fun currentMap(): MapId? {
-        val world = worldArea.unsigned(WorldArea.World)
-        if (world < FIRST_WORLD) return null
-        return WorldArea.mapId(world = world, area = worldArea.unsigned(WorldArea.Area))
+    public fun isFlagSet(flagId: Int): Boolean? = flags.isSet(flagId)
+
+    private fun place(areaPresent: Boolean): WorldPlace {
+        if (!areaPresent) return WorldPlace.Unreadable
+
+        val map = WorldArea.mapId(
+            world = worldArea.unsigned(WorldArea.World),
+            area = worldArea.unsigned(WorldArea.Area)
+        )
+
+        return if (map.exists) WorldPlace.InWorld(map) else WorldPlace.Loading(map)
     }
+
     private fun player(): PlayerSnapshot? {
         if (!character.isPresent || !position.isPresent) return null
 
@@ -141,7 +145,7 @@ public class GameSession internal constructor(
     }
 
     private companion object {
-        const val STRUCTURES = 10
+        const val STRUCTURES = 11
     }
 }
 

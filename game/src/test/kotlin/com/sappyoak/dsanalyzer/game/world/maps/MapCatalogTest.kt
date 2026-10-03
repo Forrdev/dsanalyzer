@@ -5,6 +5,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
 import com.sappyoak.dsanalyzer.game.files.GamePath
+import io.kotest.matchers.should
 
 private val DARKROOT = MapId.of(12, 0)
 private val DARKROOT_LAYOUT = checkNotNull(MapId.parse("m12_00_00_01"))
@@ -25,6 +26,15 @@ class MapCatalogTest : FunSpec({
 
     test("a map the table does not name falls back to its id") {
         checkNotNull(MapId.parse("m99_00_00_00")).label shouldBe "m99_00_00_00"
+    }
+
+    test("an id the game does not ship is not a place") {
+        assertSoftly {
+            MapId.of(255, 255).exists shouldBe false
+            MapId.of(99, 0).exists shouldBe false
+            PARISH.exists shouldBe true
+            DARKROOT_LAYOUT.exists shouldBe true
+        }
     }
 
     test("Darkroot Garden's layout is not the file its id names") {

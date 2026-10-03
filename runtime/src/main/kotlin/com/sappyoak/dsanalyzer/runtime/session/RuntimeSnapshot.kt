@@ -10,7 +10,8 @@ private const val UNSTABLE_DISTANCE = 1f
 public data class RuntimeSnapshot(
     public val inGameTimeMillis: Int,
     public val frame: Long,
-    public val map: MapId?,
+    public val place: WorldPlace,
+    public val loaded: Boolean,
     public val reloaded: Boolean,
     public val player: PlayerSnapshot?,
     public val world: WorldSnapshot?,
@@ -27,7 +28,8 @@ public data class RuntimeSnapshot(
     public val offStableGround: Boolean
         get() = (divergence ?: 0f) > UNSTABLE_DISTANCE
 
-    public val inWorld: Boolean get() = player != null && map != null
+    public val map: MapId? get() = place.loadedMap
+    public val inWorld: Boolean get() = loaded && map != null
 }
 
 public data class SampleCost(

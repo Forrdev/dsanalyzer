@@ -15,6 +15,7 @@ import com.sappyoak.dsanalyzer.runtime.ptde.CharData
 import com.sappyoak.dsanalyzer.runtime.ptde.CharMapData
 import com.sappyoak.dsanalyzer.runtime.ptde.DeathCam
 import com.sappyoak.dsanalyzer.runtime.ptde.EventFlags
+import com.sappyoak.dsanalyzer.runtime.ptde.FollowCam
 import com.sappyoak.dsanalyzer.runtime.ptde.GameDataMan
 import com.sappyoak.dsanalyzer.runtime.ptde.PlayerStats
 import com.sappyoak.dsanalyzer.runtime.ptde.PTDEPointers
@@ -34,6 +35,8 @@ private const val SIGNATURE_STRIDE = 0x40
 private const val STATICS_AT = 0x2000
 private const val STATIC_STRIDE = 0x10
 
+private const val TITLE_SCREEN_WORLD = 255
+
 /** Intermediate links, then the structure bodies themselves */
 private const val LINKS_AT = 0x3000
 internal const val CHARACTER_AT = 0x4000
@@ -46,6 +49,7 @@ internal const val AREA_AT = 0x9000
 internal const val DEATH_CAM_AT = 0xA000
 internal const val GAME_DATA_AT = 0xA100
 internal const val FLAGS_AT = 0x20000
+internal const val FOLLOW_CAM_AT = 0xC000
 
 /** A second character structure, for proving a reload re-resolves the walk to it */
 internal const val RELOADED_CHARACTER_AT = 0xB000
@@ -103,6 +107,20 @@ internal class PTDEFixture {
         game.nullPointer(LINKS_AT + 0x100)
     }
 
+    /**
+     * Drops the follow cam and parks the area on the sentinel
+     * The character structures are left exactly as they were on purpose as this is what the real game does
+     */
+    fun quitToMenu() {
+        game.nullPointer(LINKS_AT + 0x500 + 0x60)
+        map(world = TITLE_SCREEN_WORLD, area = TITLE_SCREEN_WORLD)
+    }
+
+    fun loadInto(world: Int, area: Int) {
+        game.pointer(LINKS_AT + 0x500 + 0x60, FOLLOW_CAM_AT)
+        map(world, area)
+    }
+
     /** Points the character walk at [RELOADED_CHARACTER_AT], the way a load reallocates it */
     fun reallocateCharacter() {
         game.pointer(LINKS_AT + 0x100, RELOADED_CHARACTER_AT)
@@ -158,6 +176,11 @@ internal class PTDEFixture {
         // EventFlags: static -> +0 -> +0
         game.pointer(statics.getValue(EventFlags.Pointer.base), LINKS_AT + 0x300)
         game.pointer(LINKS_AT + 0x300, FLAGS_AT)
+
+        // ChrFollowCam: static -> +0 -> +0x3C -> +0x60
+        game.pointer(statics.getValue(FollowCam.Pointer.base), LINKS_AT + 0x400)
+        game.pointer(LINKS_AT + 0x400 + 0x3C, LINKS_AT + 0x500)
+        game.pointer(LINKS_AT + 0x500 + 0x60, FOLLOW_CAM_AT)
     }
 
     private fun distinctBases(): List<GamePointer> = PTDEPointers.distinctBy { it.base }
