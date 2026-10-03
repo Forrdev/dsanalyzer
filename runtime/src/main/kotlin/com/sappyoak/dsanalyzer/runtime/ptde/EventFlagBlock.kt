@@ -14,7 +14,7 @@ public data class FlagChange(public val flagId: Int, public val set: Boolean)
  */
 public class EventFlagBlock {
     private val view = StructView(EventFlags.Pointer)
-    private val words = IntArray(EventFlags.BlockSize / Int.SIZE_BYTES)
+    private val words = IntArray(EventFlags.Pointer.size / Int.SIZE_BYTES)
     private var seeded = false
 
     public val isPresent: Boolean get() = view.isPresent

@@ -11,6 +11,7 @@ import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.runtime.ptde.CharData
 import com.sappyoak.dsanalyzer.runtime.ptde.CharFlags2
 import com.sappyoak.dsanalyzer.runtime.ptde.CharMapData
+import com.sappyoak.dsanalyzer.runtime.ptde.CharMapFlags
 import com.sappyoak.dsanalyzer.runtime.ptde.CharPosData
 import com.sappyoak.dsanalyzer.runtime.ptde.FlagChange
 import com.sappyoak.dsanalyzer.shared.math.Vec3
@@ -57,7 +58,7 @@ class GameSessionTest : FunSpec({
         val fixture = PTDEFixture().apply {
             populate()
             game.int(CHARACTER_AT + CharData.Flags2, CharFlags2.NoDead)
-            game.int(PLACEMENT_AT + CharMapData.Flags, CharMapData.DisableMapHit)
+            game.int(PLACEMENT_AT + CharMapData.Flags, CharMapFlags.DisableMapHit)
         }
 
         checkNotNull(fixture.session().sample().player).cheats shouldBe

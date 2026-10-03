@@ -25,7 +25,7 @@ public object GameDataMan {
         ),
         offsets = listOf(0L),
         lifetime = Lifetime.Session,
-        size = 0x70
+        size = 0x80
     )
 
     public const val NewGameCount: Int = 0x3C

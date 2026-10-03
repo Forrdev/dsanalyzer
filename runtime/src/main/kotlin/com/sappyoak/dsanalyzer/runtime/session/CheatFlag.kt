@@ -2,8 +2,7 @@ package com.sappyoak.dsanalyzer.runtime.session
 
 import com.sappyoak.dsanalyzer.runtime.ptde.CharFlags1
 import com.sappyoak.dsanalyzer.runtime.ptde.CharFlags2
-import com.sappyoak.dsanalyzer.runtime.ptde.CharMapData
-import com.sappyoak.dsanalyzer.shared.math.Vec3
+import com.sappyoak.dsanalyzer.runtime.ptde.CharMapFlags
 
 public enum class CheatFlag {
     Invincible,
@@ -45,5 +44,5 @@ private val IN_FLAGS_2 = mapOf(
 internal fun cheatsIn(flags1: Int, flags2: Int, mapFlags: Int): Set<CheatFlag> = buildSet {
     IN_FLAGS_1.forEach { (flag, mask) -> if (flags1 and mask != 0) add(flag) }
     IN_FLAGS_2.forEach { (flag, mask) -> if (flags2 and mask != 0) add(flag) }
-    if (mapFlags and CharMapData.DisableMapHit != 0) add(CheatFlag.MapCollisionDisabled)
+    if (mapFlags and CharMapFlags.DisableMapHit != 0) add(CheatFlag.MapCollisionDisabled)
 }

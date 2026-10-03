@@ -21,8 +21,9 @@ public object CharMapData {
     public const val Warp: Int = 0xC8
     public const val WarpPosition: Int = 0xD0
     public const val WarpAngle: Int = 0xE4
+}
 
-    /** Bits of [Flags] */
+public object CharMapFlags {
     public const val DisableMapHit: Int = 0x00000010
 }
 

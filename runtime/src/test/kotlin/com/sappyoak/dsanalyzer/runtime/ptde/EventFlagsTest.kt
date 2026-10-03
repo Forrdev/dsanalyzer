@@ -27,7 +27,7 @@ class EventFlagsTest : FunSpec({
         val at = checkNotNull(EventFlags.locate(LAST))
         assertSoftly {
             at.mask shouldBe (0x80000000u shr 7)
-            at.byteOffset + Int.SIZE_BYTES shouldBe EventFlags.BlockSize
+            at.byteOffset + Int.SIZE_BYTES shouldBe EventFlags.Pointer.size
         }
     }
 
@@ -66,7 +66,7 @@ class EventFlagsTest : FunSpec({
 
     test("a bit outside the block, or midway through a word, belongs to nothing") {
         assertSoftly {
-            EventFlags.flagAt(EventFlags.BlockSize, 0) shouldBe null
+            EventFlags.flagAt(EventFlags.Pointer.size, 0) shouldBe null
             EventFlags.flagAt(-4, 0) shouldBe null
             EventFlags.flagAt(0x502, 0) shouldBe null
             EventFlags.flagAt(0, 32) shouldBe null

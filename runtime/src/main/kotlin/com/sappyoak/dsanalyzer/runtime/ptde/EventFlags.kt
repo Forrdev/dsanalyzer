@@ -46,7 +46,7 @@ public object EventFlags {
     private const val HIGH_BIT = 0x80000000u
 
     /** The block runs to the end of the last group, which holds every area */
-    public const val BlockSize: Int = 0x11300 + 18 * AREA_STRIDE
+    private const val BLOCK_SIZE: Int = 0x11300 + 18 * AREA_STRIDE
 
     /**
      * How many areas each group has room for, which is not the same for all of them.
@@ -57,7 +57,7 @@ public object EventFlags {
     private val GROUP_AREAS: Map<Int, Int> = run {
         val ordered = GROUP_BASES.entries.sortedBy { it.value }
         ordered.mapIndexed { index, entry ->
-            val end = ordered.getOrNull(index + 1)?.value ?: BlockSize
+            val end = ordered.getOrNull(index + 1)?.value ?: BLOCK_SIZE
             entry.key to (end - entry.value) / AREA_STRIDE
         }.toMap()
     }
@@ -71,7 +71,7 @@ public object EventFlags {
         ),
         offsets = listOf(0L, 0L),
         lifetime = Lifetime.Session,
-        size = BlockSize
+        size = BLOCK_SIZE
     )
 
     /** Where [flagId] lives, or null when those digits are not a flag the block has room for */
@@ -100,7 +100,7 @@ public object EventFlags {
      */
     public fun flagAt(byteOffset: Int, bit: Int): Int? {
         if (bit !in 0 until PER_WORD) return null
-        if (byteOffset < 0 || byteOffset >= BlockSize || byteOffset % Int.SIZE_BYTES != 0) return null
+        if (byteOffset < 0 || byteOffset >= BLOCK_SIZE || byteOffset % Int.SIZE_BYTES != 0) return null
 
         val group = GROUP_BASES.entries.filter { it.value <= byteOffset }.maxByOrNull { it.value } ?: return null
         val withinGroup = byteOffset - group.value
