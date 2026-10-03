@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 
 import com.sappyoak.dsanalyzer.app.runtime.FlagEntry
 import com.sappyoak.dsanalyzer.game.world.WorldRef
+import com.sappyoak.dsanalyzer.game.world.maps.label
 
 private val FRAME_WIDTH = 96.dp
 private val STATE_WIDTH = 56.dp
@@ -48,9 +49,15 @@ internal fun FlagLog(entries: List<FlagEntry>, onFollow: (WorldRef) -> Unit) {
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.width(STATE_WIDTH)
                     )
-                    TextButton(onClick = { onFollow(WorldRef.EventFlag(entry.flagId)) }) {
+                    TextButton(onClick = { onFollow(WorldRef.EventFlag(entry.flagId, entry.map)) }) {
                         Text(entry.flagId.toString())
                     }
+
+                    Text(
+                        text = entry.map?.label.orEmpty(),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
             }
         }

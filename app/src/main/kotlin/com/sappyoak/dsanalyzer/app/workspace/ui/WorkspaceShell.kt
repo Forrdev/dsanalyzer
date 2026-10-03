@@ -58,7 +58,7 @@ public fun WorkspaceShell(
             }
 
             is WorldRef.EventFlag -> {
-                stores.scripts.dispatch(ScriptsMessage.FlagRequested(ref.flagId))
+                stores.scripts.dispatch(ScriptsMessage.FlagRequested(ref.flagId, ref.seenIn))
                 tab = WorkspaceTab.Scripts
             }
 

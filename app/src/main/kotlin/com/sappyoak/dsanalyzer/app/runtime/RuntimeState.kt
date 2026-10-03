@@ -1,6 +1,7 @@
 package com.sappyoak.dsanalyzer.app.runtime
 
 import com.sappyoak.dsanalyzer.game.GameEdition
+import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.runtime.ptde.PTDEBuild
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
 
@@ -26,5 +27,7 @@ public data class AttachedGame(
 public data class FlagEntry(
     public val flagId: Int,
     public val set: Boolean,
-    public val frame: Long
+    public val frame: Long,
+    /** The map the change was seen in */
+    public val map: MapId?
 )

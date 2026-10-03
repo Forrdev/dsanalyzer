@@ -32,6 +32,7 @@ public class StructView(public val pointer: GamePointer) {
     public fun int(offset: Int): Int = view.int(offset)
     public fun float(offset: Int): Float = view.float(offset)
     public fun pointer(offset: Int): Address = view.pointer(offset)
+    public fun boolean(offset: Int): Boolean = view.byte(offset).toInt() != 0
 
     /** An unsigned byte, which is how the small counters and identifiers are stored */
     public fun unsigned(offset: Int): Int = view.byte(offset).toInt() and 0xFF

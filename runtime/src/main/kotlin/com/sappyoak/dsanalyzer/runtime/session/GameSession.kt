@@ -136,7 +136,7 @@ public class GameSession internal constructor(
             stablePosition = worldState.vec3(WorldState.StablePosition),
             stableAngle = worldState.float(WorldState.StableAngle),
             lastBonfire = worldState.int(WorldState.LastBonfire),
-            deathCam = deathCam.isPresent && deathCam.unsigned(DeathCam.Active) != 0
+            deathCam = deathCam.isPresent && deathCam.boolean(DeathCam.Active)
         )
     }
 

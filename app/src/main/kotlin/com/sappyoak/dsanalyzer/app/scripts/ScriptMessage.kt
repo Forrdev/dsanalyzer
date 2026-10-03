@@ -2,6 +2,7 @@ package com.sappyoak.dsanalyzer.app.scripts
 
 import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.game.world.WorldRef
+import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
 
 public sealed interface ScriptsMessage {
@@ -17,7 +18,10 @@ public sealed interface ScriptsMessage {
     /** Following a link, a list selection, or a finding */
     public data class Navigated(public val ref: WorldRef.ScriptEvent) : ScriptsMessage
 
-    public data class FlagRequested(public val flagId: Int) : ScriptsMessage
+    public data class FlagRequested(
+        public val flagId: Int,
+        public val seenIn: MapId? = null
+    ) : ScriptsMessage
     public data class QueryChanged(public val query: String) : ScriptsMessage
 
     public data class Failed(public val reason: String) : ScriptsMessage

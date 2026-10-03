@@ -24,7 +24,10 @@ public sealed interface WorldRef {
 
     public data class Entity(public val entityId: Int) : WorldRef
 
-    public data class EventFlag(public val flagId: Int) : WorldRef
+    public data class EventFlag(
+        public val flagId: Int,
+        public val seenIn: MapId? = null
+    ) : WorldRef
 
     /** An event in one of the event scripts, name by the id its caller uses */
     public data class ScriptEvent(

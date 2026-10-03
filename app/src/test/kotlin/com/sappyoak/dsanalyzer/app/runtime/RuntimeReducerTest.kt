@@ -54,8 +54,8 @@ class RuntimeReducerTest : FunSpec({
         val second = tick(first, LinkState(attached = GAME, snapshot = snapshot(2, FlagChange(11_020_000, false))))
 
         second.flagLog shouldBe listOf(
-            FlagEntry(11_020_000, false, 2),
-            FlagEntry(11_010_902, true, 1)
+            FlagEntry(11_020_000, false, 2, null),
+            FlagEntry(11_010_902, true, 1, null)
         )
     }
 
