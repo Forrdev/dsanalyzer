@@ -7,9 +7,12 @@ package com.sappyoak.dsanalyzer.formats.archive
  * so enumerating an archive yields hashes and a name list is needed to turn them
  * back into paths
  */
-public fun archivePathHash(path: String): UInt {
+public fun archivePathHash(path: String): UInt =
+    normalizedArchivePathHash(normalizeArchivePath(path))
+
+public fun normalizedArchivePathHash(normalized: String): UInt {
     var hash = 0u
-    for (c in normalizeArchivePath(path)) {
+    for (c in normalized) {
         hash = hash * 37u + c.code.toUInt()
     }
     return hash

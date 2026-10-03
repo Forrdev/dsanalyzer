@@ -3,6 +3,7 @@ package com.sappyoak.dsanalyzer.game.world.maps
 import kotlinx.serialization.Serializable
 
 private val PATTERN = Regex("""m(\d{2})_(\d{2})_(\d{2})_(\d{2})""")
+private const val NAME_LENGTH = 12
 
 @JvmInline
 @Serializable
@@ -15,7 +16,16 @@ public value class MapId(public val packed: Int) {
     public val withoutVariant: MapId get() = MapId(packed and 0xFFFFFF00.toInt())
     public val name: String get() = toString()
 
-    override fun toString(): String = "m%02d_%02d_%02d_%02d".format(area, block, region, index)
+    override fun toString(): String = buildString(NAME_LENGTH) {
+        append('m')
+        appendComponent(area)
+        append('_')
+        appendComponent(block)
+        append('_')
+        appendComponent(region)
+        append('_')
+        appendComponent(index)
+    }
 
     public companion object {
         public fun of(area: Int, block: Int, region: Int = 0, index: Int = 0): MapId =
@@ -27,4 +37,9 @@ public value class MapId(public val packed: Int) {
             return of (area.toInt(), block.toInt(), region.toInt(), index.toInt())
         }
     }
+}
+
+private fun StringBuilder.appendComponent(value: Int) {
+    if (value < 10) append('0')
+    append(value)
 }

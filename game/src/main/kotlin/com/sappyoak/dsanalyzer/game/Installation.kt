@@ -15,12 +15,12 @@ public value class InstallationId(public val value: String) {
     override fun toString() = value
 
     public companion object {
-        private const val LENGTH = 16
+        private const val BYTES = 8
 
         public fun forRoot(root: Path): InstallationId {
             val canonical = root.toRealPath().toString()
             val digest = MessageDigest.getInstance("SHA-256").digest(canonical.toByteArray())
-            return InstallationId(digest.joinToString("") { "%02x".format(it) }.take(LENGTH) )
+            return InstallationId(digest.copyOf(BYTES).toHexString())
         }
     }
 }
