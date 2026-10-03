@@ -2,11 +2,11 @@ package com.sappyoak.dsanalyzer.game
 
 
 import kotlinx.serialization.Serializable
+import java.nio.file.Path
 import java.nio.file.attribute.BasicFileAttributes
 import java.security.MessageDigest
 import kotlin.io.path.*
 
-import com.sappyoak.dsanalyzer.game.files.GameFile
 import com.sappyoak.dsanalyzer.game.files.walkGameFiles
 
 /**
@@ -24,34 +24,38 @@ public data class InstallationFingerprint(
 public fun Installation.fingerprint(): InstallationFingerprint {
     val digest = MessageDigest.getInstance("SHA-256")
     val fileCount = when (build.edition.storage) {
-        GameStorage.Archived -> {
-            val files = (listOf(build.edition.executableName) + requiredPaths(build.edition))
-                .asSequence()
-                .map { GameFile(it, root.resolve(it)) }
-                .filter { it.file.exists() }
-
-            digest.stamp(files).also {
-                archiveHeaderNames(build.edition)
-                    .map(root::resolve)
-                    .filter { it.exists() }
-                    .forEach { digest.update(it.readBytes()) }
-            }
+        GameStorage.Archived -> digest.stampArchives(root, build.edition)
+        GameStorage.Loose -> walkGameFiles(root) { files ->
+            digest.stamp(files.map { it.gamePath to it.file })
         }
-
-        GameStorage.Loose -> walkGameFiles(root) { digest.stamp(it) }
     }
 
     return InstallationFingerprint(fileCount, digest.digest().toHexString())
 }
+
+private fun MessageDigest.stampArchives(root: Path, edition: GameEdition): Int {
+    val named = (listOf(edition.executableName) + requiredPaths(edition))
+        .map { it to root.resolve(it) }
+        .filter { (_, file) -> file.exists() }
+
+    val count = stamp(named.asSequence())
+    archiveHeaderNames(edition)
+        .map(root::resolve)
+        .filter { it.exists() }
+        .forEach { update(it.readBytes()) }
+
+    return count
+}
+
 /**
  * Adds each file's path, size, and modification time returning how many there were. Sorted
  * first, so the result does not depend on file system order
  */
-private fun MessageDigest.stamp(files: Sequence<GameFile>): Int {
+private fun MessageDigest.stamp(files: Sequence<Pair<String, Path>>): Int {
     var count = 0
-    files.sortedBy { it.gamePath }.forEach { (gamePath, file) ->
+    files.sortedBy { it.first }.forEach { (path, file) ->
         val attributes = file.readAttributes<BasicFileAttributes>()
-        update("$gamePath|${attributes.size()}|${attributes.lastModifiedTime().toMillis()}\n".toByteArray())
+        update("$path|${attributes.size()}|${attributes.lastModifiedTime().toMillis()}\n".toByteArray())
         count++
     }
     return count
