@@ -9,6 +9,7 @@ import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.native.memory.AddressRange
 import com.sappyoak.dsanalyzer.native.memory.MemoryRegion
 import com.sappyoak.dsanalyzer.native.process.AttachedProcess
+import com.sappyoak.dsanalyzer.native.process.ModuleInfo
 import com.sappyoak.dsanalyzer.native.process.ProcessInfo
 import com.sappyoak.dsanalyzer.shared.platform.PointerSize
 
@@ -16,6 +17,9 @@ private const val STILL_ACTIVE = 259
 private const val MEM_COMMIT = 0x1000
 private const val PAGE_NOACCESS = 0x01
 private const val PAGE_GUARD = 0x100
+
+/** PAGE_EXECUTE, _READ, _READWRITE, and _WRITECOPY together */
+private const val PAGE_EXECUTE_ANY = 0x10 or 0x20 or 0x40 or 0x80
 
 /**
  * An open handle to a Windows process
@@ -26,7 +30,8 @@ private const val PAGE_GUARD = 0x100
 internal class WindowsProcess(
     override val info: ProcessInfo,
     private val handle: MemorySegment,
-    override val pointerSize: PointerSize
+    override val pointerSize: PointerSize,
+    private val listModules: (Int) -> List<ModuleInfo>
 ) : AttachedProcess {
     private val closed = AtomicBoolean(false)
 
@@ -60,6 +65,8 @@ internal class WindowsProcess(
         return Kernel32.writeProcessMemory(handle, address.value, from)
     }
 
+    override fun modules(): List<ModuleInfo> = listModules(info.pid)
+
     override fun regions(range: AddressRange): List<MemoryRegion> = Arena.ofConfined().use { arena ->
         val info = arena.allocate(MEMORY_BASIC_INFORMATION)
         val regions = mutableListOf<MemoryRegion>()
@@ -73,7 +80,8 @@ internal class WindowsProcess(
             val clippedEnd = minOf(end, range.end.value)
             regions.add(MemoryRegion(
                 range = AddressRange(Address(start), clippedEnd - start),
-                readable = isReadable(info)
+                readable = isReadable(info),
+                executable = isExecutable(info)
             ))
             cursor = end
         }
@@ -94,4 +102,7 @@ internal class WindowsProcess(
                 protect and PAGE_NOACCESS == 0 &&
                 protect and PAGE_GUARD == 0
     }
+
+    private fun isExecutable(info: MemorySegment): Boolean =
+        info.intField(MEMORY_BASIC_INFORMATION, "Protect") and PAGE_EXECUTE_ANY != 0
 }

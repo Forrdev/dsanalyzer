@@ -1,7 +1,7 @@
 package com.sappyoak.dsanalyzer.native.process
 
 import java.lang.foreign.MemorySegment
-import java.lang.foreign.ValueLayout.*
+import java.lang.foreign.ValueLayout
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
@@ -17,11 +17,13 @@ import com.sappyoak.dsanalyzer.shared.platform.PointerSize
 internal class FakeProcessMemory(
     private val base: Address,
     size: Int,
-    override val pointerSize: PointerSize = PointerSize.LongPointer,
-    private val unreadable: List<AddressRange> = emptyList()
+    override val pointerSize: PointerSize = PointerSize.Companion.LongPointer,
+    private val unreadable: List<AddressRange> = emptyList(),
+    code: List<AddressRange>? = null
 ) : ProcessMemory {
     private val bytes = ByteArray(size)
     private val mapped = AddressRange(base, size.toLong())
+    private val executable = code ?: listOf(mapped)
 
     public var reads: Int = 0
         private set
@@ -47,7 +49,7 @@ internal class FakeProcessMemory(
     override fun read(address: Address, into: MemorySegment): Boolean {
         reads++
         if (!accessible(address, into.byteSize())) return false
-        MemorySegment.copy(bytes, index(address), into, JAVA_BYTE, 0, into.byteSize().toInt())
+        MemorySegment.copy(bytes, index(address), into, ValueLayout.JAVA_BYTE, 0, into.byteSize().toInt())
         return true
     }
 
@@ -61,19 +63,24 @@ internal class FakeProcessMemory(
 
     override fun write(address: Address, from: MemorySegment): Boolean {
         if (!accessible(address, from.byteSize())) return false
-        this[address] = from.toArray(JAVA_BYTE)
+        this[address] = from.toArray(ValueLayout.JAVA_BYTE)
         return true
     }
 
     override fun regions(range: AddressRange): List<MemoryRegion> {
-        val boundaries = (listOf(mapped.start, mapped.end) + unreadable.flatMap { listOf(it.start, it.end) })
+        val edges = listOf(mapped) + unreadable + executable
+        val boundaries = edges.flatMap { listOf(it.start, it.end) }
             .map { it.value.coerceIn(range.start.value, range.end.value) }
             .distinct()
             .sorted()
 
         return boundaries.zipWithNext { start, end ->
             val span = AddressRange(Address(start), end - start)
-            MemoryRegion(span, unreadable.none { it.overlaps(span) })
+            MemoryRegion(
+                range = span,
+                readable = unreadable.none { it.overlaps(span) },
+                executable = executable.any { it.overlaps(span) }
+            )
         }.filter { it.range.size > 0 }
     }
 

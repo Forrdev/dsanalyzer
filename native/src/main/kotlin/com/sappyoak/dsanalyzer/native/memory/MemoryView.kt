@@ -30,6 +30,11 @@ public class MemoryView(public val capacity: Int) {
         return result
     }
 
+    /** Forgets the last refresh, so nothing reads out of it until the next one */
+    public fun clear() {
+        length = 0
+    }
+
     public fun byte(offset: Int): Byte = buffer.get(JAVA_BYTE, checked(offset, 1))
     public fun short(offset: Int): Short = buffer.get(JAVA_SHORT_UNALIGNED, checked(offset, 2))
     public fun int(offset: Int): Int = buffer.get(JAVA_INT_UNALIGNED, checked(offset, 4))

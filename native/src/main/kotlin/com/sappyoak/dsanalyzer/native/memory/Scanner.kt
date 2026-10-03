@@ -12,7 +12,7 @@ private const val DEFAULT_CHUNK_SIZE = 1 shl 20
 /**
  * Every address in [range] where [pattern] matches
  *
- * Walks the mapped regions and reads each readable one int chunks, so guard pages and
+ * Walks the mapped regions and reads each one [include] accepts in chunks, so guard pages and
  * unmapped gaps are skipped without knowing about the module's layout. Consecutive chunks
  * overlap by one byte less than the pattern, so a match straddling a chunk boundary is still
  * found exactly once.
@@ -23,7 +23,8 @@ private const val DEFAULT_CHUNK_SIZE = 1 shl 20
 public fun ProcessMemory.scan(
     range: AddressRange,
     pattern: AOBPattern,
-    chunkSize: Int = DEFAULT_CHUNK_SIZE
+    chunkSize: Int = DEFAULT_CHUNK_SIZE,
+    include: (MemoryRegion) -> Boolean = MemoryRegion::readable
 ): List<Address> {
     require(chunkSize >= pattern.length) { "Chunks must fit the pattern" }
 
@@ -34,7 +35,7 @@ public fun ProcessMemory.scan(
         val native = arena.allocate(chunkSize.toLong())
         val local = ByteArray(chunkSize)
 
-        for (region in regions(range).filter { it.readable }) {
+        for (region in regions(range).filter(include)) {
             var offset = 0L
             while (offset + pattern.length <= region.range.size) {
                 val length = minOf(chunkSize.toLong(), region.range.size - offset).toInt()

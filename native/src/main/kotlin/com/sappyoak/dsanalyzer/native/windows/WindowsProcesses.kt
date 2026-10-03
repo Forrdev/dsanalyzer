@@ -51,7 +51,7 @@ internal class WindowsProcesses : Processes {
         }
 
         val pointerSize = if (Kernel32.isWow64(handle)) PointerSize.IntPointer else PointerSize.LongPointer
-        return WindowsProcess(process, handle, pointerSize)
+        return WindowsProcess(process, handle, pointerSize, ::modules)
     }
 
     override fun modules(pid: Int): List<ModuleInfo> = snapshot(SNAP_MODULE or SNAP_MODULE_32, pid, MODULE_ENTRY) { handle, entry, first ->

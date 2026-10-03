@@ -59,6 +59,7 @@ private fun MapsState.navigate(ref: WorldRef): Transition<MapsState, MapsEffect>
         ?.let { show(it.ref.map, focus = it.ref) }
         ?: copy(problem = "No entry has entity id ${ref.entityId}").with()
     is WorldRef.ScriptEvent -> with()
+    is WorldRef.EventFlag -> with()
 }
 
 private fun MapsState.show(

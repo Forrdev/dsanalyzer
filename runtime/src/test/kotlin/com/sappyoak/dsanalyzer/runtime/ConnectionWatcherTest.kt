@@ -5,6 +5,7 @@ import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
+import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
@@ -14,7 +15,6 @@ import kotlin.time.Duration.Companion.seconds
 
 import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.native.process.ProcessInfo
-import io.kotest.assertions.assertSoftly
 
 private val GAME = ProcessInfo(10, "DARKSOULS.exe")
 private val EDITIONS = setOf(GameEdition.PrepareToDie)

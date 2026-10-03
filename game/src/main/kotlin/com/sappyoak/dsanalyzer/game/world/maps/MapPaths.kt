@@ -16,7 +16,7 @@ public val MapId.navmeshBinderPath: GamePath get() = GamePath.of("/map/$name/$na
 
 public fun MapId.collisionPaths(detail: CollisionDetail): SplitBinderPaths {
     val name = this.name
-    val stem = "/map/$name/{detail.prefix}${name.drop(1)}"
+    val stem = "/map/$name/${detail.prefix}${name.drop(1)}"
     return SplitBinderPaths(GamePath.of("$stem.hkxbhd"), GamePath.of("$stem.hkxbdt"))
 }
 

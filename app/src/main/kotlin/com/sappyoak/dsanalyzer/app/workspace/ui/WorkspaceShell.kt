@@ -25,6 +25,8 @@ import androidx.compose.ui.unit.dp
 import com.sappyoak.dsanalyzer.app.maps.MapsMessage
 import com.sappyoak.dsanalyzer.app.maps.MapsStore
 import com.sappyoak.dsanalyzer.app.maps.ui.MapsScreen
+import com.sappyoak.dsanalyzer.app.runtime.RuntimeStore
+import com.sappyoak.dsanalyzer.app.runtime.ui.RuntimeScreen
 import com.sappyoak.dsanalyzer.app.scripts.ScriptsMessage
 import com.sappyoak.dsanalyzer.app.scripts.ScriptsStore
 import com.sappyoak.dsanalyzer.app.scripts.ui.ScriptsScreen
@@ -38,7 +40,8 @@ public fun WorkspaceShell(
     workspace: Workspace,
     installation: Installation?,
     maps: MapsStore,
-    scripts: ScriptsStore
+    scripts: ScriptsStore,
+    runtime: RuntimeStore
 ) {
     var tab by remember { mutableStateOf(WorkspaceTab.Maps) }
 
@@ -53,6 +56,11 @@ public fun WorkspaceShell(
         when (ref) {
             is WorldRef.ScriptEvent -> {
                 scripts.dispatch(ScriptsMessage.Navigated(ref))
+                tab = WorkspaceTab.Scripts
+            }
+
+            is WorldRef.EventFlag -> {
+                scripts.dispatch(ScriptsMessage.FlagRequested(ref.flagId))
                 tab = WorkspaceTab.Scripts
             }
 
@@ -92,6 +100,11 @@ public fun WorkspaceShell(
                     WorkspaceTab.Scripts -> {
                         val state by scripts.state.collectAsState()
                         ScriptsScreen(state, scripts, follow)
+                    }
+
+                    WorkspaceTab.Runtime -> {
+                        val state by runtime.state.collectAsState()
+                        RuntimeScreen(state, follow)
                     }
                 }
             }

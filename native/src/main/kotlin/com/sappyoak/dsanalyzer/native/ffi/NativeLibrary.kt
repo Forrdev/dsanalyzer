@@ -41,6 +41,11 @@ public class NativeLibrary private constructor(
             NativeLibrary(SymbolLookup.libraryLookup(it, arena), it)
         }
 
+        /** The symbols this process already hash, which covers the C library it was loaded with */
+        public fun builtin(): NativeLibrary = libraries.computeIfAbsent("builtin") {
+            NativeLibrary(linker.defaultLookup(), it)
+        }
+
         public fun openOrNull(name: String): NativeLibrary? = runCatching { open(name) }.getOrNull()
     }
 }

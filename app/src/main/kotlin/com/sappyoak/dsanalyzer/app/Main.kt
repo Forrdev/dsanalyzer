@@ -68,7 +68,7 @@ fun main() {
                         }
 
                         Box(modifier = Modifier.weight(1f)) {
-                            StartupScreen(startupState, model.startup, model.maps, model.scripts)
+                            StartupScreen(startupState, model.startup, model.maps, model.scripts, model.runtime)
                         }
 
                         ConnectionStatusBar(connectionState.status)
