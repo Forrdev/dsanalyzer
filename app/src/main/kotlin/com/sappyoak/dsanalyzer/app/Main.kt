@@ -9,21 +9,28 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.*
-import com.sappyoak.dsanalyzer.app.connection.ui.ConnectionStatusBar
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 
+import com.sappyoak.dsanalyzer.app.connection.ui.ConnectionStatusBar
 import com.sappyoak.dsanalyzer.app.logging.coroutineErrorLogging
 import com.sappyoak.dsanalyzer.app.logging.setupLogging
 import com.sappyoak.dsanalyzer.app.paths.ToolPaths
 import com.sappyoak.dsanalyzer.app.settings.SettingsMessage
 import com.sappyoak.dsanalyzer.app.settings.ui.SettingsProblemBanner
+import com.sappyoak.dsanalyzer.app.startup.StartupMessage
+import com.sappyoak.dsanalyzer.app.startup.StartupPhase
+import com.sappyoak.dsanalyzer.app.startup.describe
 import com.sappyoak.dsanalyzer.app.startup.ui.StartupScreen
+import com.sappyoak.dsanalyzer.app.ui.NoticeBanner
+import com.sappyoak.dsanalyzer.app.ui.chooseInstallationDirectory
 import com.sappyoak.dsanalyzer.app.verification.VerificationMessage
 import com.sappyoak.dsanalyzer.app.verification.ui.VerificationDialog
+import com.sappyoak.dsanalyzer.app.workspace.ui.NewWorkspaceDialog
+import com.sappyoak.dsanalyzer.app.workspace.ui.WorkspaceShell
 
 fun main() {
     val paths = ToolPaths()
@@ -54,9 +61,11 @@ fun main() {
             val connectionState by model.connection.state.collectAsState()
 
             AppMenuBar(
-                model = model,
-                state = startupState,
-                connection = connectionState,
+                startup = model.startup,
+                verification = model.verification,
+                connection = model.connection,
+                startupState = startupState,
+                connectionState = connectionState,
                 autoConnect = settingsState.settings.connection.autoConnect,
                 onQuit = ::exitApplication
             )
@@ -67,11 +76,40 @@ fun main() {
                             SettingsProblemBanner(problem) { model.settings.dispatch(SettingsMessage.ProblemDismissed) }
                         }
 
+                        if (startupState.notices.isNotEmpty()) {
+                            NoticeBanner(startupState.notices.map { it.describe() }) {
+                                model.startup.dispatch(StartupMessage.NoticesDismissed)
+                            }
+                        }
+
                         Box(modifier = Modifier.weight(1f)) {
-                            StartupScreen(startupState, model.startup, model.maps, model.scripts, model.runtime)
+                            when (val phase = startupState.phase) {
+                                is StartupPhase.Ready -> WorkspaceShell(
+                                    workspace = phase.workspace,
+                                    installation = startupState.installations
+                                        .firstOrNull { it.id == phase.workspace.installationId },
+                                    stores = model.workspace
+                                )
+                                else -> StartupScreen(startupState, model.startup)
+                            }
                         }
 
                         ConnectionStatusBar(connectionState.status)
+                    }
+
+                    if (startupState.creatingWorkspace) {
+                        NewWorkspaceDialog(
+                            installations = startupState.installations,
+                            onCreate = { name, id ->
+                                model.startup.dispatch(StartupMessage.WorkspaceCreationRequested(name, id))
+                            },
+                            onAddInstallation = {
+                                chooseInstallationDirectory()?.let {
+                                    model.startup.dispatch(StartupMessage.FolderChosen(it))
+                                }
+                            },
+                            onDismiss = { model.startup.dispatch(StartupMessage.NewWorkspaceDismissed) }
+                        )
                     }
 
                     verificationState.viewing

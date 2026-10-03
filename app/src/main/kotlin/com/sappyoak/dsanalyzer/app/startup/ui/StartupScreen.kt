@@ -6,51 +6,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.dp
 
-import com.sappyoak.dsanalyzer.app.maps.MapsStore
-import com.sappyoak.dsanalyzer.app.runtime.RuntimeStore
-import com.sappyoak.dsanalyzer.app.scripts.ScriptsStore
 import com.sappyoak.dsanalyzer.app.startup.*
-import com.sappyoak.dsanalyzer.app.ui.NoticeBanner
 import com.sappyoak.dsanalyzer.app.ui.chooseInstallationDirectory
-import com.sappyoak.dsanalyzer.app.workspace.ui.NewWorkspaceDialog
 import com.sappyoak.dsanalyzer.app.workspace.ui.WorkspacePicker
-import com.sappyoak.dsanalyzer.app.workspace.ui.WorkspaceShell
 import com.sappyoak.dsanalyzer.game.RejectionReason
 
 @Composable
-public fun StartupScreen(state: StartupState, store: StartupStore, maps: MapsStore, scripts: ScriptsStore, runtime: RuntimeStore) {
-    Column(modifier = Modifier.fillMaxSize()) {
-        if (state.notices.isNotEmpty()) {
-            NoticeBanner(state.notices.map { it.describe() }) {
-                store.dispatch(StartupMessage.NoticesDismissed)
-            }
-        }
-
-        Box(modifier = Modifier.weight(1f)) {
-            PhaseContent(state, store, maps, scripts, runtime)
-        }
-    }
-
-    if (state.creatingWorkspace) {
-        NewWorkspaceDialog(
-            installations = state.installations,
-            onCreate = { name, id ->
-                store.dispatch(StartupMessage.WorkspaceCreationRequested(name, id) )
-            },
-            onAddInstallation = {
-                chooseInstallationDirectory()?.let { store.dispatch(
-                    StartupMessage.FolderChosen(it)
-                )}
-            },
-            onDismiss = {
-                store.dispatch(StartupMessage.NewWorkspaceDismissed)
-            }
-        )
-    }
-}
-
-@Composable
-private fun PhaseContent(state: StartupState, store: StartupStore, maps: MapsStore, scripts: ScriptsStore, runtime: RuntimeStore) {
+public fun StartupScreen(state: StartupState, store: StartupStore) {
     when (val phase = state.phase) {
         StartupPhase.Loading -> Centered { Busy("Loading") }
 
@@ -79,20 +41,9 @@ private fun PhaseContent(state: StartupState, store: StartupStore, maps: MapsSto
             onAddInstallation = { chooseInstallationDirectory()?.let { store.dispatch(StartupMessage.FolderChosen(it)) } }
         )
 
-        is StartupPhase.Ready -> WorkspaceShell(
-            workspace = phase.workspace,
-            installation = state.installations
-                .firstOrNull { it.id == phase.workspace.installationId },
-            maps = maps,
-            scripts = scripts,
-            runtime = runtime
-        )
-
-        else -> {}
+        is StartupPhase.Ready -> Unit
     }
 }
-
-
 
 // TODO: Make this reusable probably
 @Composable

@@ -37,7 +37,4 @@ public sealed interface StartupPhase {
 
     /** A workspace is open and the rest of the application is usable */
     public data class Ready(public val workspace: Workspace) : StartupPhase
-
-    /** Startup could not complete, for reasons unrelated to any one folder */
-    public data class Failed(public val message: String, public val err: Throwable? = null) : StartupPhase
 }

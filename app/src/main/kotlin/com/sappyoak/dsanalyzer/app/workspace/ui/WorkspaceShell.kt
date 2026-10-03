@@ -23,14 +23,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 import com.sappyoak.dsanalyzer.app.maps.MapsMessage
-import com.sappyoak.dsanalyzer.app.maps.MapsStore
 import com.sappyoak.dsanalyzer.app.maps.ui.MapsScreen
-import com.sappyoak.dsanalyzer.app.runtime.RuntimeStore
+import com.sappyoak.dsanalyzer.app.runtime.RuntimeMessage
 import com.sappyoak.dsanalyzer.app.runtime.ui.RuntimeScreen
 import com.sappyoak.dsanalyzer.app.scripts.ScriptsMessage
-import com.sappyoak.dsanalyzer.app.scripts.ScriptsStore
 import com.sappyoak.dsanalyzer.app.scripts.ui.ScriptsScreen
 import com.sappyoak.dsanalyzer.app.workspace.Workspace
+import com.sappyoak.dsanalyzer.app.workspace.WorkspaceStores
 import com.sappyoak.dsanalyzer.app.workspace.WorkspaceTab
 import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.game.world.WorldRef
@@ -39,33 +38,32 @@ import com.sappyoak.dsanalyzer.game.world.WorldRef
 public fun WorkspaceShell(
     workspace: Workspace,
     installation: Installation?,
-    maps: MapsStore,
-    scripts: ScriptsStore,
-    runtime: RuntimeStore
+    stores: WorkspaceStores
 ) {
     var tab by remember { mutableStateOf(WorkspaceTab.Maps) }
 
     LaunchedEffect(installation?.id) {
         installation?.let {
-            maps.dispatch(MapsMessage.Opened(it))
-            scripts.dispatch(ScriptsMessage.Opened(it))
+            stores.maps.dispatch(MapsMessage.Opened(it))
+            stores.scripts.dispatch(ScriptsMessage.Opened(it))
+            stores.runtime.dispatch(RuntimeMessage.Opened)
         }
     }
 
     val follow: (WorldRef) -> Unit = { ref ->
         when (ref) {
             is WorldRef.ScriptEvent -> {
-                scripts.dispatch(ScriptsMessage.Navigated(ref))
+                stores.scripts.dispatch(ScriptsMessage.Navigated(ref))
                 tab = WorkspaceTab.Scripts
             }
 
             is WorldRef.EventFlag -> {
-                scripts.dispatch(ScriptsMessage.FlagRequested(ref.flagId))
+                stores.scripts.dispatch(ScriptsMessage.FlagRequested(ref.flagId))
                 tab = WorkspaceTab.Scripts
             }
 
             else -> {
-                maps.dispatch(MapsMessage.Navigated(ref))
+                stores.maps.dispatch(MapsMessage.Navigated(ref))
                 tab = WorkspaceTab.Maps
             }
         }
@@ -93,17 +91,17 @@ public fun WorkspaceShell(
             } else {
                 when (tab) {
                     WorkspaceTab.Maps -> {
-                        val state by maps.state.collectAsState()
-                        MapsScreen(state, maps)
+                        val state by stores.maps.state.collectAsState()
+                        MapsScreen(state, stores.maps)
                     }
 
                     WorkspaceTab.Scripts -> {
-                        val state by scripts.state.collectAsState()
-                        ScriptsScreen(state, scripts, follow)
+                        val state by stores.scripts.state.collectAsState()
+                        ScriptsScreen(state, stores.scripts, follow)
                     }
 
                     WorkspaceTab.Runtime -> {
-                        val state by runtime.state.collectAsState()
+                        val state by stores.runtime.state.collectAsState()
                         RuntimeScreen(state, follow)
                     }
                 }

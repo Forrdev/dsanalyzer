@@ -11,7 +11,6 @@ import com.sappyoak.dsanalyzer.app.maps.MapsStore
 import com.sappyoak.dsanalyzer.app.paths.ToolPaths
 import com.sappyoak.dsanalyzer.app.runtime.GameLink
 import com.sappyoak.dsanalyzer.app.runtime.RuntimeEffects
-import com.sappyoak.dsanalyzer.app.runtime.RuntimeMessage
 import com.sappyoak.dsanalyzer.app.runtime.RuntimeStore
 import com.sappyoak.dsanalyzer.app.scripts.ScriptsEffects
 import com.sappyoak.dsanalyzer.app.scripts.ScriptsStore
@@ -28,14 +27,13 @@ import com.sappyoak.dsanalyzer.app.verification.VerificationEffects
 import com.sappyoak.dsanalyzer.app.verification.VerificationMessage
 import com.sappyoak.dsanalyzer.app.verification.VerificationStore
 import com.sappyoak.dsanalyzer.app.workspace.WorkspaceDirectory
+import com.sappyoak.dsanalyzer.app.workspace.WorkspaceStores
 import com.sappyoak.dsanalyzer.game.files.InstallationFiles
 import com.sappyoak.dsanalyzer.native.process.Processes
 
 public class AppModel(
     public val settings: SettingsStore,
-    public val maps: MapsStore,
-    public val scripts: ScriptsStore,
-    public val runtime: RuntimeStore,
+    public val workspace: WorkspaceStores,
     public val startup: StartupStore,
     public val verification: VerificationStore,
     public val connection: ConnectionStore,
@@ -46,7 +44,6 @@ public class AppModel(
         startup.dispatch(StartupMessage.Start)
         verification.dispatch(VerificationMessage.Start)
         connection.dispatch(ConnectionMessage.Start)
-        runtime.dispatch(RuntimeMessage.Opened)
     }
 
     override fun close() {
@@ -65,9 +62,11 @@ public fun createAppModel(
 
     return AppModel(
         settings = settings,
-        maps = MapsStore(scope, MapsEffects(installationFiles)),
-        scripts = ScriptsStore(scope, ScriptsEffects(installationFiles)),
-        runtime = RuntimeStore(scope, RuntimeEffects(link)),
+        workspace = WorkspaceStores(
+            maps = MapsStore(scope, MapsEffects(installationFiles)),
+            scripts = ScriptsStore(scope, ScriptsEffects(installationFiles)),
+            runtime = RuntimeStore(scope, RuntimeEffects(link))
+        ),
         startup = StartupStore(
             scope,
             StartupEffects(settings, workspaces)
