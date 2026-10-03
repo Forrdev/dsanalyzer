@@ -15,6 +15,11 @@ public class Emedf(
 ) {
     public val size: Int get() = definitions.size
 
+    /** Every instruction these cover, in opcode order */
+    public val all: List<InstructionDefinition> by lazy {
+        definitions.values.sortedWith(compareBy({ it.opcode.bank }, { it.opcode.id }))
+    }
+
     public operator fun get(opcode: Opcode): InstructionDefinition? = definitions[opcode]
     public operator fun get(instruction: Instruction): InstructionDefinition? = definitions[instruction.opcode]
 

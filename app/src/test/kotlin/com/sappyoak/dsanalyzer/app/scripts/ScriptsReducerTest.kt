@@ -48,11 +48,16 @@ class ScriptsReducerTest : FunSpec({
                 listOf(ScriptsEffect.LoadCatalog(INSTALLATION))
     }
 
-    test("a loaded catalog selects the common script first") {
-        val transition = reduceScripts(opened(), ScriptsMessage.CatalogLoaded(listOf(ScriptId.Common, PARISH)))
+    test("a loaded catalog selects the common script first and starts the flag index") {
+        val catalog = listOf(ScriptId.Common, PARISH)
+        val transition = reduceScripts(opened(), ScriptsMessage.CatalogLoaded(catalog))
+
         assertSoftly {
             transition.state.selected shouldBe ScriptId.Common
-            transition.effects shouldBe listOf(ScriptsEffect.LoadScript(INSTALLATION, ScriptId.Common))
+            transition.effects shouldBe listOf(
+                ScriptsEffect.LoadScript(INSTALLATION, ScriptId.Common),
+                ScriptsEffect.IndexFlags(INSTALLATION, catalog)
+            )
         }
     }
 

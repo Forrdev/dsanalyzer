@@ -21,11 +21,15 @@ public fun reduceScripts(
         if (installation == null || first == null) {
             next.copy(loading = false).with()
         } else {
-            next.with(ScriptsEffect.LoadScript(installation, first))
+            next.copy(indexing = true).with(
+                ScriptsEffect.LoadScript(installation, first),
+                ScriptsEffect.IndexFlags(installation, message.scripts)
+            )
         }
     }
 
     is ScriptsMessage.ScriptLoaded -> state.loaded(message.contents)
+    is ScriptsMessage.FlagsIndexed -> state.indexed(message.index, message.unreadable)
 
     is ScriptsMessage.ScriptSelected -> state.show(message.script, focus = null)
     is ScriptsMessage.Navigated -> state.show(message.ref.script, focus = message.ref.eventId)
@@ -34,21 +38,26 @@ public fun reduceScripts(
     is ScriptsMessage.Failed -> state.copy(loading = false, pendingFlag = null, problem = message.reason).with()
 }
 
-private fun ScriptsState.loaded(loadedContents: ScriptContents): Transition<ScriptsState, ScriptsEffect> {
-    val next = copy(
-        contents = loadedContents,
-        selected = loadedContents.script,
-        loading = false,
-        focused = pending ?: focused?.takeIf { focus -> loadedContents.events.any { it.id == focus } },
-        pending = null
-    )
+private fun ScriptsState.loaded(loadedContents: ScriptContents): Transition<ScriptsState, ScriptsEffect> = copy(
+    contents = loadedContents,
+    selected = loadedContents.script,
+    loading = false,
+    focused = pending ?: focused?.takeIf { focus -> loadedContents.events.any { it.id == focus } },
+    pending = null
+).with()
 
-    val search = pendingFlag ?: return next.with()
-    return next.searchFor(search)
+private fun ScriptsState.indexed(
+    index: FlagIndex,
+    unreadableScripts: List<ScriptId>
+): Transition<ScriptsState, ScriptsEffect> {
+    val next = copy(flagIndex = index, indexing = false, unreadable = unreadableScripts)
+    val waiting = pendingFlag ?: return next.with()
+
+    return next.showFlag(waiting.flagId, waiting.seenIn)
 }
 
 private fun ScriptsState.show(script: ScriptId, focus: Long?): Transition<ScriptsState, ScriptsEffect> = when {
-    script == selected && contents != null -> copy(focused = focus ?: focused, problem = null).with()
+    script == selected && contents != null -> copy(focused = focus ?: focused, pendingFlag = null, problem = null).with()
     installation == null -> copy(problem = "No installation is open").with()
     else -> copy(
         selected = script,
@@ -56,54 +65,50 @@ private fun ScriptsState.show(script: ScriptId, focus: Long?): Transition<Script
         loading = true,
         focused = null,
         pending = focus,
+        pendingFlag = null,
         problem = null
     ).with(ScriptsEffect.LoadScript(installation, script))
 }
 
-private fun ScriptsState.findFlag(flagId: Int, seenIn: MapId?): Transition<ScriptsState, ScriptsEffect> {
-    val places = placesFor(seenIn)
-    if (places.isEmpty()) return copy(problem = "No script is open").with()
-
-    return searchFor(FlagSearch(flagId, places))
+private fun ScriptsState.findFlag(flagId: Int, seenIn: MapId?): Transition<ScriptsState, ScriptsEffect> = when {
+    flagIndex.built -> showFlag(flagId, seenIn)
+    indexing -> copy(
+        pendingFlag = FlagRequest(flagId, seenIn),
+        findings = null,
+        problem = "Reading every script to find flag $flagId"
+    ).with()
+    else -> copy(problem = "No installation is open").with()
 }
 
-private fun ScriptsState.placesFor(seenIn: MapId?): List<ScriptId> {
-    if (seenIn == null) return listOfNotNull(selected)
+private fun ScriptsState.showFlag(flagId: Int, seenIn: MapId?): Transition<ScriptsState, ScriptsEffect> {
+    val references = flagIndex.explain(flagId, seenIn)
+    val chosen = references.firstOrNull()
+    val found = FlagFindings(flagId, references, chosen)
 
-    val wanted = listOf(ScriptId.Of(seenIn), ScriptId.Common)
-    return if (scripts.isEmpty()) wanted else wanted.filter { it in scripts }
-}
-
-/**
- * Looks in the next place the search has left, loading that script first if it was not
- * the one already open
- */
-private fun ScriptsState.searchFor(search: FlagSearch): Transition<ScriptsState, ScriptsEffect> {
-    val next = search.next ?: return copy(pendingFlag = null, problem = search.missed()).with()
-
-    if (next == selected && contents != null) {
-        val event = contents.eventUsing(search.flagId)
-        return if (event == null) {
-            searchFor(search.advanced)
-        } else {
-            copy(focused = event, pendingFlag = null, problem = null).with()
-        }
-    }
-
-    if (installation == null) {
-        return copy(pendingFlag = null, problem = "No installation is open").with()
+    if (chosen == null) {
+        return copy(
+            pendingFlag = null,
+            findings = found,
+            problem = nothingNames(flagId)
+        ).with()
     }
 
     return copy(
-        selected = next,
-        contents = null,
-        loading = true,
-        focused = null,
-        pending = null,
-        pendingFlag = search,
-        problem = null
-    ).with(ScriptsEffect.LoadScript(installation, next))
+        pendingFlag = null,
+        findings = found
+    ).show(chosen.script, focus = chosen.eventId)
 }
 
-private fun FlagSearch.missed(): String =
-    "Flag $flagId is not named by ${places.joinToString(" or ") { it.title }}"
+private fun ScriptsState.nothingNames(flagId: Int): String = buildString {
+    append("No script names flag $flagId")
+    append(" (searched ${flagIndex.scripts})")
+
+    if (flagIndex.parameterized > 0) {
+        append(", though ${flagIndex.parameterized} flag references are passed in by their")
+        append(" callers and could not be read")
+    }
+
+    if (unreadable.isNotEmpty()) {
+        append(". Could not read ${unreadable.joinToString { it.title }}")
+    }
+}

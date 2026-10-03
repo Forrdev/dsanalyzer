@@ -112,11 +112,12 @@
      "name": "state"
     },
     {
-     "name": "flag_type"
+     "name": "flag_type",
+     "reference": "EventFlagType"
     },
     {
      "name": "flag",
-     "reference": "Flag"
+     "reference": "EventFlag"
     }
    ]
   },
@@ -133,15 +134,16 @@
      "name": "state"
     },
     {
-     "name": "flag_type"
+     "name": "flag_type",
+     "reference": "EventFlagType"
     },
     {
      "name": "first_flag",
-     "reference": "Flag"
+     "reference": "EventFlagRangeStart"
     },
     {
      "name": "last_flag",
-     "reference": "Flag"
+     "reference": "EventFlagRangeEnd"
     }
    ]
   },
@@ -326,15 +328,16 @@
      "name": "condition"
     },
     {
-     "name": "flag_type"
+     "name": "flag_type",
+     "reference": "EventFlagType"
     },
     {
      "name": "first_flag",
-     "reference": "Flag"
+     "reference": "EventFlagRangeStart"
     },
     {
      "name": "last_flag",
-     "reference": "Flag"
+     "reference": "EventFlagRangeEnd"
     },
     {
      "name": "comparison_type"
@@ -375,7 +378,7 @@
     },
     {
      "name": "flag",
-     "reference": "Flag"
+     "reference": "EventFlag"
     },
     {
      "name": "bit_count"
@@ -587,7 +590,7 @@
     },
     {
      "name": "left_flag",
-     "reference": "Flag"
+     "reference": "EventFlag"
     },
     {
      "name": "left_bit_count"
@@ -597,7 +600,7 @@
     },
     {
      "name": "right_flag",
-     "reference": "Flag"
+     "reference": "EventFlag"
     },
     {
      "name": "right_bit_count"
@@ -1244,11 +1247,12 @@
      "name": "state"
     },
     {
-     "name": "flag_type"
+     "name": "flag_type",
+     "reference": "EventFlagType"
     },
     {
      "name": "flag",
-     "reference": "Flag"
+     "reference": "EventFlag"
     }
    ]
   },
@@ -1265,11 +1269,12 @@
      "name": "state"
     },
     {
-     "name": "flag_type"
+     "name": "flag_type",
+     "reference": "EventFlagType"
     },
     {
      "name": "flag",
-     "reference": "Flag"
+     "reference": "EventFlag"
     }
    ]
   },
@@ -1286,11 +1291,12 @@
      "name": "state"
     },
     {
-     "name": "flag_type"
+     "name": "flag_type",
+     "reference": "EventFlagType"
     },
     {
      "name": "flag",
-     "reference": "Flag"
+     "reference": "EventFlag"
     }
    ]
   },
@@ -1307,15 +1313,16 @@
      "name": "state"
     },
     {
-     "name": "flag_type"
+     "name": "flag_type",
+     "reference": "EventFlagType"
     },
     {
      "name": "first_flag",
-     "reference": "Flag"
+     "reference": "EventFlagRangeStart"
     },
     {
      "name": "last_flag",
-     "reference": "Flag"
+     "reference": "EventFlagRangeEnd"
     }
    ]
   },
@@ -1332,15 +1339,16 @@
      "name": "state"
     },
     {
-     "name": "flag_type"
+     "name": "flag_type",
+     "reference": "EventFlagType"
     },
     {
      "name": "first_flag",
-     "reference": "Flag"
+     "reference": "EventFlagRangeStart"
     },
     {
      "name": "last_flag",
-     "reference": "Flag"
+     "reference": "EventFlagRangeEnd"
     }
    ]
   },
@@ -1678,7 +1686,7 @@
    "args": [
     {
      "name": "flag",
-     "reference": "Flag"
+     "reference": "EventFlag"
     },
     {
      "name": "state"
@@ -1855,11 +1863,11 @@
    "args": [
     {
      "name": "first_flag",
-     "reference": "Flag"
+     "reference": "EventFlagRangeStart"
     },
     {
      "name": "last_flag",
-     "reference": "Flag"
+     "reference": "EventFlagRangeEnd"
     },
     {
      "name": "state"
@@ -1923,11 +1931,11 @@
    "args": [
     {
      "name": "first_flag",
-     "reference": "Flag"
+     "reference": "EventFlagRangeStart"
     },
     {
      "name": "last_flag",
-     "reference": "Flag"
+     "reference": "EventFlagRangeEnd"
     },
     {
      "name": "state"
@@ -1982,11 +1990,11 @@
     },
     {
      "name": "summon_flag",
-     "reference": "Flag"
+     "reference": "EventFlag"
     },
     {
      "name": "dismissal_flag",
-     "reference": "Flag"
+     "reference": "EventFlag"
     }
    ]
   },
@@ -2034,7 +2042,7 @@
    "args": [
     {
      "name": "flag",
-     "reference": "Flag"
+     "reference": "EventFlag"
     },
     {
      "name": "bit_count"
@@ -2052,7 +2060,7 @@
    "args": [
     {
      "name": "flag",
-     "reference": "Flag"
+     "reference": "EventFlag"
     },
     {
      "name": "bit_count"
@@ -2067,7 +2075,7 @@
    "args": [
     {
      "name": "flag",
-     "reference": "Flag"
+     "reference": "EventFlag"
     }
    ]
   },
@@ -2087,7 +2095,7 @@
     },
     {
      "name": "flag",
-     "reference": "Flag"
+     "reference": "EventFlag"
     },
     {
      "name": "collision",
@@ -2715,11 +2723,11 @@
     },
     {
      "name": "first_event_flag",
-     "reference": "Flag"
+     "reference": "EventFlagRangeStart"
     },
     {
      "name": "last_event_flag",
-     "reference": "Flag"
+     "reference": "EventFlagRangeEnd"
     }
    ]
   },
@@ -2944,7 +2952,7 @@
     },
     {
      "name": "event_flag",
-     "reference": "Flag"
+     "reference": "EventFlag"
     }
    ]
   },
@@ -3097,7 +3105,7 @@
    "args": [
     {
      "name": "obj_flag",
-     "reference": "Flag"
+     "reference": "EventFlag"
     },
     {
      "name": "obj",
@@ -3171,7 +3179,7 @@
    "args": [
     {
      "name": "obj_flag",
-     "reference": "Flag"
+     "reference": "EventFlag"
     }
    ]
   },
@@ -3490,11 +3498,11 @@
    "args": [
     {
      "name": "start_climbing_flag",
-     "reference": "Flag"
+     "reference": "EventFlag"
     },
     {
      "name": "stop_climbing_flag",
-     "reference": "Flag"
+     "reference": "EventFlag"
     },
     {
      "name": "obj",
@@ -3510,7 +3518,7 @@
    "args": [
     {
      "name": "flag",
-     "reference": "Flag"
+     "reference": "EventFlag"
     },
     {
      "name": "demon_entity",
@@ -3518,7 +3526,7 @@
     },
     {
      "name": "appearance_flag",
-     "reference": "Flag"
+     "reference": "EventFlag"
     }
    ]
   },
@@ -3530,7 +3538,7 @@
    "args": [
     {
      "name": "flag",
-     "reference": "Flag"
+     "reference": "EventFlag"
     },
     {
      "name": "demon_entity",
@@ -3550,7 +3558,7 @@
    "args": [
     {
      "name": "bonfire_flag",
-     "reference": "Flag"
+     "reference": "EventFlag"
     },
     {
      "name": "obj",
@@ -3587,7 +3595,7 @@
    "args": [
     {
      "name": "flag",
-     "reference": "Flag"
+     "reference": "EventFlag"
     },
     {
      "name": "obj",

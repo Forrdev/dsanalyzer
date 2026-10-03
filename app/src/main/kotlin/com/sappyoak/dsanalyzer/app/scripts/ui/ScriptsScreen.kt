@@ -54,6 +54,14 @@ public fun ScriptsScreen(
                 modifier = Modifier.fillMaxWidth().padding(8.dp)
             )
             HorizontalDivider()
+            state.findings?.let { findings ->
+                FlagReferences(findings) { reference ->
+                    store.dispatch(
+                        ScriptsMessage.Navigated(WorldRef.ScriptEvent(reference.script, reference.eventId))
+                    )
+                }
+                HorizontalDivider()
+            }
             EventList(
                 events = state.visible,
                 focused = state.focused,

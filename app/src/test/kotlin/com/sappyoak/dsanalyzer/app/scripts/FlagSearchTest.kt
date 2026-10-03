@@ -3,76 +3,28 @@ package com.sappyoak.dsanalyzer.app.scripts
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 import java.nio.file.Path
 
 import com.sappyoak.dsanalyzer.app.store.Transition
-import com.sappyoak.dsanalyzer.formats.emevd.ArgData
-import com.sappyoak.dsanalyzer.formats.emevd.Instruction
-import com.sappyoak.dsanalyzer.formats.emevd.emedf.ArgDefinition
-import com.sappyoak.dsanalyzer.formats.emevd.emedf.ArgType
-import com.sappyoak.dsanalyzer.formats.emevd.emedf.ArgValue
-import com.sappyoak.dsanalyzer.formats.emevd.emedf.DecodedArg
-import com.sappyoak.dsanalyzer.formats.emevd.emedf.DecodedInstruction
-import com.sappyoak.dsanalyzer.formats.emevd.emedf.Emedf
+import com.sappyoak.dsanalyzer.formats.emevd.emedf.FlagAccess
+import com.sappyoak.dsanalyzer.formats.emevd.emedf.FlagTarget
+import com.sappyoak.dsanalyzer.formats.emevd.emedf.FlagUse
 import com.sappyoak.dsanalyzer.game.GameBuild
 import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.game.InstallationId
-import com.sappyoak.dsanalyzer.game.world.WorldRef
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
-import com.sappyoak.dsanalyzer.game.world.scripts.title
 
 private const val FLAG = 11_010_902
-private const val OTHER_FLAG = 11_020_000
+private const val SPANNED_FLAG = 11_020_050
+private const val UNKNOWN_FLAG = 99_999
 
 private val FIRELINK_MAP = checkNotNull(MapId.parse("m10_02_00_00"))
 private val FIRELINK = ScriptId.Of(FIRELINK_MAP)
 
-/** Somewhere else entirely, standing in for whatever the Scripts tab was last left on */
-private val DEPTHS = ScriptId.Of(MapId.of(10, 0))
-
-/** An argument the definitions name as a flag, which is what makes it followable */
-private val FLAG_ARG = ArgDefinition(
-    name = "Target Event Flag ID",
-    type = ArgType.Int,
-    enumName = null,
-    default = 0.0
-)
-
-private val PLAIN_ARG = ArgDefinition(name = "State", type = ArgType.UByte, enumName = null, default = 0.0)
-
-private fun instruction(vararg args: Pair<ArgDefinition, Long>) = DecodedInstruction(
-    instruction = Instruction(bank = 2003, id = 2, args = ArgData.Empty, layerMask = null),
-    definition = null,
-    args = args.map { (definition, value) -> DecodedArg(definition, ArgValue.Literal(value)) }
-)
-
-private fun contents(
-    script: ScriptId = FIRELINK,
-    decoded: Map<Long, List<DecodedInstruction>>
-) = ScriptContents(
-    script = script,
-    events = decoded.keys.map { EventSummary(WorldRef.ScriptEvent(script, it), it, null, instructionCount = 1) },
-    linkedFiles = emptyList(),
-    definitions = Emedf.Empty,
-    decoded = decoded
-)
-
-private fun setsFlag(script: ScriptId, flagId: Int, inEvent: Long) = contents(
-    script,
-    mapOf(
-        700L to listOf(instruction(PLAIN_ARG to 1L)),
-        inEvent to listOf(instruction(FLAG_ARG to flagId.toLong(), PLAIN_ARG to 1L))
-    )
-)
-
-private val SETS_FLAG = setsFlag(FIRELINK, FLAG, inEvent = 800L)
-
-/** The same flag, but set by common instead, which is where plenty of them really are set */
-private val COMMON_SETS_FLAG = setsFlag(ScriptId.Common, OTHER_FLAG, inEvent = 900L)
-
-private val NAMES_NOTHING = contents(FIRELINK, mapOf(700L to listOf(instruction(PLAIN_ARG to 1L))))
+private val IZALITH = ScriptId.Of(MapId.of(14, 1))
 
 private val INSTALLATION = Installation(
     id = InstallationId("ptde"),
@@ -81,12 +33,34 @@ private val INSTALLATION = Installation(
     build = GameBuild(GameEdition.PrepareToDie)
 )
 
-/** A workspace with both scripts available and some other map open, as the Scripts tab leaves it */
-private val OPEN_ELSEWHERE = ScriptsState(
+private fun found(
+    script: ScriptId,
+    eventId: Long,
+    target: FlagTarget,
+    access: FlagAccess,
+    label: String
+) = FoundFlagUse(script, eventId, FlagUse(target, access, label))
+
+/**
+ * Firelink only checks the flag; Izalith registers it; and a span somewhere else covers a flag
+ * nothing names directly. Between them, the three cases the old one-script search could not answer
+ */
+private val INDEX = FlagIndex.of(
+    found = listOf(
+        found(FIRELINK, 700L, FlagTarget.One(FLAG), FlagAccess.Reads, "IfFlagState"),
+        found(ScriptId.Common, 800L, FlagTarget.One(FLAG), FlagAccess.Reads, "AwaitFlagState"),
+        found(IZALITH, 900L, FlagTarget.One(FLAG), FlagAccess.Writes, "RegisterBonfire"),
+        found(IZALITH, 950L, FlagTarget.Span(11_020_000, 11_020_099), FlagAccess.Writes, "SetFlagRangeState"),
+        found(FIRELINK, 960L, FlagTarget.FromCaller, FlagAccess.Writes, "SetFlagState")
+    ),
+    scripts = 3
+)
+
+private val READY = ScriptsState(
     installation = INSTALLATION,
-    scripts = listOf(ScriptId.Common, DEPTHS, FIRELINK),
-    selected = DEPTHS,
-    contents = contents(DEPTHS, mapOf(100L to listOf(instruction(PLAIN_ARG to 1L))))
+    scripts = listOf(ScriptId.Common, FIRELINK, IZALITH),
+    selected = FIRELINK,
+    flagIndex = INDEX
 )
 
 private fun follow(
@@ -96,127 +70,123 @@ private fun follow(
 ): Transition<ScriptsState, ScriptsEffect> =
     reduceScripts(state, ScriptsMessage.FlagRequested(flagId, seenIn))
 
-private fun load(
-    state: ScriptsState,
-    loaded: ScriptContents
-): Transition<ScriptsState, ScriptsEffect> =
-    reduceScripts(state, ScriptsMessage.ScriptLoaded(loaded))
 
 class FlagSearchTest : FunSpec({
-    test("a flag is found in the event whose instruction names it") {
+    test("a flag is followed to what writes it, not to where it was seen") {
+        val transition = follow(READY, FLAG, seenIn = FIRELINK_MAP)
+
         assertSoftly {
-            SETS_FLAG.eventUsing(FLAG) shouldBe 800L
-            SETS_FLAG.eventUsing(OTHER_FLAG) shouldBe null
+            transition.state.selected shouldBe IZALITH
+            transition.state.pending shouldBe 900L
+            transition.state.findings?.chosen?.label shouldBe "RegisterBonfire"
+            transition.effects shouldBe listOf(ScriptsEffect.LoadScript(INSTALLATION, IZALITH))
         }
     }
 
-    test("an argument that is not a flag reference is not matched on its value") {
-        contents(decoded = mapOf(700L to listOf(instruction(PLAIN_ARG to FLAG.toLong()))))
-            .eventUsing(FLAG) shouldBe null
-    }
-
-    test("following a flag focuses the event that names it") {
-        val state = ScriptsState(selected = FIRELINK, contents = SETS_FLAG)
-
-        val transition = follow(state, FLAG)
+    test("the places it did not go are kept, because they are usually the interesting part") {
+        val findings = checkNotNull(follow(READY, FLAG, seenIn = FIRELINK_MAP).state.findings)
 
         assertSoftly {
-            transition.state.focused shouldBe 800L
-            transition.state.problem shouldBe null
+            findings.references.map { it.script } shouldBe listOf(IZALITH, FIRELINK, ScriptId.Common)
+            findings.others.map { it.script } shouldBe listOf(FIRELINK, ScriptId.Common)
+        }
+    }
+
+    /** Where nothing writes it, the map the flag was seen in comes before the rest */
+    test("among readers, the map it was seen in wins") {
+        val readersOnly = FlagIndex.of(
+            found = listOf(
+                found(ScriptId.Common, 800L, FlagTarget.One(FLAG), FlagAccess.Reads, "AwaitFlagState"),
+                found(FIRELINK, 700L, FlagTarget.One(FLAG), FlagAccess.Reads, "IfFlagState")
+            ),
+            scripts = 2
+        )
+
+        val transition = follow(READY.copy(flagIndex = readersOnly), FLAG, seenIn = FIRELINK_MAP)
+
+        transition.state.findings?.chosen?.script shouldBe FIRELINK
+    }
+
+    /** A flag set as part of a range was invisible before, however many scripts were searched */
+    test("a flag inside a span is found through it") {
+        val transition = follow(READY, SPANNED_FLAG, seenIn = FIRELINK_MAP)
+
+        assertSoftly {
+            transition.state.findings?.chosen?.label shouldBe "SetFlagRangeState"
+            transition.state.findings?.chosen?.viaSpan shouldBe true
+            transition.state.selected shouldBe IZALITH
+        }
+    }
+
+    /**
+     * Finding nothing is an answer: the game sets plenty of flags itself. It is only an honest
+     * answer if it says how much it read, and what it could not
+     */
+    test("a flag no script names says so, and admits what it could not read") {
+        val transition = follow(READY, UNKNOWN_FLAG, seenIn = FIRELINK_MAP)
+
+        assertSoftly {
+            transition.state.findings?.chosen shouldBe null
+            transition.state.problem shouldContain "No script names flag $UNKNOWN_FLAG"
+            transition.state.problem shouldContain "searched 3"
+            transition.state.problem shouldContain "1 flag references are passed in by their callers"
             transition.effects shouldBe emptyList()
         }
     }
 
-    test("a flag this script does not name says which script was searched") {
-        val state = ScriptsState(selected = FIRELINK, contents = SETS_FLAG)
+    test("following a flag before the index is ready waits for it rather than guessing") {
+        val building = READY.copy(flagIndex = FlagIndex.Empty, indexing = true)
 
-        val transition = follow(state, OTHER_FLAG)
-
-        assertSoftly {
-            transition.state.focused shouldBe null
-            transition.state.problem shouldBe "Flag $OTHER_FLAG is not named by ${FIRELINK.title}"
-        }
-    }
-
-    test("following a flag with no script open says so rather than loading one") {
-        val transition = follow(ScriptsState(), FLAG)
+        val transition = follow(building, FLAG, seenIn = FIRELINK_MAP)
 
         assertSoftly {
-            transition.state.problem shouldBe "No script is open"
+            transition.state.pendingFlag shouldBe FlagRequest(FLAG, FIRELINK_MAP)
+            transition.state.problem shouldContain "Reading every script"
             transition.effects shouldBe emptyList()
         }
     }
 
-    test("a flag seen in a map opens that map's script rather than the one already open") {
-        val transition = follow(OPEN_ELSEWHERE, FLAG, seenIn = FIRELINK_MAP)
+    test("the index arriving answers the follow that was waiting on it") {
+        val waiting = follow(READY.copy(flagIndex = FlagIndex.Empty, indexing = true), FLAG, FIRELINK_MAP).state
+
+        val transition = reduceScripts(waiting, ScriptsMessage.FlagsIndexed(INDEX, unreadable = emptyList()))
 
         assertSoftly {
-            transition.state.selected shouldBe FIRELINK
-            transition.state.loading shouldBe true
-            transition.state.pendingFlag?.flagId shouldBe FLAG
-            transition.state.problem shouldBe null
-            transition.effects shouldBe listOf(ScriptsEffect.LoadScript(INSTALLATION, FIRELINK))
+            transition.state.indexing shouldBe false
+            transition.state.pendingFlag shouldBe null
+            transition.state.selected shouldBe IZALITH
+            transition.state.findings?.chosen?.label shouldBe "RegisterBonfire"
         }
     }
 
-    test("the search resumes against the script it was waiting for") {
-        val requested = follow(OPEN_ELSEWHERE, FLAG, seenIn = FIRELINK_MAP).state
-
-        val transition = load(requested, SETS_FLAG)
+    test("the index arriving with nothing waiting changes nothing else") {
+        val transition = reduceScripts(
+            READY.copy(flagIndex = FlagIndex.Empty, indexing = true),
+            ScriptsMessage.FlagsIndexed(INDEX, unreadable = listOf(IZALITH))
+        )
 
         assertSoftly {
-            transition.state.focused shouldBe 800L
-            transition.state.pendingFlag shouldBe null
-            transition.state.problem shouldBe null
+            transition.state.indexing shouldBe false
+            transition.state.unreadable shouldBe listOf(IZALITH)
+            transition.state.findings shouldBe null
             transition.effects shouldBe emptyList()
         }
     }
 
-    /** Plenty of flags are set by common rather than by the map the character is standing in */
-    test("a flag the map does not name is looked for in common next") {
-        val requested = follow(OPEN_ELSEWHERE, OTHER_FLAG, seenIn = FIRELINK_MAP).state
+    test("opening a workspace reads every script once rather than on demand") {
+        val catalog = listOf(ScriptId.Common, FIRELINK, IZALITH)
 
-        val transition = load(requested, NAMES_NOTHING)
-
-        assertSoftly {
-            transition.state.selected shouldBe ScriptId.Common
-            transition.state.pendingFlag?.flagId shouldBe OTHER_FLAG
-            transition.effects shouldBe listOf(ScriptsEffect.LoadScript(INSTALLATION, ScriptId.Common))
-        }
-    }
-
-    test("a flag common does name is focused there") {
-        val inMap = follow(OPEN_ELSEWHERE, OTHER_FLAG, seenIn = FIRELINK_MAP).state
-        val inCommon = load(inMap, NAMES_NOTHING).state
-
-        val transition = load(inCommon, COMMON_SETS_FLAG)
+        val transition = reduceScripts(
+            ScriptsState(installation = INSTALLATION),
+            ScriptsMessage.CatalogLoaded(catalog)
+        )
 
         assertSoftly {
-            transition.state.selected shouldBe ScriptId.Common
-            transition.state.focused shouldBe 900L
-            transition.state.pendingFlag shouldBe null
-            transition.state.problem shouldBe null
+            transition.state.indexing shouldBe true
+            transition.effects shouldBe listOf(
+                ScriptsEffect.LoadScript(INSTALLATION, ScriptId.Common),
+                ScriptsEffect.IndexFlags(INSTALLATION, catalog)
+            )
         }
-    }
-
-    test("a flag neither names is reported against both, not against whatever was open") {
-        val inMap = follow(OPEN_ELSEWHERE, OTHER_FLAG, seenIn = FIRELINK_MAP).state
-        val inCommon = load(inMap, NAMES_NOTHING).state
-
-        val transition = load(inCommon, contents(ScriptId.Common, mapOf(1L to emptyList())))
-
-        assertSoftly {
-            transition.state.pendingFlag shouldBe null
-            transition.state.problem shouldBe
-                    "Flag $OTHER_FLAG is not named by Firelink Shrine or Common"
-        }
-    }
-
-    test("choosing a script by hand abandons a search that was waiting") {
-        val requested = follow(OPEN_ELSEWHERE, FLAG, seenIn = FIRELINK_MAP).state
-
-        val transition = reduceScripts(requested, ScriptsMessage.ScriptSelected(DEPTHS))
-
-        transition.state.pendingFlag shouldBe null
     }
 })

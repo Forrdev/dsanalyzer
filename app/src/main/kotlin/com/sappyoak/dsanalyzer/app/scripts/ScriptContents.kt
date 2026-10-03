@@ -3,8 +3,6 @@ package com.sappyoak.dsanalyzer.app.scripts
 import com.sappyoak.dsanalyzer.formats.emevd.Emevd
 import com.sappyoak.dsanalyzer.formats.emevd.EventNames
 import com.sappyoak.dsanalyzer.formats.emevd.ScriptEvent
-import com.sappyoak.dsanalyzer.formats.emevd.emedf.ArgReference
-import com.sappyoak.dsanalyzer.formats.emevd.emedf.ArgValue
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.DecodedInstruction
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.Emedf
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.decode
@@ -44,16 +42,8 @@ public class ScriptContents(
     public fun event(eventId: Long): EventSummary? = byId[eventId]
 
     public fun instructions(eventId: Long): List<DecodedInstruction> = decoded[eventId].orEmpty()
-
-    public fun eventUsing(flagId: Int): Long? = decoded.entries
-        .firstOrNull { (_, instructions) -> instructions.any { it.references(flagId) } }
-        ?.key
 }
 
-private fun DecodedInstruction.references(flagId: Int): Boolean = args.any { arg ->
-    arg.definition.reference == ArgReference.EventFlag &&
-            (arg.value as? ArgValue.Literal)?.raw == flagId.toLong()
-}
 
 public fun Emevd.summarize(
     script: ScriptId,

@@ -1,6 +1,7 @@
 package com.sappyoak.dsanalyzer.app.scripts
 
 import com.sappyoak.dsanalyzer.game.Installation
+import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
 
 public data class ScriptsState(
@@ -12,7 +13,14 @@ public data class ScriptsState(
     public val query: String = "",
     public val focused: Long? = null,
     public val pending: Long? = null,
-    public val pendingFlag: FlagSearch? = null,
+    /** Every script's flag references */
+    public val flagIndex: FlagIndex = FlagIndex.Empty,
+    public val indexing: Boolean = false,
+    /** Scripts the index could not read */
+    public val unreadable: List<ScriptId> = emptyList(),
+    /** A flag follow waiting on the index */
+    public val pendingFlag: FlagRequest? = null,
+    public val findings: FlagFindings? = null,
     public val problem: String? = null
 ) {
     public val visible: List<EventSummary> by lazy {
@@ -25,16 +33,16 @@ public data class ScriptsState(
 }
 
 /**
- * A flag being searched for and where there is left to look
- *
- * Carried across loads because looking in a script means loading it first, and a flag
- * seen in a map is as likely to have been set by the common script as by the map itself
+ * What searching a flag resulted in. Kept whole rather than reduced to the one jumped to,
+ * because the others are usually the interesting part.
  */
-public data class FlagSearch(
+public data class FlagFindings(
     public val flagId: Int,
-    public val places: List<ScriptId>,
-    public val looked: Int = 0
+    public val references: List<FlagReference>,
+    public val chosen: FlagReference?
 ) {
-    public val next: ScriptId? get() = places.getOrNull(looked)
-    public val advanced: FlagSearch get() = copy(looked = looked + 1)
+    public val others: List<FlagReference> get() = references.filterNot { it == chosen }
 }
+
+/** A flag follow that arrived before the index was finished */
+public data class FlagRequest(public val flagId: Int, public val seenIn: MapId?)

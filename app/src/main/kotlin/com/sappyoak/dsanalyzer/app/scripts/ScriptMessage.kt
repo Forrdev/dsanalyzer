@@ -13,6 +13,11 @@ public sealed interface ScriptsMessage {
 
     public data class ScriptLoaded(public val contents: ScriptContents) : ScriptsMessage
 
+    public data class FlagsIndexed(
+        public val index: FlagIndex,
+        public val unreadable: List<ScriptId>
+    ) : ScriptsMessage
+
     public data class ScriptSelected(public val script: ScriptId) : ScriptsMessage
 
     /** Following a link, a list selection, or a finding */
