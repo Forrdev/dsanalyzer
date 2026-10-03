@@ -1,5 +1,6 @@
 package com.sappyoak.dsanalyzer.app.runtime
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -19,6 +20,8 @@ import com.sappyoak.dsanalyzer.runtime.session.RuntimeEvent
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.sampling
 import com.sappyoak.dsanalyzer.runtime.watchForGame
+
+private val logger = KotlinLogging.logger {  }
 
 /** Room for the occasional status change, since ticks do not travel this way */
 private const val EVENT_BUFFER = 16
@@ -56,6 +59,10 @@ public class GameLink(
             } catch (cancellation: CancellationException) {
                 throw cancellation
             } catch (err: Throwable) {
+                logger.atError {
+                    message = "The watch for the game stopped"
+                    cause = err
+                }
                 record(RuntimeEvent.Failed(err.toString()))
             }
         }
@@ -71,7 +78,19 @@ public class GameLink(
     private suspend fun record(event: RuntimeEvent) {
         when (event) {
             is RuntimeEvent.Sampled -> mutableState.update { it.copy(snapshot = event.snapshot) }
-            is RuntimeEvent.Attached -> publish(LinkState(attached = event.describe()), event)
+            is RuntimeEvent.Attached -> {
+                val attached = event.describe()
+                logger.atInfo {
+                    message = "Attached to the game"
+                    payload = mapOf(
+                        "pid" to attached.pid,
+                        "executable" to attached.executableName,
+                        "build" to attached.build?.name.orEmpty(),
+                        "unresolved" to attached.unresolved.size
+                    )
+                }
+                publish(LinkState(attached = attached), event)
+            }
             RuntimeEvent.Searching -> publish(LinkState(), event)
             is RuntimeEvent.Refused -> publish(LinkState(note =  event.reason), event)
             is RuntimeEvent.Unsupported -> publish(LinkState(note = "${event.game.edition.name} is not read yet"), event)

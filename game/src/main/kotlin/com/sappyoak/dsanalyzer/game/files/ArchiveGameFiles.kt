@@ -1,5 +1,7 @@
 package com.sappyoak.dsanalyzer.game.files
 
+import io.github.oshai.kotlinlogging.KotlinLogging
+
 import com.sappyoak.dsanalyzer.formats.archive.ArchiveEntry
 import com.sappyoak.dsanalyzer.formats.archive.readArchive
 import com.sappyoak.dsanalyzer.formats.compression.decompress
@@ -9,6 +11,8 @@ import com.sappyoak.dsanalyzer.game.ARCHIVE_DATA_EXTENSION
 import com.sappyoak.dsanalyzer.game.ARCHIVE_HEADER_EXTENSION
 import com.sappyoak.dsanalyzer.shared.binary.BinaryReader
 import com.sappyoak.dsanalyzer.shared.binary.MappedFile
+
+private val logger = KotlinLogging.logger {  }
 
 /**
  * Access to a games files that are packed in archive files
@@ -47,8 +51,18 @@ internal class ArchiveGameFiles(
                     val header = MappedFile.open(installation.root.resolve("$stem.$ARCHIVE_HEADER_EXTENSION"))
                         .use { readArchive(it.reader()) }
 
+                    var shadowed = 0
                     header.entries.forEach { entry ->
-                        entries.putIfAbsent(entry.hash, Located(index, entry))
+                        if (entries.putIfAbsent(entry.hash, Located(index, entry)) != null) {
+                            shadowed++
+                        }
+                    }
+
+                    if (shadowed > 0) {
+                        logger.atDebug {
+                            message = "Archive entries shadowed by an earlier archive"
+                            payload = mapOf("archive" to stem, "shadowed" to shadowed)
+                        }
                     }
                 }
             } catch (err: Throwable) {

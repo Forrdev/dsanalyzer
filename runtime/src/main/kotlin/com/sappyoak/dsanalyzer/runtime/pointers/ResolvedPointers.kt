@@ -1,5 +1,7 @@
 package com.sappyoak.dsanalyzer.runtime.pointers
 
+import io.github.oshai.kotlinlogging.KotlinLogging
+
 import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.native.memory.AddressRange
 import com.sappyoak.dsanalyzer.native.memory.Signature
@@ -7,6 +9,7 @@ import com.sappyoak.dsanalyzer.native.memory.SignatureScan
 import com.sappyoak.dsanalyzer.native.memory.resolve
 import com.sappyoak.dsanalyzer.native.process.ProcessMemory
 
+private val logger = KotlinLogging.logger {  }
 
 public data class UnresolvedSignature(
     public val signature: String,
@@ -42,6 +45,25 @@ public fun ProcessMemory.resolvePointers(
             is SignatureScan.Resolved -> bases[signature] = outcome.address
             else -> unresolved.add(UnresolvedSignature(signature.name, outcome, sharing.map { it.name }))
         }
+    }
+
+    unresolved.forEach { failure ->
+        logger.atWarn {
+            message = "Signature did not resolve"
+            payload = mapOf(
+                "signature" to failure.signature,
+                "outcome" to failure.outcome.toString(),
+                "leaves" to failure.pointers.joinToString()
+            )
+        }
+    }
+
+    logger.atInfo {
+        message = "Signature scan finished"
+        payload = mapOf(
+            "resolved" to bases.size,
+            "unresolved" to unresolved.size
+        )
     }
 
     return ResolvedPointers(bases, unresolved)

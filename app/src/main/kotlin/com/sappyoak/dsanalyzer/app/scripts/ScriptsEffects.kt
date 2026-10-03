@@ -1,5 +1,6 @@
 package com.sappyoak.dsanalyzer.app.scripts
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -20,6 +21,8 @@ import com.sappyoak.dsanalyzer.game.world.scripts.loadInstructionDefinitions
 import com.sappyoak.dsanalyzer.game.world.scripts.loadScript
 import com.sappyoak.dsanalyzer.game.world.scripts.loadScriptNames
 import com.sappyoak.dsanalyzer.shared.binary.BinaryFormatException
+
+private val logger = KotlinLogging.logger {  }
 
 public class ScriptsEffects(
     private val files: InstallationFiles
@@ -72,6 +75,11 @@ public class ScriptsEffects(
     private fun GameFiles.flagUsesIn(script: ScriptId): List<FoundFlagUse>? = try {
         loadScript(script)?.flagUses(script, definitions)
     } catch (err: BinaryFormatException) {
+        logger.atWarn {
+            message = "Script left out of the flag index"
+            cause = err
+            payload = mapOf("script" to script.label)
+        }
         null
     }
 }
