@@ -17,7 +17,7 @@ import kotlinx.coroutines.SupervisorJob
 
 import com.sappyoak.dsanalyzer.app.connection.ui.ConnectionStatusBar
 import com.sappyoak.dsanalyzer.app.logging.coroutineErrorLogging
-import com.sappyoak.dsanalyzer.app.logging.setupLogging
+import com.sappyoak.dsanalyzer.app.logging.installCrashLogging
 import com.sappyoak.dsanalyzer.app.paths.ToolPaths
 import com.sappyoak.dsanalyzer.app.settings.SettingsMessage
 import com.sappyoak.dsanalyzer.app.settings.ui.SettingsProblemBanner
@@ -34,10 +34,16 @@ import com.sappyoak.dsanalyzer.app.workspace.ui.WorkspaceShell
 
 fun main() {
     val paths = ToolPaths()
-    setupLogging(paths.logs)
+    installCrashLogging()
 
     val logger = KotlinLogging.logger("com.sappyoak.dsanalyzer.app.Main")
-    logger.info { "dsanalyzer start. Data root: ${paths.root}" }
+    logger.atInfo {
+        message = "dsanalyzer start"
+        payload = mapOf(
+            "root" to paths.root.toString(),
+            "logs" to paths.logs.toString()
+        )
+    }
 
     val scope = CoroutineScope(
         SupervisorJob() +

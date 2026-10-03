@@ -2,29 +2,28 @@ package com.sappyoak.dsanalyzer.app.logging
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.CoroutineExceptionHandler
-import java.nio.file.Path
 
-/**
- * Logback resolves '${dsanalyzer.logDir}' when it loads its configuration, which happens
- * lazily on the first logger lookup anywhere. Because of this [setupLogging] needs to run before
- * anything obtains a logger, including a top level value holding one, which initializes at class load
- * rather than first use
- */
+private const val CRASH_LOGGER = "com.sappyoak.dsanalyzer.app.CrashHandler"
+private const val COROUTINE_LOGGER = "com.sappyoak.dsanalyzer.app.CoroutineErrors"
 
-private const val LOG_DIRECTORY_PROPERTY = "dsanalyzer.logDir"
-
-public fun setupLogging(path: Path) {
-    System.setProperty(LOG_DIRECTORY_PROPERTY, path.toString())
-
-    val logger = KotlinLogging.logger("com.sappyoak.dsanalyzer.app.CrashHandler")
+public fun installCrashLogging() {
+    val logger = KotlinLogging.logger(CRASH_LOGGER)
     Thread.setDefaultUncaughtExceptionHandler { thread, error ->
-        logger.error(error) { "Uncaught exception on thread: ${thread.name}" }
+        logger.atError {
+            message = "Uncaught exception, thread died"
+            cause = error
+            payload = mapOf("thread" to thread.name)
+        }
     }
 }
 
-fun coroutineErrorLogging(loggerName: String = "com.sappyoak.dsanalyzer.app.CoroutineErrors"): CoroutineExceptionHandler {
+fun coroutineErrorLogging(loggerName: String = COROUTINE_LOGGER): CoroutineExceptionHandler {
     val logger = KotlinLogging.logger(loggerName)
     return CoroutineExceptionHandler { context, error ->
-        logger.error(error) { "Unhandled coroutine failure in $context" }
+        logger.atError {
+            message = "Unhandled coroutine failure"
+            cause = error
+            payload = mapOf("context" to context.toString())
+        }
     }
 }

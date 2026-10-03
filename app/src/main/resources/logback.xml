@@ -1,4 +1,6 @@
 <configuration>
+    <define name="logDirectory" class="com.sappyoak.dsanalyzer.app.logging.LogDirectory" />
+
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} %-5level %logger{32} - %msg%n</pattern>
@@ -6,10 +8,10 @@
     </appender>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${dsanalyzer.logDir}/dsanalyzer.jsonl</file>
+        <file>${logDirectory}/dsanalyzer.jsonl</file>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${dsanalyzer.logDir}/dsanalyzer-%d{yyyy-MM-dd}.%i.jsonl.gz</fileNamePattern>
+            <fileNamePattern>${logDirectory}/dsanalyzer-%d{yyyy-MM-dd}.%i.jsonl.gz</fileNamePattern>
             <maxFileSize>10MB</maxFileSize>
             <maxHistory>14</maxHistory>
             <totalSizeCap>250MB</totalSizeCap>
@@ -22,7 +24,7 @@
             <withMessage>false</withMessage>
             <withArguments>false</withArguments>
             <withFormattedMessage>true</withFormattedMessage>
-            <withKeyValuePairs>true</withKeyValuePairs>
+            <withKVPList>true</withKVPList>
             <withMDC>true</withMDC>
             <withThrowable>true</withThrowable>
         </encoder>

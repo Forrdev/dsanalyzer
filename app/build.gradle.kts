@@ -24,7 +24,7 @@ dependencies {
 
         implementation(kotlin.logging)
         implementation(slf4j.api)
-        runtimeOnly(logback)
+        implementation(logback)
     }
 }
 
