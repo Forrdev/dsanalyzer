@@ -77,5 +77,4 @@ private fun RejectionReason.describe(): String = when (this) {
     RejectionReason.NoExecutable -> "No Dark Souls executable was found"
     is RejectionReason.UnrecognizedExecutable -> "$name is not an executable this tool knows"
     is RejectionReason.MissingFiles -> "these files are missing: ${names.joinToString()}"
-    is RejectionReason.EditionNotSupportedYet -> "${edition.name} is not supported yet"
 }
