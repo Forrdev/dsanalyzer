@@ -1,9 +1,7 @@
 package com.sappyoak.dsanalyzer.app.scripts
 
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.withContext
 
 import com.sappyoak.dsanalyzer.app.store.EffectRunner
 import com.sappyoak.dsanalyzer.formats.emevd.EventNames
@@ -34,15 +32,13 @@ public class ScriptsEffects(
     private suspend fun perform(effect: ScriptsEffect): ScriptsMessage = when (effect) {
         is ScriptsEffect.LoadCatalog -> ScriptsMessage.CatalogLoaded(
             files.use(effect.installation) { game ->
-                withContext(Dispatchers.IO) {
-                    game.availableScripts(game.availableMaps(loadFileManifest(effect.installation.build.edition)))
-                }
+                game.availableScripts(game.availableMaps(loadFileManifest(effect.installation.build.edition)))
             }
         )
 
         is ScriptsEffect.LoadScript -> ScriptsMessage.ScriptLoaded(
             files.use(effect.installation) { game ->
-                withContext(Dispatchers.IO) { game.contents(effect.script) }
+                game.contents(effect.script)
             }
         )
     }

@@ -63,7 +63,7 @@ public class VerificationEffects(
                         loadFileManifest(effect.installation.build.edition)
                     },
                     listing = files.use(effect.installation) {
-                        withContext(Dispatchers.IO) { it.listing() }
+                        it.listing()
                     }
                 )
             )

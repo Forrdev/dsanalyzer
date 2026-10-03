@@ -36,17 +36,21 @@ public class InstallationFiles(
 ) : AutoCloseable {
     private val held = mutableMapOf<InstallationId, Held>()
 
-    public suspend fun <T> use(installation: Installation, block: suspend (GameFiles) -> T): T {
-        val lease = withContext(context) { acquire(installation) }
-        try {
-            return block(lease.files)
-        } finally {
-            release(installation.id, lease)
+    public suspend fun <T> use(installation: Installation, block: suspend (GameFiles) -> T): T =
+        withContext(context) {
+            val lease = acquire(installation)
+            try {
+                block(lease.files)
+            } finally {
+                release(installation.id, lease)
+            }
         }
-    }
 
     public fun retire(id: InstallationId) = synchronized(held) {
-        held.remove(id)?.let(::retireHeld)
+        val entry = held.remove(id)
+        if (entry != null) {
+            retireHeld(entry)
+        }
     }
 
     override fun close() = synchronized(held) {

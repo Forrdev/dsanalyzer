@@ -1,9 +1,7 @@
 package com.sappyoak.dsanalyzer.app.maps
 
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.withContext
 
 import com.sappyoak.dsanalyzer.app.store.EffectRunner
 import com.sappyoak.dsanalyzer.game.Installation
@@ -30,26 +28,22 @@ public class MapsEffects(private val files: InstallationFiles) : EffectRunner<Ma
     private suspend fun perform(effect: MapsEffect): MapsMessage = when (effect) {
         is MapsEffect.LoadCatalog -> MapsMessage.CatalogLoaded(
             files.use(effect.installation) { games ->
-                withContext(Dispatchers.IO) {
-                    games.availableMaps(loadFileManifest(effect.installation.build.edition))
-                }
+                games.availableMaps(loadFileManifest(effect.installation.build.edition))
             }
         )
 
         is MapsEffect.LoadMap -> MapsMessage.MapLoaded(
             files.use(effect.installation) { games ->
-                withContext(Dispatchers.IO) { games.contents(effect.map, characters) }
+                games.contents(effect.map, characters)
             }
         )
 
         is MapsEffect.IndexEntities -> files.use(effect.installation) { games ->
-            withContext(Dispatchers.IO) {
-                val read = effect.maps.associateWith { games.loadMSB(it)?.summarize(it, characters) }
-                MapsMessage.EntitiesIndexed(
-                    index = EntityIndex.of(read.values.filterNotNull()),
-                    skipped = read.filterValues { it == null }.keys.toList()
-                )
-            }
+            val read = effect.maps.associateWith { games.loadMSB(it)?.summarize(it, characters) }
+            MapsMessage.EntitiesIndexed(
+                index = EntityIndex.of(read.values.filterNotNull()),
+                skipped = read.filterValues { it == null }.keys.toList()
+            )
         }
     }
 }
