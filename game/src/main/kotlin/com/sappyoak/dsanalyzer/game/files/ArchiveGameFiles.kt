@@ -1,7 +1,6 @@
 package com.sappyoak.dsanalyzer.game.files
 
 import com.sappyoak.dsanalyzer.formats.archive.ArchiveEntry
-import com.sappyoak.dsanalyzer.formats.archive.archivePathHash
 import com.sappyoak.dsanalyzer.formats.archive.readArchive
 import com.sappyoak.dsanalyzer.formats.compression.decompress
 import com.sappyoak.dsanalyzer.game.Installation
