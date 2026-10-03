@@ -95,4 +95,13 @@ class ScriptsReducerTest : FunSpec({
         val reloaded = reduceScripts(focused, ScriptsMessage.ScriptLoaded(contents(ScriptId.Common, 1L to null))).state
         reloaded.focused shouldBe null
     }
+
+    test("the visible list is one instance per state, so composition can skip it") {
+        val state = loaded()
+
+        assertSoftly {
+            (state.visible === state.visible) shouldBe true
+            (state.focusedEvent === state.focusedEvent) shouldBe true
+        }
+    }
 })
