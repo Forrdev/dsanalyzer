@@ -3,8 +3,9 @@ package com.sappyoak.dsanalyzer.game.world.scripts
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldNotBeEmpty
 import java.nio.file.Path
 import kotlin.time.measureTime
 
@@ -110,5 +111,26 @@ class InstalledScriptsTest : FunSpec({
                 println("${script.label} sample: " + names.take(5).joinToString { "${it.first} ${it.second}" })
             }
         }
+    }
+
+    /**
+     * The one check that can say the translations are complete.
+     *
+     * This reads the names out of a real installation and asserts every one of them is covered, which is what
+     * catches a name that was neer seen, or one a later edit dropped
+     */
+    test("every name a real installation carries is translated").config(enabled = ROOT != null) {
+        val translations = loadEventNameTranslations()
+
+        val missing = withInstalledScripts { files, scripts ->
+            scripts.flatMap { script ->
+                files.loadScriptNames(script)?.all.orEmpty().values
+                    .filter { translations[it] == null }
+                    .map { "${script.label}: $it" }
+            }.distinct()
+        }
+
+        println("untranslated names: ${missing.size}")
+        missing.shouldBeEmpty()
     }
 })
