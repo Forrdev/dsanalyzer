@@ -13,12 +13,8 @@ internal const val BXF3_DATA_MAGIC = "BDF3"
  */
 fun readBXF3Header(reader: BinaryReader): Binder {
     val shared = reader.readVersion3SharedFields(BXF3_HEADER_MAGIC)
-    reader.assertValue(0) { readInt() }
-    reader.assertValue(0) { readInt() }
-    reader.assertValue(0) { readInt() }
-
     val entries = List(shared.entryCount) {
-        reader.readVersion3Entry(shared.flags, shared.bigEndian)
+        reader.readVersion3Entry(shared.flags, shared.bitBigEndian)
     }
 
     return Binder(

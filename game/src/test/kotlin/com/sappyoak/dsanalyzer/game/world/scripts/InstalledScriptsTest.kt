@@ -67,13 +67,15 @@ class InstalledScriptsTest : FunSpec({
         }
     }
 
-    test("a map script links the common script it draws instructions from").config(enabled = ROOT != null) {
-        withInstalledScripts { files, scripts ->
-            val map = scripts.first { it is ScriptId.Of }
-            val emevd = checkNotNull(files.loadScript(map))
-            println("${map.label} links ${emevd.linkedFiles}")
-            emevd.linkedFiles.shouldNotBeEmpty()
+    test("Prepare to Die scripts declare no linked files").config(enabled = ROOT != null) {
+        val linking = withInstalledScripts { files, scripts ->
+            scripts.mapNotNull { script ->
+                val linked = checkNotNull(files.loadScript(script)).linkedFiles
+                if (linked.isEmpty()) null else "${script.label} links $linked"
+            }
         }
+
+        linking.shouldBeEmpty()
     }
 
     test("every instruction decodes against the bundled definitions").config(enabled= ROOT != null) {

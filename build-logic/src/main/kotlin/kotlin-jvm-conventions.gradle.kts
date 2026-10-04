@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -41,7 +43,22 @@ sourceSets.named("test") {
     resources.srcDir(rootProject.layout.projectDirectory.dir("config/logging-test"))
 }
 
+val installation: Provider<String> = providers.gradleProperty("ds1Path")
+    .orElse(providers.environmentVariable("DS1_PTDE_PATH"))
+
 tasks.withType<Test>().configureEach {
     maxHeapSize = "4g"
     useJUnitPlatform()
+
+    installation.orNull?.let { environment("DS1_PTDE_PATH", it) }
+
+    // Declared so that pointing at a different installation re-runs the tests
+    inputs.property("ds1Path", installation.orElse(""))
+
+    testLogging {
+        showStandardStreams = true
+        events(TestLogEvent.FAILED, TestLogEvent.SKIPPED)
+        exceptionFormat = TestExceptionFormat.FULL
+        showCauses = true
+    }
 }

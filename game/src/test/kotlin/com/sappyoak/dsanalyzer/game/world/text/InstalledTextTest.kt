@@ -54,7 +54,11 @@ class InstalledTextTest : FunSpec({
         println("Place names: ${strings.size}, first few ${strings.entries.take(5)}")
         assertSoftly {
             strings.size shouldBeGreaterThan PLAUSIBLE_PLACE_NAMES
-            strings.values.none { it.isBlank() } shouldBe true
+
+            // Named rather than counter. A reader that produced the right number of wrong strings
+            // would pass a count
+            strings.values shouldContain "Firelink Shrine"
+            strings.values shouldContain "Anor Londo"
         }
     }
 
