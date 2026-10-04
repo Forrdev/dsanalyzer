@@ -18,17 +18,17 @@ public value class BinderFormatFlags(public val bits: Int) {
     public val hasCompression: Boolean get() = bits.hasFlag(COMPRESSION)
 
     public companion object {
-        private const val BIG_ENDIAN = 0x80
-        private const val HAS_IDS = 0x40
-        private const val HAS_NAMES1 = 0x20
-        private const val HAS_NAMES2 = 0x10
-        private const val LONG_OFFSETS = 0x08
-        private const val COMPRESSION = 0x04
-        private const val FLAG_7 = 0x01
+        private const val BIG_ENDIAN = 0x01
+        private const val HAS_IDS = 0x02
+        private const val HAS_NAMES1 = 0x04
+        private const val HAS_NAMES2 = 0x08
+        private const val LONG_OFFSETS = 0x10
+        private const val COMPRESSION = 0x20
+        private const val FLAG_7 = 0x80
 
         public fun read(reader: BinaryReader, bitBigEndian: Boolean): BinderFormatFlags {
             val raw = reader.readUByte().toInt()
-            val alreadyOrdered = bitBigEndian || (raw.hasFlag(BIG_ENDIAN) && raw.hasFlag(FLAG_7))
+            val alreadyOrdered = bitBigEndian || (raw.hasFlag(FLAG_7) && !raw.hasFlag(BIG_ENDIAN))
             return BinderFormatFlags(if (alreadyOrdered) raw else raw.reverseBits())
         }
     }
@@ -41,7 +41,7 @@ public value class BinderEntryFlags(public val bits: Int) {
     public val hasCompression: Boolean get() = bits.hasFlag(COMPRESSION)
 
     public companion object {
-        private const val COMPRESSION = 0x80
+        private const val COMPRESSION = 0x01
 
         public fun read(reader: BinaryReader, bitBigEndian: Boolean): BinderEntryFlags {
             val raw = reader.readUByte().toInt()

@@ -10,18 +10,23 @@ import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.game.InstallationId
 import com.sappyoak.dsanalyzer.game.files.GameFiles
+import com.sappyoak.dsanalyzer.game.files.openBinder
 import com.sappyoak.dsanalyzer.game.files.openGameFiles
 import com.sappyoak.dsanalyzer.game.verification.loadFileManifest
 import com.sappyoak.dsanalyzer.game.world.maps.availableMaps
 import com.sappyoak.dsanalyzer.game.world.scripts.availableScripts
 import com.sappyoak.dsanalyzer.game.world.scripts.loadScriptNames
+import com.sappyoak.dsanalyzer.game.world.text.TextArchive
 import com.sappyoak.dsanalyzer.game.world.text.TextCategory
 import com.sappyoak.dsanalyzer.game.world.text.TextLanguage
 import com.sappyoak.dsanalyzer.game.world.text.hasText
 import com.sappyoak.dsanalyzer.game.world.text.loadText
+import com.sappyoak.dsanalyzer.game.world.text.pathTo
 
 private const val TERMS_FILE = "ja-en-terms.json"
 private const val EVENT_NAMES_FILE = "event-names.json"
+
+private const val DESCRIBED_ENTRIES = 40
 
 private val JSON = Json { prettyPrint = true }
 
@@ -68,7 +73,7 @@ private fun GameFiles.termPairs(): List<TermPair> {
     val japanese = loadText(TextLanguage.Japanese, TextCategory.naming)
     val english = loadText(TextLanguage.English, TextCategory.naming)
 
-    return TextCategory.naming.flatMap { category ->
+    val pairs = TextCategory.naming.flatMap { category ->
         val ja = japanese[category]?.strings.orEmpty()
         val en = english[category]?.strings.orEmpty()
         val shared = ja.keys intersect en.keys
@@ -79,6 +84,33 @@ private fun GameFiles.termPairs(): List<TermPair> {
             val target = en.getValue(id)
             if (source.isBlank() || target.isBlank()) null else TermPair(category.name, id, source, target)
         }
+    }
+
+    if (pairs.isEmpty()) {
+        println("\nNo pairs came out. This is what the containers actually hold:")
+        TextArchive.entries.forEach { describe(TextLanguage.English, it) }
+    }
+
+    return pairs
+}
+
+private fun GameFiles.describe(language: TextLanguage, archive: TextArchive) {
+    val container = openBinder(language.pathTo(archive))
+    if (container == null) {
+        println(" ${archive.stem}: did not open")
+        return
+    }
+
+    val flags = container.binder.flags
+    println(
+        " ${archive.stem}: ${container.binder.entries.size} entries, version=${container.binder.version}, " +
+        "flags=0x%02X hasIds=%s hasNames=%s longOffsets=%s compression=%s".format(
+            flags.bits, flags.hasIds, flags.hasNames, flags.hasLongOffsets, flags.hasCompression
+        )
+    )
+
+    container.binder.entries.take(DESCRIBED_ENTRIES).forEach { entry ->
+        println("  id=${entry.id} name=${entry.name}")
     }
 }
 
