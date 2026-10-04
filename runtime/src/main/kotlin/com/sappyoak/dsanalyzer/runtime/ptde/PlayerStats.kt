@@ -15,7 +15,7 @@ public object PlayerStats {
         ),
         offsets = listOf(0L, 8L),
         lifetime = Lifetime.World,
-        size = 0x2A0
+        size = 0x2A4
     )
 
     public const val Health: Int = 0xC

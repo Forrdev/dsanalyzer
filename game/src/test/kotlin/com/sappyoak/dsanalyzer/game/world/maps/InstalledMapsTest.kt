@@ -19,7 +19,7 @@ import com.sappyoak.dsanalyzer.game.files.openBinder
 import com.sappyoak.dsanalyzer.game.files.openGameFiles
 import com.sappyoak.dsanalyzer.game.verification.loadFileManifest
 
-private const val PTDE_MAP_COUNT = 18
+private const val PTDE_MAP_COUNT = 17
 
 /** Runs against a real PTDE installation, and only when DS1_PTDE_PATH points at one */
 private val ROOT: Path? = System.getenv("DS1_PTDE_PATH")?.let(Path::of)

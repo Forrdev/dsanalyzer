@@ -17,9 +17,11 @@ import com.sappyoak.dsanalyzer.game.verification.loadFileManifest
 import com.sappyoak.dsanalyzer.game.world.maps.availableMaps
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
 import com.sappyoak.dsanalyzer.game.world.scripts.availableScripts
+import com.sappyoak.dsanalyzer.game.world.scripts.loadEventNameTranslations
 import com.sappyoak.dsanalyzer.game.world.scripts.loadInstructionDefinitions
 import com.sappyoak.dsanalyzer.game.world.scripts.loadScript
 import com.sappyoak.dsanalyzer.game.world.scripts.loadScriptNames
+import com.sappyoak.dsanalyzer.game.world.scripts.translatedBy
 import com.sappyoak.dsanalyzer.shared.binary.BinaryFormatException
 
 private val logger = KotlinLogging.logger {  }
@@ -28,6 +30,8 @@ public class ScriptsEffects(
     private val files: InstallationFiles
 ) : EffectRunner<ScriptsEffect, ScriptsMessage> {
     private val definitions by lazy { loadInstructionDefinitions() }
+
+    private val translations by lazy { loadEventNameTranslations() }
 
     /** One load of each sort at a time, so switching scripts quickly cancels the load being replaced */
     override fun keyOf(effect: ScriptsEffect): Any = effect::class
@@ -57,7 +61,8 @@ public class ScriptsEffects(
 
     private fun GameFiles.contents(script: ScriptId): ScriptContents {
         val emevd = checkNotNull(loadScript(script)) { "$script has no event script" }
-        return emevd.summarize(script, loadScriptNames(script) ?: EventNames.Empty, definitions)
+        val names = loadScriptNames(script)?.translatedBy(translations) ?: EventNames.Empty
+        return emevd.summarize(script, names, definitions)
     }
 
     private fun GameFiles.indexFlags(scripts: List<ScriptId>): ScriptsMessage.FlagsIndexed {

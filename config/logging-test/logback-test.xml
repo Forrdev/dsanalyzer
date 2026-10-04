@@ -1,0 +1,20 @@
+<!--
+    Shared by every module's tests as the convention plugin adds this directory to each test source set, so
+    there is one copy rather than six. Logback prefers logback-test.xml over logback.xml whenever it is on
+    the classpath, which keeps a test run out of the real log directory
+
+    Off by default, because a passing test should say nothing. A test that cares what was logged attaches
+    its own appender to its own logger, which works regardless of this level.
+    See: app/src/test/kotlin/com/sappyoak/dsanalyzer/app/logging/StructuredLoggingTest
+-->
+<configuration>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%-5level %logger{24} - %msg %kvp%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="OFF">
+        <appender-ref ref="CONSOLE" />
+    </root>
+</configuration>

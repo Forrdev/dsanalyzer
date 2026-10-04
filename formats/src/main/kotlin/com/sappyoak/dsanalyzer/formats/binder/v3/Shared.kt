@@ -12,6 +12,7 @@ internal class Version3SharedFields(
     val version: String,
     val flags: BinderFormatFlags,
     val bigEndian: Boolean,
+    val bitBigEndian: Boolean,
     val entryCount: Int
 )
 
@@ -34,6 +35,7 @@ internal fun BinaryReader.readVersion3SharedFields(magic: String): Version3Share
         version = version,
         flags = flags,
         bigEndian = bigEndian,
+        bitBigEndian = bitBigEndian,
         entryCount = fileCount
     )
 }

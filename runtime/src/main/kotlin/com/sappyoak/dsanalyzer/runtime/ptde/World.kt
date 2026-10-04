@@ -16,7 +16,7 @@ public object WorldState {
         ),
         offsets = listOf(0L),
         lifetime = Lifetime.Session,
-        size = 0xB90
+        size = 0xB9C
     )
 
     public const val LastBonfire: Int = 0xB04
@@ -37,7 +37,7 @@ public object WorldArea {
         ),
         offsets = listOf(0L),
         lifetime = Lifetime.Session,
-        size = 0xA20
+        size = 0xA2C
     )
 
     public const val Area: Int = 0xA12
@@ -61,7 +61,7 @@ public object DeathCam {
         ),
         offsets = listOf(0L),
         lifetime = Lifetime.Session,
-        size = 0x50
+        size = 0x60
     )
 
     public const val Active: Int = 0x40

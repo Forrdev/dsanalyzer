@@ -15,6 +15,9 @@ private const val DS1_VERSION = 0xCC
 public class EventNames(private val byId: Map<Long, String>) {
     public val size: Int get() = byId.size
 
+    /** Every name the file holds, for a caller indexing or translating them */
+    public val all: Map<Long, String> get() = byId
+
     public operator fun get(eventId: Long): String? = byId[eventId]
 
     public companion object {

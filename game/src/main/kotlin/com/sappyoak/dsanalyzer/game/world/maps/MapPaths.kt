@@ -11,7 +11,7 @@ public enum class CollisionDetail(internal val prefix: Char) {
     Low('l');
 }
 
-public val MapId.msbPath: GamePath get() = GamePath.of("$MAP_STUDIO_DIRECTORY$name$MSB_EXTENSION")
+public val MapId.msbPath: GamePath get() = GamePath.of("$MAP_STUDIO_DIRECTORY$msbName$MSB_EXTENSION")
 public val MapId.navmeshBinderPath: GamePath get() = GamePath.of("/map/$name/$name.nvmbnd.dcx")
 
 public fun MapId.collisionPaths(detail: CollisionDetail): SplitBinderPaths {

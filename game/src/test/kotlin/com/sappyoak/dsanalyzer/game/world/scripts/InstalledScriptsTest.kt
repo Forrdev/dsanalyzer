@@ -3,8 +3,9 @@ package com.sappyoak.dsanalyzer.game.world.scripts
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldNotBeEmpty
 import java.nio.file.Path
 import kotlin.time.measureTime
 
@@ -66,13 +67,15 @@ class InstalledScriptsTest : FunSpec({
         }
     }
 
-    test("a map script links the common script it draws instructions from").config(enabled = ROOT != null) {
-        withInstalledScripts { files, scripts ->
-            val map = scripts.first { it is ScriptId.Of }
-            val emevd = checkNotNull(files.loadScript(map))
-            println("${map.label} links ${emevd.linkedFiles}")
-            emevd.linkedFiles.shouldNotBeEmpty()
+    test("Prepare to Die scripts declare no linked files").config(enabled = ROOT != null) {
+        val linking = withInstalledScripts { files, scripts ->
+            scripts.mapNotNull { script ->
+                val linked = checkNotNull(files.loadScript(script)).linkedFiles
+                if (linked.isEmpty()) null else "${script.label} links $linked"
+            }
         }
+
+        linking.shouldBeEmpty()
     }
 
     test("every instruction decodes against the bundled definitions").config(enabled= ROOT != null) {
@@ -110,5 +113,26 @@ class InstalledScriptsTest : FunSpec({
                 println("${script.label} sample: " + names.take(5).joinToString { "${it.first} ${it.second}" })
             }
         }
+    }
+
+    /**
+     * The one check that can say the translations are complete.
+     *
+     * This reads the names out of a real installation and asserts every one of them is covered, which is what
+     * catches a name that was neer seen, or one a later edit dropped
+     */
+    test("every name a real installation carries is translated").config(enabled = ROOT != null) {
+        val translations = loadEventNameTranslations()
+
+        val missing = withInstalledScripts { files, scripts ->
+            scripts.flatMap { script ->
+                files.loadScriptNames(script)?.all.orEmpty().values
+                    .filter { translations[it] == null }
+                    .map { "${script.label}: $it" }
+            }.distinct()
+        }
+
+        println("untranslated names: ${missing.size}")
+        missing.shouldBeEmpty()
     }
 })

@@ -8,7 +8,7 @@ internal const val BND3_MAGIC = "BND3"
 fun readBND3(reader: BinaryReader): Binder {
     val shared = reader.readVersion3SharedFields(BND3_MAGIC)
     val entries = List(shared.entryCount) {
-        reader.readVersion3Entry(shared.flags, shared.bigEndian)
+        reader.readVersion3Entry(shared.flags, shared.bitBigEndian)
     }
 
     return Binder(
