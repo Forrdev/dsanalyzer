@@ -12,7 +12,7 @@ private val BASE = Address(0x1000)
 class PointerChainTest : FunSpec({
     test("follows a chain of 32 bit pointers") {
         val memory = FakeProcessMemory(BASE, 0x100, pointerSize = PointerSize.IntPointer)
-        memory[BASE] = BASE + 0x40
+        memory[BASE + 0x08] = BASE + 0x40
         memory[BASE + 0x4C] = BASE + 0x80
 
         PointerChain.of(BASE, 0x08, 0x0C).resolve(memory).shouldBe(BASE + 0x80)

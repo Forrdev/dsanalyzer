@@ -17,7 +17,7 @@ public object CharData {
         base = Base,
         offsets = listOf(0L, 4L, 0L),
         lifetime = Lifetime.World,
-        size = 0x640
+        size = 0x64C
     )
 
     public const val CharMapDataPointer: Int = 0x28
