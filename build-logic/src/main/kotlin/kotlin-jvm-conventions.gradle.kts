@@ -28,11 +28,20 @@ kotlin {
 }
 
 dependencies {
+    implementation(libs.kotlin.logging)
+    implementation(libs.slf4j.api)
+
+
+    testRuntimeOnly(libs.logback)
     testImplementation(libs.bundles.jvm.testing)
+}
+
+/** One logback-test.xml for every module */
+sourceSets.named("test") {
+    resources.srcDir(rootProject.layout.projectDirectory.dir("config/logging-test"))
 }
 
 tasks.withType<Test>().configureEach {
     maxHeapSize = "4g"
     useJUnitPlatform()
-
 }
