@@ -5,6 +5,7 @@ import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.ints.shouldBeGreaterThanOrEqual
+
 import java.io.File
 import java.lang.reflect.Modifier
 
@@ -19,7 +20,7 @@ private const val WIDEST_READ = 12
 
 private const val PACKAGE = "com/sappyoak/dsanalyzer/runtime/ptde"
 
-private const val EXPECTED_STRUCTURES = 10
+private const val EXPECTED_STRUCTURES = 12
 
 private const val CLASS_SUFFIX = ".class"
 
@@ -54,17 +55,20 @@ private data class Structure(val pointer: GamePointer, val offsets: List<Offset>
 /**
  * Every object in the package that declares a [GamePointer], paired with its own constants
  */
-private fun structures(): List<Structure> = classFiles().mapNotNull { type ->
-    val instance = type.declaredFields.firstOrNull { it.name == "INSTANCE" } ?: return@mapNotNull null
-    val accessor = type.methods.firstOrNull { it.returnType == GamePointer::class.java && it.parameterCount == 0 }
-        ?: return@mapNotNull null
+private fun structures(): List<Structure> = classFiles().flatMap { type ->
+    val instance = type.declaredFields.firstOrNull { it.name == "INSTANCE" } ?: return@flatMap emptyList()
+    val accessors = type.methods.filter { it.returnType == GamePointer::class.java && it.parameterCount == 0 }
 
     val offsets = type.declaredFields
         .filter { Modifier.isStatic(it.modifiers) && Modifier.isPublic(it.modifiers) }
         .filter { it.type == Int::class.javaPrimitiveType }
         .map { Offset(it.name, it.getInt(null)) }
 
-    if (offsets.isEmpty()) null else Structure(accessor.invoke(instance.get(null)) as GamePointer, offsets)
+    if (offsets.isEmpty()) {
+        emptyList()
+    } else {
+        accessors.map { Structure(it.invoke(instance.get(null)) as GamePointer, offsets) }
+    }
 }
 
 /**

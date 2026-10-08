@@ -10,9 +10,9 @@ import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.pointers.GamePointer
 import com.sappyoak.dsanalyzer.runtime.pointers.resolvePointers
 import com.sappyoak.dsanalyzer.runtime.ptde.AnimData
-import com.sappyoak.dsanalyzer.runtime.ptde.CharPosData
-import com.sappyoak.dsanalyzer.runtime.ptde.CharData
-import com.sappyoak.dsanalyzer.runtime.ptde.CharMapData
+import com.sappyoak.dsanalyzer.runtime.ptde.ChrCtrl
+import com.sappyoak.dsanalyzer.runtime.ptde.ChrIns
+import com.sappyoak.dsanalyzer.runtime.ptde.ChrPosData
 import com.sappyoak.dsanalyzer.runtime.ptde.DeathCam
 import com.sappyoak.dsanalyzer.runtime.ptde.EventFlags
 import com.sappyoak.dsanalyzer.runtime.ptde.FollowCam
@@ -81,15 +81,15 @@ internal class PTDEFixture {
     /** Fills the structures with values a running game would have */
     fun populate() {
         map(world = 10, area = 2)
-        game.int(CHARACTER_AT + CharData.Health, 837)
-        game.int(CHARACTER_AT + CharData.Stamina, 92)
-        game.int(CHARACTER_AT + CharData.ChrType, 0)
-        game.int(CHARACTER_AT + CharData.TeamType, 1)
-        game.int(CHARACTER_AT + CharData.PlayRegion, 1_002_600)
-        game.float(POSITION_AT + CharPosData.Position, 12.5f)
-        game.float(POSITION_AT + CharPosData.Position + 4, -30f)
-        game.float(POSITION_AT + CharPosData.Position + 8, 44f)
-        game.float(POSITION_AT + CharPosData.Angle, 1.25f)
+        game.int(CHARACTER_AT + ChrIns.Health, 837)
+        game.int(CHARACTER_AT + ChrIns.Stamina, 92)
+        game.int(CHARACTER_AT + ChrIns.ChrType, 0)
+        game.int(CHARACTER_AT + ChrIns.TeamType, 1)
+        game.int(CHARACTER_AT + ChrIns.PlayRegion, 1_002_600)
+        game.float(POSITION_AT + ChrPosData.Position, 12.5f)
+        game.float(POSITION_AT + ChrPosData.Position + 4, -30f)
+        game.float(POSITION_AT + ChrPosData.Position + 8, 44f)
+        game.float(POSITION_AT + ChrPosData.Angle, 1.25f)
         game.float(ANIMATION_AT + AnimData.PlaySpeed, 2f)
         game.int(ATTRIBUTES_AT + PlayerStats.HealthMax, 1000)
         game.int(ATTRIBUTES_AT + PlayerStats.SoulLevel, 42)
@@ -124,7 +124,7 @@ internal class PTDEFixture {
     /** Points the character walk at [RELOADED_CHARACTER_AT], the way a load reallocates it */
     fun reallocateCharacter() {
         game.pointer(LINKS_AT + 0x100, RELOADED_CHARACTER_AT)
-        game.pointer(RELOADED_CHARACTER_AT + CharData.CharMapDataPointer, PLACEMENT_AT)
+        game.pointer(RELOADED_CHARACTER_AT + ChrIns.ChrCtrlPointer, PLACEMENT_AT)
     }
 
     fun map(world: Int, area: Int) {
@@ -156,15 +156,15 @@ internal class PTDEFixture {
             pointer.base to STATICS_AT + slot * STATIC_STRIDE
         }
 
-        // CharData1: static -> +0 -> +4 -> +0
-        game.pointer(statics.getValue(CharData.Base), LINKS_AT)
+        // ChrIns1: static -> +0 -> +4 -> +0
+        game.pointer(statics.getValue(ChrIns.Base), LINKS_AT)
         game.pointer(LINKS_AT + 4, LINKS_AT + 0x100)
         game.pointer(LINKS_AT + 0x100, CHARACTER_AT)
-        game.pointer(CHARACTER_AT + CharData.CharMapDataPointer, PLACEMENT_AT)
-        game.pointer(PLACEMENT_AT + CharMapData.PositionPointer, POSITION_AT)
-        game.pointer(PLACEMENT_AT + CharMapData.AnimDataPointer, ANIMATION_AT)
+        game.pointer(CHARACTER_AT + ChrIns.ChrCtrlPointer, PLACEMENT_AT)
+        game.pointer(PLACEMENT_AT + ChrCtrl.PositionPointer, POSITION_AT)
+        game.pointer(PLACEMENT_AT + ChrCtrl.AnimDataPointer, ANIMATION_AT)
 
-        // CharData2: static -> +0 -> +8
+        // ChrIns2: static -> +0 -> +8
         game.pointer(statics.getValue(PlayerStats.Pointer.base), LINKS_AT + 0x200)
         game.pointer(LINKS_AT + 0x208, ATTRIBUTES_AT)
 

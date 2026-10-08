@@ -24,8 +24,9 @@ internal fun pointer(
     lifetime: Lifetime,
     offsets: List<Long>,
     base: Signature = PRESENT,
-    size: Int = 0x40
-): GamePointer = GamePointer(name, base, offsets, lifetime, size)
+    size: Int = 0x40,
+    displacement: Long = 0
+): GamePointer = GamePointer(name, base, offsets, lifetime, size, displacement)
 
 /**
  * Plants the signature at [at], with its operand naming [global].

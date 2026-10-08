@@ -20,11 +20,14 @@ public class GameMemory(
         resolved[pointer]?.let { return it }
 
         val base = pointers[pointer] ?: return Address.Null
-        val address = PointerChain(base, pointer.offsets).resolve(memory)
+        val walked = PointerChain(base, pointer.offsets).resolve(memory)
+
+        // Displacing a failed walk would turn Null into the displacement itself, which reads as
+        // a perfectly ordinary low address rather than as a failure
+        val address = if (walked.isNull) walked else walked + pointer.displacement
         if (!address.isNull && pointer.lifetime != Lifetime.Volatile) {
             resolved[pointer] = address
         }
-
         return address
     }
 

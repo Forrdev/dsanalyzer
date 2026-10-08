@@ -12,9 +12,9 @@ import com.sappyoak.dsanalyzer.runtime.pointers.ResolvedPointers
 import com.sappyoak.dsanalyzer.runtime.pointers.StructView
 import com.sappyoak.dsanalyzer.runtime.pointers.resolvePointers
 import com.sappyoak.dsanalyzer.runtime.ptde.AnimData
-import com.sappyoak.dsanalyzer.runtime.ptde.CharData
-import com.sappyoak.dsanalyzer.runtime.ptde.CharMapData
-import com.sappyoak.dsanalyzer.runtime.ptde.CharPosData
+import com.sappyoak.dsanalyzer.runtime.ptde.ChrCtrl
+import com.sappyoak.dsanalyzer.runtime.ptde.ChrIns
+import com.sappyoak.dsanalyzer.runtime.ptde.ChrPosData
 import com.sappyoak.dsanalyzer.runtime.ptde.DeathCam
 import com.sappyoak.dsanalyzer.runtime.ptde.EventFlagBlock
 import com.sappyoak.dsanalyzer.runtime.ptde.FollowCam
@@ -32,9 +32,9 @@ public class GameSession internal constructor(
 ) {
     private val followCam = StructView(FollowCam.Pointer)
     private val worldArea = StructView(WorldArea.Pointer)
-    private val character = StructView(CharData.Pointer)
-    private val position = StructView(CharPosData.Pointer)
-    private val placement = StructView(CharMapData.Pointer)
+    private val character = StructView(ChrIns.Pointer)
+    private val position = StructView(ChrPosData.Pointer)
+    private val placement = StructView(ChrCtrl.Pointer)
     private val animation = StructView(AnimData.Pointer)
     private val attributes = StructView(PlayerStats.Pointer)
     private val worldState = StructView(WorldState.Pointer)
@@ -102,18 +102,18 @@ public class GameSession internal constructor(
         if (!character.isPresent || !position.isPresent) return null
 
         return PlayerSnapshot(
-            position = position.vec3(CharPosData.Position),
-            angle = position.float(CharPosData.Angle),
-            health = character.int(CharData.Health),
-            stamina = character.int(CharData.Stamina),
-            characterType = character.int(CharData.ChrType),
-            teamType = character.int(CharData.TeamType),
-            playRegion = character.int(CharData.PlayRegion),
+            position = position.vec3(ChrPosData.Position),
+            angle = position.float(ChrPosData.Angle),
+            health = character.int(ChrIns.Health),
+            stamina = character.int(ChrIns.Stamina),
+            characterType = character.int(ChrIns.ChrType),
+            teamType = character.int(ChrIns.TeamType),
+            playRegion = character.int(ChrIns.PlayRegion),
             animationSpeed = if (animation.isPresent) animation.float(AnimData.PlaySpeed) else null,
             cheats = cheatsIn(
-                flags1 = character.int(CharData.Flags1),
-                flags2 = character.int(CharData.Flags2),
-                mapFlags = if (placement.isPresent) placement.int(CharMapData.Flags) else 0
+                flags1 = character.int(ChrIns.Flags1),
+                flags2 = character.int(ChrIns.Flags2),
+                mapFlags = if (placement.isPresent) placement.int(ChrCtrl.Flags) else 0
             ),
             attributes = attributes()
         )

@@ -8,11 +8,11 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
-import com.sappyoak.dsanalyzer.runtime.ptde.CharData
-import com.sappyoak.dsanalyzer.runtime.ptde.CharFlags2
-import com.sappyoak.dsanalyzer.runtime.ptde.CharMapData
-import com.sappyoak.dsanalyzer.runtime.ptde.CharMapFlags
-import com.sappyoak.dsanalyzer.runtime.ptde.CharPosData
+import com.sappyoak.dsanalyzer.runtime.ptde.ChrIns
+import com.sappyoak.dsanalyzer.runtime.ptde.ChrInsFlags2
+import com.sappyoak.dsanalyzer.runtime.ptde.ChrCtrl
+import com.sappyoak.dsanalyzer.runtime.ptde.ChrCtrlFlags
+import com.sappyoak.dsanalyzer.runtime.ptde.ChrPosData
 import com.sappyoak.dsanalyzer.runtime.ptde.FlagChange
 import com.sappyoak.dsanalyzer.shared.math.Vec3
 
@@ -57,8 +57,8 @@ class GameSessionTest : FunSpec({
     test("a debug flag the game is running with is reported") {
         val fixture = PTDEFixture().apply {
             populate()
-            game.int(CHARACTER_AT + CharData.Flags2, CharFlags2.NoDead)
-            game.int(PLACEMENT_AT + CharMapData.Flags, CharMapFlags.DisableMapHit)
+            game.int(CHARACTER_AT + ChrIns.Flags2, ChrInsFlags2.NoDead)
+            game.int(PLACEMENT_AT + ChrCtrl.Flags, ChrCtrlFlags.DisableMapHit)
         }
 
         checkNotNull(fixture.session().sample().player).cheats shouldBe
@@ -68,7 +68,7 @@ class GameSessionTest : FunSpec({
     test("standing away from the last grounded position is measured") {
         val fixture = PTDEFixture().apply {
             populate()
-            game.float(POSITION_AT + CharPosData.Position + 4, 20f)
+            game.float(POSITION_AT + ChrPosData.Position + 4, 20f)
         }
 
         val snapshot = fixture.session().sample()
@@ -85,7 +85,7 @@ class GameSessionTest : FunSpec({
         session.sample().player?.health shouldBe 837
 
         fixture.reallocateCharacter()
-        fixture.game.int(RELOADED_CHARACTER_AT + CharData.Health, 400)
+        fixture.game.int(RELOADED_CHARACTER_AT + ChrIns.Health, 400)
         fixture.map(world = 13, area = 0)
 
         val next = session.sample()

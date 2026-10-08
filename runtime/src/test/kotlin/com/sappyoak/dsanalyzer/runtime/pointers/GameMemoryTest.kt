@@ -110,4 +110,26 @@ class GameMemoryTest : FunSpec({
             memory.cached shouldBe 0
         }
     }
+
+    /**
+     * Nothing is stored at the displaced address, and that is the point. A displacement names a structure
+     * the game reaches by arithmetic, so following a pointer there would find nothing
+     */
+    test("A displacement is added to where the walk arrived, without following it") {
+        val game = game()
+        val displaced = pointer("Displaced", Lifetime.World, listOf(0L, 0x10L), displacement = 0x30)
+
+        memoryOf(game, displaced).addressOf(displaced) shouldBe game.address(SECOND_AT + 0x30)
+    }
+
+    test("A displacement is not added to a walk that failed") {
+        val game = game()
+        val broken = pointer("Broken", Lifetime.World, listOf(0L, 0x20L), displacement = 0x30)
+        val memory = memoryOf(game, broken)
+
+        assertSoftly {
+            memory.addressOf(broken) shouldBe Address.Null
+            memory.cached shouldBe 0
+        }
+    }
 })

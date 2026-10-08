@@ -30,10 +30,12 @@ public fun ProcessMemory.ptdeBuild(module: AddressRange): PTDEBuild? {
 
 public val PTDEPointers: List<GamePointer> = listOf(
     FollowCam.Pointer,
-    CharData.Pointer,
-    CharMapData.Pointer,
-    CharPosData.Pointer,
+    ChrIns.Pointer,
+    ChrCtrl.Pointer,
+    ChrPosData.Pointer,
     AnimData.Pointer,
+    AnimRequest.ChannelA,
+    AnimRequest.ChannelB,
     PlayerStats.Pointer,
     WorldState.Pointer,
     WorldArea.Pointer,

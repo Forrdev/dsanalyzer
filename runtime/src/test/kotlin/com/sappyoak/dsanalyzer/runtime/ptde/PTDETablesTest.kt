@@ -11,10 +11,12 @@ import com.sappyoak.dsanalyzer.game.world.maps.MapId
 
 /** The last field each structure declares, which its size has to reach past */
 private val LAST_FIELDS = listOf(
-    Triple("CharData1", CharData.Pointer, CharData.StoredItem),
-    Triple("CharMapData", CharMapData.Pointer, CharMapData.WarpAngle),
-    Triple("CharPosData", CharPosData.Pointer, CharPosData.Position + 8),
+    Triple("ChrIns", ChrIns.Pointer, ChrIns.StoredItem),
+    Triple("ChrCtrl", ChrCtrl.Pointer, ChrCtrl.NpcParamPairPointer),
+    Triple("ChrPosData", ChrPosData.Pointer, ChrPosData.Position + 8),
     Triple("AnimData", AnimData.Pointer, AnimData.PlaySpeed),
+    Triple("AnimRequestA", AnimRequest.ChannelA, AnimRequest.Times + 8),
+    Triple("AnimRequestB", AnimRequest.ChannelB, AnimRequest.Times + 8),
     Triple("CharData2", PlayerStats.Pointer, PlayerStats.Stance),
     Triple("WorldState", WorldState.Pointer, WorldState.StableAngle),
     Triple("WorldArea", WorldArea.Pointer, WorldArea.World),
@@ -34,13 +36,25 @@ class PTDETablesTest : FunSpec({
     }
 
     test("the structures reached through the character share its scan") {
-        val throughCharacter = PTDEPointers.filter { it.base === CharData.Base }
+        val throughCharacter = PTDEPointers.filter { it.base === ChrIns.Base }
 
         assertSoftly {
             throughCharacter.map { it.name } shouldBe
-                    listOf("CharData1", "CharMapData", "CharPosData", "AnimData")
+                    listOf("ChrIns", "ChrCtrl", "ChrPosData", "AnimData", "AnimRequestA", "AnimRequestB")
             throughCharacter.forEach { it.offsets.take(3) shouldBe listOf(0L, 4L, 0L) }
         }
+    }
+
+    test("The animation channels are one layout at two displacements") {
+        assertSoftly {
+            AnimRequest.ChannelA.offsets shouldBe AnimRequest.ChannelB.offsets
+            AnimRequest.ChannelA.size shouldBe AnimRequest.ChannelA.size
+            AnimRequest.ChannelA.displacement shouldBe AnimRequest.ChannelB.displacement
+        }
+    }
+
+    test("no pointer but the animation channels displaces") {
+        PTDEPointers.filter { it.displacement != 0L }.map { it.name } shouldBe listOf("AnimRequestA", "AnimRequestB")
     }
 
     test("no two pointers answer to the same name") {
