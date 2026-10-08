@@ -1,0 +1,3700 @@
+{
+ "bank": "chr",
+ "events": [
+  {
+   "type": 0,
+   "name": "ChrActionFlag",
+   "params": [
+    {
+     "type": "s32",
+     "name": "FlagType",
+     "values": [
+      {
+       "value": 0,
+       "name": "Do Nothing"
+      },
+      {
+       "value": 1,
+       "name": "Right Hand Attack Key Input"
+      },
+      {
+       "value": 3,
+       "name": "Guarding",
+       "note": "ArgB:Guard BehaviorJudgeID"
+      },
+      {
+       "value": 4,
+       "name": "Right Hand Attack Anim Cancel"
+      },
+      {
+       "value": 5,
+       "name": "Parry Possible",
+       "note": "ArgC:Unknown"
+      },
+      {
+       "value": 6,
+       "name": "Shield Push Possible"
+      },
+      {
+       "value": 7,
+       "name": "Disable Turning"
+      },
+      {
+       "value": 8,
+       "name": "Invincible"
+      },
+      {
+       "value": 9,
+       "name": "Left Hand Attack Key Input"
+      },
+      {
+       "value": 10,
+       "name": "Magic Key Input"
+      },
+      {
+       "value": 11,
+       "name": "Anim Cancel By Movement Key Input"
+      },
+      {
+       "value": 12,
+       "name": "Death State"
+      },
+      {
+       "value": 13,
+       "name": "?"
+      },
+      {
+       "value": 14,
+       "name": "Right Hand Attack Release Input"
+      },
+      {
+       "value": 15,
+       "name": "Left Hand Attack Release Input"
+      },
+      {
+       "value": 16,
+       "name": "Left Hand Attack Anim Cancel"
+      },
+      {
+       "value": 17,
+       "name": "Anim Cancel After Dealing Damage"
+      },
+      {
+       "value": 18,
+       "name": "Anim Cancel After Successful Parry"
+      },
+      {
+       "value": 19,
+       "name": "Disable Map/Object Collision"
+      },
+      {
+       "value": 20,
+       "name": "Ghost Info Send Start Flag At The Time Of Death"
+      },
+      {
+       "value": 21,
+       "name": "Left Hand Guard Key Input"
+      },
+      {
+       "value": 22,
+       "name": "Left Hand Guard Anim Cancel"
+      },
+      {
+       "value": 23,
+       "name": "AI Continuation Attack Flag"
+      },
+      {
+       "value": 24,
+       "name": "Super Armor"
+      },
+      {
+       "value": 25,
+       "name": "Step Movement Key Input"
+      },
+      {
+       "value": 26,
+       "name": "Step Movement Anim Cancel"
+      },
+      {
+       "value": 27,
+       "name": "Ignore Gravity"
+      },
+      {
+       "value": 28,
+       "name": "Disable Foot IK"
+      },
+      {
+       "value": 29,
+       "name": "Magic Anim Cancel"
+      },
+      {
+       "value": 30,
+       "name": "[x] Item Key Input"
+      },
+      {
+       "value": 31,
+       "name": "Item Anim Cancel"
+      },
+      {
+       "value": 32,
+       "name": "Generic Anim Cancel"
+      },
+      {
+       "value": 35,
+       "name": "First Step Right Hand Attack Key Input"
+      },
+      {
+       "value": 36,
+       "name": "First Step Right Hand Attack Anim Cancel"
+      },
+      {
+       "value": 37,
+       "name": "Left/Right Movement Possible"
+      },
+      {
+       "value": 38,
+       "name": "Flying Character Fall"
+      },
+      {
+       "value": 39,
+       "name": "Disable Enemy Character Collision"
+      },
+      {
+       "value": 40,
+       "name": "Temporary Death State"
+      },
+      {
+       "value": 41,
+       "name": "Gap"
+      },
+      {
+       "value": 42,
+       "name": "Sweet Spot"
+      },
+      {
+       "value": 43,
+       "name": "Enable Foot IK"
+      },
+      {
+       "value": 44,
+       "name": "Disable Event Object Collision"
+      },
+      {
+       "value": 45,
+       "name": "Disable Super Armor"
+      },
+      {
+       "value": 46,
+       "name": "Completely Disable. Cannot Return From Anim."
+      },
+      {
+       "value": 47,
+       "name": "Death State (Same as 12)"
+      },
+      {
+       "value": 48,
+       "name": "Death State (Same as 12)"
+      },
+      {
+       "value": 49,
+       "name": "Disable Lock-On"
+      },
+      {
+       "value": 50,
+       "name": "Disable Character Capsule Collision"
+      },
+      {
+       "value": 51,
+       "name": "Disable Fall Motion"
+      },
+      {
+       "value": 52,
+       "name": "Disable Vertical Movement Sync"
+      },
+      {
+       "value": 53,
+       "name": "Disable Floating Gauge Display"
+      },
+      {
+       "value": 54,
+       "name": "Disable Menu Display"
+      },
+      {
+       "value": 55,
+       "name": "Disable Lock-On Operation"
+      },
+      {
+       "value": 56,
+       "name": "Disable Wall Attack Clang"
+      },
+      {
+       "value": 57,
+       "name": "Disable NPC Wall Attack Clang"
+      },
+      {
+       "value": 58,
+       "name": "?"
+      },
+      {
+       "value": 59,
+       "name": "Attack Weak Spot"
+      },
+      {
+       "value": 60,
+       "name": "Throw Angle Cancel"
+      },
+      {
+       "value": 61,
+       "name": "Disable Y-Axis Of Movement Target"
+      },
+      {
+       "value": 62,
+       "name": "Display Fixed Y-Axis Direction"
+      },
+      {
+       "value": 63,
+       "name": "Parry Timing"
+      },
+      {
+       "value": 64,
+       "name": "Camouflage OK Flag"
+      },
+      {
+       "value": 65,
+       "name": "Extend Special Effects Lifespan"
+      },
+      {
+       "value": 66,
+       "name": "Special Transition"
+      },
+      {
+       "value": 67,
+       "name": "Invincible Excluding Throw Attacks"
+      },
+      {
+       "value": 68,
+       "name": "Invincible Excluding Throw Damage"
+      },
+      {
+       "value": 69,
+       "name": "Throw Death Transition Decision"
+      },
+      {
+       "value": 70,
+       "name": "Throw Escape Transition Decision"
+      },
+      {
+       "value": 71,
+       "name": "SA Break Unrecoverable Flag"
+      },
+      {
+       "value": 72,
+       "name": "Knockback Take-Over Time"
+      },
+      {
+       "value": 73,
+       "name": "Parry Possible State"
+      },
+      {
+       "value": 74,
+       "name": "Ladder Collision Start"
+      },
+      {
+       "value": 75,
+       "name": "Item Acquisition Anim Cancel Possible Start"
+      },
+      {
+       "value": 76,
+       "name": "?"
+      },
+      {
+       "value": 78,
+       "name": "AI Movement Anim Cancel"
+      },
+      {
+       "value": 79,
+       "name": "AI Step Anim Cancel"
+      },
+      {
+       "value": 80,
+       "name": "Item Acquisition Anim Cancel Queue Start"
+      },
+      {
+       "value": 81,
+       "name": "Item Acquisition: Close Button Disable Start"
+      },
+      {
+       "value": 82,
+       "name": "Perfectly Match Ragdoll Pose"
+      },
+      {
+       "value": 83,
+       "name": "Mimicry Force Cancel Flag"
+      },
+      {
+       "value": 84,
+       "name": "Special Transition 2"
+      },
+      {
+       "value": 85,
+       "name": "Light Lantern Weapon"
+      },
+      {
+       "value": 86,
+       "name": "AI Attack Anim Cancel"
+      },
+      {
+       "value": 87,
+       "name": "Common Key Input"
+      },
+      {
+       "value": 88,
+       "name": "Disable Precision Shooting"
+      },
+      {
+       "value": 89,
+       "name": "Completely Disable Movement"
+      },
+      {
+       "value": 90,
+       "name": "No Dash/Run"
+      },
+      {
+       "value": 91,
+       "name": "No Dash"
+      },
+      {
+       "value": 92,
+       "name": "Sky Death Warp Possible"
+      },
+      {
+       "value": 94,
+       "name": "Perfect Invincibility"
+      },
+      {
+       "value": 95,
+       "name": "Disable Shadow Displaying"
+      },
+      {
+       "value": 96,
+       "name": "Set Immortality"
+      },
+      {
+       "value": 97,
+       "name": "Disable Magic / Item Use Anim Cancel Flag"
+      }
+     ]
+    },
+    {
+     "type": "f32",
+     "name": "ArgA"
+    },
+    {
+     "type": "s32",
+     "name": "ArgB"
+    },
+    {
+     "type": "u8",
+     "name": "ArgC"
+    },
+    {
+     "type": "u8",
+     "name": "ArgD"
+    },
+    {
+     "type": "s16",
+     "name": "ArgE"
+    }
+   ]
+  },
+  {
+   "type": 1,
+   "name": "AttackBehavior",
+   "params": [
+    {
+     "type": "s32",
+     "name": "AttackType",
+     "values": [
+      {
+       "value": 0,
+       "name": "Standard"
+      },
+      {
+       "value": 1,
+       "name": "Unknown_InfestedGhoulJumpSlashDS1"
+      },
+      {
+       "value": 2,
+       "name": "ForwardR1"
+      },
+      {
+       "value": 62,
+       "name": "PlungingAttack"
+      },
+      {
+       "value": 64,
+       "name": "Parry"
+      }
+     ]
+    },
+    {
+     "type": "s32",
+     "name": "AttackIndex"
+    },
+    {
+     "type": "s32",
+     "name": "BehaviorJudgeID"
+    }
+   ]
+  },
+  {
+   "type": 2,
+   "name": "BulletBehavior",
+   "params": [
+    {
+     "type": "s32",
+     "name": "DummyPolyID"
+    },
+    {
+     "type": "s32"
+    },
+    {
+     "type": "s32",
+     "name": "BehaviorJudgeID"
+    },
+    {
+     "type": "u8",
+     "name": "AttachmentType"
+    },
+    {
+     "type": "b",
+     "name": "Enable"
+    },
+    {
+     "type": "s16",
+     "name": "StateInfo"
+    }
+   ]
+  },
+  {
+   "type": 5,
+   "name": "CommonBehavior",
+   "params": [
+    {
+     "type": "s32",
+     "name": "AttackIndex (0-8)"
+    },
+    {
+     "type": "s32",
+     "name": "BehaviorJudgeID"
+    }
+   ]
+  },
+  {
+   "type": 16,
+   "name": "Blend",
+   "params": []
+  },
+  {
+   "type": 24,
+   "name": "QueueTransitionAnimation",
+   "params": [
+    {
+     "type": "s32",
+     "name": "Playback Type",
+     "values": [
+      {
+       "value": 0,
+       "name": "Wait For Anim End"
+      },
+      {
+       "value": 1,
+       "name": "Match Playback Time"
+      },
+      {
+       "value": 2,
+       "name": "Immediate"
+      }
+     ]
+    },
+    {
+     "type": "s32",
+     "name": "Destination Anim ID"
+    },
+    {
+     "type": "s32",
+     "name": "Transition Anim ID"
+    },
+    {
+     "type": "s32"
+    }
+   ]
+  },
+  {
+   "type": 32,
+   "name": "SetWeaponStyle",
+   "params": [
+    {
+     "type": "s32",
+     "name": "WeaponStyle",
+     "values": [
+      {
+       "value": 0,
+       "name": "None"
+      },
+      {
+       "value": 1,
+       "name": "Right Weapon One-Handed"
+      },
+      {
+       "value": 2,
+       "name": "Left Weapon Two-Handed"
+      },
+      {
+       "value": 3,
+       "name": "Right Weapon Two-Handed"
+      },
+      {
+       "value": 4,
+       "name": "One-Hand (Left Weapon Transformed)"
+      },
+      {
+       "value": 5,
+       "name": "One-Hand (Right Weapon Transformed)"
+      },
+      {
+       "value": 6,
+       "name": "Unknown"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": 33,
+   "name": "SwitchWeapon",
+   "params": [
+    {
+     "type": "s32",
+     "name": "WeaponSlotID"
+    }
+   ]
+  },
+  {
+   "type": 34,
+   "name": "UnequipCrossbowBolt",
+   "params": [
+    {
+     "type": "s32",
+     "name": "HandType",
+     "values": [
+      {
+       "value": -1,
+       "name": "Both Hands"
+      },
+      {
+       "value": 0,
+       "name": "Left Hand"
+      },
+      {
+       "value": 1,
+       "name": "Right Hand"
+      }
+     ]
+    },
+    {
+     "type": "s32",
+     "assert": "0"
+    },
+    {
+     "type": "s32",
+     "assert": "0"
+    },
+    {
+     "type": "s32",
+     "assert": "0"
+    }
+   ]
+  },
+  {
+   "type": 35,
+   "name": "EquipCrossbowBolt",
+   "params": [
+    {
+     "type": "s32",
+     "name": "HandType",
+     "values": [
+      {
+       "value": -1,
+       "name": "Both Hands"
+      },
+      {
+       "value": 0,
+       "name": "Left Hand"
+      },
+      {
+       "value": 1,
+       "name": "Right Hand"
+      }
+     ]
+    },
+    {
+     "type": "s32",
+     "assert": "0"
+    },
+    {
+     "type": "s32",
+     "assert": "0"
+    },
+    {
+     "type": "s32",
+     "assert": "0"
+    }
+   ]
+  },
+  {
+   "type": 64,
+   "name": "CastHighlightedMagic",
+   "params": [
+    {
+     "type": "s32",
+     "name": "DummyPolyID"
+    },
+    {
+     "type": "b",
+     "name": "Is???"
+    },
+    {
+     "type": "u8",
+     "assert": "0"
+    },
+    {
+     "type": "u8",
+     "assert": "0"
+    },
+    {
+     "type": "u8",
+     "assert": "0"
+    }
+   ]
+  },
+  {
+   "type": 65,
+   "name": "ConsumeCurrentGoods",
+   "params": [
+    {
+     "type": "s32",
+     "name": "DummyPolyID"
+    }
+   ]
+  },
+  {
+   "type": 66,
+   "name": "AddSpEffect_Multiplayer",
+   "params": [
+    {
+     "type": "s32",
+     "name": "SpEffectID"
+    }
+   ]
+  },
+  {
+   "type": 67,
+   "name": "AddSpEffect",
+   "params": [
+    {
+     "type": "s32",
+     "name": "SpEffectID"
+    }
+   ]
+  },
+  {
+   "type": 96,
+   "name": "SpawnOneShotFFX",
+   "params": [
+    {
+     "type": "s32",
+     "name": "FFXID"
+    },
+    {
+     "type": "s32",
+     "name": "DummyPolyID"
+    },
+    {
+     "type": "s32",
+     "name": "SlotID"
+    }
+   ]
+  },
+  {
+   "type": 99,
+   "name": "SpawnFFX_99",
+   "params": [
+    {
+     "type": "s32",
+     "name": "FFXID"
+    },
+    {
+     "type": "s32",
+     "name": "DummyPolyID"
+    },
+    {
+     "type": "s32",
+     "name": "SlotID"
+    }
+   ]
+  },
+  {
+   "type": 100,
+   "name": "SpawnFFX_100",
+   "params": [
+    {
+     "type": "s32",
+     "name": "FFXID"
+    },
+    {
+     "type": "s32",
+     "name": "DummyPolyID"
+    },
+    {
+     "type": "s32",
+     "name": "SlotID"
+    }
+   ]
+  },
+  {
+   "type": 101,
+   "name": "SpawnFFX_General",
+   "params": [
+    {
+     "type": "s32",
+     "name": "FFXID"
+    }
+   ]
+  },
+  {
+   "type": 104,
+   "name": "SpawnFFX_Unk104",
+   "params": [
+    {
+     "type": "s32",
+     "name": "FFXID"
+    },
+    {
+     "type": "s32",
+     "name": "DummyPolyID"
+    },
+    {
+     "type": "s32",
+     "name": "SlotID"
+    }
+   ]
+  },
+  {
+   "type": 108,
+   "name": "SpawnFFX_108",
+   "params": [
+    {
+     "type": "s32",
+     "name": "FFXID"
+    },
+    {
+     "type": "s32",
+     "name": "DummyPolyID"
+    },
+    {
+     "type": "s32",
+     "name": "SlotID"
+    }
+   ]
+  },
+  {
+   "type": 109,
+   "name": "SpawnFFX_109",
+   "params": [
+    {
+     "type": "s32",
+     "name": "FFXID"
+    },
+    {
+     "type": "s32",
+     "name": "DummyPolyID"
+    },
+    {
+     "type": "s32",
+     "name": "SlotID"
+    }
+   ]
+  },
+  {
+   "type": 110,
+   "name": "SpawnFFX_110",
+   "params": [
+    {
+     "type": "s32",
+     "name": "FFXID"
+    }
+   ]
+  },
+  {
+   "type": 112,
+   "name": "SpawnFFX_ByFloor",
+   "params": [
+    {
+     "type": "s32",
+     "name": "FFXID"
+    },
+    {
+     "type": "s32",
+     "name": "DummyPolyID"
+    }
+   ]
+  },
+  {
+   "type": 114,
+   "name": "SpawnFFX_GoodsAndMagic",
+   "params": [
+    {
+     "type": "s32",
+     "name": "FFXID"
+    },
+    {
+     "type": "s16",
+     "name": "DummyPolySource",
+     "values": [
+      {
+       "value": 0,
+       "name": "Body"
+      },
+      {
+       "value": 1,
+       "name": "Left Weapon"
+      },
+      {
+       "value": 2,
+       "name": "Right Weapon"
+      }
+     ]
+    },
+    {
+     "type": "s16",
+     "name": "DummyPolyID"
+    },
+    {
+     "type": "s32",
+     "name": "SlotID"
+    }
+   ]
+  },
+  {
+   "type": 115,
+   "name": "SpawnFFX_GoodsAndMagic2",
+   "params": [
+    {
+     "type": "s32",
+     "name": "FFXID"
+    },
+    {
+     "type": "s16",
+     "name": "DummyPolySource",
+     "values": [
+      {
+       "value": 0,
+       "name": "Body"
+      },
+      {
+       "value": 1,
+       "name": "Left Weapon"
+      },
+      {
+       "value": 2,
+       "name": "Right Weapon"
+      }
+     ]
+    },
+    {
+     "type": "s16",
+     "name": "DummyPolyID"
+    },
+    {
+     "type": "s32",
+     "name": "SlotID"
+    }
+   ]
+  },
+  {
+   "type": 116,
+   "name": "SpawnFFX_116",
+   "params": [
+    {
+     "type": "s32",
+     "name": "FFXID_Plus_SomeShortFromMemory"
+    },
+    {
+     "type": "s32",
+     "name": "DummyPolyID"
+    },
+    {
+     "type": "s32",
+     "name": "SlotID"
+    }
+   ]
+  },
+  {
+   "type": 118,
+   "name": "SpawnFFX_Blade",
+   "params": [
+    {
+     "type": "s32",
+     "name": "FFXID"
+    },
+    {
+     "type": "s16",
+     "name": "DummyPolySource",
+     "values": [
+      {
+       "value": 0,
+       "name": "Body"
+      },
+      {
+       "value": 1,
+       "name": "Left Weapon"
+      },
+      {
+       "value": 2,
+       "name": "Right Weapon"
+      }
+     ]
+    },
+    {
+     "type": "s16",
+     "name": "DummyPolyBladeBaseID"
+    },
+    {
+     "type": "s16",
+     "name": "DummyPolyBladeTipID"
+    },
+    {
+     "type": "s16",
+     "name": "SlotID"
+    }
+   ]
+  },
+  {
+   "type": 119,
+   "name": "SpawnFFX_Body_ForEventDuration",
+   "params": [
+    {
+     "type": "s32",
+     "name": "FFXID"
+    },
+    {
+     "type": "s16",
+     "name": "DummyPolyID"
+    },
+    {
+     "type": "s16"
+    },
+    {
+     "type": "s32",
+     "name": "RepeatType",
+     "values": [
+      {
+       "value": 0,
+       "name": "PlayOnce"
+      },
+      {
+       "value": 1,
+       "name": "PlayTwice"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": 120,
+   "name": "SpawnFFX_ChrType",
+   "params": [
+    {
+     "type": "s32",
+     "name": "FFXID_MAIN"
+    },
+    {
+     "type": "s32",
+     "name": "FFXID_GreyGhost"
+    },
+    {
+     "type": "s32",
+     "name": "FFXID_WhiteGhost"
+    },
+    {
+     "type": "s32",
+     "name": "FFXID_BlackGhost"
+    },
+    {
+     "type": "s32",
+     "name": "DummyPolyID"
+    },
+    {
+     "type": "s32",
+     "name": "SlotID"
+    }
+   ]
+  },
+  {
+   "type": 121,
+   "name": "SpawnFFX_121",
+   "params": [
+    {
+     "type": "s32",
+     "name": "FFXID"
+    },
+    {
+     "type": "s16",
+     "name": "DummyPolyID"
+    },
+    {
+     "type": "u8"
+    },
+    {
+     "type": "u8"
+    }
+   ]
+  },
+  {
+   "type": 128,
+   "name": "PlaySound_CenterBody",
+   "params": [
+    {
+     "type": "s32",
+     "name": "SoundType",
+     "values": [
+      {
+       "value": 0,
+       "name": "(a) Environment"
+      },
+      {
+       "value": 1,
+       "name": "(c) Character"
+      },
+      {
+       "value": 2,
+       "name": "(f) Menu SE"
+      },
+      {
+       "value": 3,
+       "name": "(o) Object"
+      },
+      {
+       "value": 4,
+       "name": "(p) Cutscene SE"
+      },
+      {
+       "value": 5,
+       "name": "(s) SFX"
+      },
+      {
+       "value": 6,
+       "name": "(m) BGM"
+      },
+      {
+       "value": 7,
+       "name": "(v) Voice"
+      },
+      {
+       "value": 8,
+       "name": "(x) Floor Material Determined"
+      },
+      {
+       "value": 9,
+       "name": "(b) Armor Material Determined"
+      },
+      {
+       "value": 10,
+       "name": "(g) Ghost"
+      }
+     ]
+    },
+    {
+     "type": "s32",
+     "name": "SoundID"
+    }
+   ]
+  },
+  {
+   "type": 129,
+   "name": "PlaySound_BySlot",
+   "params": [
+    {
+     "type": "s32",
+     "name": "SoundType",
+     "values": [
+      {
+       "value": 0,
+       "name": "(a) Environment"
+      },
+      {
+       "value": 1,
+       "name": "(c) Character"
+      },
+      {
+       "value": 2,
+       "name": "(f) Menu SE"
+      },
+      {
+       "value": 3,
+       "name": "(o) Object"
+      },
+      {
+       "value": 4,
+       "name": "(p) Cutscene SE"
+      },
+      {
+       "value": 5,
+       "name": "(s) SFX"
+      },
+      {
+       "value": 6,
+       "name": "(m) BGM"
+      },
+      {
+       "value": 7,
+       "name": "(v) Voice"
+      },
+      {
+       "value": 8,
+       "name": "(x) Floor Material Determined"
+      },
+      {
+       "value": 9,
+       "name": "(b) Armor Material Determined"
+      },
+      {
+       "value": 10,
+       "name": "(g) Ghost"
+      }
+     ]
+    },
+    {
+     "type": "s32",
+     "name": "SoundID"
+    },
+    {
+     "type": "s32",
+     "name": "DummyPolyID"
+    },
+    {
+     "type": "s32",
+     "name": "SlotID"
+    }
+   ]
+  },
+  {
+   "type": 130,
+   "name": "PlaySound_ByDummyPoly_PlayerVoice",
+   "params": [
+    {
+     "type": "s32",
+     "name": "SoundType",
+     "values": [
+      {
+       "value": 0,
+       "name": "(a) Environment"
+      },
+      {
+       "value": 1,
+       "name": "(c) Character"
+      },
+      {
+       "value": 2,
+       "name": "(f) Menu SE"
+      },
+      {
+       "value": 3,
+       "name": "(o) Object"
+      },
+      {
+       "value": 4,
+       "name": "(p) Cutscene SE"
+      },
+      {
+       "value": 5,
+       "name": "(s) SFX"
+      },
+      {
+       "value": 6,
+       "name": "(m) BGM"
+      },
+      {
+       "value": 7,
+       "name": "(v) Voice"
+      },
+      {
+       "value": 8,
+       "name": "(x) Floor Material Determined"
+      },
+      {
+       "value": 9,
+       "name": "(b) Armor Material Determined"
+      },
+      {
+       "value": 10,
+       "name": "(g) Ghost"
+      }
+     ]
+    },
+    {
+     "type": "s32",
+     "name": "SoundID"
+    },
+    {
+     "type": "s32",
+     "name": "DummyPolyID"
+    },
+    {
+     "type": "s32",
+     "name": "SlotID"
+    }
+   ]
+  },
+  {
+   "type": 144,
+   "name": "RumbleCam_Local",
+   "params": [
+    {
+     "type": "s16",
+     "name": "RumbleCamID"
+    },
+    {
+     "type": "u16",
+     "name": "DummyPolyID"
+    },
+    {
+     "type": "f32",
+     "name": "FalloffStart"
+    },
+    {
+     "type": "f32",
+     "name": "FalloffEnd"
+    }
+   ]
+  },
+  {
+   "type": 145,
+   "name": "RumbleCam_Global",
+   "params": [
+    {
+     "type": "s16",
+     "name": "RumbleCamID"
+    },
+    {
+     "type": "u16",
+     "name": "Condition",
+     "values": [
+      {
+       "value": 0,
+       "name": "Unconditional"
+      },
+      {
+       "value": 1,
+       "name": "OnGround"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": 192,
+   "name": "DebugFadeOut",
+   "params": [
+    {
+     "type": "f32",
+     "name": "FadeOut"
+    },
+    {
+     "type": "s32",
+     "assert": "0"
+    },
+    {
+     "type": "s32",
+     "assert": "0"
+    },
+    {
+     "type": "s32",
+     "assert": "0"
+    }
+   ]
+  },
+  {
+   "type": 193,
+   "name": "SetOpacityKeyframe",
+   "params": [
+    {
+     "type": "f32",
+     "name": "OpacityAtEventStart"
+    },
+    {
+     "type": "f32",
+     "name": "OpacityAtEventEnd"
+    }
+   ]
+  },
+  {
+   "type": 224,
+   "name": "SetTurnSpeed",
+   "params": [
+    {
+     "type": "f32",
+     "name": "TurnSpeed"
+    }
+   ]
+  },
+  {
+   "type": 225,
+   "name": "SetSPRegenRatePercent",
+   "params": [
+    {
+     "type": "u8",
+     "name": "RegenRatePercent"
+    },
+    {
+     "type": "u8",
+     "assert": "0"
+    },
+    {
+     "type": "u8",
+     "assert": "0"
+    },
+    {
+     "type": "u8",
+     "assert": "0"
+    }
+   ]
+  },
+  {
+   "type": 226,
+   "name": "SetKnockbackPercent",
+   "params": [
+    {
+     "type": "u8",
+     "name": "KnockbackPercent"
+    },
+    {
+     "type": "u8",
+     "assert": "0"
+    },
+    {
+     "type": "u8",
+     "assert": "0"
+    },
+    {
+     "type": "u8",
+     "assert": "0"
+    }
+   ]
+  },
+  {
+   "type": 227,
+   "name": "EventEzStateFlag<ESD_env301>",
+   "params": [
+    {
+     "type": "s32",
+     "name": "EzStateFlagID"
+    }
+   ]
+  },
+  {
+   "type": 228,
+   "name": "RagdollReviveTime",
+   "params": [
+    {
+     "type": "f32",
+     "name": "ReviveTimerExtra"
+    },
+    {
+     "type": "f32",
+     "name": "ReviveTimer"
+    }
+   ]
+  },
+  {
+   "type": 229,
+   "name": "SpawnAISound",
+   "params": [
+    {
+     "type": "s32",
+     "name": "AISoundID"
+    }
+   ]
+  },
+  {
+   "type": 230,
+   "name": "SetMPRegenRatePercent",
+   "params": [
+    {
+     "type": "u8",
+     "name": "RegenRatePercent"
+    },
+    {
+     "type": "u8",
+     "assert": "0"
+    },
+    {
+     "type": "u8",
+     "assert": "0"
+    },
+    {
+     "type": "u8",
+     "assert": "0"
+    }
+   ]
+  },
+  {
+   "type": 231,
+   "name": "SendEzStateRequest",
+   "params": [
+    {
+     "type": "s32",
+     "name": "EzStateRequestID"
+    }
+   ]
+  },
+  {
+   "type": 232,
+   "name": "AllowVerticalTorsoAim",
+   "params": [
+    {
+     "type": "u8",
+     "name": "UpwardAngleLimit"
+    },
+    {
+     "type": "u8",
+     "name": "DownwardAngleLimit"
+    },
+    {
+     "type": "u8",
+     "name": "UpwardAngleThreshold"
+    },
+    {
+     "type": "u8",
+     "name": "DownwardAngleThreshold"
+    }
+   ]
+  },
+  {
+   "type": 233,
+   "name": "ChangeChrDrawMask",
+   "params": [
+    {
+     "type": "u8",
+     "name": "Mask0"
+    },
+    {
+     "type": "u8",
+     "name": "Mask1"
+    },
+    {
+     "type": "u8",
+     "name": "Mask2"
+    },
+    {
+     "type": "u8",
+     "name": "Mask3"
+    },
+    {
+     "type": "u8",
+     "name": "Mask4"
+    },
+    {
+     "type": "u8",
+     "name": "Mask5"
+    },
+    {
+     "type": "u8",
+     "name": "Mask6"
+    },
+    {
+     "type": "u8",
+     "name": "Mask7"
+    }
+   ]
+  },
+  {
+   "type": 234,
+   "name": "AddOffsetToNextAnimID",
+   "params": [
+    {
+     "type": "s32",
+     "name": "Offset"
+    }
+   ]
+  },
+  {
+   "type": 235,
+   "name": "Action235",
+   "params": [
+    {
+     "type": "b",
+     "name": "Mask0"
+    },
+    {
+     "type": "b",
+     "name": "Mask1"
+    },
+    {
+     "type": "b",
+     "name": "Mask2"
+    },
+    {
+     "type": "b",
+     "name": "Mask3"
+    },
+    {
+     "type": "b",
+     "name": "Mask4"
+    },
+    {
+     "type": "b",
+     "name": "Mask5"
+    },
+    {
+     "type": "b",
+     "name": "Mask6"
+    },
+    {
+     "type": "b",
+     "name": "Mask7"
+    }
+   ]
+  },
+  {
+   "type": 236,
+   "name": "RootMotionReduction",
+   "params": [
+    {
+     "type": "f32",
+     "name": "ReductionAtEventStart"
+    },
+    {
+     "type": "f32",
+     "name": "ReductionAtEventEnd"
+    },
+    {
+     "type": "u8",
+     "name": "ReductionType"
+    },
+    {
+     "type": "u8",
+     "assert": "0"
+    },
+    {
+     "type": "u8",
+     "assert": "0"
+    },
+    {
+     "type": "u8",
+     "assert": "0"
+    }
+   ]
+  },
+  {
+   "type": 300,
+   "name": "ChrActionGradient",
+   "params": [
+    {
+     "type": "s16",
+     "name": "OutputType",
+     "values": [
+      {
+       "value": 4,
+       "name": "Flag 4 - RH Anim Cancel"
+      },
+      {
+       "value": 11,
+       "name": "Flag 11 - Movement Anim Cancel"
+      },
+      {
+       "value": 16,
+       "name": "Flag 16 - LH Atk Anim Cancel"
+      },
+      {
+       "value": 22,
+       "name": "Flag 22 - LH Guard Anim Cancel"
+      },
+      {
+       "value": 26,
+       "name": "Flag 26 - Dodge Anim Cancel"
+      },
+      {
+       "value": 27,
+       "name": "Gravity Multiplier"
+      },
+      {
+       "value": 29,
+       "name": "Flag 29 - Magic Anim Cancel"
+      },
+      {
+       "value": 31,
+       "name": "Flag 31 - Goods Anim Cancel"
+      },
+      {
+       "value": 32,
+       "name": "Flag 32 - Generic Anim Cancel"
+      },
+      {
+       "value": 93,
+       "name": "Unknown Action Flag"
+      }
+     ]
+    },
+    {
+     "type": "s16",
+     "name": "InputType",
+     "values": [
+      {
+       "value": 0,
+       "name": "Default (0)"
+      },
+      {
+       "value": 1,
+       "name": "Equip Load"
+      },
+      {
+       "value": 1,
+       "name": "Equip Weight Ratio"
+      },
+      {
+       "value": 3,
+       "name": "Compressed Damage Rate?"
+      },
+      {
+       "value": 2,
+       "name": "Weapon Weight Ratio"
+      },
+      {
+       "value": 5,
+       "name": "Dexterity Casting Speed"
+      },
+      {
+       "value": 3,
+       "name": "Damage Rate"
+      },
+      {
+       "value": 4,
+       "name": "Unused Value (Always 0)"
+      },
+      {
+       "value": 5,
+       "name": "Cast Speed"
+      }
+     ]
+    },
+    {
+     "type": "f32grad",
+     "name": "InputGradient"
+    },
+    {
+     "type": "s16",
+     "assert": "0"
+    },
+    {
+     "type": "s16",
+     "assert": "0"
+    }
+   ]
+  },
+  {
+   "type": 301,
+   "name": "Event301",
+   "params": [
+    {
+     "type": "s32"
+    }
+   ]
+  },
+  {
+   "type": 302,
+   "name": "AddSpEffect_DragonForm",
+   "params": [
+    {
+     "type": "s32",
+     "name": "SpEffectID"
+    }
+   ]
+  },
+  {
+   "type": 303,
+   "name": "PlayAnimation",
+   "params": [
+    {
+     "type": "s32",
+     "name": "AnimID"
+    }
+   ]
+  },
+  {
+   "type": 304,
+   "name": "ThrowAttackBehavior",
+   "params": [
+    {
+     "type": "u16"
+    },
+    {
+     "type": "s16",
+     "name": "Index"
+    },
+    {
+     "type": "s32",
+     "name": "BehaviorJudgeID"
+    }
+   ]
+  },
+  {
+   "type": 305,
+   "name": "AdditionalPoiseMult",
+   "params": [
+    {
+     "type": "f32",
+     "name": "AdditionalMult"
+    }
+   ]
+  },
+  {
+   "type": 306,
+   "name": "SetPhysicsDampen",
+   "params": [
+    {
+     "type": "f32grad",
+     "name": "Dampening"
+    },
+    {
+     "type": "s32",
+     "name": "Mask"
+    }
+   ]
+  },
+  {
+   "type": 307,
+   "name": "PCBehavior",
+   "params": [
+    {
+     "type": "u16"
+    },
+    {
+     "type": "u16"
+    },
+    {
+     "type": "s32",
+     "name": "PCBehaviorType"
+    },
+    {
+     "type": "s32",
+     "name": "BehaviorJudgeID"
+    }
+   ]
+  },
+  {
+   "type": 308,
+   "name": "Action308",
+   "params": [
+    {
+     "type": "f32"
+    }
+   ]
+  },
+  {
+   "type": 401,
+   "name": "AddSpEffect_Multiplayer_401",
+   "params": [
+    {
+     "type": "s32",
+     "name": "SpEffectID"
+    }
+   ]
+  },
+  {
+   "type": 500,
+   "name": "IgnoreHitsPartsMask",
+   "params": [
+    {
+     "type": "u8",
+     "name": "HitPartsMaskID"
+    },
+    {
+     "type": "u8",
+     "assert": "0"
+    },
+    {
+     "type": "u8",
+     "assert": "0"
+    },
+    {
+     "type": "u8",
+     "assert": "0"
+    }
+   ]
+  },
+  {
+   "type": 7000,
+   "name": "NF_MoveTowardTarget_Old",
+   "params": [
+    {
+     "type": "f32grad",
+     "name": "Speed"
+    },
+    {
+     "type": "f32",
+     "name": "ZOffset"
+    }
+   ]
+  },
+  {
+   "type": 7001,
+   "name": "NF_Test_SetUpperBodyAnim",
+   "params": [
+    {
+     "type": "s32",
+     "name": "AnimID"
+    },
+    {
+     "type": "s32",
+     "name": "LayerIndex"
+    },
+    {
+     "type": "f32"
+    }
+   ]
+  },
+  {
+   "type": 7002,
+   "name": "NF_SpawnSfxEx",
+   "params": [
+    {
+     "type": "s32",
+     "name": "SFX Function Type",
+     "values": [
+      {
+       "value": 0,
+       "name": "SpawnFFX_TypeA(TimerID, FFXID, DummyPolyID, UnknownFlag)"
+      },
+      {
+       "value": 1,
+       "name": "SpawnFFX_TypeB(TimerID, FFXID, UnknownSByte, DummyPolyID, UnknownFlag)"
+      },
+      {
+       "value": 2,
+       "name": "SpawnFFX_TypeC(TimerID, FFXID, UnknownSByte, DummyPolyID, UnknownFlag)"
+      },
+      {
+       "value": 3,
+       "name": "SpawnFFX_TypeD(TimerID, FFXID, UnknownSByte, DummyPolyID, UnknownFlag)"
+      },
+      {
+       "value": 4,
+       "name": "SpawnFFX_TypeE(TimerID, FFXID, UnknownSByte, DummyPolyID, UnknownFlag)"
+      },
+      {
+       "value": 5,
+       "name": "SpawnFFX_TypeF(TimerID, FFXID, UnknownSByte, DummyPolyID, UnknownFlag)"
+      }
+     ]
+    },
+    {
+     "type": "s32",
+     "name": "FFXID"
+    },
+    {
+     "type": "s16",
+     "name": "DummyPolyID"
+    },
+    {
+     "type": "s32",
+     "name": "TimerID"
+    },
+    {
+     "type": "s8",
+     "name": "UnknownSByte"
+    },
+    {
+     "type": "b",
+     "name": "UnknownFlag"
+    }
+   ]
+  },
+  {
+   "type": 7003,
+   "name": "[Unfinished]NF_PlaySoundEx",
+   "params": [
+    {
+     "type": "s32",
+     "name": "SoundType",
+     "values": [
+      {
+       "value": 0,
+       "name": "(a) Environment"
+      },
+      {
+       "value": 1,
+       "name": "(c) Character"
+      },
+      {
+       "value": 2,
+       "name": "(f) Menu SE"
+      },
+      {
+       "value": 3,
+       "name": "(o) Object"
+      },
+      {
+       "value": 4,
+       "name": "(p) Cutscene SE"
+      },
+      {
+       "value": 5,
+       "name": "(s) SFX"
+      },
+      {
+       "value": 6,
+       "name": "(m) BGM"
+      },
+      {
+       "value": 7,
+       "name": "(v) Voice"
+      },
+      {
+       "value": 8,
+       "name": "(x) Floor Material Determined"
+      },
+      {
+       "value": 9,
+       "name": "(b) Armor Material Determined"
+      },
+      {
+       "value": 10,
+       "name": "(g) Ghost"
+      }
+     ]
+    },
+    {
+     "type": "s32",
+     "name": "SoundID"
+    },
+    {
+     "type": "s32",
+     "name": "DummyPolyID"
+    },
+    {
+     "type": "s32",
+     "name": "SlotID"
+    },
+    {
+     "type": "s32",
+     "name": "RequiredSpEffectID"
+    }
+   ]
+  },
+  {
+   "type": 7004,
+   "name": "[Unfinished]NF_SpawnEntityPlayingSpecificAnimation",
+   "params": [
+    {
+     "type": "u8",
+     "name": "SpawnFromCharacter",
+     "values": [
+      {
+       "value": 0,
+       "name": "Self"
+      },
+      {
+       "value": 1,
+       "name": "Target"
+      },
+      {
+       "value": 2,
+       "name": "RandomPlayer"
+      }
+     ]
+    },
+    {
+     "type": "s32",
+     "name": "SpawnDummyPolyID"
+    },
+    {
+     "type": "f32",
+     "name": "SpawnOffsetX"
+    },
+    {
+     "type": "f32",
+     "name": "SpawnOffsetY"
+    },
+    {
+     "type": "f32",
+     "name": "SpawnOffsetZ"
+    },
+    {
+     "type": "s32",
+     "name": "EntityIDRangeStart"
+    },
+    {
+     "type": "s32",
+     "name": "EntityIDRangeEnd"
+    },
+    {
+     "type": "s32",
+     "name": "DummyPolyID"
+    },
+    {
+     "type": "s32",
+     "name": "SlotID"
+    },
+    {
+     "type": "s32",
+     "name": "RequiredSpEffectID"
+    }
+   ]
+  },
+  {
+   "type": 7005,
+   "name": "NF_AdvancedTracking",
+   "params": [
+    {
+     "type": "f32grad",
+     "name": "Speed"
+    },
+    {
+     "type": "f32grad",
+     "name": "Offset"
+    }
+   ]
+  },
+  {
+   "type": 7006,
+   "name": "NF_AdvancedTracking_Cos180",
+   "params": [
+    {
+     "type": "f32grad",
+     "name": "Speed"
+    },
+    {
+     "type": "f32grad",
+     "name": "Offset"
+    }
+   ]
+  },
+  {
+   "type": 7007,
+   "name": "NF_MoveRelative",
+   "params": [
+    {
+     "type": "f32",
+     "name": "SpeedAtEventStart.X"
+    },
+    {
+     "type": "f32",
+     "name": "SpeedAtEventStart.Y"
+    },
+    {
+     "type": "f32",
+     "name": "SpeedAtEventStart.Z"
+    },
+    {
+     "type": "f32",
+     "name": "SpeedAtEventEnd.X"
+    },
+    {
+     "type": "f32",
+     "name": "SpeedAtEventEnd.Y"
+    },
+    {
+     "type": "f32",
+     "name": "SpeedAtEventEnd.Z"
+    },
+    {
+     "type": "u8",
+     "name": "MoveRelativeTo",
+     "values": [
+      {
+       "value": 0,
+       "name": "Self Facing Direction"
+      },
+      {
+       "value": 1,
+       "name": "Direction To Target"
+      },
+      {
+       "value": 2,
+       "name": "Direction To Target If Possible\r\nOtherwise Self Facing Direction"
+      }
+     ]
+    },
+    {
+     "type": "b",
+     "name": "CancelIfNoTarget"
+    },
+    {
+     "type": "u8",
+     "name": "CurveType",
+     "values": [
+      {
+       "value": 0,
+       "name": "Linear"
+      },
+      {
+       "value": 1,
+       "name": "Cos180"
+      },
+      {
+       "value": 2,
+       "name": "Sin90"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": 7008,
+   "name": "NF_ManipulateCamera",
+   "params": [
+    {
+     "type": "u8",
+     "name": "CurveType",
+     "values": [
+      {
+       "value": 0,
+       "name": "Linear"
+      },
+      {
+       "value": 1,
+       "name": "Cos180"
+      },
+      {
+       "value": 2,
+       "name": "Sin90"
+      }
+     ]
+    },
+    {
+     "type": "f32grad",
+     "name": "CamDistTarget"
+    },
+    {
+     "type": "f32grad",
+     "name": "CamVerticalOffset"
+    },
+    {
+     "type": "f32grad",
+     "name": "FOV"
+    },
+    {
+     "type": "s32",
+     "assert": "0"
+    },
+    {
+     "type": "s32",
+     "assert": "0"
+    },
+    {
+     "type": "s32",
+     "assert": "0"
+    },
+    {
+     "type": "s32",
+     "assert": "0"
+    },
+    {
+     "type": "s32",
+     "assert": "0"
+    },
+    {
+     "type": "s32",
+     "assert": "0"
+    },
+    {
+     "type": "s32",
+     "assert": "0"
+    },
+    {
+     "type": "s32",
+     "assert": "0"
+    }
+   ]
+  },
+  {
+   "type": 7009,
+   "name": "NF_TempBreakLockonAndKeepTarget",
+   "params": []
+  },
+  {
+   "type": 7010,
+   "name": "NF_DebugSpeedGradient",
+   "params": [
+    {
+     "type": "f32grad",
+     "name": "Speed"
+    },
+    {
+     "type": "u8",
+     "name": "CurveType",
+     "values": [
+      {
+       "value": 0,
+       "name": "Linear"
+      },
+      {
+       "value": 1,
+       "name": "Cos180"
+      },
+      {
+       "value": 2,
+       "name": "Sin90"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": 7011,
+   "name": "NF_Approach",
+   "params": [
+    {
+     "type": "f32grad",
+     "name": "Speed"
+    },
+    {
+     "type": "f32grad",
+     "name": "Dist"
+    },
+    {
+     "type": "f32grad",
+     "name": "Dampening"
+    },
+    {
+     "type": "f32grad",
+     "name": "Speed"
+    },
+    {
+     "type": "f32grad",
+     "name": "Dist"
+    },
+    {
+     "type": "f32grad",
+     "name": "Dampening"
+    }
+   ]
+  },
+  {
+   "type": 7012,
+   "name": "NF_Teleport",
+   "params": [
+    {
+     "type": "f32grad",
+     "name": "HorizontalAngle"
+    },
+    {
+     "type": "f32grad",
+     "name": "VerticalAngle"
+    },
+    {
+     "type": "f32grad",
+     "name": "Distance"
+    },
+    {
+     "type": "b",
+     "name": "Turn to face target"
+    },
+    {
+     "type": "s32",
+     "name": "Required SpEffect"
+    }
+   ]
+  },
+  {
+   "type": 7013,
+   "name": "NF_TEST_MoveTargetToDummyPoly",
+   "params": [
+    {
+     "type": "s32",
+     "name": "SelfDummyPolyID"
+    },
+    {
+     "type": "s32",
+     "name": "TargetDummyPolyID"
+    },
+    {
+     "type": "f32grad",
+     "name": "Speed"
+    },
+    {
+     "type": "f32grad",
+     "name": "Dampening"
+    },
+    {
+     "type": "b",
+     "name": "Match Rotation X"
+    },
+    {
+     "type": "b",
+     "name": "Match Rotation Y"
+    },
+    {
+     "type": "b",
+     "name": "Match Rotation Z"
+    },
+    {
+     "type": "u8"
+    },
+    {
+     "type": "s32"
+    }
+   ]
+  },
+  {
+   "type": 7014,
+   "name": "NF_ForcePlayAnimation",
+   "params": [
+    {
+     "type": "s32",
+     "name": "CharacterType",
+     "values": [
+      {
+       "value": 0,
+       "name": "Self"
+      },
+      {
+       "value": 1,
+       "name": "Target"
+      },
+      {
+       "value": 2,
+       "name": "Local Player"
+      }
+     ]
+    },
+    {
+     "type": "s32",
+     "name": "AnimationID"
+    },
+    {
+     "type": "u8",
+     "name": "Flags"
+    }
+   ]
+  },
+  {
+   "type": 7015,
+   "name": "NF_TEST_PlaySound",
+   "params": [
+    {
+     "type": "s32",
+     "name": "SlotNo"
+    },
+    {
+     "type": "s32",
+     "name": "SoundType",
+     "values": [
+      {
+       "value": 0,
+       "name": "(a) Environment"
+      },
+      {
+       "value": 1,
+       "name": "(c) Character"
+      },
+      {
+       "value": 2,
+       "name": "(f) Menu SE"
+      },
+      {
+       "value": 3,
+       "name": "(o) Object"
+      },
+      {
+       "value": 4,
+       "name": "(p) Cutscene SE"
+      },
+      {
+       "value": 5,
+       "name": "(s) SFX"
+      },
+      {
+       "value": 6,
+       "name": "(m) BGM"
+      },
+      {
+       "value": 7,
+       "name": "(v) Voice"
+      },
+      {
+       "value": 8,
+       "name": "(x) Floor Material Determined"
+      },
+      {
+       "value": 9,
+       "name": "(b) Armor Material Determined"
+      },
+      {
+       "value": 10,
+       "name": "(g) Ghost"
+      }
+     ]
+    },
+    {
+     "type": "s32",
+     "name": "SoundID"
+    },
+    {
+     "type": "s32"
+    },
+    {
+     "type": "s32",
+     "name": "DummyPolyID"
+    },
+    {
+     "type": "u8"
+    }
+   ]
+  },
+  {
+   "type": 7016,
+   "name": "NF_JumpingOntoRideMotionBlendZX",
+   "params": [
+    {
+     "type": "f32grad",
+     "name": "Blend"
+    }
+   ]
+  },
+  {
+   "type": 7017,
+   "name": "[X]NF_PlayerRootMotionMultEx",
+   "params": [
+    {
+     "type": "f32grad",
+     "name": "X"
+    },
+    {
+     "type": "f32grad",
+     "name": "Y"
+    },
+    {
+     "type": "f32grad",
+     "name": "Z"
+    }
+   ]
+  },
+  {
+   "type": 7018,
+   "name": "NF_JumpingOntoRideMotionBlendY",
+   "params": [
+    {
+     "type": "f32grad",
+     "name": "Blend"
+    }
+   ]
+  },
+  {
+   "type": 7019,
+   "name": "NF_Action303_PlayAnimation_Ex",
+   "params": [
+    {
+     "type": "s32",
+     "name": "CharacterType",
+     "values": [
+      {
+       "value": 0,
+       "name": "Self"
+      },
+      {
+       "value": 1,
+       "name": "Target"
+      },
+      {
+       "value": 2,
+       "name": "Local Player"
+      }
+     ]
+    },
+    {
+     "type": "s32",
+     "name": "AnimationID"
+    },
+    {
+     "type": "s32",
+     "name": "AnimLayerType"
+    },
+    {
+     "type": "f32",
+     "name": "Weight Maybe"
+    }
+   ]
+  },
+  {
+   "type": 7020,
+   "name": "NF_SetAnimLayerDirectly",
+   "params": [
+    {
+     "type": "s32",
+     "name": "CharacterType",
+     "values": [
+      {
+       "value": 0,
+       "name": "Self"
+      },
+      {
+       "value": 1,
+       "name": "Target"
+      },
+      {
+       "value": 2,
+       "name": "Local Player"
+      }
+     ]
+    },
+    {
+     "type": "s32",
+     "name": "AnimationID"
+    },
+    {
+     "type": "s32",
+     "name": "AnimLayerType",
+     "values": [
+      {
+       "value": 0,
+       "name": "Upper_Wait"
+      },
+      {
+       "value": 1,
+       "name": "Upper_SpWait"
+      },
+      {
+       "value": 2,
+       "name": "Upper_WalkLR"
+      },
+      {
+       "value": 3,
+       "name": "Upper_Turn"
+      },
+      {
+       "value": 4,
+       "name": "Upper_Guard"
+      },
+      {
+       "value": 5,
+       "name": "Upper_Attack"
+      },
+      {
+       "value": 6,
+       "name": "Upper_SpecialAttack"
+      },
+      {
+       "value": 7,
+       "name": "Upper_Action"
+      },
+      {
+       "value": 8,
+       "name": "Upper_Damage_S"
+      },
+      {
+       "value": 9,
+       "name": "Upper_Event"
+      },
+      {
+       "value": 10,
+       "name": "Upper_Damage_L"
+      },
+      {
+       "value": 11,
+       "name": "Upper_ThrowAnim"
+      },
+      {
+       "value": 12,
+       "name": "Upper_Event_HiPrio"
+      },
+      {
+       "value": 13,
+       "name": "None"
+      },
+      {
+       "value": 14,
+       "name": "Lower_Wait"
+      },
+      {
+       "value": 15,
+       "name": "Lower_SpWait"
+      },
+      {
+       "value": 16,
+       "name": "Lower_Guard"
+      },
+      {
+       "value": 17,
+       "name": "Lower_Attack"
+      },
+      {
+       "value": 18,
+       "name": "Lower_Damage_S"
+      },
+      {
+       "value": 19,
+       "name": "Lower_WalkLR"
+      },
+      {
+       "value": 20,
+       "name": "Lower_WalkFB"
+      },
+      {
+       "value": 21,
+       "name": "Lower_Turn"
+      },
+      {
+       "value": 22,
+       "name": "Lower_SpecialAttack"
+      },
+      {
+       "value": 23,
+       "name": "Lower_Action"
+      },
+      {
+       "value": 24,
+       "name": "Lower_Event"
+      },
+      {
+       "value": 25,
+       "name": "Lower_Damage_L"
+      },
+      {
+       "value": 26,
+       "name": "Lower_ExtraAnim"
+      },
+      {
+       "value": 27,
+       "name": "Lower_TaeExtraAnim"
+      },
+      {
+       "value": 28,
+       "name": "Lower_ThrowAnim"
+      },
+      {
+       "value": 29,
+       "name": "Lower_Event_HiPrio"
+      }
+     ]
+    },
+    {
+     "type": "u8",
+     "name": "LockIntoAnim"
+    },
+    {
+     "type": "f32"
+    },
+    {
+     "type": "f32"
+    }
+   ]
+  },
+  {
+   "type": 7021,
+   "name": "NF_SetTurnSpeedGradient",
+   "params": [
+    {
+     "type": "f32grad",
+     "name": "TurnSpeed"
+    },
+    {
+     "type": "u8",
+     "name": "CurveType",
+     "values": [
+      {
+       "value": 0,
+       "name": "Linear"
+      },
+      {
+       "value": 1,
+       "name": "Cos180"
+      },
+      {
+       "value": 2,
+       "name": "Sin90"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": 7022,
+   "name": "NF_BlendToLockedAtkAim",
+   "params": [
+    {
+     "type": "u8",
+     "name": "CurveType",
+     "values": [
+      {
+       "value": 0,
+       "name": "Linear"
+      },
+      {
+       "value": 1,
+       "name": "Cos180"
+      },
+      {
+       "value": 2,
+       "name": "Sin90"
+      }
+     ]
+    },
+    {
+     "type": "b",
+     "name": "DontSetDisableRotationFlag"
+    },
+    {
+     "type": "f32",
+     "name": "StickNotPushedHeadingOffset"
+    },
+    {
+     "type": "u8",
+     "name": "Reserved0x2"
+    },
+    {
+     "type": "u8",
+     "name": "Reserved0x3"
+    }
+   ]
+  },
+  {
+   "type": 7023,
+   "name": "NF_AddSpEffectFlag",
+   "params": [
+    {
+     "type": "s32",
+     "name": "SpEffectID"
+    },
+    {
+     "type": "b",
+     "name": "AddEveryFrameNotJustFirstFrame"
+    },
+    {
+     "type": "b",
+     "name": "DoNotRemoveSpEffectAtEndOfEvent"
+    }
+   ]
+  },
+  {
+   "type": 7024,
+   "name": "NF_SetDeathStay",
+   "params": []
+  },
+  {
+   "type": 7025,
+   "name": "NF_LockRotation_ExceptIfDodgeCancel",
+   "params": []
+  },
+  {
+   "type": 7026,
+   "name": "NF_UpdateBloodlustDodgeRootMotionFlag",
+   "params": []
+  },
+  {
+   "type": 7027,
+   "name": "NF_ProperRootMotionMult",
+   "params": [
+    {
+     "type": "f32grad",
+     "name": "Mult"
+    }
+   ]
+  },
+  {
+   "type": 7028,
+   "name": "NF_ScaleRootMotionToReachTarget",
+   "params": [
+    {
+     "type": "f32",
+     "name": "OriginalDist"
+    },
+    {
+     "type": "f32",
+     "name": "BufferDistance"
+    },
+    {
+     "type": "f32",
+     "name": "MaxDist"
+    }
+   ]
+  },
+  {
+   "type": 7029,
+   "name": "NF_SetTaeExtraAnim",
+   "params": [
+    {
+     "type": "s32",
+     "name": "AnimID"
+    },
+    {
+     "type": "f32grad",
+     "name": "Weight"
+    },
+    {
+     "type": "f32",
+     "name": "LerpS"
+    }
+   ]
+  },
+  {
+   "type": 7030,
+   "name": "NF_AdditiveBlendAttackAim",
+   "params": [
+    {
+     "type": "f32grad",
+     "name": "Weight"
+    },
+    {
+     "type": "s32",
+     "name": "AimUpAnimID"
+    },
+    {
+     "type": "s32",
+     "name": "AimDownAnimID"
+    },
+    {
+     "type": "f32",
+     "name": "SelfAimReferenceY"
+    }
+   ]
+  },
+  {
+   "type": 7031,
+   "name": "NF_PlayDummyPolyFollowSound",
+   "params": [
+    {
+     "type": "s32",
+     "name": "SoundType",
+     "values": [
+      {
+       "value": 0,
+       "name": "(a) Environment"
+      },
+      {
+       "value": 1,
+       "name": "(c) Character"
+      },
+      {
+       "value": 2,
+       "name": "(f) Menu SE"
+      },
+      {
+       "value": 3,
+       "name": "(o) Object"
+      },
+      {
+       "value": 4,
+       "name": "(p) Cutscene SE"
+      },
+      {
+       "value": 5,
+       "name": "(s) SFX"
+      },
+      {
+       "value": 6,
+       "name": "(m) BGM"
+      },
+      {
+       "value": 7,
+       "name": "(v) Voice"
+      },
+      {
+       "value": 8,
+       "name": "(x) Floor Material Determined"
+      },
+      {
+       "value": 9,
+       "name": "(b) Armor Material Determined"
+      },
+      {
+       "value": 10,
+       "name": "(g) Ghost"
+      }
+     ]
+    },
+    {
+     "type": "s32",
+     "name": "SoundID"
+    },
+    {
+     "type": "s32",
+     "name": "DummyPolyID"
+    },
+    {
+     "type": "f32",
+     "name": "Lifetime"
+    }
+   ]
+  },
+  {
+   "type": 7032,
+   "name": "NF_SpeedGradient",
+   "params": [
+    {
+     "type": "f32grad",
+     "name": "Speed"
+    },
+    {
+     "type": "u8",
+     "name": "CurveType",
+     "values": [
+      {
+       "value": 0,
+       "name": "Linear"
+      },
+      {
+       "value": 1,
+       "name": "Cos180"
+      },
+      {
+       "value": 2,
+       "name": "Sin90"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": 7033,
+   "name": "NF_CameraOverrideNew_Distance",
+   "params": [
+    {
+     "type": "f32grad",
+     "name": "Distance"
+    },
+    {
+     "type": "u8",
+     "name": "CurveType",
+     "values": [
+      {
+       "value": 0,
+       "name": "Linear"
+      },
+      {
+       "value": 1,
+       "name": "Cos180"
+      },
+      {
+       "value": 2,
+       "name": "Sin90"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": 7034,
+   "name": "NF_CameraOverrideNew_Fov",
+   "params": [
+    {
+     "type": "f32grad",
+     "name": "Fov"
+    },
+    {
+     "type": "u8",
+     "name": "CurveType",
+     "values": [
+      {
+       "value": 0,
+       "name": "Linear"
+      },
+      {
+       "value": 1,
+       "name": "Cos180"
+      },
+      {
+       "value": 2,
+       "name": "Sin90"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": 7035,
+   "name": "NF_CameraOverrideNew_Height",
+   "params": [
+    {
+     "type": "f32grad",
+     "name": "Height"
+    },
+    {
+     "type": "u8",
+     "name": "CurveType",
+     "values": [
+      {
+       "value": 0,
+       "name": "Linear"
+      },
+      {
+       "value": 1,
+       "name": "Cos180"
+      },
+      {
+       "value": 2,
+       "name": "Sin90"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": 7036,
+   "name": "NF_SwapUpcomingAnimID",
+   "params": [
+    {
+     "type": "s32",
+     "name": "From"
+    },
+    {
+     "type": "s32",
+     "name": "To"
+    }
+   ]
+  },
+  {
+   "type": 7037,
+   "name": "NF_StopDummyPolyFollowSoundByID",
+   "params": [
+    {
+     "type": "s32",
+     "name": "SoundType",
+     "values": [
+      {
+       "value": 0,
+       "name": "(a) Environment"
+      },
+      {
+       "value": 1,
+       "name": "(c) Character"
+      },
+      {
+       "value": 2,
+       "name": "(f) Menu SE"
+      },
+      {
+       "value": 3,
+       "name": "(o) Object"
+      },
+      {
+       "value": 4,
+       "name": "(p) Cutscene SE"
+      },
+      {
+       "value": 5,
+       "name": "(s) SFX"
+      },
+      {
+       "value": 6,
+       "name": "(m) BGM"
+      },
+      {
+       "value": 7,
+       "name": "(v) Voice"
+      },
+      {
+       "value": 8,
+       "name": "(x) Floor Material Determined"
+      },
+      {
+       "value": 9,
+       "name": "(b) Armor Material Determined"
+      },
+      {
+       "value": 10,
+       "name": "(g) Ghost"
+      }
+     ]
+    },
+    {
+     "type": "s32",
+     "name": "SoundID"
+    }
+   ]
+  },
+  {
+   "type": 7038,
+   "name": "NF_StopAllDummyPolyFollowSounds",
+   "params": []
+  },
+  {
+   "type": 7039,
+   "name": "NF_RemoveSpEffect",
+   "params": [
+    {
+     "type": "s32",
+     "name": "SpEffectID"
+    },
+    {
+     "type": "b",
+     "name": "Continuous"
+    }
+   ]
+  },
+  {
+   "type": 7040,
+   "name": "NF_AllowSuperCancel",
+   "params": [
+    {
+     "type": "s32",
+     "name": "SuperCancelTypeID"
+    }
+   ]
+  },
+  {
+   "type": 7041,
+   "name": "NF_StartBreathingSound",
+   "params": [
+    {
+     "type": "s32",
+     "name": "SoundType",
+     "values": [
+      {
+       "value": 0,
+       "name": "(a) Environment"
+      },
+      {
+       "value": 1,
+       "name": "(c) Character"
+      },
+      {
+       "value": 2,
+       "name": "(f) Menu SE"
+      },
+      {
+       "value": 3,
+       "name": "(o) Object"
+      },
+      {
+       "value": 4,
+       "name": "(p) Cutscene SE"
+      },
+      {
+       "value": 5,
+       "name": "(s) SFX"
+      },
+      {
+       "value": 6,
+       "name": "(m) BGM"
+      },
+      {
+       "value": 7,
+       "name": "(v) Voice"
+      },
+      {
+       "value": 8,
+       "name": "(x) Floor Material Determined"
+      },
+      {
+       "value": 9,
+       "name": "(b) Armor Material Determined"
+      },
+      {
+       "value": 10,
+       "name": "(g) Ghost"
+      }
+     ]
+    },
+    {
+     "type": "s32",
+     "name": "SoundID"
+    },
+    {
+     "type": "s32",
+     "name": "DummyPolyID"
+    },
+    {
+     "type": "f32",
+     "name": "Lifetime"
+    },
+    {
+     "type": "f32grad",
+     "name": "RepeatIntervalRandRange"
+    },
+    {
+     "type": "s32",
+     "name": "BreathingInstanceID"
+    }
+   ]
+  },
+  {
+   "type": 7042,
+   "name": "NF_PauseBreathingSound",
+   "params": [
+    {
+     "type": "s32",
+     "name": "BreathingInstanceID"
+    }
+   ]
+  },
+  {
+   "type": 7043,
+   "name": "NF_StopBreathingSound",
+   "params": [
+    {
+     "type": "s32",
+     "name": "BreathingInstanceID"
+    }
+   ]
+  },
+  {
+   "type": 7044,
+   "name": "NF_LocalPlayer_SpeedUpCameraTracking",
+   "params": [
+    {
+     "type": "f32grad",
+     "name": "Blend"
+    },
+    {
+     "type": "u8",
+     "name": "CurveType",
+     "values": [
+      {
+       "value": 0,
+       "name": "Linear"
+      },
+      {
+       "value": 1,
+       "name": "Cos180"
+      },
+      {
+       "value": 2,
+       "name": "Sin90"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": 7045,
+   "name": "NF_SetTaeExtraAnim_Keep",
+   "params": [
+    {
+     "type": "s32",
+     "name": "AnimID"
+    },
+    {
+     "type": "f32grad",
+     "name": "Weight"
+    },
+    {
+     "type": "f32",
+     "name": "LerpS"
+    }
+   ]
+  },
+  {
+   "type": 7046,
+   "name": "NF_HardcodedArklusLaserMotion",
+   "params": [
+    {
+     "type": "f32grad",
+     "name": "Blend"
+    }
+   ]
+  },
+  {
+   "type": 7047,
+   "name": "NF_SetAnimLayerWeight",
+   "params": [
+    {
+     "type": "s32",
+     "name": "AnimLayerType",
+     "values": [
+      {
+       "value": 0,
+       "name": "Upper_Wait"
+      },
+      {
+       "value": 1,
+       "name": "Upper_SpWait"
+      },
+      {
+       "value": 2,
+       "name": "Upper_WalkLR"
+      },
+      {
+       "value": 3,
+       "name": "Upper_Turn"
+      },
+      {
+       "value": 4,
+       "name": "Upper_Guard"
+      },
+      {
+       "value": 5,
+       "name": "Upper_Attack"
+      },
+      {
+       "value": 6,
+       "name": "Upper_SpecialAttack"
+      },
+      {
+       "value": 7,
+       "name": "Upper_Action"
+      },
+      {
+       "value": 8,
+       "name": "Upper_Damage_S"
+      },
+      {
+       "value": 9,
+       "name": "Upper_Event"
+      },
+      {
+       "value": 10,
+       "name": "Upper_Damage_L"
+      },
+      {
+       "value": 11,
+       "name": "Upper_ThrowAnim"
+      },
+      {
+       "value": 12,
+       "name": "Upper_Event_HiPrio"
+      },
+      {
+       "value": 13,
+       "name": "None"
+      },
+      {
+       "value": 14,
+       "name": "Lower_Wait"
+      },
+      {
+       "value": 15,
+       "name": "Lower_SpWait"
+      },
+      {
+       "value": 16,
+       "name": "Lower_Guard"
+      },
+      {
+       "value": 17,
+       "name": "Lower_Attack"
+      },
+      {
+       "value": 18,
+       "name": "Lower_Damage_S"
+      },
+      {
+       "value": 19,
+       "name": "Lower_WalkLR"
+      },
+      {
+       "value": 20,
+       "name": "Lower_WalkFB"
+      },
+      {
+       "value": 21,
+       "name": "Lower_Turn"
+      },
+      {
+       "value": 22,
+       "name": "Lower_SpecialAttack"
+      },
+      {
+       "value": 23,
+       "name": "Lower_Action"
+      },
+      {
+       "value": 24,
+       "name": "Lower_Event"
+      },
+      {
+       "value": 25,
+       "name": "Lower_Damage_L"
+      },
+      {
+       "value": 26,
+       "name": "Lower_ExtraAnim"
+      },
+      {
+       "value": 27,
+       "name": "Lower_TaeExtraAnim"
+      },
+      {
+       "value": 28,
+       "name": "Lower_ThrowAnim"
+      },
+      {
+       "value": 29,
+       "name": "Lower_Event_HiPrio"
+      }
+     ]
+    },
+    {
+     "type": "f32grad",
+     "name": "Blend"
+    }
+   ]
+  },
+  {
+   "type": 7048,
+   "name": "NF_PlayerDodgeStep",
+   "params": []
+  },
+  {
+   "type": 7049,
+   "name": "NF_HandleUmbrusEffigyUse",
+   "params": []
+  },
+  {
+   "type": 7050,
+   "name": "NF_EndAnimationLayer",
+   "params": [
+    {
+     "type": "s32",
+     "name": "AnimLayerType",
+     "values": [
+      {
+       "value": 0,
+       "name": "Upper_Wait"
+      },
+      {
+       "value": 1,
+       "name": "Upper_SpWait"
+      },
+      {
+       "value": 2,
+       "name": "Upper_WalkLR"
+      },
+      {
+       "value": 3,
+       "name": "Upper_Turn"
+      },
+      {
+       "value": 4,
+       "name": "Upper_Guard"
+      },
+      {
+       "value": 5,
+       "name": "Upper_Attack"
+      },
+      {
+       "value": 6,
+       "name": "Upper_SpecialAttack"
+      },
+      {
+       "value": 7,
+       "name": "Upper_Action"
+      },
+      {
+       "value": 8,
+       "name": "Upper_Damage_S"
+      },
+      {
+       "value": 9,
+       "name": "Upper_Event"
+      },
+      {
+       "value": 10,
+       "name": "Upper_Damage_L"
+      },
+      {
+       "value": 11,
+       "name": "Upper_ThrowAnim"
+      },
+      {
+       "value": 12,
+       "name": "Upper_Event_HiPrio"
+      },
+      {
+       "value": 13,
+       "name": "None"
+      },
+      {
+       "value": 14,
+       "name": "Lower_Wait"
+      },
+      {
+       "value": 15,
+       "name": "Lower_SpWait"
+      },
+      {
+       "value": 16,
+       "name": "Lower_Guard"
+      },
+      {
+       "value": 17,
+       "name": "Lower_Attack"
+      },
+      {
+       "value": 18,
+       "name": "Lower_Damage_S"
+      },
+      {
+       "value": 19,
+       "name": "Lower_WalkLR"
+      },
+      {
+       "value": 20,
+       "name": "Lower_WalkFB"
+      },
+      {
+       "value": 21,
+       "name": "Lower_Turn"
+      },
+      {
+       "value": 22,
+       "name": "Lower_SpecialAttack"
+      },
+      {
+       "value": 23,
+       "name": "Lower_Action"
+      },
+      {
+       "value": 24,
+       "name": "Lower_Event"
+      },
+      {
+       "value": 25,
+       "name": "Lower_Damage_L"
+      },
+      {
+       "value": 26,
+       "name": "Lower_ExtraAnim"
+      },
+      {
+       "value": 27,
+       "name": "Lower_TaeExtraAnim"
+      },
+      {
+       "value": 28,
+       "name": "Lower_ThrowAnim"
+      },
+      {
+       "value": 29,
+       "name": "Lower_Event_HiPrio"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": 7051,
+   "name": "NF_Approach_RelativeDir",
+   "params": [
+    {
+     "type": "f32grad",
+     "name": "Speed"
+    },
+    {
+     "type": "f32grad",
+     "name": "Dist"
+    },
+    {
+     "type": "f32grad",
+     "name": "Dampening"
+    },
+    {
+     "type": "f32grad",
+     "name": "Speed"
+    },
+    {
+     "type": "f32grad",
+     "name": "Dist"
+    },
+    {
+     "type": "f32grad",
+     "name": "Dampening"
+    }
+   ]
+  },
+  {
+   "type": 7052,
+   "name": "NF_PlayDummyPolyFollowSoundEx",
+   "params": [
+    {
+     "type": "s32",
+     "name": "SoundType",
+     "values": [
+      {
+       "value": 0,
+       "name": "(a) Environment"
+      },
+      {
+       "value": 1,
+       "name": "(c) Character"
+      },
+      {
+       "value": 2,
+       "name": "(f) Menu SE"
+      },
+      {
+       "value": 3,
+       "name": "(o) Object"
+      },
+      {
+       "value": 4,
+       "name": "(p) Cutscene SE"
+      },
+      {
+       "value": 5,
+       "name": "(s) SFX"
+      },
+      {
+       "value": 6,
+       "name": "(m) BGM"
+      },
+      {
+       "value": 7,
+       "name": "(v) Voice"
+      },
+      {
+       "value": 8,
+       "name": "(x) Floor Material Determined"
+      },
+      {
+       "value": 9,
+       "name": "(b) Armor Material Determined"
+      },
+      {
+       "value": 10,
+       "name": "(g) Ghost"
+      }
+     ]
+    },
+    {
+     "type": "s32",
+     "name": "SoundID"
+    },
+    {
+     "type": "s32",
+     "name": "DummyPolyID"
+    },
+    {
+     "type": "f32",
+     "name": "LifetimeMin"
+    },
+    {
+     "type": "f32",
+     "name": "LifetimeMax"
+    },
+    {
+     "type": "s32",
+     "name": "ExInfoID"
+    },
+    {
+     "type": "f32",
+     "name": "CooldownMin"
+    },
+    {
+     "type": "f32",
+     "name": "CooldownMax"
+    },
+    {
+     "type": "b",
+     "name": "RepeatDuringAction"
+    },
+    {
+     "type": "b",
+     "name": "StopAllSoundsWhenActionEnds"
+    }
+   ]
+  }
+ ]
+}

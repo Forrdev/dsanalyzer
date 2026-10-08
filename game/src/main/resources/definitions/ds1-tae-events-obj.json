@@ -1,0 +1,647 @@
+{
+ "bank": "obj",
+ "events": [
+  {
+   "type": 0,
+   "name": "ChrActionFlag",
+   "params": [
+    {
+     "type": "s32",
+     "name": "FlagType",
+     "values": [
+      {
+       "value": 0,
+       "name": "Do Nothing"
+      },
+      {
+       "value": 1,
+       "name": "Right Hand Attack Key Input"
+      },
+      {
+       "value": 3,
+       "name": "Guarding",
+       "note": "ArgB:Guard BehaviorJudgeID"
+      },
+      {
+       "value": 4,
+       "name": "Right Hand Attack Anim Cancel"
+      },
+      {
+       "value": 5,
+       "name": "Parry Possible",
+       "note": "ArgC:Unknown"
+      },
+      {
+       "value": 6,
+       "name": "Shield Push Possible"
+      },
+      {
+       "value": 7,
+       "name": "Disable Turning"
+      },
+      {
+       "value": 8,
+       "name": "Invincible"
+      },
+      {
+       "value": 9,
+       "name": "Left Hand Attack Key Input"
+      },
+      {
+       "value": 10,
+       "name": "Magic Key Input"
+      },
+      {
+       "value": 11,
+       "name": "Anim Cancel By Movement Key Input"
+      },
+      {
+       "value": 12,
+       "name": "Death State"
+      },
+      {
+       "value": 13,
+       "name": "?"
+      },
+      {
+       "value": 14,
+       "name": "Right Hand Attack Release Input"
+      },
+      {
+       "value": 15,
+       "name": "Left Hand Attack Release Input"
+      },
+      {
+       "value": 16,
+       "name": "Left Hand Attack Anim Cancel"
+      },
+      {
+       "value": 17,
+       "name": "Anim Cancel After Dealing Damage"
+      },
+      {
+       "value": 18,
+       "name": "Anim Cancel After Successful Parry"
+      },
+      {
+       "value": 19,
+       "name": "Disable Map/Object Collision"
+      },
+      {
+       "value": 20,
+       "name": "Ghost Info Send Start Flag At The Time Of Death"
+      },
+      {
+       "value": 21,
+       "name": "Left Hand Guard Key Input"
+      },
+      {
+       "value": 22,
+       "name": "Left Hand Guard Anim Cancel"
+      },
+      {
+       "value": 23,
+       "name": "AI Continuation Attack Flag"
+      },
+      {
+       "value": 24,
+       "name": "Super Armor"
+      },
+      {
+       "value": 25,
+       "name": "Step Movement Key Input"
+      },
+      {
+       "value": 26,
+       "name": "Step Movement Anim Cancel"
+      },
+      {
+       "value": 27,
+       "name": "Ignore Gravity"
+      },
+      {
+       "value": 28,
+       "name": "Disable Foot IK"
+      },
+      {
+       "value": 29,
+       "name": "Magic Anim Cancel"
+      },
+      {
+       "value": 30,
+       "name": "[x] Item Key Input"
+      },
+      {
+       "value": 31,
+       "name": "Item Anim Cancel"
+      },
+      {
+       "value": 32,
+       "name": "Generic Anim Cancel"
+      },
+      {
+       "value": 35,
+       "name": "First Step Right Hand Attack Key Input"
+      },
+      {
+       "value": 36,
+       "name": "First Step Right Hand Attack Anim Cancel"
+      },
+      {
+       "value": 37,
+       "name": "Left/Right Movement Possible"
+      },
+      {
+       "value": 38,
+       "name": "Flying Character Fall"
+      },
+      {
+       "value": 39,
+       "name": "Disable Enemy Character Collision"
+      },
+      {
+       "value": 40,
+       "name": "Temporary Death State"
+      },
+      {
+       "value": 41,
+       "name": "Gap"
+      },
+      {
+       "value": 42,
+       "name": "Sweet Spot"
+      },
+      {
+       "value": 43,
+       "name": "Enable Foot IK"
+      },
+      {
+       "value": 44,
+       "name": "Disable Event Object Collision"
+      },
+      {
+       "value": 45,
+       "name": "Disable Super Armor"
+      },
+      {
+       "value": 46,
+       "name": "Completely Disable. Cannot Return From Anim."
+      },
+      {
+       "value": 47,
+       "name": "Death State (Same as 12)"
+      },
+      {
+       "value": 48,
+       "name": "Death State (Same as 12)"
+      },
+      {
+       "value": 49,
+       "name": "Disable Lock-On"
+      },
+      {
+       "value": 50,
+       "name": "Disable Character Capsule Collision"
+      },
+      {
+       "value": 51,
+       "name": "Disable Fall Motion"
+      },
+      {
+       "value": 52,
+       "name": "Disable Vertical Movement Sync"
+      },
+      {
+       "value": 53,
+       "name": "Disable Floating Gauge Display"
+      },
+      {
+       "value": 54,
+       "name": "Disable Menu Display"
+      },
+      {
+       "value": 55,
+       "name": "Disable Lock-On Operation"
+      },
+      {
+       "value": 56,
+       "name": "Disable Wall Attack Clang"
+      },
+      {
+       "value": 57,
+       "name": "Disable NPC Wall Attack Clang"
+      },
+      {
+       "value": 58,
+       "name": "?"
+      },
+      {
+       "value": 59,
+       "name": "Attack Weak Spot"
+      },
+      {
+       "value": 60,
+       "name": "Throw Angle Cancel"
+      },
+      {
+       "value": 61,
+       "name": "Disable Y-Axis Of Movement Target"
+      },
+      {
+       "value": 62,
+       "name": "Display Fixed Y-Axis Direction"
+      },
+      {
+       "value": 63,
+       "name": "Parry Timing"
+      },
+      {
+       "value": 64,
+       "name": "Camouflage OK Flag"
+      },
+      {
+       "value": 65,
+       "name": "Extend Special Effects Lifespan"
+      },
+      {
+       "value": 66,
+       "name": "Special Transition"
+      },
+      {
+       "value": 67,
+       "name": "Invincible Excluding Throw Attacks"
+      },
+      {
+       "value": 68,
+       "name": "Invincible Excluding Throw Damage"
+      },
+      {
+       "value": 69,
+       "name": "Throw Death Transition Decision"
+      },
+      {
+       "value": 70,
+       "name": "Throw Escape Transition Decision"
+      },
+      {
+       "value": 71,
+       "name": "SA Break Unrecoverable Flag"
+      },
+      {
+       "value": 72,
+       "name": "Knockback Take-Over Time"
+      },
+      {
+       "value": 73,
+       "name": "Parry Possible State"
+      },
+      {
+       "value": 74,
+       "name": "Ladder Collision Start"
+      },
+      {
+       "value": 75,
+       "name": "Item Acquisition Anim Cancel Possible Start"
+      },
+      {
+       "value": 76,
+       "name": "?"
+      },
+      {
+       "value": 78,
+       "name": "AI Movement Anim Cancel"
+      },
+      {
+       "value": 79,
+       "name": "AI Step Anim Cancel"
+      },
+      {
+       "value": 80,
+       "name": "Item Acquisition Anim Cancel Queue Start"
+      },
+      {
+       "value": 81,
+       "name": "Item Acquisition: Close Button Disable Start"
+      },
+      {
+       "value": 82,
+       "name": "Perfectly Match Ragdoll Pose"
+      },
+      {
+       "value": 83,
+       "name": "Mimicry Force Cancel Flag"
+      },
+      {
+       "value": 84,
+       "name": "Special Transition 2"
+      },
+      {
+       "value": 85,
+       "name": "Light Lantern Weapon"
+      },
+      {
+       "value": 86,
+       "name": "AI Attack Anim Cancel"
+      },
+      {
+       "value": 87,
+       "name": "Common Key Input"
+      },
+      {
+       "value": 88,
+       "name": "Disable Precision Shooting"
+      },
+      {
+       "value": 89,
+       "name": "Completely Disable Movement"
+      },
+      {
+       "value": 90,
+       "name": "No Dash/Run"
+      },
+      {
+       "value": 91,
+       "name": "No Dash"
+      },
+      {
+       "value": 92,
+       "name": "Sky Death Warp Possible"
+      },
+      {
+       "value": 94,
+       "name": "Perfect Invincibility"
+      },
+      {
+       "value": 95,
+       "name": "Disable Shadow Displaying"
+      },
+      {
+       "value": 96,
+       "name": "Set Immortality"
+      },
+      {
+       "value": 97,
+       "name": "Disable Magic / Item Use Anim Cancel Flag"
+      }
+     ]
+    },
+    {
+     "type": "f32",
+     "name": "ArgA"
+    },
+    {
+     "type": "s32",
+     "name": "ArgB"
+    },
+    {
+     "type": "u8",
+     "name": "ArgC"
+    },
+    {
+     "type": "u8",
+     "name": "ArgD"
+    },
+    {
+     "type": "s16",
+     "name": "ArgE"
+    }
+   ]
+  },
+  {
+   "type": 3,
+   "name": "NULL",
+   "params": [
+    {
+     "type": "s32",
+     "assert": "0"
+    },
+    {
+     "type": "s32",
+     "assert": "0"
+    },
+    {
+     "type": "s32",
+     "assert": "0"
+    },
+    {
+     "type": "s32",
+     "assert": "0"
+    }
+   ]
+  },
+  {
+   "type": 96,
+   "name": "InvokeOneShotFFX_0x1406711F0",
+   "params": [
+    {
+     "type": "s32",
+     "name": "FFXID"
+    },
+    {
+     "type": "s32",
+     "name": "DummyPolyID"
+    },
+    {
+     "type": "s32",
+     "name": "SlotID"
+    },
+    {
+     "type": "b",
+     "name": "IsIgnoreDummyPolyAngle"
+    },
+    {
+     "type": "b",
+     "name": "IsFollowDummyPoly"
+    },
+    {
+     "type": "b",
+     "name": "IsRestrictToDummyPoly"
+    },
+    {
+     "type": "u8",
+     "name": "ExtraSpawnCondition"
+    }
+   ]
+  },
+  {
+   "type": 128,
+   "name": "PlaySound_General",
+   "params": [
+    {
+     "type": "s32",
+     "name": "SoundType",
+     "values": [
+      {
+       "value": 0,
+       "name": "(a) Environment"
+      },
+      {
+       "value": 1,
+       "name": "(c) Character"
+      },
+      {
+       "value": 2,
+       "name": "(f) Menu SE"
+      },
+      {
+       "value": 3,
+       "name": "(o) Object"
+      },
+      {
+       "value": 4,
+       "name": "(p) Cutscene SE"
+      },
+      {
+       "value": 5,
+       "name": "(s) SFX"
+      },
+      {
+       "value": 6,
+       "name": "(m) BGM"
+      },
+      {
+       "value": 7,
+       "name": "(v) Voice"
+      },
+      {
+       "value": 8,
+       "name": "(x) Floor Material Determined"
+      },
+      {
+       "value": 9,
+       "name": "(b) Armor Material Determined"
+      },
+      {
+       "value": 10,
+       "name": "(g) Ghost"
+      }
+     ]
+    },
+    {
+     "type": "s32",
+     "name": "SoundID"
+    },
+    {
+     "type": "s32",
+     "assert": "0"
+    },
+    {
+     "type": "s32",
+     "assert": "0"
+    }
+   ]
+  },
+  {
+   "type": 129,
+   "name": "PlaySound_Extra",
+   "params": [
+    {
+     "type": "s32",
+     "name": "SoundType",
+     "values": [
+      {
+       "value": 0,
+       "name": "(a) Environment"
+      },
+      {
+       "value": 1,
+       "name": "(c) Character"
+      },
+      {
+       "value": 2,
+       "name": "(f) Menu SE"
+      },
+      {
+       "value": 3,
+       "name": "(o) Object"
+      },
+      {
+       "value": 4,
+       "name": "(p) Cutscene SE"
+      },
+      {
+       "value": 5,
+       "name": "(s) SFX"
+      },
+      {
+       "value": 6,
+       "name": "(m) BGM"
+      },
+      {
+       "value": 7,
+       "name": "(v) Voice"
+      },
+      {
+       "value": 8,
+       "name": "(x) Floor Material Determined"
+      },
+      {
+       "value": 9,
+       "name": "(b) Armor Material Determined"
+      },
+      {
+       "value": 10,
+       "name": "(g) Ghost"
+      }
+     ]
+    },
+    {
+     "type": "s32",
+     "name": "SoundID"
+    },
+    {
+     "type": "s32",
+     "name": "DummyPolyID"
+    },
+    {
+     "type": "s32",
+     "name": "TimerID (probably)"
+    }
+   ]
+  },
+  {
+   "type": 193,
+   "name": "SetOpacityKeyframe",
+   "params": [
+    {
+     "type": "f32",
+     "name": "GhostVal1"
+    },
+    {
+     "type": "f32",
+     "name": "GhostVal2"
+    },
+    {
+     "type": "s32",
+     "assert": "0"
+    },
+    {
+     "type": "s32",
+     "assert": "0"
+    }
+   ]
+  },
+  {
+   "type": 400,
+   "name": "0x140655DD0",
+   "params": [
+    {
+     "type": "s32",
+     "assert": "0"
+    },
+    {
+     "type": "s32",
+     "assert": "0"
+    },
+    {
+     "type": "s32",
+     "assert": "0"
+    },
+    {
+     "type": "s32",
+     "assert": "0"
+    }
+   ]
+  }
+ ]
+}
