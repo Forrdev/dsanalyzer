@@ -2,13 +2,20 @@ package com.sappyoak.dsanalyzer.runtime.pointers
 
 import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.native.memory.MemoryView
+import com.sappyoak.dsanalyzer.native.process.ProcessMemory
 import com.sappyoak.dsanalyzer.shared.math.Vec3
 
 /**
  * One structure, fetched whole and then read field by field out of the copy
  */
-public class StructView(public val pointer: GamePointer) {
-    private val view = MemoryView(pointer.size)
+public class StructView private constructor(
+    private val pointer: GamePointer?,
+    private val size: Int
+) {
+    public constructor(pointer: GamePointer) : this(pointer, pointer.size)
+    public constructor(size: Int) : this(null, size)
+
+    private val view = MemoryView(size)
 
     public var address: Address = Address.Null
         private set
@@ -16,8 +23,14 @@ public class StructView(public val pointer: GamePointer) {
     public val isPresent: Boolean get() = !address.isNull
 
     public fun refresh(game: GameMemory): Boolean {
-        val at = game.addressOf(pointer)
-        if (at.isNull || !view.refresh(game.memory, at, pointer.size)) {
+        val owner = checkNotNull(pointer) {
+            "This view was made for a table element, which has no pointer to resolve"
+        }
+        return refresh(game.memory, game.addressOf(owner))
+    }
+
+    public fun refresh(memory: ProcessMemory, at: Address): Boolean {
+        if (at.isNull || !view.refresh(memory, at, size)) {
             address = Address.Null
             view.clear()
             return false

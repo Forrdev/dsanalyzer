@@ -51,6 +51,18 @@ public object ChrIns {
     public const val ModelNameLength: Int = 0x48
 
     /**
+     * The '[MsbResCap]' of the block this character was placed in.
+     */
+    public const val MapDataPointer: Int = 0x54
+
+    /** Which entry of that block's parts this character was built from */
+    public const val EntityIndex: Int = 0x58
+
+    /**
+     * The 'NpcParam' row this character's stats come from, '0' on the player
+     */
+    public const val NpcParamId: Int = 0x64
+    /**
      * The numeric part of [ModelName], so "c1000" reads as '1000'
      *
      * The constructor parses it once rather than the game deriving it per read, which makes this
@@ -82,6 +94,14 @@ public object ChrIns {
     public const val ForcePlayAnimation: Int = 0xFC
 
     public const val SpecialEffectPointer: Int = 0x1E0
+
+    /**
+     * The [Handle] of whatever this character is currently fighting. '-1' for nothing.
+     * This is transient an not an aggro flag. An empty slot means not targeting anything in this instant,
+     * rather than not fighting
+     */
+    public const val TargetHandle: Int = 0x1F8
+
     public const val Flags1: Int = 0x1FC
     public const val PlayRegion: Int = 0x284
 

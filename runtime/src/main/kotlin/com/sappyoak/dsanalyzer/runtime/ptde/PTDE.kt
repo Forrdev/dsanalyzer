@@ -6,6 +6,7 @@ import java.nio.ByteOrder
 import com.sappyoak.dsanalyzer.native.memory.AddressRange
 import com.sappyoak.dsanalyzer.native.process.ProcessMemory
 import com.sappyoak.dsanalyzer.runtime.pointers.GamePointer
+import com.sappyoak.dsanalyzer.runtime.pointers.GameTable
 
 /** The address the executable asks to be loaded at, which the version address is quoted against */
 private const val PREFERRED_BASE = 0x400000L
@@ -30,16 +31,32 @@ public fun ProcessMemory.ptdeBuild(module: AddressRange): PTDEBuild? {
 
 public val PTDEPointers: List<GamePointer> = listOf(
     FollowCam.Pointer,
+    WorldCharacters.Pointer,
     ChrIns.Pointer,
     ChrCtrl.Pointer,
     ChrPosData.Pointer,
     AnimData.Pointer,
     AnimRequest.ChannelA,
     AnimRequest.ChannelB,
+    SpecialEffects.Pointer,
+    WorldChrMan.Pointer,
+    WorldRes.Pointer,
+    EmevdMan.Pointer,
     PlayerStats.Pointer,
     WorldState.Pointer,
     WorldArea.Pointer,
     DeathCam.Pointer,
     GameDataMan.Pointer,
     EventFlags.Pointer
+)
+
+/**
+ * Every collection the tables name, each paired with the structure it is read out of
+ */
+public val PTDETables: List<Pair<GamePointer, GameTable>> = listOf(
+    WorldCharacters.Pointer to WorldCharacters.All,
+    SpecialEffects.Pointer to SpecialEffects.Active,
+    WorldChrMan.Pointer to WorldChrMan.Blocks,
+    WorldRes.Pointer to WorldRes.Blocks,
+    EmevdMan.Pointer to EmevdMan.Scripts
 )
