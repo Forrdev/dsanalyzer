@@ -75,22 +75,16 @@ public object MapPart {
 
     public const val SourcePathPointer: Int = 0x10
 
+    /** X, Y, and Z consecutively from here, in the block's own space */
     public const val Position: Int = 0x14
+
+    /** Pitch, yaw, and roll in **radians** matching the live transform rather than the file's degrees */
     public const val Rotation: Int = 0x20
     public const val Scale: Int = 0x2C
 
     /** The MSB part name as ASCII, `"c1000_0005"` for an enemy and `"m2000B1"` for a map piece */
     public const val Name: Int = 0x64
 
-    /**
-     * The original asset path, which names the block it came from —
-     * `N:\FRPG\data\Model\map\m10_01_00_00\sib\...`.
-     *
-     * Present on map pieces and empty on the enemy parts read so far, so it is a bonus rather than
-     * a way to identify a part's block. [EntityId] divided by 10000 gives the area and block for
-     * any part that has one
-     */
-    public const val SourcePath: Int = 0x6C
 
     /** The id EMEVD scripts reference. `1010964` is area 10, block 1 — the id over 10000 */
     public const val EntityId: Int = 0x78

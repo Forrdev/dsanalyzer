@@ -19,19 +19,16 @@ public object FollowCam {
         size = 0x200
     )
 
-    public const val RotX: Int = 0xE0
-    public const val RotY: Int = 0xE4
-    public const val RotZ: Int = 0xE8
-
+    /** X, Y, and Z consecutively, the camera's own position in world space */
     public const val PosX: Int = 0x100
-    public const val PosY: Int = 0x104
-    public const val PosZ: Int = 0x108
 
-    public const val CamRotX: Int = 0x140
-    public const val CamRotY: Int = 0x144
-    public const val CamRotZ: Int = 0x148
+    /**
+     * Pitch, yaw, and roll in radians, consecutively.
+     */
+    public const val Orientation: Int = 0x140
 
-    public const val TargetRotX: Int = 0x150
-    public const val TargetRotY: Int = 0x154
-    public const val TargetRotZ: Int = 0x158
+    /**
+     * The pitch the camera is being pulled toward, as a lone float.
+     */
+    public const val TargetPitch: Int = 0x150
 }

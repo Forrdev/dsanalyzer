@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -18,14 +20,14 @@ import androidx.compose.ui.unit.dp
 
 import com.sappyoak.dsanalyzer.app.runtime.RuntimeState
 import com.sappyoak.dsanalyzer.game.world.WorldRef
-import com.sappyoak.dsanalyzer.runtime.session.PlayerSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
-import com.sappyoak.dsanalyzer.shared.math.Vec3
 
-private val LABEL_WIDTH = 160.dp
 
 @Composable
-public fun RuntimeScreen(state: RuntimeState, onFollow: (WorldRef) -> Unit) {
+public fun RuntimeScreen(
+    state: RuntimeState,
+    onFollow: (WorldRef) -> Unit,
+    onReadPlacedEnemies: () -> Unit
+) {
     Column(modifier = Modifier.fillMaxSize()) {
         Attachment(state, onFollow)
         HorizontalDivider()
@@ -40,7 +42,13 @@ public fun RuntimeScreen(state: RuntimeState, onFollow: (WorldRef) -> Unit) {
             return@Column
         }
 
-        Player(snapshot)
+        PlayerPanel(snapshot)
+        HorizontalDivider()
+        CameraPanel(snapshot.camera)
+        HorizontalDivider()
+        LoadQueuePanel(snapshot.loadQueue)
+        HorizontalDivider()
+        CharacterPanel(snapshot.characters, state.placedEnemies, onReadPlacedEnemies)
         HorizontalDivider()
         FlagLog(state.flagLog, onFollow)
     }
@@ -104,58 +112,3 @@ private fun Attachment(state: RuntimeState, onFollow: (WorldRef) -> Unit) {
         }
     }
 }
-
-@Composable
-private fun Player(snapshot: RuntimeSnapshot) {
-    val player = snapshot.player
-
-    Column(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(2.dp)
-    ) {
-        if (player == null) {
-            Text("No character is loaded", style = MaterialTheme.typography.bodyMedium)
-            return@Column
-        }
-
-        if (player.cheats.isNotEmpty()) {
-            Text(
-                text = "Running with ${player.cheats.joinToString()} - this is not the game as shipped",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.error
-            )
-        }
-
-        Field("Position", player.position.describe())
-        snapshot.world?.let { world ->
-            Field("Last stable ground", world.stablePosition.describe())
-            snapshot.divergence?.let { away ->
-                Field("Distance from it", "%.2f".format(away))
-                if (world.deathCam) Field("Death cam", "running")
-            }
-        }
-        Field("Health", player.describeHealth())
-        Field("Stamina", player.stamina.toString())
-        player.animationSpeed?.let { Field("Animation speed", it.toString()) }
-        Field("Play region", player.playRegion.toString())
-        player.attributes?.let { Field("Soul level", "${it.soulLevel} (${it.souls} souls)")}
-    }
-}
-
-@Composable
-private fun Field(label: String, value: String) {
-    Row(modifier = Modifier.fillMaxWidth()) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.width(LABEL_WIDTH)
-        )
-        Text(text = value, style = MaterialTheme.typography.bodySmall)
-    }
-}
-
-private fun Vec3.describe(): String = "%.2f, %.2f, %.2f".format(x, y, z)
-
-private fun PlayerSnapshot.describeHealth(): String =
-    attributes?.let { "$health / ${it.healthMax}" } ?: health.toString()

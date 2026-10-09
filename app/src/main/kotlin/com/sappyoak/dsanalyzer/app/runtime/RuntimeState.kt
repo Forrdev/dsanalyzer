@@ -2,6 +2,7 @@ package com.sappyoak.dsanalyzer.app.runtime
 
 import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.runtime.ptde.PTDEBuild
+import com.sappyoak.dsanalyzer.runtime.session.BlockRoster
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.WorldPlace
 
@@ -9,6 +10,10 @@ public data class RuntimeState(
     public val attached: AttachedGame? = null,
     public val snapshot: RuntimeSnapshot? = null,
     public val flagLog: List<FlagEntry> = emptyList(),
+    /**
+     * Every enemy the loaded blocks place, once something asks for them
+     */
+    public val placedEnemies: List<BlockRoster>? = null,
     public val problem: String? = null
 ) {
     public val live: Boolean get() = attached != null

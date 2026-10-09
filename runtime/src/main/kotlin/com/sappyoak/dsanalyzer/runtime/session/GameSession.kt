@@ -32,24 +32,26 @@ public class GameSession internal constructor(
 ) {
     private val followCam = StructView(FollowCam.Pointer)
     private val worldArea = StructView(WorldArea.Pointer)
-    private val character = StructView(ChrIns.Pointer)
-    private val position = StructView(ChrPosData.Pointer)
-    private val placement = StructView(ChrCtrl.Pointer)
-    private val animation = StructView(AnimData.Pointer)
-    private val attributes = StructView(PlayerStats.Pointer)
-    private val worldState = StructView(WorldState.Pointer)
-    private val deathCam = StructView(DeathCam.Pointer)
-    private val gameData = StructView(GameDataMan.Pointer)
     private val flags = EventFlagBlock()
 
-    private val rest = listOf(character, position, placement, animation, attributes, worldState, deathCam, gameData)
+    private val playerReader = PlayerReader()
+    private val loadQueueReader = LoadQueueReader()
+    private val characterReader = CharacterReader()
+    private val placedPartsReader = PlacedPartsReader()
 
+    /** Where the previous tick was, which is what a reload is detected as a change of */
     private var lastPlace: WorldPlace? = null
+
+    /**
+     * The slow  tier, kept between the ticks that skip it
+     */
+    private var world = WorldTier()
+    private var sinceWorld = 0
+
 
     public fun sample(): RuntimeSnapshot {
         val started = TimeSource.Monotonic.markNow()
         val loaded = followCam.refresh(memory)
-
         val areaPresent = worldArea.refresh(memory)
         val place = place(areaPresent)
 
@@ -57,20 +59,22 @@ public class GameSession internal constructor(
         if (reloaded) {
             memory.invalidate(Lifetime.World)
             flags.reset()
+            world = WorldTier()
+            sinceWorld = 0
         }
-
         lastPlace = place
 
         var present = if (loaded) 1 else 0
         present += if (areaPresent) 1 else 0
-        present += rest.count { it.refresh(memory) }
+        present += playerReader.refresh(memory)
 
         val changes = flags.refresh(memory)
         if (flags.isPresent) {
             present++
         }
 
-        val time = if (gameData.isPresent) gameData.int(GameDataMan.InGameTimeMillis) else 0
+        val time = playerReader.timeMillis()
+        refreshWorldTier()
 
         return RuntimeSnapshot(
             inGameTimeMillis = time,
@@ -78,14 +82,33 @@ public class GameSession internal constructor(
             place = place,
             loaded = loaded,
             reloaded = reloaded,
-            player = if (loaded) player() else null,
-            world = world(),
+            player = if (loaded) playerReader.player() else null,
+            world = playerReader.world(),
+            camera = if (loaded) cameraOf(followCam) else null,
+            loadQueue = world.loadQueue,
+            characters = world.characters,
             flagChanges = changes,
-            cost = SampleCost(started.elapsedNow(), present, STRUCTURES)
+            cost = SampleCost(started.elapsedNow(), present, playerReader.structures + AROUND_PLAYER)
         )
     }
 
+    /** Reads every enemy the loaded blocks place, instantiated or not */
+    public fun readPlacedEnemies(): List<BlockRoster> = placedPartsReader.read(memory)
+
     public fun isFlagSet(flagId: Int): Boolean? = flags.isSet(flagId)
+
+    private fun refreshWorldTier() {
+        if (sinceWorld > 0) {
+            sinceWorld--
+            return
+        }
+
+        sinceWorld = WORLD_TIER_PERIOD - 1
+        world = WorldTier(
+            loadQueue = loadQueueReader.read(memory),
+            characters = characterReader.read(memory)
+        )
+    }
 
     private fun place(areaPresent: Boolean): WorldPlace {
         if (!areaPresent) return WorldPlace.Unreadable
@@ -98,56 +121,23 @@ public class GameSession internal constructor(
         return if (map.exists) WorldPlace.InWorld(map) else WorldPlace.Loading(map)
     }
 
-    private fun player(): PlayerSnapshot? {
-        if (!character.isPresent || !position.isPresent) return null
-
-        return PlayerSnapshot(
-            position = position.vec3(ChrPosData.Position),
-            angle = position.float(ChrPosData.Angle),
-            health = character.int(ChrIns.Health),
-            stamina = character.int(ChrIns.Stamina),
-            characterType = character.int(ChrIns.ChrType),
-            teamType = character.int(ChrIns.TeamType),
-            playRegion = character.int(ChrIns.PlayRegion),
-            animationSpeed = if (animation.isPresent) animation.float(AnimData.PlaySpeed) else null,
-            cheats = cheatsIn(
-                flags1 = character.int(ChrIns.Flags1),
-                flags2 = character.int(ChrIns.Flags2),
-                mapFlags = if (placement.isPresent) placement.int(ChrCtrl.Flags) else 0
-            ),
-            attributes = attributes()
-        )
-    }
-
-    private fun attributes(): AttributeSnapshot? {
-        if (!attributes.isPresent) return null
-
-        return AttributeSnapshot(
-            healthMax = attributes.int(PlayerStats.HealthMax),
-            staminaMax = attributes.int(PlayerStats.StaminaMax),
-            soulLevel = attributes.int(PlayerStats.SoulLevel),
-            souls = attributes.int(PlayerStats.Souls),
-            humanity = attributes.int(PlayerStats.Humanity),
-            covenant = attributes.unsigned(PlayerStats.Covenant),
-            stance = attributes.int(PlayerStats.Stance)
-        )
-    }
-
-    private fun world(): WorldSnapshot? {
-        if (!worldState.isPresent) return null
-
-        return WorldSnapshot(
-            stablePosition = worldState.vec3(WorldState.StablePosition),
-            stableAngle = worldState.float(WorldState.StableAngle),
-            lastBonfire = worldState.int(WorldState.LastBonfire),
-            deathCam = deathCam.isPresent && deathCam.boolean(DeathCam.Active)
-        )
-    }
-
     private companion object {
-        const val STRUCTURES = 11
+        /** The follow cam, the map, and the flag block, beside the player's own structures */
+        const val AROUND_PLAYER = 3
+
+        /**
+         * Ticks between slow-tier reads. Six against a 30hz logic tick is five times a second,
+         * which is faster than a block can load and faster than anyone can read a list
+         */
+        const val WORLD_TIER_PERIOD = 6
     }
 }
+
+/** The slow tier's last reading, held between the ticks that do not refresh it */
+private data class WorldTier(
+    val loadQueue: LoadQueueSnapshot? = null,
+    val characters: List<CharacterSnapshot> = emptyList()
+)
 
 public fun GameConnection.openSession(pointers: List<GamePointer>): GameSession {
     val resolved = memory.resolvePointers(pointers, mainModule)

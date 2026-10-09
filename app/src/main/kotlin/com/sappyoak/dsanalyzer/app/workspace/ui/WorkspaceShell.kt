@@ -102,7 +102,13 @@ public fun WorkspaceShell(
 
                     WorkspaceTab.Runtime -> {
                         val state by stores.runtime.state.collectAsState()
-                        RuntimeScreen(state, follow)
+                        RuntimeScreen(
+                            state = state,
+                            onFollow = follow,
+                            onReadPlacedEnemies = {
+                                stores.runtime.dispatch(RuntimeMessage.PlacedEnemiesRequested)
+                            }
+                        )
                     }
                 }
             }

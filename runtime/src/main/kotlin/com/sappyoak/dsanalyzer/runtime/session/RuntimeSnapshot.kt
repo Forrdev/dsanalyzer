@@ -15,6 +15,9 @@ public data class RuntimeSnapshot(
     public val reloaded: Boolean,
     public val player: PlayerSnapshot?,
     public val world: WorldSnapshot?,
+    public val camera: CameraSnapshot?,
+    public val loadQueue: LoadQueueSnapshot?,
+    public val characters: List<CharacterSnapshot>,
     public val flagChanges: List<FlagChange>,
     public val cost: SampleCost
 ) {
@@ -30,6 +33,8 @@ public data class RuntimeSnapshot(
 
     public val map: MapId? get() = place.loadedMap
     public val inWorld: Boolean get() = loaded && map != null
+
+    public val others: List<CharacterSnapshot> get() = characters.filterNot { it.isPlayer }
 }
 
 public data class SampleCost(

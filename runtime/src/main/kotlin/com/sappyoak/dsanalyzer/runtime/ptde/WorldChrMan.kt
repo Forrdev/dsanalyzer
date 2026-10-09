@@ -89,5 +89,10 @@ public object WorldBlock {
      * **Null means the block is not loaded** It says nothing about a block that has been
      * *requested* and is still loading. The request and its progress live in 'NS_FRPG::WorldRes'
      */
-    public const val MapDataPointer: Int = 0x64
+    public const val MapDataPointer: Int = 0x60
+
+    /**
+     * Which of the seventeen blocks this is, repeated inside the block itself
+     */
+    public const val BlockIndex: Int = 0x64
 }

@@ -52,5 +52,18 @@ public class StructView private constructor(
 
     public fun vec3(offset: Int): Vec3 = Vec3(view.float(offset), view.float(offset + 4), view.float(offset + 8))
 
+    /**
+     * An ASCII string stored inline in the structure, stopping at the first NULL or after [max]
+     */
+    public fun ascii(offset: Int, max: Int): String {
+        val text = StringBuilder(max)
+        for (i in 0 until max) {
+            val c = view.byte(offset + 1).toInt() and 0xFF
+            if (c == 0) break
+            text.append(if (c in 0x20..0x7E) c.toChar() else '?')
+        }
+        return text.toString()
+    }
+
     public fun flag(offset: Int, mask: Int): Boolean = view.int(offset) and mask != 0
 }

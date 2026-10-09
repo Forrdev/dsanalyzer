@@ -16,8 +16,10 @@ import kotlinx.coroutines.launch
 
 import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.native.process.Processes
+import com.sappyoak.dsanalyzer.runtime.session.BlockRoster
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeEvent
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
+import com.sappyoak.dsanalyzer.runtime.session.SampleRequests
 import com.sappyoak.dsanalyzer.runtime.session.sampling
 import com.sappyoak.dsanalyzer.runtime.watchForGame
 
@@ -30,7 +32,14 @@ private const val EVENT_BUFFER = 16
 public data class LinkState(
     public val attached: AttachedGame? = null,
     public val note: String? = null,
-    public val snapshot: RuntimeSnapshot? = null
+    public val snapshot: RuntimeSnapshot? = null,
+    /**
+     * The last answer to a placed enemy request, which is not part of a tick.
+     * Null until something asks. It is deliberately not cleared as the world changes.
+     * A roster from the block you just left is stale rather than wrong, and dropping it would
+     * empty the view everytime the player moved
+     */
+    public val placedEnemies: List<BlockRoster>? = null
 )
 
 public class GameLink(
@@ -48,6 +57,7 @@ public class GameLink(
     public val events: SharedFlow<RuntimeEvent> = mutableEvents.asSharedFlow()
 
     private var watch: Job? = null
+    private val requests = SampleRequests()
 
     /** Begins watching */
     public fun start() {
@@ -75,9 +85,17 @@ public class GameLink(
         mutableState.value = LinkState()
     }
 
+    /**
+     * Asks the sampling loop for every enemy the loaded blocks place
+     */
+    public fun requestPlacedEnemies() {
+        requests.requestPlacedEnemies()
+    }
+
     private suspend fun record(event: RuntimeEvent) {
         when (event) {
             is RuntimeEvent.Sampled -> mutableState.update { it.copy(snapshot = event.snapshot) }
+            is RuntimeEvent.PlacedEnemies -> mutableState.update { it.copy(placedEnemies = event.rosters) }
             is RuntimeEvent.Attached -> {
                 val attached = event.describe()
                 logger.atInfo {

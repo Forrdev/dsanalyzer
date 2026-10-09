@@ -55,6 +55,7 @@ public class ConnectionEffects(
 
         is RuntimeEvent.Failed -> ConnectionMessage.WatchFailed(event.reason)
         is RuntimeEvent.Sampled -> null
+        is RuntimeEvent.PlacedEnemies -> null
     }
 }
 

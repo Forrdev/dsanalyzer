@@ -36,6 +36,9 @@ private fun snapshot(
     reloaded = false,
     player = null,
     world = null,
+    camera = null,
+    loadQueue = null,
+    characters = emptyList(),
     flagChanges = changes.toList(),
     cost = SampleCost(1.milliseconds, 10, 10)
 )
@@ -94,6 +97,24 @@ class RuntimeReducerTest : FunSpec({
             lost.snapshot shouldBe null
             lost.problem shouldBe "Remastered is not read yet"
             lost.flagLog.shouldBeEmpty()
+        }
+    }
+
+    test("asking for placed enemies raises the effect that crosses into the sampler") {
+        val asked = reduceRuntime(RuntimeState(), RuntimeMessage.PlacedEnemiesRequested)
+        assertSoftly {
+            asked.effects shouldBe listOf(RuntimeEffect.RequestPlacedEnemies)
+            asked.state.placedEnemies shouldBe null
+        }
+    }
+
+    test("a roster that comes back becomes the state, and not-asked stays apart from none-found") {
+        val fresh = RuntimeState()
+        val answered = tick(fresh, LinkState(attached = GAME, placedEnemies = emptyList()))
+        
+        assertSoftly {
+            fresh.placedEnemies shouldBe null
+            answered.placedEnemies shouldBe emptyList()
         }
     }
 

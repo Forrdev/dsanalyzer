@@ -79,6 +79,13 @@ public object ChrIns {
      * This is **not** three consecutive floats. THey are '0x10' apart, one per row, so a 'vec3' read at
      * [PositionX] returns the tail of the first row rather than a position.
      * [CharPosData.Position] is the contiguous one and stays the default source
+     *
+     * This is zero on the player.
+     *
+     * Two more position 'vec4's sit just past the transform and neither is the live position for the player.
+     * - '0xC0' is a copy of the transform's translation on the player exactly as the transform is
+     * - '0xD0' is a placement position, not a live one. Reads where the player had been standing in the previous session
+     *    and never updates.
      */
     public const val PositionX: Int = 0x9C
     public const val PositionY: Int = 0xAC
