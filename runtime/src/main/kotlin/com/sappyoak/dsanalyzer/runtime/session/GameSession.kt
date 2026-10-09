@@ -11,19 +11,10 @@ import com.sappyoak.dsanalyzer.runtime.pointers.Lifetime
 import com.sappyoak.dsanalyzer.runtime.pointers.ResolvedPointers
 import com.sappyoak.dsanalyzer.runtime.pointers.StructView
 import com.sappyoak.dsanalyzer.runtime.pointers.resolvePointers
-import com.sappyoak.dsanalyzer.runtime.ptde.AnimData
-import com.sappyoak.dsanalyzer.runtime.ptde.ChrCtrl
-import com.sappyoak.dsanalyzer.runtime.ptde.ChrIns
-import com.sappyoak.dsanalyzer.runtime.ptde.ChrPosData
-import com.sappyoak.dsanalyzer.runtime.ptde.DeathCam
 import com.sappyoak.dsanalyzer.runtime.ptde.EventFlagBlock
 import com.sappyoak.dsanalyzer.runtime.ptde.FollowCam
 import com.sappyoak.dsanalyzer.runtime.ptde.GameDataMan
-import com.sappyoak.dsanalyzer.runtime.ptde.PlayerStats
 import com.sappyoak.dsanalyzer.runtime.ptde.WorldArea
-import com.sappyoak.dsanalyzer.runtime.ptde.WorldState
-
-private const val FIRST_WORLD = 10
 
 public class GameSession internal constructor(
     public val game: GameProcess,

@@ -13,6 +13,8 @@ public data class Vec3(public val x: Float, public val y: Float, public val z: F
         return sqrt(dx * dx + dy * dy + dz * dz)
     }
 
+    public infix fun dot(other: Vec3): Float = x * other.x + y * other.y + z * other.z
+
     public companion object {
         public val Zero: Vec3 = Vec3(0f, 0f, 0f)
     }

@@ -63,7 +63,7 @@ internal fun CharacterPanel(
 }
 
 private fun CharacterSnapshot.describe(): String {
-    val target = targetHandle?.let { " - targeting %08X".format(it) }.orEmpty()
+    val target = if (alive) targetHandle?.let { " - targeting %08X".format(it) }.orEmpty() else ""
     val dead = if (alive) "" else " - dead"
     return "$health/$healthMax hp, npc $npcParamId, ${position.describe()}$dead$target"
 }

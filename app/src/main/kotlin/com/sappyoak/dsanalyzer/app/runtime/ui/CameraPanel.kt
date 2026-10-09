@@ -28,5 +28,18 @@ internal fun CameraPanel(camera: CameraSnapshot?) {
         Field("Position", camera.position.describe())
         Field("Facing", camera.orientation.describe())
         Field("Pitching toward", "%.3f rad".format(camera.targetPitch))
+
+        val frustum = camera.frustum
+        Field("Field of view", "%.3f rad (%.1f deg vertical)".format(frustum.fovRadians, frustum.fovRadians * DEGREES))
+        Field("Aspect", "%.4f".format(frustum.aspect))
+        Field("Clip planes", "%.4f to %.1f".format(frustum.near, frustum.far))
+
+        Field("Transform position", camera.transform.r3.xyz.describe())
+        Field(
+            "Basis",
+            if (camera.transform.isOrthonormal()) "orthonormal" else "NOT orthonormal - wrong offset?"
+        )
     }
 }
+
+private const val DEGREES = 180f / Math.PI.toFloat()

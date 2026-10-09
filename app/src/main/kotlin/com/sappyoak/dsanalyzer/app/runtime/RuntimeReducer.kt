@@ -16,6 +16,7 @@ public fun reduceRuntime(
         attached = message.link.attached,
         snapshot = message.link.snapshot,
         flagLog = state.logAfter(message.link),
+        placedEnemies = message.link.placedEnemies,
         problem = message.link.note,
     ).with()
 }

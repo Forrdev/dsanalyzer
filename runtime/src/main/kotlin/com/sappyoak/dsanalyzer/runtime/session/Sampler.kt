@@ -39,7 +39,7 @@ public class SampleRequests {
  * away cancels the sampling that was reading it rather than something holding a dead handle
  */
 public fun Flow<ConnectionEvent>.sampling(
-    requests: SampleRequests = SampleRequests(),
+    requests: SampleRequests,
     period: (GameEdition) -> Duration = ::tickPeriod,
     tables: (GameEdition) -> List<GamePointer>? = ::tablesFor,
     context: CoroutineContext = Dispatchers.IO

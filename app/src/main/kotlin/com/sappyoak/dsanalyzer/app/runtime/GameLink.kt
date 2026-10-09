@@ -65,7 +65,7 @@ public class GameLink(
 
         watch = scope.launch {
             try {
-                processes().watchForGame(editions).sampling().collect(::record)
+                processes().watchForGame(editions).sampling(requests).collect(::record)
             } catch (cancellation: CancellationException) {
                 throw cancellation
             } catch (err: Throwable) {

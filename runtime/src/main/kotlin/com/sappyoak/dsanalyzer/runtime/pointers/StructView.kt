@@ -3,7 +3,9 @@ package com.sappyoak.dsanalyzer.runtime.pointers
 import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.native.memory.MemoryView
 import com.sappyoak.dsanalyzer.native.process.ProcessMemory
+import com.sappyoak.dsanalyzer.shared.math.Mat4
 import com.sappyoak.dsanalyzer.shared.math.Vec3
+import com.sappyoak.dsanalyzer.shared.math.Vec4
 
 /**
  * One structure, fetched whole and then read field by field out of the copy
@@ -51,6 +53,12 @@ public class StructView private constructor(
     public fun unsigned(offset: Int): Int = view.byte(offset).toInt() and 0xFF
 
     public fun vec3(offset: Int): Vec3 = Vec3(view.float(offset), view.float(offset + 4), view.float(offset + 8))
+
+    public fun vec4(offset: Int): Vec4 =
+        Vec4(view.float(offset), view.float(offset + 4), view.float(offset + 8), view.float(offset + 12))
+
+    public fun mat4(offset: Int): Mat4 =
+        Mat4(vec4(offset), vec4(offset + 16), vec4(offset + 32), vec4(offset + 48))
 
     /**
      * An ASCII string stored inline in the structure, stopping at the first NULL or after [max]

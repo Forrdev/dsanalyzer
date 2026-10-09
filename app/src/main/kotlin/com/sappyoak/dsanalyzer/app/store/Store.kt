@@ -1,5 +1,6 @@
 package com.sappyoak.dsanalyzer.app.store
 
+import com.sappyoak.dsanalyzer.app.runtime.RuntimeMessage
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -10,7 +11,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+/**
+ * A message that arrives frequently, normally because its on a clock
+ * rather than because of an action. This interface allows us to reduce the
+ * amount these messages are logged
+ */
 
+public interface FrequentMessage
 /**
  * Holds state, reduces message against it one at a time, and runs the effects each
  * reduction asks for.
@@ -67,7 +74,8 @@ public open class Store<S : Any, M : Any, E : Any>(
         val transition = reduce(mutableState.value, message)
         mutableState.value = transition.state
 
-        logger.debug { "${message.describe()} -> ${transition.effects.map { it.describe() }}" }
+        val report = { "${message.describe()} -> ${transition.effects.map { it.describe() }} "}
+        if (message is FrequentMessage) logger.trace(report) else logger.debug(report)
         transition.effects.forEach(::launchEffect)
     }
 
