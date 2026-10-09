@@ -25,40 +25,38 @@ private val STATE_WIDTH = 56.dp
 
 @Composable
 internal fun FlagLog(entries: List<FlagEntry>, onFollow: (WorldRef) -> Unit) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = if (entries.isEmpty()) "No flags have changed yet" else "Flag changes",
             style = MaterialTheme.typography.titleSmall,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
         )
 
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(entries) { entry ->
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "f${entry.frame}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.width(FRAME_WIDTH)
-                    )
-                    Text(
-                        text = if (entry.set) "on" else "off",
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.width(STATE_WIDTH)
-                    )
-                    TextButton(onClick = { onFollow(WorldRef.EventFlag(entry.flagId, entry.place.loadedMap)) }) {
-                        Text(entry.flagId.toString())
-                    }
-
-                    Text(
-                        text = entry.place.label,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+        entries.forEach { entry ->
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "f${entry.frame}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.width(FRAME_WIDTH)
+                )
+                Text(
+                    text = if (entry.set) "on" else "off",
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.width(STATE_WIDTH)
+                )
+                TextButton(onClick = { onFollow(WorldRef.EventFlag(entry.flagId, entry.place.loadedMap)) }) {
+                    Text(entry.flagId.toString())
                 }
+
+                Text(
+                    text = entry.place.label,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
     }

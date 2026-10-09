@@ -66,7 +66,8 @@ private fun collisionRows(contents: MapContents, part: Part.Collision) = rows {
     row("Stable footing flag", part.stableFootingFlag)
     row("Place name", part.placeNameId ?: "from map area")
     row("Starts disabled", part.startsDisabled)
-    entityRow("Bonfire entity", part.bonfireEntityId)
+    entityRow("Bonfire disable id", part.bonfireDisableId)
+    entityRow("Disables bonfire", part.disabledBonfire)
     row("Navmesh groups", part.navmeshGroups)
     row("Reflect plane height", part.reflectPlaneHeight)
     val environment = part.environment?.let { contents.environmentEvent(it.value) }

@@ -6,6 +6,8 @@ import com.sappyoak.dsanalyzer.formats.msb.GroupMask
 import com.sappyoak.dsanalyzer.formats.msb.PartIndex
 import com.sappyoak.dsanalyzer.formats.msb.RegionIndex
 
+private const val BONFIRE_DISABLE_OFFSET = 1000
+
 public sealed interface Part {
     public val header: PartHeader
 
@@ -28,13 +30,18 @@ public sealed interface Part {
         /** Place name shown on entering. Negative forces the banner*/
         public val rawPlaceName: Int,
         public val startsDisabled: Boolean,
-        /** Entity id of the bonfire tied to this collision */
-        public val bonfireEntityId: Int?,
+        /**
+         * This is not the bonfire id. While enemies near this collision are alerted
+         * the bonfire with this value **minus 1000** is disabled
+         */
+        public val bonfireDisableId: Int?,
         /** Play region id or an encoded stable footing flag */
         public val rawPlayRegion: Int,
         public val lockCamParamId1: Int,
         public val lockCamParamId2: Int
-    ) : Part
+    ) : Part {
+        public val disabledBonfire: Int? get() = bonfireDisableId?.minus(BONFIRE_DISABLE_OFFSET)
+    }
 
     public data class Navmesh(override val header: PartHeader, public val navmeshGroups: GroupMask) : Part
 

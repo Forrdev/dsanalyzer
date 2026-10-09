@@ -90,7 +90,7 @@ private fun BinaryReader.readCollision(header: PartHeader): Part.Collision {
     val rawPlaceName = readShort().toInt()
     val startsDisabled = readBoolean()
     skip(1)
-    val bonfireEntityId = readEntityId()
+    val bonfireDisableId = readEntityId()
     repeat(3) { assertValue(-1) { readInt() } }
 
     val collision = Part.Collision(
@@ -103,7 +103,7 @@ private fun BinaryReader.readCollision(header: PartHeader): Part.Collision {
         vagrantEntityIds = vagrantEntityIds,
         rawPlaceName = rawPlaceName,
         startsDisabled = startsDisabled,
-        bonfireEntityId = bonfireEntityId,
+        bonfireDisableId = bonfireDisableId,
         rawPlayRegion = readInt(),
         lockCamParamId1 = readShort().toInt(),
         lockCamParamId2 = readShort().toInt()
