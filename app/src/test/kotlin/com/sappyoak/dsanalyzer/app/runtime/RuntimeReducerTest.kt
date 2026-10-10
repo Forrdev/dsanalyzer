@@ -40,6 +40,7 @@ private fun snapshot(
     loadQueue = null,
     characters = emptyList(),
     flagChanges = changes.toList(),
+    menu = null,
     cost = SampleCost(1.milliseconds, 10, 10)
 )
 
