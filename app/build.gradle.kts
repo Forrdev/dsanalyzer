@@ -16,6 +16,7 @@ dependencies {
     implementation(project(":game"))
     implementation(project(":native"))
     implementation(project(":runtime"))
+    implementation(project(":overlay"))
 
     with(libs) {
         implementation(kotlinx.coroutines.core)

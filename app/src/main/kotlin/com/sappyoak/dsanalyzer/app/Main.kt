@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.*
+import com.sappyoak.dsanalyzer.app.connection.ConnectionStatus
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
@@ -19,6 +20,7 @@ import com.sappyoak.dsanalyzer.app.connection.ui.ConnectionStatusBar
 import com.sappyoak.dsanalyzer.app.logging.coroutineErrorLogging
 import com.sappyoak.dsanalyzer.app.logging.installCrashLogging
 import com.sappyoak.dsanalyzer.app.paths.ToolPaths
+import com.sappyoak.dsanalyzer.app.runtime.overlayScene
 import com.sappyoak.dsanalyzer.app.settings.SettingsMessage
 import com.sappyoak.dsanalyzer.app.settings.ui.SettingsProblemBanner
 import com.sappyoak.dsanalyzer.app.startup.StartupMessage
@@ -31,6 +33,8 @@ import com.sappyoak.dsanalyzer.app.verification.VerificationMessage
 import com.sappyoak.dsanalyzer.app.verification.ui.VerificationDialog
 import com.sappyoak.dsanalyzer.app.workspace.ui.NewWorkspaceDialog
 import com.sappyoak.dsanalyzer.app.workspace.ui.WorkspaceShell
+import com.sappyoak.dsanalyzer.native.windows.GameWindowSource
+import com.sappyoak.dsanalyzer.overlay.GameOverlay
 
 fun main() {
     val paths = ToolPaths()
@@ -54,6 +58,8 @@ fun main() {
 
     val model = createAppModel(scope, paths)
     model.start()
+
+    val viewportSource = GameWindowSource()
 
     application {
         Window(
@@ -117,6 +123,13 @@ fun main() {
                             onDismiss = { model.startup.dispatch(StartupMessage.NewWorkspaceDismissed) }
                         )
                     }
+
+                    val runtimeState by model.workspace.runtime.state.collectAsState()
+                    GameOverlay(
+                        source = viewportSource,
+                        scene = runtimeState.overlayScene(),
+                        enabled = connectionState.status is ConnectionStatus.Connected
+                    )
 
                     verificationState.viewing
                         ?.let { id -> startupState.installations.firstOrNull { it.id == id } }

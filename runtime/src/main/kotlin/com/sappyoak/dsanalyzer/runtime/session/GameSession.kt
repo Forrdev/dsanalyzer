@@ -14,6 +14,7 @@ import com.sappyoak.dsanalyzer.runtime.pointers.resolvePointers
 import com.sappyoak.dsanalyzer.runtime.ptde.EventFlagBlock
 import com.sappyoak.dsanalyzer.runtime.ptde.FollowCam
 import com.sappyoak.dsanalyzer.runtime.ptde.GameDataMan
+import com.sappyoak.dsanalyzer.runtime.ptde.MenuMan
 import com.sappyoak.dsanalyzer.runtime.ptde.WorldArea
 
 public class GameSession internal constructor(
@@ -23,6 +24,7 @@ public class GameSession internal constructor(
 ) {
     private val followCam = StructView(FollowCam.Pointer)
     private val worldArea = StructView(WorldArea.Pointer)
+    private val menuMan = StructView(MenuMan.Pointer)
     private val flags = EventFlagBlock()
 
     private val playerReader = PlayerReader()
@@ -79,6 +81,7 @@ public class GameSession internal constructor(
             loadQueue = world.loadQueue,
             characters = world.characters,
             flagChanges = changes,
+            menu = menu(),
             cost = SampleCost(started.elapsedNow(), present, playerReader.structures + AROUND_PLAYER)
         )
     }
@@ -98,6 +101,16 @@ public class GameSession internal constructor(
         world = WorldTier(
             loadQueue = loadQueueReader.read(memory),
             characters = characterReader.read(memory)
+        )
+    }
+
+    private fun menu(): MenuSnapshot? {
+        if (!menuMan.refresh(memory)) return null
+
+        return MenuSnapshot(
+            isFullScreenOpen = MenuMan.FullScreenMenu.any { menuMan.int(it) != 0 },
+            screen = menuMan.int(MenuMan.Screen),
+            defaultQuantity = menuMan.int(MenuMan.DefaultQuantity)
         )
     }
 

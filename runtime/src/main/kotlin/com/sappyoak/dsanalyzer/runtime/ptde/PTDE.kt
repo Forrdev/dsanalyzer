@@ -47,7 +47,8 @@ public val PTDEPointers: List<GamePointer> = listOf(
     WorldArea.Pointer,
     DeathCam.Pointer,
     GameDataMan.Pointer,
-    EventFlags.Pointer
+    EventFlags.Pointer,
+    MenuMan.Pointer
 )
 
 /**

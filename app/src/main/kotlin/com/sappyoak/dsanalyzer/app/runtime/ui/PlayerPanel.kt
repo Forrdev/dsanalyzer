@@ -48,6 +48,9 @@ internal fun PlayerPanel(snapshot: RuntimeSnapshot) {
         player.animationSpeed?.let { Field("Animation speed", it.toString()) }
         Field("Play region", player.playRegion.toString())
         player.attributes?.let { Field("Soul level", "${it.soulLevel} (${it.souls} souls)")}
+        snapshot.menu?.let { menu ->
+            Field("Default Quantity", menu.defaultQuantity.toString())
+        }
     }
 }
 

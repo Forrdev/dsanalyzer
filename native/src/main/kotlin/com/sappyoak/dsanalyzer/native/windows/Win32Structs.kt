@@ -57,6 +57,25 @@ internal val MEMORY_BASIC_INFORMATION: StructLayout = MemoryLayout.structLayout(
     MemoryLayout.paddingLayout(4),
 )
 
+internal val RECT: StructLayout = MemoryLayout.structLayout(
+    JAVA_INT.withName("left"),
+    JAVA_INT.withName("top"),
+    JAVA_INT.withName("right"),
+    JAVA_INT.withName("bottom")
+)
+
+internal val POINT: StructLayout = MemoryLayout.structLayout(
+    JAVA_INT.withName("x"),
+    JAVA_INT.withName("y")
+)
+
+internal val MONITOR_INFO: StructLayout = MemoryLayout.structLayout(
+    JAVA_INT.withName("cbSize"),
+    RECT.withName("rcMonitor"),
+    RECT.withName("rcWork"),
+    JAVA_INT.withName("dwFlags")
+)
+
 internal fun StructLayout.offsetOf(field: String): Long = byteOffset(groupElement(field))
 
 internal fun MemorySegment.intField(layout: StructLayout, field: String): Int =

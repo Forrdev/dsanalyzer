@@ -19,6 +19,7 @@ public data class RuntimeSnapshot(
     public val loadQueue: LoadQueueSnapshot?,
     public val characters: List<CharacterSnapshot>,
     public val flagChanges: List<FlagChange>,
+    public val menu: MenuSnapshot?,
     public val cost: SampleCost
 ) {
     public val divergence: Float?

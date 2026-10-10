@@ -26,7 +26,9 @@ public data class CameraSnapshot(
     /** Camera-to-world, read whole */
     public val transform: Mat4,
     public val frustum: Frustum
-)
+) {
+    public val worldToClip: Mat4 get() = transform.orthonormalInverse * frustum.projection
+}
 
 internal fun cameraOf(view: StructView): CameraSnapshot = CameraSnapshot(
     position = view.vec3(FollowCam.PosX),
