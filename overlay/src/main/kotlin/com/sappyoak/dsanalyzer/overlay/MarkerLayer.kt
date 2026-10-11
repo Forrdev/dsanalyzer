@@ -30,7 +30,7 @@ private const val LABEL_LIMIT = 20
 @Composable
 internal fun MarkerLayer(scene: OverlayScene) {
     val camera = scene.camera ?: return
-    if (scene.markers.isEmpty()) return
+    if (scene.markers.markers.isEmpty()) return
 
     val measurer = rememberTextMeasurer()
 

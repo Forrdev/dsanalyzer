@@ -7,9 +7,6 @@ import com.sappyoak.dsanalyzer.shared.math.project
 
 private const val STEM_HEIGHT = 1.7f
 
-/** Beyond this, a marker is drawn at its faintest. Far enough to cover a view down a long hall */
-private const val FAR_DISTANCE = 120f
-
 /** Within this, full strength */
 private const val NEAR_DISTANCE = 15f
 
@@ -25,29 +22,31 @@ internal data class ProjectedMarker(
     val strength: Float
 )
 
-internal fun List<WorldMarker>.projectedOnto(
+internal fun MarkerView.projectedOnto(
     worldToClip: Mat4,
     eye: Vec3,
     width: Int,
     height: Int
-): List<ProjectedMarker> = mapNotNull { marker ->
+): List<ProjectedMarker> = markers.mapNotNull { marker ->
+    val distance = eye.distanceTo(marker.position)
+    if (distance > drawDistance) return@mapNotNull  null
+
     val head = worldToClip.project(marker.position.raisedBy(STEM_HEIGHT), width, height)
         ?: return@mapNotNull null
 
-    val distance = eye.distanceTo(marker.position)
     ProjectedMarker(
         marker = marker,
         head = head,
         feet = worldToClip.project(marker.position, width, height),
         distance = distance,
-        strength = strengthAt(distance)
+        strength = strengthAt(distance, drawDistance)
     )
 }.sortedByDescending { it.distance }
 
 private fun Vec3.raisedBy(height: Float): Vec3 = Vec3(x, y + height, z)
 
-private fun strengthAt(distance: Float): Float {
-    val span = FAR_DISTANCE - NEAR_DISTANCE
-    val nearness = ((FAR_DISTANCE - distance) / span).coerceIn(0f, 1f)
+private fun strengthAt(distance: Float, drawDistance: Float): Float {
+    val span = drawDistance - NEAR_DISTANCE
+    val nearness = ((drawDistance - distance) / span).coerceIn(0f, 1f)
     return MIN_STRENGTH + (1f - MIN_STRENGTH) * nearness
 }

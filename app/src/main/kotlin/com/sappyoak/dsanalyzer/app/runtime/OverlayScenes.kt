@@ -2,6 +2,7 @@ package com.sappyoak.dsanalyzer.app.runtime
 
 import com.sappyoak.dsanalyzer.overlay.CollisionView
 import com.sappyoak.dsanalyzer.overlay.MarkerKind
+import com.sappyoak.dsanalyzer.overlay.MarkerView
 import com.sappyoak.dsanalyzer.overlay.OverlayScene
 import com.sappyoak.dsanalyzer.overlay.WorldMarker
 import com.sappyoak.dsanalyzer.runtime.session.BlockRoster
@@ -30,20 +31,52 @@ private const val SAME_SPOT = 0.5f
 */
 private const val CONFIDENT_MATCHES = 3
 
-internal fun RuntimeState.overlayScene(): OverlayScene {
+internal fun RuntimeState.overlayScene(settings: OverlaySettings): OverlayScene {
+    if (!settings.enabled) return OverlayScene.Empty
+
     val camera = snapshot?.camera ?: return OverlayScene.Empty
 
     if (snapshot.menu?.isBlocking == true) return OverlayScene(camera = camera, suppressWorldDrawing = true)
 
-    val characters = snapshot.characters
+    return OverlayScene(
+        camera = camera,
+        markers = MarkerView(
+            markers = markersFor(settings.characters),
+            drawDistance = settings.characters.drawDistance
+        ),
+        collision = collisionFor(settings.collision)
+    )
+}
 
-    val live = characters.map { it.marker() }
+private fun RuntimeState.markersFor(settings: CharacterOverlaySettings): List<WorldMarker> {
+    val characters = snapshot?.characters.orEmpty()
+
+    val player = characters
+        .filter { it.isPlayer && settings.drawPlayer }
+        .map { it.marker() }
+
+    if (settings.draw == CharacterDrawing.None) return player
+
+    val live = characters.filterNot { it.isPlayer }.map { it.marker() }
+    if (settings.draw == CharacterDrawing.Instantiated) return player + live
+
     val block = placedEnemies?.playersBlock(characters)
     val unbuilt = block?.enemies.orEmpty()
         .filterNot { placed -> characters.any { it.position.near(placed.position) } }
         .map { it.marker() }
 
-    return OverlayScene(camera = camera, markers = live + unbuilt, collision = collision?.let { CollisionView(bodies = it.bodies) })
+    return player + live + unbuilt
+}
+
+private fun RuntimeState.collisionFor(settings: CollisionOverlaySettings): CollisionView? {
+    if (!settings.enabled) return null
+    val read = collision ?: return null
+
+    return CollisionView(
+        bodies = read.bodies,
+        radius = settings.radius.coerceAtLeast(0f),
+        triangleBudget = settings.triangleBudget.coerceAtLeast(0)
+    )
 }
 
 private fun List<BlockRoster>.playersBlock(characters: List<CharacterSnapshot>): BlockRoster? {

@@ -100,7 +100,9 @@ fun main() {
                                     workspace = phase.workspace,
                                     installation = startupState.installations
                                         .firstOrNull { it.id == phase.workspace.installationId },
-                                    stores = model.workspace
+                                    stores = model.workspace,
+                                    overlay = settingsState.settings.overlay,
+                                    onSettingsEdit = { model.settings.edit(it) }
                                 )
                                 else -> StartupScreen(startupState, model.startup)
                             }
@@ -125,10 +127,12 @@ fun main() {
                     }
 
                     val runtimeState by model.workspace.runtime.state.collectAsState()
+                    val overlaySettings = settingsState.settings.overlay
+
                     GameOverlay(
                         source = viewportSource,
-                        scene = runtimeState.overlayScene(),
-                        enabled = connectionState.status is ConnectionStatus.Connected
+                        scene = runtimeState.overlayScene(overlaySettings),
+                        enabled = connectionState.status is ConnectionStatus.Connected && overlaySettings.enabled
                     )
 
                     verificationState.viewing
