@@ -29,8 +29,10 @@ private val OUTLINE_WIDTH = 3.dp
 public fun OverlayContent(viewport: Viewport, scene: OverlayScene) {
     if (scene.suppressWorldDrawing) return
 
-    MarkerLayer(scene)
     Box(modifier = Modifier.fillMaxSize()) {
+        CollisionLayer(scene)
+        MarkerLayer(scene)
+
         Canvas(modifier = Modifier.fillMaxSize()) {
             val stroke = OUTLINE_WIDTH.toPx()
 

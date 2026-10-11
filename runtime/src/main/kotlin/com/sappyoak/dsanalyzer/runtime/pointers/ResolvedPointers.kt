@@ -58,13 +58,8 @@ public fun ProcessMemory.resolvePointers(
         }
     }
 
-    logger.atInfo {
-        message = "Signature scan finished"
-        payload = mapOf(
-            "resolved" to bases.size,
-            "unresolved" to unresolved.size
-        )
+    logger.info {
+        "Signature scan finished: resolved=${bases.size}, unresolved=${unresolved.size}"
     }
-
     return ResolvedPointers(bases, unresolved)
 }

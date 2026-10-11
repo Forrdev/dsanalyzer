@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.native.process.Processes
 import com.sappyoak.dsanalyzer.runtime.session.BlockRoster
+import com.sappyoak.dsanalyzer.runtime.session.CollisionSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeEvent
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.SampleRequests
@@ -39,7 +40,8 @@ public data class LinkState(
      * A roster from the block you just left is stale rather than wrong, and dropping it would
      * empty the view everytime the player moved
      */
-    public val placedEnemies: List<BlockRoster>? = null
+    public val placedEnemies: List<BlockRoster>? = null,
+    public val collision: CollisionSnapshot? = null
 )
 
 public class GameLink(
@@ -92,35 +94,49 @@ public class GameLink(
         requests.requestPlacedEnemies()
     }
 
-    private suspend fun record(event: RuntimeEvent) {
-        when (event) {
-            is RuntimeEvent.Sampled -> mutableState.update { it.copy(snapshot = event.snapshot) }
-            is RuntimeEvent.PlacedEnemies -> mutableState.update { it.copy(placedEnemies = event.rosters) }
-            is RuntimeEvent.Attached -> {
-                val attached = event.describe()
-                logger.atInfo {
-                    message = "Attached to the game"
-                    payload = mapOf(
-                        "pid" to attached.pid,
-                        "executable" to attached.executableName,
-                        "build" to attached.build?.name.orEmpty(),
-                        "unresolved" to attached.unresolved.size
-                    )
-                }
-                publish(LinkState(attached = attached), event)
-            }
-            RuntimeEvent.Searching -> publish(LinkState(), event)
-            is RuntimeEvent.Refused -> publish(LinkState(note =  event.reason), event)
-            is RuntimeEvent.Unsupported -> publish(LinkState(note = "${event.game.edition.name} is not read yet"), event)
-            is RuntimeEvent.Failed -> publish(LinkState(note = event.reason), event)
-        }
+    public fun requestCollision() {
+        requests.requestCollision()
     }
 
-    private suspend fun publish(state: LinkState, event: RuntimeEvent) {
-        mutableState.value = state
-        mutableEvents.emit(event)
+    private suspend fun record(event: RuntimeEvent) {
+        if (event is RuntimeEvent.Attached) event.log()
+        if (event is RuntimeEvent.Collision) {
+            logger.info { "collision snapshot: $event" }
+        }
+        mutableState.update { it.after(event) }
+        if (event.changesConnection) mutableEvents.emit(event)
+    }
+
+
+    private fun RuntimeEvent.Attached.log() {
+        val attached = describe()
+        logger.atInfo {
+            message = "Attached to the game"
+            payload = mapOf(
+                "pid" to attached.pid,
+                "executable" to attached.executableName,
+                "build" to attached.build?.name.orEmpty(),
+                "unresolved" to attached.unresolved.size
+            )
+        }
     }
 }
+
+internal fun LinkState.after(event: RuntimeEvent): LinkState = when (event) {
+    is RuntimeEvent.Sampled -> copy(snapshot = event.snapshot)
+    is RuntimeEvent.PlacedEnemies -> copy(placedEnemies = event.rosters)
+    is RuntimeEvent.Collision -> copy(collision = event.snapshot)
+    is RuntimeEvent.Attached -> LinkState(attached = event.describe())
+    RuntimeEvent.Searching -> LinkState()
+    is RuntimeEvent.Refused -> LinkState(note = event.reason)
+    is RuntimeEvent.Unsupported -> LinkState(note = "${event.game.edition.name} is not read yet")
+    is RuntimeEvent.Failed -> LinkState(note = event.reason)
+}
+
+private val RuntimeEvent.changesConnection: Boolean
+    get() = this !is RuntimeEvent.Sampled &&
+            this !is RuntimeEvent.PlacedEnemies &&
+            this !is RuntimeEvent.Collision
 
 private fun RuntimeEvent.Attached.describe(): AttachedGame = AttachedGame(
     executableName = game.process.executableName,

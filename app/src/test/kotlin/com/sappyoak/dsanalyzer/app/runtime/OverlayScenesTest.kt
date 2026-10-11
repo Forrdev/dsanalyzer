@@ -5,6 +5,7 @@ import kotlin.time.Duration.Companion.milliseconds
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.overlay.MarkerKind
 import com.sappyoak.dsanalyzer.overlay.OverlayScene
+import com.sappyoak.dsanalyzer.runtime.ptde.MenuOpenMask
 import com.sappyoak.dsanalyzer.runtime.session.BlockRoster
 import com.sappyoak.dsanalyzer.runtime.session.CameraSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
@@ -80,10 +81,11 @@ private fun state(
 )
 
 private fun menu(
-    isFullScreenOpen: Boolean = false,
-    screen: Int = -1,
-    defaultQuantity: Int = -1
-): MenuSnapshot = MenuSnapshot(isFullScreenOpen, screen, defaultQuantity)
+    mask: Int = 0,
+    boxKind: Int = 0,
+    screen: Int = 0,
+    defaultQuantity: Int = 0
+): MenuSnapshot = MenuSnapshot(mask, boxKind, screen, defaultQuantity)
 
 class OverlayScenesTest : FunSpec({
     test("no world means nothing to draw") {
@@ -158,9 +160,9 @@ class OverlayScenesTest : FunSpec({
         scene.markers.none { it.kind == MarkerKind.Placed } shouldBe true
     }
 
-    test("an open full-screen menu suppresses the whole overlay, markers and frame alike") {
+    test("an open menu suppresses the whole overlay, markers and frame alike") {
         val characters = listOf(character(0f, player = true), character(10f))
-        val scene = state(characters, menu = menu(true)).overlayScene()
+        val scene = state(characters, menu = menu(mask = MenuOpenMask.Talk, screen = 11)).overlayScene()
 
         assertSoftly {
             scene.suppressWorldDrawing shouldBe true
@@ -168,6 +170,34 @@ class OverlayScenesTest : FunSpec({
             scene.markers.shouldBeEmpty()
             // The camera is still carried, so nothing downstream has to treat this as "no world"
             scene.camera shouldBe CAMERA
+        }
+    }
+
+    test("the menus that leave the screen screen at zero still suppress") {
+        val characters = listOf(character(0f, player = true))
+
+        fun suppressedWith(mask: Int, boxKind: Int = 0) =
+            state(characters, menu = menu(mask, boxKind)).overlayScene().suppressWorldDrawing
+
+        assertSoftly {
+            suppressedWith(MenuOpenMask.Shop) shouldBe true
+            suppressedWith(MenuOpenMask.Repair) shouldBe true
+            suppressedWith(MenuOpenMask.Talk) shouldBe true
+            suppressedWith(MenuOpenMask.Box, boxKind = 8) shouldBe true
+        }
+    }
+
+    test("nothing open, a non-blocking menu, and an unreadable menu all leave the overlay drawing") {
+        val characters = listOf(character(0f, player = true))
+
+        fun suppressedWith(menu: MenuSnapshot?) =
+            state(characters, menu = menu).overlayScene().suppressWorldDrawing
+
+        assertSoftly {
+            suppressedWith(menu()) shouldBe false
+            suppressedWith(menu(MenuOpenMask.AmbientTalk)) shouldBe false
+            suppressedWith(menu(MenuOpenMask.Box, boxKind = 9)) shouldBe false
+            suppressedWith(null) shouldBe false
         }
     }
 

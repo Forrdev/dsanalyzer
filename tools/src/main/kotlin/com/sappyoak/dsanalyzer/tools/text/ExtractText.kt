@@ -22,6 +22,7 @@ import com.sappyoak.dsanalyzer.game.world.text.TextLanguage
 import com.sappyoak.dsanalyzer.game.world.text.hasText
 import com.sappyoak.dsanalyzer.game.world.text.loadText
 import com.sappyoak.dsanalyzer.game.world.text.pathTo
+import com.sappyoak.dsanalyzer.tools.installationAt
 
 private const val TERMS_FILE = "ja-en-terms.json"
 private const val EVENT_NAMES_FILE = "event-names.json"
@@ -61,13 +62,6 @@ public fun main(args: Array<String>) {
         write(out.resolve(EVENT_NAMES_FILE), EventNameCorpus(files.eventNames()))
     }
 }
-
-private fun installationAt(root: Path): Installation = Installation(
-    id = InstallationId.forRoot(root),
-    root = root,
-    executable = root.resolve(GameEdition.PrepareToDie.executableName),
-    build = GameBuild(GameEdition.PrepareToDie)
-)
 
 private fun GameFiles.termPairs(): List<TermPair> {
     val japanese = loadText(TextLanguage.Japanese, TextCategory.naming)

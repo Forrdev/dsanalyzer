@@ -18,6 +18,8 @@ public sealed interface RuntimeEvent {
     /** The answer to a [SampleRequests.requestPlacedEnemies] */
     public data class PlacedEnemies(public val rosters: List<BlockRoster>) : RuntimeEvent
 
+    /** The answer to a [SampleRequests.requestCollision] */
+    public data class Collision(val snapshot: CollisionSnapshot) : RuntimeEvent
     public data class Refused(
         public val game: GameProcess,
         public val reason: String

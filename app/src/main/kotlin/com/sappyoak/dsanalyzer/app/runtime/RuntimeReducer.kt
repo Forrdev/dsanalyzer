@@ -12,11 +12,13 @@ public fun reduceRuntime(
 ): Transition<RuntimeState, RuntimeEffect> = when (message) {
     RuntimeMessage.Opened -> state.with(RuntimeEffect.Observe)
     RuntimeMessage.PlacedEnemiesRequested -> state.with(RuntimeEffect.RequestPlacedEnemies)
+    RuntimeMessage.CollisionRequested -> state.with(RuntimeEffect.RequestCollision)
     is RuntimeMessage.LinkChanged -> state.copy(
         attached = message.link.attached,
         snapshot = message.link.snapshot,
         flagLog = state.logAfter(message.link),
         placedEnemies = message.link.placedEnemies,
+        collision = message.link.collision,
         problem = message.link.note,
     ).with()
 }

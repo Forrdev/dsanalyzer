@@ -1,0 +1,132 @@
+package com.sappyoak.dsanalyzer.runtime.session
+
+import io.github.oshai.kotlinlogging.KotlinLogging
+import com.sappyoak.dsanalyzer.native.memory.Address
+import com.sappyoak.dsanalyzer.native.memory.MemoryView
+import com.sappyoak.dsanalyzer.native.process.ProcessMemory
+import com.sappyoak.dsanalyzer.runtime.pointers.StructView
+import com.sappyoak.dsanalyzer.runtime.pointers.TableView
+import com.sappyoak.dsanalyzer.runtime.ptde.MeshShape
+import com.sappyoak.dsanalyzer.runtime.ptde.SUBPART_SIZE
+import com.sappyoak.dsanalyzer.runtime.ptde.Subpart
+
+private const val BUFFER_CAPACITY: Int = 1 shl 20
+private const val WIDE_INDEX_STRIDE: Int = 12
+
+private val logger = KotlinLogging.logger {  }
+private class SubpartHeader(
+    val vertexBase: Address,
+    val vertexCount: Int,
+    val vertexStride: Int,
+    val indexBase: Address,
+    val triangleCount: Int,
+    val indexStride: Int
+) {
+    val vertexBytes: Int get() = vertexCount * vertexStride
+    val indexBytes: Int get() = triangleCount * indexStride
+}
+
+internal class MeshGeometryReader {
+    private val subparts = TableView(MeshShape.Subparts)
+    private val subpart = StructView(SUBPART_SIZE)
+    private val buffer = MemoryView(BUFFER_CAPACITY)
+
+    fun read(memory: ProcessMemory, meshAddress: Address): CollisionMesh? {
+        if (!subparts.refresh(memory, meshAddress)) return null
+
+        val headers = subparts.elements.mapNotNull { headerAt(memory, it) }
+        if (headers.isEmpty()) return null
+
+        val vertices = FloatArray(headers.sumOf { it.vertexCount } * CollisionMesh.COMPONENTS)
+        val indices = IntArray(headers.sumOf { it.triangleCount } * CollisionMesh.CORNERS)
+
+        var vertexCursor = 0
+        var indexCursor = 0
+        var vertexBase = 0
+
+        for (header in headers) {
+            if (!readVertices(memory, header, vertices, vertexCursor)) return null
+            if (!readIndices(memory, header, indices, indexCursor, vertexBase)) return null
+
+            vertexCursor += header.vertexCount * CollisionMesh.COMPONENTS
+            indexCursor += header.triangleCount * CollisionMesh.CORNERS
+            // Each subpart indexes its own vertices from zero, so every subpart after the first
+            // has to be rebased into the combined array. Getting this wrong draws a recognisable
+            // mesh made of triangles joining the wrong corners
+            vertexBase += header.vertexCount
+        }
+
+        return CollisionMesh(vertices, indices)
+    }
+
+    private fun headerAt(memory: ProcessMemory, at: Address): SubpartHeader? {
+        if (!subpart.refresh(memory, at)) return null
+
+        val header = SubpartHeader(
+            vertexBase = subpart.pointer(Subpart.VertexBase),
+            vertexCount = subpart.int(Subpart.VertexCount),
+            vertexStride = subpart.short(Subpart.VertexStriding).toInt() and 0xFFFF,
+            indexBase = subpart.pointer(Subpart.IndexBase),
+            triangleCount = subpart.int(Subpart.TriangleCount),
+            indexStride = subpart.short(Subpart.IndexStriding).toInt() and 0xFFFF
+        )
+
+        // The embedded subpart at the mesh's `+0x20` has a null vertex base on every body sampled,
+        // and a zero stride would divide by nothing later. Both are "not a subpart to read" rather
+        // than failures, so they drop out instead of poisoning the whole mesh
+        if (header.vertexBase.isNull || header.indexBase.isNull) return null
+        if (header.vertexCount <= 0 || header.triangleCount <= 0) return null
+        if (header.vertexStride < VERTEX_COMPONENT_BYTES * CollisionMesh.COMPONENTS) return null
+        if (header.indexStride <= 0) return null
+        if (header.vertexBytes > BUFFER_CAPACITY || header.indexBytes > BUFFER_CAPACITY) return null
+
+        return header
+    }
+
+    private fun readVertices(
+        memory: ProcessMemory,
+        header: SubpartHeader,
+        into: FloatArray,
+        cursor: Int
+    ): Boolean {
+        if (!buffer.refresh(memory, header.vertexBase, header.vertexBytes)) return false
+
+        for (i in 0 until header.vertexCount) {
+            val from = i * header.vertexStride
+            val to = cursor + i * CollisionMesh.COMPONENTS
+            // The game's stride is 16 — three floats and a pad — and the pad is dropped here
+            into[to] = buffer.float(from)
+            into[to + 1] = buffer.float(from + VERTEX_COMPONENT_BYTES)
+            into[to + 2] = buffer.float(from + VERTEX_COMPONENT_BYTES * 2)
+        }
+        return true
+    }
+
+    private fun readIndices(
+        memory: ProcessMemory,
+        header: SubpartHeader,
+        into: IntArray,
+        cursor: Int,
+        vertexBase: Int
+    ): Boolean {
+        if (!buffer.refresh(memory, header.indexBase, header.indexBytes)) return false
+
+        val width = if (header.indexStride >= WIDE_INDEX_STRIDE) 4 else 2
+
+        for (triangle in 0 until header.triangleCount) {
+            val from = triangle * header.indexStride
+            val to = cursor + triangle * CollisionMesh.CORNERS
+            for (corner in 0 until CollisionMesh.CORNERS) {
+                val at = from + corner * width
+                val index = if (width == 4) buffer.int(at) else buffer.short(at).toInt() and 0xFFFF
+                into[to + corner] = vertexBase + index
+            }
+        }
+        return true
+    }
+
+
+    private companion object {
+        const val VERTEX_COMPONENT_BYTES = 4
+    }
+}

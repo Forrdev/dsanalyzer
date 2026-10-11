@@ -107,6 +107,9 @@ public fun WorkspaceShell(
                             onFollow = follow,
                             onReadPlacedEnemies = {
                                 stores.runtime.dispatch(RuntimeMessage.PlacedEnemiesRequested)
+                            },
+                            onReadCollision = {
+                                stores.runtime.dispatch(RuntimeMessage.CollisionRequested)
                             }
                         )
                     }

@@ -25,7 +25,8 @@ import com.sappyoak.dsanalyzer.game.world.WorldRef
 public fun RuntimeScreen(
     state: RuntimeState,
     onFollow: (WorldRef) -> Unit,
-    onReadPlacedEnemies: () -> Unit
+    onReadPlacedEnemies: () -> Unit,
+    onReadCollision: () -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
         Attachment(state, onFollow)
@@ -48,6 +49,8 @@ public fun RuntimeScreen(
         LoadQueuePanel(snapshot.loadQueue)
         HorizontalDivider()
         CharacterPanel(snapshot.characters, state.placedEnemies, onReadPlacedEnemies)
+        HorizontalDivider()
+        CollisionPanel(state.collision, onReadCollision)
         HorizontalDivider()
         FlagLog(state.flagLog, onFollow)
     }

@@ -1,5 +1,6 @@
 package com.sappyoak.dsanalyzer.app.runtime
 
+import com.sappyoak.dsanalyzer.overlay.CollisionView
 import com.sappyoak.dsanalyzer.overlay.MarkerKind
 import com.sappyoak.dsanalyzer.overlay.OverlayScene
 import com.sappyoak.dsanalyzer.overlay.WorldMarker
@@ -32,7 +33,7 @@ private const val CONFIDENT_MATCHES = 3
 internal fun RuntimeState.overlayScene(): OverlayScene {
     val camera = snapshot?.camera ?: return OverlayScene.Empty
 
-    if (snapshot.menu?.isFullScreenOpen == true) return OverlayScene(camera = camera, suppressWorldDrawing = true)
+    if (snapshot.menu?.isBlocking == true) return OverlayScene(camera = camera, suppressWorldDrawing = true)
 
     val characters = snapshot.characters
 
@@ -42,7 +43,7 @@ internal fun RuntimeState.overlayScene(): OverlayScene {
         .filterNot { placed -> characters.any { it.position.near(placed.position) } }
         .map { it.marker() }
 
-    return OverlayScene(camera = camera, markers = live + unbuilt)
+    return OverlayScene(camera = camera, markers = live + unbuilt, collision = collision?.let { CollisionView(bodies = it.bodies) })
 }
 
 private fun List<BlockRoster>.playersBlock(characters: List<CharacterSnapshot>): BlockRoster? {

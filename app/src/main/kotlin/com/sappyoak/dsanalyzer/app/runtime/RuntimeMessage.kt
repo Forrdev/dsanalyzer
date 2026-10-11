@@ -7,4 +7,5 @@ public sealed interface RuntimeMessage {
     public data class LinkChanged(public val link: LinkState) : RuntimeMessage, FrequentMessage
 
     public data object PlacedEnemiesRequested : RuntimeMessage
+    public data object CollisionRequested : RuntimeMessage
 }

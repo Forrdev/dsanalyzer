@@ -1,5 +1,6 @@
 package com.sappyoak.dsanalyzer.runtime.session
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -19,17 +20,26 @@ import com.sappyoak.dsanalyzer.runtime.ptde.PTDEPointers
 import com.sappyoak.dsanalyzer.runtime.ptde.ptdeBuild
 
 
+private val logger = KotlinLogging.logger {  }
+
 /**
  * Work a caller wants done inside the sampling loop
  */
 public class SampleRequests {
     private val placedEnemies = AtomicBoolean(false)
+    private val collision = AtomicBoolean(false)
 
     public fun requestPlacedEnemies() {
         placedEnemies.set(true)
     }
 
     internal fun takePlacedEnemies(): Boolean = placedEnemies.getAndSet(false)
+
+    public fun requestCollision() {
+        collision.set(true)
+    }
+
+    internal fun takeCollision(): Boolean = collision.getAndSet(false)
 }
 
 /**
@@ -86,8 +96,14 @@ private suspend fun FlowCollector<RuntimeEvent>.sampleWhileConnected(
         // After the tick rather than before it so an expensive read never delays the sample it shares
         // an instant with
         if (requests.takePlacedEnemies()) {
+            logger.debug { "Reading the enemies the loaded blocks place" }
             emit(RuntimeEvent.PlacedEnemies(session.readPlacedEnemies()))
         }
+        if (requests.takeCollision()) {
+            logger.debug { "Reading the fixed island's collision geometry" }
+            emit(RuntimeEvent.Collision(session.readCollision()))
+        }
+
         delay(wait)
     }
 }

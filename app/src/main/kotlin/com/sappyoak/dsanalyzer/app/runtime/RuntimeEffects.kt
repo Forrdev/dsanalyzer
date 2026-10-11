@@ -11,6 +11,7 @@ public class RuntimeEffects(private val link: GameLink) : EffectRunner<RuntimeEf
     override fun execute(effect: RuntimeEffect): Flow<RuntimeMessage> = when (effect) {
         RuntimeEffect.Observe -> link.state.map(RuntimeMessage::LinkChanged)
         RuntimeEffect.RequestPlacedEnemies -> flow { link.requestPlacedEnemies() }
+        RuntimeEffect.RequestCollision -> flow { link.requestCollision() }
     }
 
     override fun onFailure(effect: RuntimeEffect, failure: Throwable): RuntimeMessage? = null
@@ -20,4 +21,5 @@ public class RuntimeEffects(private val link: GameLink) : EffectRunner<RuntimeEf
 public sealed interface RuntimeEffect {
     public data object Observe : RuntimeEffect
     public data object RequestPlacedEnemies : RuntimeEffect
+    public data object RequestCollision : RuntimeEffect
 }

@@ -15,7 +15,9 @@ import com.sappyoak.dsanalyzer.runtime.ptde.EventFlagBlock
 import com.sappyoak.dsanalyzer.runtime.ptde.FollowCam
 import com.sappyoak.dsanalyzer.runtime.ptde.GameDataMan
 import com.sappyoak.dsanalyzer.runtime.ptde.MenuMan
+import com.sappyoak.dsanalyzer.runtime.ptde.MenuOpenMask
 import com.sappyoak.dsanalyzer.runtime.ptde.WorldArea
+
 
 public class GameSession internal constructor(
     public val game: GameProcess,
@@ -31,6 +33,7 @@ public class GameSession internal constructor(
     private val loadQueueReader = LoadQueueReader()
     private val characterReader = CharacterReader()
     private val placedPartsReader = PlacedPartsReader()
+    private val collisionReader = CollisionReader()
 
     /** Where the previous tick was, which is what a reload is detected as a change of */
     private var lastPlace: WorldPlace? = null
@@ -89,6 +92,9 @@ public class GameSession internal constructor(
     /** Reads every enemy the loaded blocks place, instantiated or not */
     public fun readPlacedEnemies(): List<BlockRoster> = placedPartsReader.read(memory)
 
+    /** Reads the fixed island's collision geometry */
+    public fun readCollision(): CollisionSnapshot = collisionReader.read(memory)
+
     public fun isFlagSet(flagId: Int): Boolean? = flags.isSet(flagId)
 
     private fun refreshWorldTier() {
@@ -108,7 +114,8 @@ public class GameSession internal constructor(
         if (!menuMan.refresh(memory)) return null
 
         return MenuSnapshot(
-            isFullScreenOpen = MenuMan.FullScreenMenu.any { menuMan.int(it) != 0 },
+            mask = MenuOpenMask.of(menuMan::int),
+            boxKind = menuMan.int(MenuMan.BoxKind),
             screen = menuMan.int(MenuMan.Screen),
             defaultQuantity = menuMan.int(MenuMan.DefaultQuantity)
         )

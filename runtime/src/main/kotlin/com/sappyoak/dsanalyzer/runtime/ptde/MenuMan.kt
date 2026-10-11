@@ -20,18 +20,8 @@ public object MenuMan {
         ),
         offsets = listOf(0L),
         lifetime = Lifetime.Volatile,
-        size = 0x240
+        size = 0x2E8
     )
-
-    /**
-     * The nine entries 'IsFullScreenMenu' ORs together, in the game's own order
-     *
-     * Taken from 'FUN_00C29C10, which the debug overlay print as
-     * `フルスクリーンメニュー起動中|IsFullscreenMenu:%d` — "fullscreen menu active".
-     *
-     * They are entries in the array at ARRAY_BASE] rather than named fields
-     */
-    public val FullScreenMenu: IntArray = intArrayOf(0x24, 0x28, 0x68, 0x70, 0x80, 0x84, 0x108, 0x120, 0x124)
 
     /**
      * Base of the 500-entry array that menu scripts write by index
@@ -52,8 +42,15 @@ public object MenuMan {
      */
     public const val CurrentMaxQuantity: Int = 0x204
     public const val DefaultQuantity: Int = 0x20C
+
     /**
-     * Dwords in [Pointer]'s region
+     * Which kind of modal confirmation box is up.
+     *
+     * Known kinds:
+     *  8 - an item-use yes/no box
+     *  2 - the quitout confirmation
+     *  9 - a non-input blocking box
      */
-    public const val Words: Int = 0x200 / Int.SIZE_BYTES
+    public const val BoxKind: Int = 0x60
+
 }
