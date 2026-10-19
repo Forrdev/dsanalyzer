@@ -8,6 +8,8 @@ dependencies {
     implementation(project(":game"))
 
     implementation(libs.kotlinx.serialization.json)
+
+    runtimeOnly(libs.logback)
 }
 
 tasks.register<JavaExec>("extractText") {
@@ -25,4 +27,23 @@ tasks.register<JavaExec>("extractText") {
             out.get()
         )
     }
+}
+
+tasks.register<JavaExec>("generateHavokLayouts") {
+    group = "tools"
+    description = "Generates Kotlin offset constants for every reflected Havok class"
+    mainClass.set("com.sappyoak.dsanalyzer.tools.havok.GenerateHavokLayoutsKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+
+    val table = providers.gradleProperty("table")
+        .orElse(layout.projectDirectory.file("havok/reflection.tsv").asFile.path)
+
+    val generated = rootProject.layout.projectDirectory
+        .dir("runtime/src/main/kotlin/com/sappyoak/dsanalyzer/runtime/ptde/havok")
+    val out = providers.gradleProperty("out").orElse(generated.asFile.path)
+
+    inputs.file(table)
+    outputs.dir(out)
+
+    argumentProviders.add { listOf(table.get(), out.get())}
 }
