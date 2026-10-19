@@ -19,18 +19,24 @@ import androidx.compose.ui.unit.dp
 
 import com.sappyoak.dsanalyzer.app.runtime.CharacterDrawDistance
 import com.sappyoak.dsanalyzer.app.runtime.CharacterDrawing
+import com.sappyoak.dsanalyzer.app.runtime.CollisionCull
+import com.sappyoak.dsanalyzer.app.runtime.CollisionDepthCue
+import com.sappyoak.dsanalyzer.app.runtime.CollisionOpacity
 import com.sappyoak.dsanalyzer.app.runtime.CollisionRadius
 import com.sappyoak.dsanalyzer.app.runtime.CollisionTriangleBudget
 import com.sappyoak.dsanalyzer.app.runtime.DrawCharacters
 import com.sappyoak.dsanalyzer.app.runtime.DrawCollision
 import com.sappyoak.dsanalyzer.app.runtime.DrawPlayer
+import com.sappyoak.dsanalyzer.app.runtime.OccludeMarkers
 import com.sappyoak.dsanalyzer.app.runtime.OverlayEnabled
 import com.sappyoak.dsanalyzer.app.runtime.OverlaySettings
 import com.sappyoak.dsanalyzer.app.settings.SettingsEdit
+import com.sappyoak.dsanalyzer.overlay.FaceCull
 
 private val DRAW_DISTANCE = 10f..400f
 private val COLLISION_RADIUS = 5f..200f
 private val TRIANGLE_BUDGET = 500f..20_000f
+private val OPACITY = 0.1f..1f
 
 @Composable
 public fun SettingsScreen(overlay: OverlaySettings, onEdit: (SettingsEdit) -> Unit) {
@@ -97,6 +103,13 @@ private fun CharacterSettings(overlay: OverlaySettings, onEdit: (SettingsEdit) -
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
+
+        ToggleRow(
+            label = "Hide behind collision",
+            checked = settings.occludeByCollision,
+            enabled = on,
+            explain = "Drops a marker only when collision covers it completely. Reads collision even if the wireframe is off"
+        ) { onEdit(OccludeMarkers(it)) }
     }
 }
 
@@ -136,12 +149,46 @@ private fun CollisionSettings(overlay: OverlaySettings, onEdit: (SettingsEdit) -
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
+        SliderRow(
+            label = "Opacity",
+            value = settings.opacity,
+            range = OPACITY,
+            steps = sliderSteps(OPACITY, by = 0.05f),
+            enabled = on,
+            format = { "${(it * 100).toInt()}%" }
+        ) { onEdit(CollisionOpacity(it)) }
+
+        ToggleRow(
+            label = "Fade with distance",
+            checked = settings.depthCue,
+            enabled = on
+        ) { onEdit(CollisionDepthCue(it)) }
+
         Text(
-            text = "Shapes",
+            text = "Hidden surfaces",
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(top = 6.dp, bottom = 2.dp)
         )
+
+        Column(modifier = Modifier.selectableGroup()) {
+            FaceCull.entries.forEach { mode ->
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    RadioButton(
+                        selected = settings.cull == mode,
+                        onClick = { onEdit(CollisionCull(mode)) },
+                        enabled = on
+                    )
+                    Text(text = mode.describe(), style = MaterialTheme.typography.bodySmall)
+                }
+            }
+        }
     }
+}
+
+private fun FaceCull.describe(): String = when (this) {
+    FaceCull.Off -> "Draw every face, including the ones pointing away"
+    FaceCull.Clockwise -> "Drop clockwise faces"
+    FaceCull.CounterClockwise -> "Drop counter-clockwise faces"
 }
 
 private fun CharacterDrawing.describe(): String = when (this) {

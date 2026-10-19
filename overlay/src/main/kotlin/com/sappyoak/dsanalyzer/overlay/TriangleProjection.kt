@@ -3,18 +3,37 @@ package com.sappyoak.dsanalyzer.overlay
 import com.sappyoak.dsanalyzer.runtime.session.CollisionMesh
 import com.sappyoak.dsanalyzer.shared.math.Mat4
 
-/** The near plane in clip space */
-private const val NEAR_PLANE = 0f
-
-private const val MIN_W = 1e-4f
 
 /** A triangle clipped by one plane has at most four corners */
 private const val CLIPPED_MAX = 4
 
-
+/**
+ * Projects collision triangles to screen space, clipping them against the near plane first
+ *
+ * ## Why clipping is not optional here
+ * [com.sappyoak.dsanalyzer.shared.math.project] culls a **point** behind the camera by returning
+ * null, and for markers that is the whole answer, a marker behind you is simply not draw. A triangle
+ * cannot be handled that way. A triangle with one corner behind the eye and two in front is
+ * genuinely on screen, so dropping it leaves a hole, but projecting that corner divides by a
+ * negative 'w' and mirrors it to the far side, so the triangle renders as a wedge smeared across
+ * the view
+ *
+ * Each emitted triangle keeps a [depths] entry and [DepthBuckets] turn those into a far-to-near draw
+ * order. The value stored is the **nearest** corner's clip 'w' which for this project is
+ * view depth in world units, the distance along the camera axis
+ *
+ * **The frustum sides are not clipped** The canvas clips its own drawing, so a line running off
+ * the  edge costs a little rasterization and nothing else.
+ */
 internal class TriangleProjector(private val capacity: Int) {
+    /** Screen x of every emitted corner, three per triangle, valid up to `count * CORNERS` */
     val xs: FloatArray = FloatArray(capacity * CollisionMesh.CORNERS)
+
+    /** Screen y, paired with [xs] */
     val ys: FloatArray = FloatArray(capacity * CollisionMesh.CORNERS)
+
+    /** One per triangle, not per corner: view depth, in world units, of its nearest corner */
+    val depths: FloatArray = FloatArray(capacity)
 
     var count: Int = 0
         private set
@@ -30,12 +49,33 @@ internal class TriangleProjector(private val capacity: Int) {
     private val outY = FloatArray(CLIPPED_MAX)
     private val outW = FloatArray(CLIPPED_MAX)
 
+    /**
+     * The cull in force for the mesh being appended.
+     *
+     * A field rather than a parameter threaded through [emit] and [addIfVisible], which would make
+     * both signatures longer for a value that is constant across the whole frame
+     */
+    private var cull: FaceCull = FaceCull.Off
+
     fun reset() {
         count = 0
     }
 
-    /** Projects [meth]'s triangles, appending the ones that land on screen */
-    fun append(mesh: CollisionMesh, worldToClip: Mat4, width: Int, height: Int): Boolean {
+    /**
+     * Projects [mesh]'s triangles, appending the ones that land on screen and survive [cull].
+     *
+     * Stops early and returns false once [capacity] is reached, so a caller walking several bodies
+     * knows to stop rather than silently dropping the rest. Culling happens here rather than at
+     * draw time so that the budget buys twice as much *visible* geometry.
+     */
+    fun append(
+        mesh: CollisionMesh,
+        worldToClip: Mat4,
+        width: Int,
+        height: Int,
+        cull: FaceCull = FaceCull.Off
+    ): Boolean {
+        this.cull = cull
         val indices = mesh.indices
         val vertices = mesh.vertices
 
@@ -63,16 +103,14 @@ internal class TriangleProjector(private val capacity: Int) {
         return true
     }
 
-    private fun emit(produced: Int, width: Int, height: Int) {
-        if (produced < CollisionMesh.CORNERS) return
-
-        for (apex in 1 until produced - 1) {
-            if (isFull) return
-            addIfVisible(0, apex, apex + 1, width, height)
-        }
-    }
-
-    /** Clips the scratch triangle against 'z >=0' returning how many corners survived */
+    /**
+     * Clips the scratch triangle against `z >= 0`, returning how many corners survived.
+     *
+     * Sutherland–Hodgman over a single plane: walk the edges, keep the inside corners, and where an
+     * edge crosses, add the crossing point. Solving for `t` on `z` alone is what makes a
+     * single-plane clip this short — and `w` has to be interpolated along with `x` and `y`, because
+     * the projection divides by it and every triangle's depth is read off it.
+     */
     private fun clipToNearPlane(): Int {
         var produced = 0
         for (current in 0 until CollisionMesh.CORNERS) {
@@ -98,6 +136,16 @@ internal class TriangleProjector(private val capacity: Int) {
         return produced
     }
 
+    /** Fans [produced] clipped corners into triangles and appends the ones worth drawing */
+    private fun emit(produced: Int, width: Int, height: Int) {
+        if (produced < CollisionMesh.CORNERS) return
+
+        for (apex in 1 until produced - 1) {
+            if (isFull) return
+            addIfVisible(0, apex, apex + 1, width, height)
+        }
+    }
+
     private fun addIfVisible(a: Int, b: Int, c: Int, width: Int, height: Int) {
         if (outW[a] < MIN_W || outW[b] < MIN_W || outW[c] < MIN_W) return
 
@@ -115,26 +163,32 @@ internal class TriangleProjector(private val capacity: Int) {
         if (ax > width && bx > width && cx > width) return
         if (ay > height && by > height && cy > height) return
 
+        if (cull.rejects(twiceSignedArea(ax, ay, bx, by, cx, cy))) return
+
         val at = count * CollisionMesh.CORNERS
         xs[at] = ax; xs[at + 1] = bx; xs[at + 2] = cx
         ys[at] = ay; ys[at + 1] = by; ys[at + 2] = cy
+        depths[count] = minOf(outW[a], outW[b], outW[c])
         count++
     }
 
     private fun screenX(x: Float, w: Float, width: Int): Float = (x / w + 1f) * 0.5f * width
 
     private fun screenY(y: Float, w: Float, height: Int): Float = (1f - y / w) * 0.5f * height
-
-
 }
-private fun Mat4.clipX(x: Float, y: Float, z: Float): Float =
-    x * r0.x + y * r1.x + z * r2.x + r3.x
 
-private fun Mat4.clipY(x: Float, y: Float, z: Float): Float =
-    x * r0.y + y * r1.y + z * r2.y + r3.y
-
-private fun Mat4.clipZ(x: Float, y: Float, z: Float): Float =
-    x * r0.z + y * r1.z + z * r2.z + r3.z
-
-private fun Mat4.clipW(x: Float, y: Float, z: Float): Float =
-    x * r0.w + y * r1.w + z * r2.w + r3.w
+/**
+ * Twice the signed area of a screen-space triangle, whose **sign is its winding**.
+ *
+ * Screen y grows downward, so a positive result is clockwise as seen on the display. That flip is
+ * the reason this is written out with a name instead of inlined: the same expression in a y-up
+ * system means the opposite thing, and nothing about reading it would say so.
+ */
+internal fun twiceSignedArea(
+    ax: Float,
+    ay: Float,
+    bx: Float,
+    by: Float,
+    cx: Float,
+    cy: Float
+): Float = (bx - ax) * (cy - ay) - (cx - ax) * (by - ay)

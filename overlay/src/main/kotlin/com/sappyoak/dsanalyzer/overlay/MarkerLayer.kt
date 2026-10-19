@@ -1,9 +1,5 @@
 package com.sappyoak.dsanalyzer.overlay
 
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
@@ -11,46 +7,51 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
-import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
 
 private val PLAYER_COLOR = Color(0xFF69F0AE)
 private val CHARACTER_COLOR = Color(0xFFFF5252)
 private val PLACED_COLOR = Color(0xFFFFC107)
 
-private val DOT_RADIUS = 4.dp
+private val DOT_RADIUS = 3.5.dp
 private val STEM_WIDTH = 1.5.dp
 private val BASE_HALF_WIDTH = 4.dp
 private val LABEL_GAP = 6.dp
-
 private const val LABEL_LIMIT = 20
 
-@Composable
-internal fun MarkerLayer(scene: OverlayScene) {
+/** How far either side of the head the occlusion test samples */
+private val OCCLUSION_SPREAD = 7.dp
+
+internal fun DrawScope.drawMarkers(
+    scene: OverlayScene,
+    measurer: TextMeasurer,
+    occlusion: OcclusionBuffer?
+) {
     val camera = scene.camera ?: return
     if (scene.markers.markers.isEmpty()) return
 
-    val measurer = rememberTextMeasurer()
+    val width = size.width.toInt()
+    val height = size.height.toInt()
+    if (width <= 0 || height <= 0) return
 
-    Canvas(modifier = Modifier.fillMaxSize()) {
-        val width = size.width.toInt()
-        val height = size.height.toInt()
-        if (width <= 0 || height <= 0) return@Canvas
+    val projected = scene.markers.projectedOnto(
+        worldToClip = camera.worldToClip,
+        eye = camera.position,
+        width = width,
+        height = height
+    )
 
-        val visible = scene.markers.projectedOnto(
-            worldToClip = camera.worldToClip,
-            eye = camera.position,
-            width = width,
-            height = height
-        )
-
-        visible.forEach { drawPin(it) }
-
-        // Nearest last in the list, so the closest markers are the ones that keep their labels
-        visible.takeLast(LABEL_LIMIT).forEach { drawLabel(it, measurer) }
+    val spread = OCCLUSION_SPREAD.toPx()
+    val visible = when (occlusion) {
+        null -> projected
+        else -> projected.filterNot { occlusion.isHidden(it.head.x, it.head.y, spread, it.depth) }
     }
+
+    visible.forEach { drawPin(it) }
+
+    // Nearest last in the list, so the closest markers are the ones that keep their labels
+    visible.takeLast(LABEL_LIMIT).forEach { drawLabel(it, measurer) }
 }
 
 private fun DrawScope.drawPin(projected: ProjectedMarker) {

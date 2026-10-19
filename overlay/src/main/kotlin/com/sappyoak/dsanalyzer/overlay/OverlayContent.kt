@@ -30,8 +30,7 @@ public fun OverlayContent(viewport: Viewport, scene: OverlayScene) {
     if (scene.suppressWorldDrawing) return
 
     Box(modifier = Modifier.fillMaxSize()) {
-        CollisionLayer(scene)
-        MarkerLayer(scene)
+        WorldLayer(scene)
 
         Canvas(modifier = Modifier.fillMaxSize()) {
             val stroke = OUTLINE_WIDTH.toPx()

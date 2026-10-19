@@ -42,9 +42,10 @@ internal fun RuntimeState.overlayScene(settings: OverlaySettings): OverlayScene 
         camera = camera,
         markers = MarkerView(
             markers = markersFor(settings.characters),
-            drawDistance = settings.characters.drawDistance
+            drawDistance = settings.characters.drawDistance,
+            occludeByCollision = settings.characters.occludeByCollision
         ),
-        collision = collisionFor(settings.collision)
+        collision = collisionFor(settings.collision, settings.characters.occludeByCollision)
     )
 }
 
@@ -60,6 +61,7 @@ private fun RuntimeState.markersFor(settings: CharacterOverlaySettings): List<Wo
     val live = characters.filterNot { it.isPlayer }.map { it.marker() }
     if (settings.draw == CharacterDrawing.Instantiated) return player + live
 
+    // The full list, not the filtered one - see the note on settings above
     val block = placedEnemies?.playersBlock(characters)
     val unbuilt = block?.enemies.orEmpty()
         .filterNot { placed -> characters.any { it.position.near(placed.position) } }
@@ -68,16 +70,24 @@ private fun RuntimeState.markersFor(settings: CharacterOverlaySettings): List<Wo
     return player + live + unbuilt
 }
 
-private fun RuntimeState.collisionFor(settings: CollisionOverlaySettings): CollisionView? {
-    if (!settings.enabled) return null
+private fun RuntimeState.collisionFor(
+    settings: CollisionOverlaySettings,
+    occluding: Boolean
+): CollisionView? {
+    if (!settings.enabled && !occluding) return null
     val read = collision ?: return null
 
     return CollisionView(
         bodies = read.bodies,
         radius = settings.radius.coerceAtLeast(0f),
-        triangleBudget = settings.triangleBudget.coerceAtLeast(0)
+        triangleBudget = settings.triangleBudget.coerceAtLeast(0),
+        draw = settings.enabled,
+        cull = settings.cull,
+        opacity = settings.opacity.coerceIn(0f, 1f),
+        depthCue = settings.depthCue
     )
 }
+
 
 private fun List<BlockRoster>.playersBlock(characters: List<CharacterSnapshot>): BlockRoster? {
     if (characters.isEmpty()) return null

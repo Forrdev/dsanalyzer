@@ -18,7 +18,9 @@ public data class WorldMarker(
 
 public data class MarkerView(
     public val markers: List<WorldMarker> = emptyList(),
-    public val drawDistance: Float = DEFAULT_DRAW_DISTANCE
+    public val drawDistance: Float = DEFAULT_DRAW_DISTANCE,
+    /** Drop markers that the drawn collision hides completely */
+    public val occludeByCollision: Boolean = false
 ) {
     public companion object {
         public const val DEFAULT_DRAW_DISTANCE = 120f
@@ -31,10 +33,16 @@ public data class CollisionView(
     public val bodies: List<CollisionBody>,
     public val radius: Float = DEFAULT_RADIUS,
     public val triangleBudget: Int = DEFAULT_TRIANGLE_BUDGET,
+    public val draw: Boolean = true,
+    public val cull: FaceCull = FaceCull.Off,
+    public val opacity: Float = DEFAULT_OPACITY,
+    /** Fade the wireframe with distance, so far geometry recedes instead of competing */
+    public val depthCue: Boolean = true
 ) {
     public companion object {
         public const val DEFAULT_RADIUS: Float = 30f
         public const val DEFAULT_TRIANGLE_BUDGET = 5000
+        public const val DEFAULT_OPACITY: Float = 0.55f
     }
 }
 

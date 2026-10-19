@@ -1,53 +1,63 @@
 package com.sappyoak.dsanalyzer.overlay
 
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.unit.dp
 
 import com.sappyoak.dsanalyzer.runtime.session.CollisionMesh
 
 private val WIREFRAME = Color(0x993F8EFC)
 private val WIREFRAME_WIDTH = 1.dp
+private val SURFACE = Color(0xFF05080F)
 
-@Composable
-internal fun CollisionLayer(scene: OverlayScene) {
-    val camera = scene.camera ?: return
-    val collision = scene.collision ?: return
-    if (collision.bodies.isEmpty()) return
+/** How faint the farthest slice is drawn when the depth cue is on */
+private const val MIN_NEARNESS = 0.25f
 
-    val projector = remember(collision.triangleBudget) { TriangleProjector(collision.triangleBudget) }
-    val path = remember { Path() }
 
-    Canvas(modifier = Modifier.fillMaxSize()) {
-        val width = size.width.toInt()
-        val height = size.height.toInt()
-        if (width <= 0 || height <= 0) return@Canvas
+internal fun DrawScope.drawCollision(frame: CollisionFrame, view: CollisionView, path: Path) {
+    val projector = frame.projector
+    val buckets = frame.buckets
+    val stroke = Stroke(width = WIREFRAME_WIDTH.toPx())
 
-        projector.reset()
-        for (body in collision.bodies.nearest(camera.position, collision.radius)) {
-            val mesh = body.mesh ?: continue
-            // False means the budget is spent. Stopping here rather than carrying on is what makes
-            // the nearest-first ordering mean anything
-            if (!projector.append(mesh, camera.worldToClip, width, height)) break
+    drawIntoCanvas { canvas ->
+        val paint = Paint().apply { alpha = view.opacity.coerceIn(0f, 1f) }
+        canvas.saveLayer(Rect(Offset.Zero, size), paint)
+
+        // Farthest slice first: `order` is already grouped that way, but the slices are walked
+        // explicitly because each one is stroked in its own colour
+        for (bucket in DEPTH_BUCKETS - 1 downTo 0) {
+            val slots = buckets.sizeOf(bucket)
+            if (slots == 0) continue
+
+            path.reset()
+            val from = buckets.startOf(bucket)
+            for (slot in from until from + slots) {
+                path.addTriangle(projector, buckets.order[slot])
+            }
+
+            drawPath(path, SURFACE)
+            drawPath(path, WIREFRAME.fadedTo(view.depthCue, buckets.nearness(bucket)), style = stroke)
         }
 
-        if (projector.count == 0) return@Canvas
-
-        path.reset()
-        for (triangle in 0 until projector.count) {
-            val at = triangle * CollisionMesh.CORNERS
-            path.moveTo(projector.xs[at], projector.ys[at])
-            path.lineTo(projector.xs[at + 1], projector.ys[at + 1])
-            path.lineTo(projector.xs[at + 2], projector.ys[at + 2])
-            path.close()
-        }
-
-        drawPath(path, WIREFRAME, style = Stroke(width = WIREFRAME_WIDTH.toPx()))
+        canvas.restore()
     }
+}
+
+private fun Path.addTriangle(projector: TriangleProjector, triangle: Int) {
+    val at = triangle * CollisionMesh.CORNERS
+    moveTo(projector.xs[at], projector.ys[at])
+    lineTo(projector.xs[at + 1], projector.ys[at + 1])
+    lineTo(projector.xs[at + 2], projector.ys[at + 2])
+    close()
+}
+
+private fun Color.fadedTo(cue: Boolean, nearness: Float): Color {
+    if (!cue) return this
+    return copy(alpha = alpha * (MIN_NEARNESS + (1f - MIN_NEARNESS) * nearness.coerceIn(0f, 1f)))
 }

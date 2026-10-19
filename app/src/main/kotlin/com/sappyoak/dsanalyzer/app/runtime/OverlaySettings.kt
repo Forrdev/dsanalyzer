@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 import com.sappyoak.dsanalyzer.app.settings.Settings
 import com.sappyoak.dsanalyzer.app.settings.SettingsEdit
 import com.sappyoak.dsanalyzer.overlay.CollisionView
+import com.sappyoak.dsanalyzer.overlay.FaceCull
 import com.sappyoak.dsanalyzer.overlay.MarkerView
 import com.sappyoak.dsanalyzer.runtime.ptde.ShapeKind
 
@@ -25,7 +26,8 @@ public data class OverlaySettings(
 public data class CharacterOverlaySettings(
     public val drawPlayer: Boolean = true,
     public val draw: CharacterDrawing = CharacterDrawing.All,
-    public val drawDistance: Float = MarkerView.DEFAULT_DRAW_DISTANCE
+    public val drawDistance: Float = MarkerView.DEFAULT_DRAW_DISTANCE,
+    public val occludeByCollision: Boolean = false
 )
 
 @Serializable
@@ -39,7 +41,10 @@ public enum class CharacterDrawing {
 public data class CollisionOverlaySettings(
     public val enabled: Boolean = false,
     public val radius: Float = CollisionView.DEFAULT_RADIUS,
-    public val triangleBudget: Int = CollisionView.DEFAULT_TRIANGLE_BUDGET
+    public val triangleBudget: Int = CollisionView.DEFAULT_TRIANGLE_BUDGET,
+    public val cull: FaceCull = FaceCull.Off,
+    public val opacity: Float = CollisionView.DEFAULT_OPACITY,
+    public val depthCue: Boolean = true
 )
 
 public data class OverlayEnabled(public val enabled: Boolean) : SettingsEdit {
@@ -81,6 +86,28 @@ public data class CollisionTriangleBudget(public val triangles: Int) : SettingsE
         settings.overlay.collision
             .copy(triangleBudget = triangles.coerceIn(0, MAX_TRIANGLE_BUDGET))
             .into(settings)
+}
+
+public data class OccludeMarkers(public val enabled: Boolean) : SettingsEdit {
+    override fun applyTo(settings: Settings): Settings =
+        settings.overlay.characters.copy(occludeByCollision = enabled).into(settings)
+}
+
+public data class CollisionCull(public val mode: FaceCull) : SettingsEdit {
+    override fun applyTo(settings: Settings): Settings =
+        settings.overlay.collision.copy(cull = mode).into(settings)
+}
+
+public data class CollisionOpacity(public val opacity: Float) : SettingsEdit {
+    override fun applyTo(settings: Settings): Settings =
+        settings.overlay.collision
+            .copy(opacity = opacity.coerceIn(0f, 1f))
+            .into(settings)
+}
+
+public data class CollisionDepthCue(public val enabled: Boolean) : SettingsEdit {
+    override fun applyTo(settings: Settings): Settings =
+        settings.overlay.collision.copy(depthCue = enabled).into(settings)
 }
 
 private fun CharacterOverlaySettings.into(settings: Settings): Settings =
