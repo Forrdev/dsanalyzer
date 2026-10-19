@@ -23,6 +23,7 @@ import com.sappyoak.dsanalyzer.runtime.ptde.Shape
 import com.sappyoak.dsanalyzer.runtime.ptde.ShapeKind
 import com.sappyoak.dsanalyzer.runtime.ptde.WORLD_SIZE
 import com.sappyoak.dsanalyzer.shared.math.Aabb
+import com.sappyoak.dsanalyzer.shared.math.Mat4
 
 private const val NAME_LIMIT: Int = 64
 
@@ -77,10 +78,15 @@ internal class CollisionReader {
         if (kind != ShapeKind.Mopp) {
             return CollisionBody(name = label, kind = kind, bounds = Aabb.Empty, mesh = null)
         }
-        return moppBody(memory, shapeAt, label)
+        return moppBody(memory, shapeAt, label, body.mat4(RigidBody.Transform))
     }
 
-    private fun moppBody(memory: ProcessMemory, shapeAt: Address, label: String): CollisionBody? {
+    private fun moppBody(
+        memory: ProcessMemory,
+        shapeAt: Address,
+        label: String,
+        transform: Mat4
+    ): CollisionBody? {
         if (!mopp.refresh(memory, shapeAt)) return null
 
         val childAt = mopp.pointer(MoppShape.ChildShape)
@@ -101,8 +107,8 @@ internal class CollisionReader {
         return CollisionBody(
             name = label,
             kind = ShapeKind.Mopp,
-            bounds = bounds,
-            mesh = geometry.read(memory, mesh.address)
+            bounds = bounds.transformedBy(transform),
+            mesh = geometry.read(memory, mesh.address, transform)
         )
     }
 

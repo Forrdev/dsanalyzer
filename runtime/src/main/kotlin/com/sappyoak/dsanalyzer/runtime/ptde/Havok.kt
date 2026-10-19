@@ -12,7 +12,7 @@ import com.sappyoak.dsanalyzer.runtime.pointers.TableShape
 internal const val MANAGER_SIZE: Int = 0xA0
 internal const val WORLD_SIZE: Int = 0x24
 internal const val ISLAND_SIZE: Int = 0x58
-internal const val BODY_SIZE: Int = 0x7C
+internal const val BODY_SIZE: Int = 0x130
 
 /**
  * 'NS_FRPG::FrpgHavokManImpl' The entry into the physics word
@@ -54,4 +54,12 @@ public object HavokIsland {
 internal object RigidBody {
     const val Shape: Int = 0x10
     const val Name: Int = 0x78
+
+    /**
+     * The motion state transform, four 'hkVector4' rows
+     *
+     * Shape vertices are in the body's local space and this is what puts them
+     * in the world
+     */
+    const val Transform: Int = 0xF0
 }

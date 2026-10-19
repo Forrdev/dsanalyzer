@@ -9,6 +9,7 @@ import com.sappyoak.dsanalyzer.runtime.pointers.TableView
 import com.sappyoak.dsanalyzer.runtime.ptde.MeshShape
 import com.sappyoak.dsanalyzer.runtime.ptde.SUBPART_SIZE
 import com.sappyoak.dsanalyzer.runtime.ptde.Subpart
+import com.sappyoak.dsanalyzer.shared.math.Mat4
 
 private const val BUFFER_CAPACITY: Int = 1 shl 20
 private const val WIDE_INDEX_STRIDE: Int = 12
@@ -31,7 +32,7 @@ internal class MeshGeometryReader {
     private val subpart = StructView(SUBPART_SIZE)
     private val buffer = MemoryView(BUFFER_CAPACITY)
 
-    fun read(memory: ProcessMemory, meshAddress: Address): CollisionMesh? {
+    fun read(memory: ProcessMemory, meshAddress: Address, transform: Mat4): CollisionMesh? {
         if (!subparts.refresh(memory, meshAddress)) return null
 
         val headers = subparts.elements.mapNotNull { headerAt(memory, it) }
@@ -45,7 +46,7 @@ internal class MeshGeometryReader {
         var vertexBase = 0
 
         for (header in headers) {
-            if (!readVertices(memory, header, vertices, vertexCursor)) return null
+            if (!readVertices(memory, header, vertices, vertexCursor, transform)) return null
             if (!readIndices(memory, header, indices, indexCursor, vertexBase)) return null
 
             vertexCursor += header.vertexCount * CollisionMesh.COMPONENTS
@@ -87,7 +88,8 @@ internal class MeshGeometryReader {
         memory: ProcessMemory,
         header: SubpartHeader,
         into: FloatArray,
-        cursor: Int
+        cursor: Int,
+        transform: Mat4
     ): Boolean {
         if (!buffer.refresh(memory, header.vertexBase, header.vertexBytes)) return false
 
@@ -95,10 +97,16 @@ internal class MeshGeometryReader {
             val from = i * header.vertexStride
             val to = cursor + i * CollisionMesh.COMPONENTS
             // The game's stride is 16 — three floats and a pad — and the pad is dropped here
-            into[to] = buffer.float(from)
-            into[to + 1] = buffer.float(from + VERTEX_COMPONENT_BYTES)
-            into[to + 2] = buffer.float(from + VERTEX_COMPONENT_BYTES * 2)
+            val placed = transform.place(
+                buffer.float(from),
+                buffer.float(from + VERTEX_COMPONENT_BYTES),
+                buffer.float(from + VERTEX_COMPONENT_BYTES * 2)
+            )
+            into[to] = placed.x
+            into[to + 1] = placed.y
+            into[to + 2] = placed.z
         }
+
         return true
     }
 
