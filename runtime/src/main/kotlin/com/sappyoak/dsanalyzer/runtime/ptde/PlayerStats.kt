@@ -1,15 +1,13 @@
 package com.sappyoak.dsanalyzer.runtime.ptde
 
-import com.sappyoak.dsanalyzer.native.memory.Signature
-import com.sappyoak.dsanalyzer.native.memory.SignatureTarget
 import com.sappyoak.dsanalyzer.runtime.pointers.GamePointer
 import com.sappyoak.dsanalyzer.runtime.pointers.Lifetime
 
 public object PlayerStats {
     public val Pointer: GamePointer = GamePointer(
-        name = "CharData2",
-        base = PTDESignatures.CharData2,
-        offsets = listOf(0L, 8L),
+        name = "PlayerStats",
+        base = PTDESignatures.GameDataMan,
+        offsets = listOf(0L, GameDataMan.PlayerGameDataPointer.toLong()),
         lifetime = Lifetime.World,
         size = 0x2A4
     )

@@ -40,14 +40,8 @@ object PTDESignatures {
         target = SignatureTarget.Embedded(7)
     )
 
-    public val CharData2: Signature = Signature.parse(
-        name = "CharData2",
-        pattern = "A1 ?? ?? ?? ?? 8B 40 34 53 32 DB 85 C0",
-        target = SignatureTarget.Embedded(1)
-    )
-
-    public val WorldState: Signature = Signature.parse(
-        name = "WorldState",
+    public val GameMan: Signature = Signature.parse(
+        name = "GameMan",
         pattern = "8B 54 24 10 8B C8 F7 D9 39 8A B8 0E 00 00 B3 01 0F 95 C2 8B 0D ?? ?? ?? ?? 80 B9 A5 0B 00 00 00",
         target = SignatureTarget.Embedded(0x15)
     )

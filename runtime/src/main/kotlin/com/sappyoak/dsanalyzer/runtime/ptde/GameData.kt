@@ -24,6 +24,7 @@ public object GameDataMan {
         size = 0x80
     )
 
+    public const val PlayerGameDataPointer: Int = 0x08
     public const val NewGameCount: Int = 0x3C
     public const val InGameTimeMillis: Int = 0x68
 

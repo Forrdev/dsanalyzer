@@ -58,7 +58,7 @@ public object WorldChrMan {
     public const val WorldResPointer: Int = 0x10
     /** The local player, as a 'ChrIns*'. The Same object [ChrIns] resolves to, one read instead of three. */
     public const val PlayerPointer: Int = 0x3C
-
+    public const val DeathCamActive: Int = 0x40
     public const val AreaCount: Int = 0x14
 
     /** Points at an array of nine '0x10' area records embedded at '+0x2D0' */

@@ -14,17 +14,17 @@ import com.sappyoak.dsanalyzer.runtime.ptde.ChrPosData
 import com.sappyoak.dsanalyzer.runtime.ptde.CharacterSlot
 import com.sappyoak.dsanalyzer.runtime.ptde.ChrCtrl
 import com.sappyoak.dsanalyzer.runtime.ptde.ChrIns
-import com.sappyoak.dsanalyzer.runtime.ptde.DeathCam
 import com.sappyoak.dsanalyzer.runtime.ptde.EventFlags
 import com.sappyoak.dsanalyzer.runtime.ptde.FollowCam
 import com.sappyoak.dsanalyzer.runtime.ptde.GameDataMan
+import com.sappyoak.dsanalyzer.runtime.ptde.GameMan
 import com.sappyoak.dsanalyzer.runtime.ptde.PlayerStats
 import com.sappyoak.dsanalyzer.runtime.ptde.PTDEEdition
 import com.sappyoak.dsanalyzer.runtime.ptde.PTDEPointers
 import com.sappyoak.dsanalyzer.runtime.ptde.PTDESignatures
 import com.sappyoak.dsanalyzer.runtime.ptde.WorldArea
 import com.sappyoak.dsanalyzer.runtime.ptde.WorldChrMan
-import com.sappyoak.dsanalyzer.runtime.ptde.WorldState
+
 
 internal val PTDE_PROCESS = GameProcess(ProcessInfo(4242, "DARKSOULS.exe"), GameEdition.PrepareToDie)
 
@@ -101,10 +101,10 @@ internal class PTDEFixture {
         game.int(ATTRIBUTES_AT + PlayerStats.SoulLevel, 42)
         game.int(ATTRIBUTES_AT + PlayerStats.Souls, 55_000)
         game.write(ATTRIBUTES_AT + PlayerStats.Covenant, 3)
-        game.float(WORLD_AT + WorldState.StablePosition, 12.5f)
-        game.float(WORLD_AT + WorldState.StablePosition + 4, -30f)
-        game.float(WORLD_AT + WorldState.StablePosition + 8, 44f)
-        game.int(WORLD_AT + WorldState.LastBonfire, 1_012_960)
+        game.float(WORLD_AT + GameMan.StablePosition, 12.5f)
+        game.float(WORLD_AT + GameMan.StablePosition + 4, -30f)
+        game.float(WORLD_AT + GameMan.StablePosition + 8, 44f)
+        game.int(WORLD_AT + GameMan.LastBonfire, 1_012_960)
         game.int(GAME_DATA_AT + GameDataMan.InGameTimeMillis, 66_000)
     }
 
@@ -178,9 +178,8 @@ internal class PTDEFixture {
         game.pointer(statics.getValue(PlayerStats.Pointer.base), LINKS_AT + 0x200)
         game.pointer(LINKS_AT + 0x208, ATTRIBUTES_AT)
 
-        game.pointer(statics.getValue(WorldState.Pointer.base), WORLD_AT)
+        game.pointer(statics.getValue(GameMan.Pointer.base), WORLD_AT)
         game.pointer(statics.getValue(WorldArea.Pointer.base), AREA_AT)
-        game.pointer(statics.getValue(DeathCam.Pointer.base), DEATH_CAM_AT)
         game.pointer(statics.getValue(GameDataMan.Pointer.base), GAME_DATA_AT)
 
         // EventFlags: static -> +0 -> +0

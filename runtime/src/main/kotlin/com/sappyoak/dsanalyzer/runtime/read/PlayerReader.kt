@@ -8,24 +8,26 @@ import com.sappyoak.dsanalyzer.runtime.ptde.ChrCtrl
 import com.sappyoak.dsanalyzer.runtime.ptde.ChrIns
 import com.sappyoak.dsanalyzer.runtime.ptde.DeathCam
 import com.sappyoak.dsanalyzer.runtime.ptde.GameDataMan
+import com.sappyoak.dsanalyzer.runtime.ptde.GameMan
 import com.sappyoak.dsanalyzer.runtime.ptde.PlayerStats
-import com.sappyoak.dsanalyzer.runtime.ptde.WorldState
+import com.sappyoak.dsanalyzer.runtime.ptde.WorldChrMan
 import com.sappyoak.dsanalyzer.runtime.session.AttributeSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.PlayerSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.WorldSnapshot
 
 internal class PlayerReader {
+    private val manager = StructView(WorldChrMan.Pointer)
     private val character = StructView(ChrIns.Pointer)
     private val position = StructView(ChrPosData.Pointer)
     private val placement = StructView(ChrCtrl.Pointer)
     private val animation = StructView(AnimData.Pointer)
     private val attributes = StructView(PlayerStats.Pointer)
-    private val worldState = StructView(WorldState.Pointer)
+    private val worldState = StructView(GameMan.Pointer)
     private val deathCam = StructView(DeathCam.Pointer)
     private val gameData = StructView(GameDataMan.Pointer)
 
     private val all = listOf(
-        character, position, placement, animation, attributes, worldState, deathCam, gameData
+        character, position, placement, animation, attributes, worldState, deathCam, gameData, manager
     )
 
     val structures: Int get() = all.size
@@ -61,10 +63,10 @@ internal class PlayerReader {
         if (!worldState.isPresent) return null
 
         return WorldSnapshot(
-            stablePosition = worldState.vec3(WorldState.StablePosition),
-            stableAngle = worldState.float(WorldState.StableAngle),
-            lastBonfire = worldState.int(WorldState.LastBonfire),
-            deathCam = deathCam.isPresent && deathCam.unsigned(DeathCam.Active) != 0
+            stablePosition = worldState.vec3(GameMan.StablePosition),
+            stableAngle = worldState.float(GameMan.StableAngle),
+            lastBonfire = worldState.int(GameMan.LastBonfire),
+            deathCam = manager.isPresent && manager.boolean(WorldChrMan.DeathCamActive)
         )
     }
 

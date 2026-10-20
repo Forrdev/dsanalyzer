@@ -22,10 +22,9 @@ private val LAST_FIELDS = listOf(
     Triple("AnimData", AnimData.Pointer, AnimData.PlaySpeed),
     Triple("AnimRequestA", AnimRequest.ChannelA, AnimRequest.Times + 8),
     Triple("AnimRequestB", AnimRequest.ChannelB, AnimRequest.Times + 8),
-    Triple("CharData2", PlayerStats.Pointer, PlayerStats.Stance),
-    Triple("WorldState", WorldState.Pointer, WorldState.StableAngle),
+    Triple("PlayerGameData", PlayerStats.Pointer, PlayerStats.Stance),
+    Triple("GameMan", GameMan.Pointer, GameMan.StableAngle),
     Triple("WorldArea", WorldArea.Pointer, WorldArea.World),
-    Triple("DeathCam", DeathCam.Pointer, DeathCam.Active),
     Triple("GameDataMan", GameDataMan.Pointer, GameDataMan.InGameTimeMillis)
 )
 

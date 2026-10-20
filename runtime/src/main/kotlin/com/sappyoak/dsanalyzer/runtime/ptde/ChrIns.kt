@@ -1,6 +1,5 @@
 package com.sappyoak.dsanalyzer.runtime.ptde
 
-import com.sappyoak.dsanalyzer.native.memory.Signature
 import com.sappyoak.dsanalyzer.native.memory.SignatureTarget
 import com.sappyoak.dsanalyzer.runtime.pointers.GamePointer
 import com.sappyoak.dsanalyzer.runtime.pointers.Lifetime
