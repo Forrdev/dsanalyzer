@@ -1,4 +1,4 @@
-package com.sappyoak.dsanalyzer.runtime.ptde.read
+package com.sappyoak.dsanalyzer.runtime.read
 
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.pointers.StructView
@@ -33,6 +33,8 @@ internal class PlayerReader {
     fun refresh(memory: GameMemory): Int = all.count { it.refresh(memory) }
 
     fun timeMillis(): Int = if (gameData.isPresent) gameData.int(GameDataMan.InGameTimeMillis) else 0
+
+    fun frame(): Long = GameDataMan.frameOf(timeMillis())
 
     fun player(): PlayerSnapshot? {
         if (!character.isPresent || !position.isPresent) return null

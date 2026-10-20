@@ -1,4 +1,4 @@
-package com.sappyoak.dsanalyzer.runtime.ptde.read.collision
+package com.sappyoak.dsanalyzer.runtime.read.collision
 
 import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.native.memory.MemoryView
@@ -19,14 +19,13 @@ import com.sappyoak.dsanalyzer.runtime.ptde.RigidBody
 import com.sappyoak.dsanalyzer.runtime.ptde.SHAPE_SIZE
 import com.sappyoak.dsanalyzer.runtime.ptde.Shape
 import com.sappyoak.dsanalyzer.runtime.ptde.WORLD_SIZE
+import com.sappyoak.dsanalyzer.runtime.read.collision.RigidBodyHeader
 import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionBody
 import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionGeometry
 import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.collision.HitFilter
 import com.sappyoak.dsanalyzer.runtime.session.collision.ShapeKind
 import com.sappyoak.dsanalyzer.runtime.session.collision.transformedBy
 import com.sappyoak.dsanalyzer.shared.math.Aabb
-import com.sappyoak.dsanalyzer.shared.math.Mat4
 
 private const val NAME_LIMIT: Int = 64
 

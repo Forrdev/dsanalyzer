@@ -8,6 +8,9 @@ import com.sappyoak.dsanalyzer.runtime.ptde.LoadStage
 public data class BlockLoad(
     public val index: Int,
     public val stage: Int,
+    public val idle: Boolean,
+    public val loaded: Boolean,
+    public val pending: Boolean,
     /** The block was matched against a requested map this tick, or force-loaded */
     public val requested: Boolean,
     /** The request survived its gates, the block genuinely should be resident */
@@ -15,9 +18,6 @@ public data class BlockLoad(
     /** Something is waiting on this block, which holds it against unloading */
     public val pinned: Boolean
 ) {
-    public val loaded: Boolean get() = stage == LoadStage.Loaded
-    public val pending: Boolean get() = LoadStage.isPending(stage)
-
     public val active: Boolean get() = stage != LoadStage.Idle || requested || wanted || pinned
 }
 

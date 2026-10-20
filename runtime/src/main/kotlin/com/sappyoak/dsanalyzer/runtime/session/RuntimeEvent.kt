@@ -2,7 +2,6 @@ package com.sappyoak.dsanalyzer.runtime.session
 
 import com.sappyoak.dsanalyzer.runtime.GameProcess
 import com.sappyoak.dsanalyzer.runtime.pointers.ResolvedPointers
-import com.sappyoak.dsanalyzer.runtime.ptde.PTDEBuild
 import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionSnapshot
 
 public sealed interface RuntimeEvent {
@@ -10,7 +9,7 @@ public sealed interface RuntimeEvent {
 
     public data class Attached(
         public val game: GameProcess,
-        public val build: PTDEBuild?,
+        public val build: String?,
         public val pointers: ResolvedPointers
     ) : RuntimeEvent
 
@@ -21,6 +20,9 @@ public sealed interface RuntimeEvent {
 
     /** The answer to a [SampleRequests.requestCollision] */
     public data class Collision(val snapshot: CollisionSnapshot) : RuntimeEvent
+
+    public data class CharacterEffects(public val characters: List<CharacterSnapshot>) : RuntimeEvent
+
     public data class Refused(
         public val game: GameProcess,
         public val reason: String

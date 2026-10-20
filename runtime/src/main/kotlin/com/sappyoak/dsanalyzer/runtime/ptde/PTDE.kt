@@ -1,33 +1,11 @@
 package com.sappyoak.dsanalyzer.runtime.ptde
 
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-
-import com.sappyoak.dsanalyzer.native.memory.AddressRange
-import com.sappyoak.dsanalyzer.native.process.ProcessMemory
+import com.sappyoak.dsanalyzer.runtime.layout.CameraLayout
+import com.sappyoak.dsanalyzer.runtime.layout.GameLayout
+import com.sappyoak.dsanalyzer.runtime.layout.SpecialEffectLayout
 import com.sappyoak.dsanalyzer.runtime.pointers.GamePointer
 import com.sappyoak.dsanalyzer.runtime.pointers.GameTable
-
-/** The address the executable asks to be loaded at, which the version address is quoted against */
-private const val PREFERRED_BASE = 0x400000L
-
-public enum class PTDEBuild(private val version: UInt) {
-    Steam(0xFC293654u),
-    Debug(0xCE9634B4u),
-    SteamworksBeta(0xE91B11E2u);
-
-    public companion object {
-        public const val VersionAddress: Long = 0x400080
-
-        public fun of(version: UInt): PTDEBuild? = entries.firstOrNull { it.version == version }
-    }
-}
-
-public fun ProcessMemory.ptdeBuild(module: AddressRange): PTDEBuild? {
-    val at = module.start + (PTDEBuild.VersionAddress - PREFERRED_BASE)
-    val word = read(at, Int.SIZE_BYTES) ?: return null
-    return PTDEBuild.of(ByteBuffer.wrap(word).order(ByteOrder.LITTLE_ENDIAN).int.toUInt())
-}
+import com.sappyoak.dsanalyzer.runtime.session.EditionTables
 
 public val PTDEPointers: List<GamePointer> = listOf(
     FollowCam.Pointer,
@@ -61,4 +39,41 @@ public val PTDETables: List<Pair<GamePointer, GameTable>> = listOf(
     WorldChrMan.Pointer to WorldChrMan.Blocks,
     WorldRes.Pointer to WorldRes.Blocks,
     EmevdMan.Pointer to EmevdMan.Scripts
+)
+
+internal val PTDELayout: GameLayout = GameLayout(
+    camera = CameraLayout(
+        pointer = FollowCam.Pointer,
+        transform = FrpgCam.Transform,
+        fieldOfView = FrpgCam.FieldOfView,
+        aspect = FrpgCam.Aspect,
+        near = FrpgCam.Near,
+        far = FrpgCam.Far,
+        smoothedPosition = FollowCam.PosX,
+        orientation = FollowCam.Orientation,
+        targetPitch = FollowCam.TargetPitch
+    ),
+    specialEffect = SpecialEffectLayout(
+        holderSize = SPECIAL_EFFECT_SIZE,
+        head = SpecialEffects.HeadPointer,
+        owner = SpecialEffects.OwnerPointer,
+        stateInfoCounts = SpecialEffects.StateInfoCounts,
+        chain = SpecialEffects.Active,
+        nodeSize = EFFECT_NODE_SIZE,
+        remaining = EffectNode.Remaining,
+        total = EffectNode.Total,
+        magnitude = EffectNode.Magnitude,
+        duration = EffectNode.Duration,
+        flags = EffectNode.Flags,
+        effectId = EffectNode.EffectId,
+        paramRow = EffectNode.ParamRow,
+        excludedMask = EffectNodeFlags.Excluded,
+        liveMask = EffectNodeFlags.Live
+    )
+)
+
+public val PTDEEdition: EditionTables = EditionTables(
+    pointers = PTDEPointers,
+    layout = PTDELayout,
+    buildOf = { memory, module -> memory.ptdeVersion(module)?.name }
 )

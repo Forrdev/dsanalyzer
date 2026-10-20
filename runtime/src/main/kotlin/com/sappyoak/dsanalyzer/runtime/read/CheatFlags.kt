@@ -1,4 +1,4 @@
-package com.sappyoak.dsanalyzer.runtime.ptde.read
+package com.sappyoak.dsanalyzer.runtime.read
 
 import com.sappyoak.dsanalyzer.runtime.ptde.ChrCtrlFlags
 import com.sappyoak.dsanalyzer.runtime.ptde.ChrInsFlags1

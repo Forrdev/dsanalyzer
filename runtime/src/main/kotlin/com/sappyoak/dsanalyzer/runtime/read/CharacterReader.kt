@@ -1,4 +1,4 @@
-package com.sappyoak.dsanalyzer.runtime.ptde.read
+package com.sappyoak.dsanalyzer.runtime.read
 
 import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
@@ -8,13 +8,14 @@ import com.sappyoak.dsanalyzer.runtime.ptde.ChrPosData
 import com.sappyoak.dsanalyzer.runtime.ptde.ChrCtrl
 import com.sappyoak.dsanalyzer.runtime.ptde.ChrIns
 import com.sappyoak.dsanalyzer.runtime.ptde.WorldCharacters
+import com.sappyoak.dsanalyzer.runtime.layout.SpecialEffectLayout
+import com.sappyoak.dsanalyzer.runtime.read.effects.SpecialEffectReader
 import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
 import com.sappyoak.dsanalyzer.shared.math.Vec3
 
-/** No target. The game defaults the field to this rather than zeroing it */
 private const val NO_TARGET = -1
 
-internal class CharacterReader {
+internal class CharacterReader(effectLayout: SpecialEffectLayout) {
     private val container = StructView(WorldCharacters.Pointer)
     private val all = TableView(WorldCharacters.All)
     private val one = StructView(ChrIns.Pointer.size)
@@ -22,14 +23,21 @@ internal class CharacterReader {
     private val control = StructView(ChrCtrl.PositionPointer + Int.SIZE_BYTES)
     private val pose = StructView(ChrPosData.Position + VEC3_BYTES)
 
-    fun read(game: GameMemory): List<CharacterSnapshot> {
+    private val effects = SpecialEffectReader(effectLayout)
+
+    fun read(game: GameMemory, allEffects: Boolean = false): List<CharacterSnapshot> {
         if (!container.refresh(game)) return emptyList()
         if (!all.refresh(game.memory, container.address)) return emptyList()
 
-        return all.elements.mapIndexedNotNull { index, at -> characterAt(game, index, at) }
+        return all.elements.mapIndexedNotNull { index, at -> characterAt(game, index, at, allEffects) }
     }
 
-    private fun characterAt(game: GameMemory, index: Int, at: Address): CharacterSnapshot? {
+    private fun characterAt(
+        game: GameMemory,
+        index: Int,
+        at: Address,
+        allEffects: Boolean
+    ): CharacterSnapshot? {
         if (!one.refresh(game.memory, at)) return null
 
         val target = one.int(ChrIns.TargetHandle)
@@ -47,7 +55,13 @@ internal class CharacterReader {
             characterType = one.int(ChrIns.ChrType),
             teamType = one.int(ChrIns.TeamType),
             targetHandle = target.takeIf { it != NO_TARGET },
-            isPlayer = isPlayer
+            isPlayer = isPlayer,
+            // Read off the ChrIns copy already in hand, so the holder costs no walk of its own
+            effects = if (isPlayer || allEffects) {
+                effects.read(game, one.pointer(ChrIns.SpecialEffectPointer))
+            } else {
+                null
+            }
         )
     }
 

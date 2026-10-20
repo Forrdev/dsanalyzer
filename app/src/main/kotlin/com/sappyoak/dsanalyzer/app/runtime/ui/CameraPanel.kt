@@ -26,8 +26,8 @@ internal fun CameraPanel(camera: CameraSnapshot?) {
         }
 
         Field("Position", camera.position.describe())
-        Field("Facing", camera.orientation.describe())
-        Field("Pitching toward", "%.3f rad".format(camera.targetPitch))
+        Field("Facing", camera.orientation?.let { "${it.describe()} rad" } ?: "not read")
+        Field("Pitching toward", camera.targetPitch?.let { "%.3f rad".format(it) } ?: "not read")
 
         val frustum = camera.frustum
         Field("Field of view", "%.3f rad (%.1f deg vertical)".format(frustum.fovRadians, frustum.fovRadians * DEGREES))

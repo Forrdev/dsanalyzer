@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.native.process.Processes
 import com.sappyoak.dsanalyzer.runtime.session.BlockRoster
+import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeEvent
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.SampleRequests
@@ -41,7 +42,8 @@ public data class LinkState(
      * empty the view everytime the player moved
      */
     public val placedEnemies: List<BlockRoster>? = null,
-    public val collision: CollisionSnapshot? = null
+    public val collision: CollisionSnapshot? = null,
+    public val characterEffects: List<CharacterSnapshot>? = null
 )
 
 public class GameLink(
@@ -98,6 +100,10 @@ public class GameLink(
         requests.requestCollision()
     }
 
+    public fun requestCharacterEffects() {
+        requests.requestCharacterEffects()
+    }
+
     private suspend fun record(event: RuntimeEvent) {
         if (event is RuntimeEvent.Attached) event.log()
         if (event is RuntimeEvent.Collision) {
@@ -115,7 +121,7 @@ public class GameLink(
             payload = mapOf(
                 "pid" to attached.pid,
                 "executable" to attached.executableName,
-                "build" to attached.build?.name.orEmpty(),
+                "build" to attached.build.orEmpty(),
                 "unresolved" to attached.unresolved.size
             )
         }
@@ -126,6 +132,7 @@ internal fun LinkState.after(event: RuntimeEvent): LinkState = when (event) {
     is RuntimeEvent.Sampled -> copy(snapshot = event.snapshot)
     is RuntimeEvent.PlacedEnemies -> copy(placedEnemies = event.rosters)
     is RuntimeEvent.Collision -> copy(collision = event.snapshot)
+    is RuntimeEvent.CharacterEffects -> copy(characterEffects = event.characters)
     is RuntimeEvent.Attached -> LinkState(attached = event.describe())
     RuntimeEvent.Searching -> LinkState()
     is RuntimeEvent.Refused -> LinkState(note = event.reason)

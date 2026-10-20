@@ -2,7 +2,6 @@ package com.sappyoak.dsanalyzer.app.runtime
 
 import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
-import com.sappyoak.dsanalyzer.runtime.ptde.PTDEBuild
 import com.sappyoak.dsanalyzer.runtime.session.BlockRoster
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.WorldPlace
@@ -29,7 +28,7 @@ public data class AttachedGame(
     public val executableName: String,
     public val pid: Int,
     public val edition: GameEdition,
-    public val build: PTDEBuild?,
+    public val build: String?,
     public val unresolved: List<String>
 )
 

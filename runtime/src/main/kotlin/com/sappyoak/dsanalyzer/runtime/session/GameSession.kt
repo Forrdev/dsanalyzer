@@ -2,65 +2,65 @@ package com.sappyoak.dsanalyzer.runtime.session
 
 import kotlin.time.TimeSource
 
-import com.sappyoak.dsanalyzer.game.world.maps.exists
 import com.sappyoak.dsanalyzer.runtime.GameConnection
 import com.sappyoak.dsanalyzer.runtime.GameProcess
+import com.sappyoak.dsanalyzer.runtime.layout.GameLayout
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.pointers.GamePointer
 import com.sappyoak.dsanalyzer.runtime.pointers.Lifetime
 import com.sappyoak.dsanalyzer.runtime.pointers.ResolvedPointers
-import com.sappyoak.dsanalyzer.runtime.pointers.StructView
 import com.sappyoak.dsanalyzer.runtime.pointers.resolvePointers
-import com.sappyoak.dsanalyzer.runtime.ptde.EventFlagBlock
-import com.sappyoak.dsanalyzer.runtime.ptde.FollowCam
-import com.sappyoak.dsanalyzer.runtime.ptde.GameDataMan
-import com.sappyoak.dsanalyzer.runtime.ptde.MenuMan
-import com.sappyoak.dsanalyzer.runtime.ptde.MenuOpenMask
-import com.sappyoak.dsanalyzer.runtime.ptde.WorldArea
-import com.sappyoak.dsanalyzer.runtime.ptde.read.CharacterReader
-import com.sappyoak.dsanalyzer.runtime.ptde.read.LoadQueueReader
-import com.sappyoak.dsanalyzer.runtime.ptde.read.PlacedPartsReader
-import com.sappyoak.dsanalyzer.runtime.ptde.read.PlayerReader
-import com.sappyoak.dsanalyzer.runtime.ptde.read.cameraOf
-import com.sappyoak.dsanalyzer.runtime.ptde.read.collision.CollisionReader
+import com.sappyoak.dsanalyzer.runtime.read.CameraReader
+import com.sappyoak.dsanalyzer.runtime.read.CharacterReader
+import com.sappyoak.dsanalyzer.runtime.read.EventFlagBlock
+import com.sappyoak.dsanalyzer.runtime.read.LoadQueueReader
+import com.sappyoak.dsanalyzer.runtime.read.MenuReader
+import com.sappyoak.dsanalyzer.runtime.read.PlaceReader
+import com.sappyoak.dsanalyzer.runtime.read.PlacedPartsReader
+import com.sappyoak.dsanalyzer.runtime.read.PlayerReader
+import com.sappyoak.dsanalyzer.runtime.read.collision.CollisionReader
 import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionSnapshot
 
 public class GameSession internal constructor(
     public val game: GameProcess,
     public val pointers: ResolvedPointers,
-    private val memory: GameMemory
+    private val memory: GameMemory,
+    layout: GameLayout
 ) {
-    private val followCam = StructView(FollowCam.Pointer)
-    private val worldArea = StructView(WorldArea.Pointer)
-    private val menuMan = StructView(MenuMan.Pointer)
     private val flags = EventFlagBlock()
 
+    private val cameraReader = CameraReader(layout.camera)
+    private val placeReader = PlaceReader()
+    private val menuReader = MenuReader()
     private val playerReader = PlayerReader()
     private val loadQueueReader = LoadQueueReader()
-    private val characterReader = CharacterReader()
+    private val characterReader = CharacterReader(layout.specialEffect)
     private val placedPartsReader = PlacedPartsReader()
     private val collisionReader = CollisionReader()
 
-    /** Where the previous tick was, which is what a reload is detected as a change of */
     private var lastPlace: WorldPlace? = null
 
-    /**
-     * The slow  tier, kept between the ticks that skip it
-     */
     private var world = WorldTier()
     private var sinceWorld = 0
 
+    public fun isFlagSet(flagId: Int): Boolean? = flags.isSet(flagId)
 
     public fun sample(): RuntimeSnapshot {
         val started = TimeSource.Monotonic.markNow()
-        val loaded = followCam.refresh(memory)
-        val areaPresent = worldArea.refresh(memory)
-        val place = place(areaPresent)
+
+        val loaded = cameraReader.refresh(memory)
+
+        val areaPresent = placeReader.refresh(memory)
+        val menu = menuReader.read(memory)
+        val place = placeReader.place()
+
 
         val reloaded = lastPlace != null && place != lastPlace
         if (reloaded) {
             memory.invalidate(Lifetime.World)
             flags.reset()
+            // Carrying the old world's blocks and characters across a reload would show a map that
+            // is no longer loaded, so the slow tier is dropped and re-read on this tick
             world = WorldTier()
             sinceWorld = 0
         }
@@ -75,71 +75,42 @@ public class GameSession internal constructor(
             present++
         }
 
-        val time = playerReader.timeMillis()
         refreshWorldTier()
 
         return RuntimeSnapshot(
-            inGameTimeMillis = time,
-            frame = GameDataMan.frameOf(time),
+            inGameTimeMillis = playerReader.timeMillis(),
+            frame = playerReader.frame(),
             place = place,
             loaded = loaded,
             reloaded = reloaded,
             player = if (loaded) playerReader.player() else null,
             world = playerReader.world(),
-            camera = if (loaded) cameraOf(followCam) else null,
+            camera = if (loaded) cameraReader.camera() else null,
+            menu = menu,
             loadQueue = world.loadQueue,
             characters = world.characters,
             flagChanges = changes,
-            menu = menu(),
             cost = SampleCost(started.elapsedNow(), present, playerReader.structures + AROUND_PLAYER)
         )
     }
 
-    /** Reads every enemy the loaded blocks place, instantiated or not */
     public fun readPlacedEnemies(): List<BlockRoster> = placedPartsReader.read(memory)
 
-    /** Reads the fixed island's collision geometry */
     public fun readCollision(): CollisionSnapshot = collisionReader.read(memory)
 
-    public fun isFlagSet(flagId: Int): Boolean? = flags.isSet(flagId)
+    public fun readCharacterEffects(): List<CharacterSnapshot> =
+        characterReader.read(memory, allEffects = true)
 
     private fun refreshWorldTier() {
         if (sinceWorld > 0) {
             sinceWorld--
             return
         }
-
         sinceWorld = WORLD_TIER_PERIOD - 1
         world = WorldTier(
             loadQueue = loadQueueReader.read(memory),
             characters = characterReader.read(memory)
         )
-    }
-
-    private fun menu(): MenuSnapshot? {
-        if (!menuMan.refresh(memory)) return null
-
-        val mask = MenuOpenMask.of(menuMan::int)
-        val boxKind = menuMan.int(MenuMan.BoxKind)
-
-        return MenuSnapshot(
-            mask = mask,
-            boxKind = boxKind,
-            screen = menuMan.int(MenuMan.Screen),
-            defaultQuantity = menuMan.int(MenuMan.DefaultQuantity),
-            isBlocking = MenuOpenMask.blocks(mask, boxKind)
-        )
-    }
-
-    private fun place(areaPresent: Boolean): WorldPlace {
-        if (!areaPresent) return WorldPlace.Unreadable
-
-        val map = WorldArea.mapId(
-            world = worldArea.unsigned(WorldArea.World),
-            area = worldArea.unsigned(WorldArea.Area)
-        )
-
-        return if (map.exists) WorldPlace.InWorld(map) else WorldPlace.Loading(map)
     }
 
     private companion object {
@@ -160,7 +131,7 @@ private data class WorldTier(
     val characters: List<CharacterSnapshot> = emptyList()
 )
 
-public fun GameConnection.openSession(pointers: List<GamePointer>): GameSession {
-    val resolved = memory.resolvePointers(pointers, mainModule)
-    return GameSession(game, resolved, GameMemory(memory, resolved))
+public fun GameConnection.openSession(edition: EditionTables): GameSession {
+    val resolved = memory.resolvePointers(edition.pointers, mainModule)
+    return GameSession(game, resolved, GameMemory(memory, resolved), edition.layout)
 }

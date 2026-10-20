@@ -71,7 +71,7 @@ private fun Attachment(state: RuntimeState, onFollow: (WorldRef) -> Unit) {
 
         attached?.let {
             Text(
-                text = it.build?.name ?: "unrecognized build, so the offsets might not apply",
+                text = it.build ?: "unrecognized build, so the offsets might not apply",
                 style = MaterialTheme.typography.bodySmall
             )
         }

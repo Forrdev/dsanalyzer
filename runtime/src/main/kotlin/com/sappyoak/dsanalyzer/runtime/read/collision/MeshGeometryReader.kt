@@ -1,4 +1,4 @@
-package com.sappyoak.dsanalyzer.runtime.ptde.read.collision
+package com.sappyoak.dsanalyzer.runtime.read.collision
 
 import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.native.memory.MemoryView

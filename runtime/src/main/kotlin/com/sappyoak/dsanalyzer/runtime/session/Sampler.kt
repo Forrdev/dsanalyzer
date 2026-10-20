@@ -15,9 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.runtime.ConnectionEvent
 import com.sappyoak.dsanalyzer.runtime.GameConnection
-import com.sappyoak.dsanalyzer.runtime.pointers.GamePointer
-import com.sappyoak.dsanalyzer.runtime.ptde.PTDEPointers
-import com.sappyoak.dsanalyzer.runtime.ptde.ptdeBuild
+import com.sappyoak.dsanalyzer.runtime.tablesFor
 
 
 private val logger = KotlinLogging.logger {  }
@@ -28,6 +26,7 @@ private val logger = KotlinLogging.logger {  }
 public class SampleRequests {
     private val placedEnemies = AtomicBoolean(false)
     private val collision = AtomicBoolean(false)
+    private val characterEffects = AtomicBoolean(false)
 
     public fun requestPlacedEnemies() {
         placedEnemies.set(true)
@@ -40,6 +39,12 @@ public class SampleRequests {
     }
 
     internal fun takeCollision(): Boolean = collision.getAndSet(false)
+
+    public fun requestCharacterEffects() {
+        characterEffects.set(true)
+    }
+
+    internal fun takeCharacterEffects(): Boolean = characterEffects.getAndSet(false)
 }
 
 /**
@@ -51,7 +56,7 @@ public class SampleRequests {
 public fun Flow<ConnectionEvent>.sampling(
     requests: SampleRequests,
     period: (GameEdition) -> Duration = ::tickPeriod,
-    tables: (GameEdition) -> List<GamePointer>? = ::tablesFor,
+    tables: (GameEdition) -> EditionTables? = ::tablesFor,
     context: CoroutineContext = Dispatchers.IO
 ): Flow<RuntimeEvent> = transformLatest { event ->
     when (event) {
@@ -62,35 +67,28 @@ public fun Flow<ConnectionEvent>.sampling(
 }.flowOn(context)
 
 private fun tickPeriod(edition: GameEdition): Duration = 1.seconds / edition.logicTickHz
-private fun tablesFor(edition: GameEdition): List<GamePointer>? = when (edition) {
-    GameEdition.PrepareToDie -> PTDEPointers
-    else -> null
-}
 
 private suspend fun FlowCollector<RuntimeEvent>.sampleWhileConnected(
     connection: GameConnection,
     requests: SampleRequests,
     period: (GameEdition) -> Duration,
-    tables: (GameEdition) -> List<GamePointer>?
+    tables: (GameEdition) -> EditionTables?
 ) {
     val game = connection.game
-    val pointers = tables(game.edition)
-    if (pointers == null) {
+    val edition = tables(game.edition)
+    if (edition == null) {
         emit(RuntimeEvent.Unsupported(game))
         return
     }
 
-    val session = connection.openSession(pointers)
-    val build = if (game.edition == GameEdition.PrepareToDie) {
-        connection.memory.ptdeBuild(connection.mainModule)
-    } else {
-        null
-    }
+    val session = connection.openSession(edition)
+    val build = edition.buildOf(connection.memory, connection.mainModule)
 
 
     emit(RuntimeEvent.Attached(game, build, session.pointers))
 
     val wait = period(game.edition)
+
     while (true) {
         emit(RuntimeEvent.Sampled(session.sample()))
         // After the tick rather than before it so an expensive read never delays the sample it shares
@@ -103,7 +101,11 @@ private suspend fun FlowCollector<RuntimeEvent>.sampleWhileConnected(
             logger.debug { "Reading the fixed island's collision geometry" }
             emit(RuntimeEvent.Collision(session.readCollision()))
         }
+        if (requests.takeCharacterEffects()) {
+            logger.debug { "Reading every character's special effects" }
+            emit(RuntimeEvent.CharacterEffects(session.readCharacterEffects()))
+        }
 
-        delay(wait)
+         delay(wait)
     }
 }

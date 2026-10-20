@@ -1,4 +1,4 @@
-package com.sappyoak.dsanalyzer.runtime.ptde.read
+package com.sappyoak.dsanalyzer.runtime.read
 
 import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory

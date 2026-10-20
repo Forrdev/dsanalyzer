@@ -14,12 +14,12 @@ public data class CameraSnapshot(
      * This isn't sufficient on its own. Building a projection from euler angels needs the rotation order,
      * the handedness and the frustum guessed correctly
      */
-    public val orientation: Vec3,
+    public val orientation: Vec3?,
     /**
      * The pitch the camera is being pulled toward, which differs from [orientation] only while it is swinging.
      * There is no matching yaw kept here
      */
-    public val targetPitch: Float,
+    public val targetPitch: Float?,
     /** Camera-to-world, read whole */
     public val transform: Mat4,
     public val frustum: Frustum

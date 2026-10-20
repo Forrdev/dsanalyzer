@@ -1,4 +1,4 @@
-package com.sappyoak.dsanalyzer.runtime.ptde.read.collision
+package com.sappyoak.dsanalyzer.runtime.read.collision
 
 import com.sappyoak.dsanalyzer.formats.msb.part.CollisionHitFilter
 import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionBody

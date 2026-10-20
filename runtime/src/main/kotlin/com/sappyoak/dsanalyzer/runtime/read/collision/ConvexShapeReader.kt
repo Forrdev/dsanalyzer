@@ -1,6 +1,4 @@
-package com.sappyoak.dsanalyzer.runtime.ptde.read.collision
-
-import kotlin.math.max
+package com.sappyoak.dsanalyzer.runtime.read.collision
 
 import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.native.process.ProcessMemory
@@ -20,6 +18,7 @@ import com.sappyoak.dsanalyzer.runtime.session.collision.place
 import com.sappyoak.dsanalyzer.runtime.session.collision.turn
 import com.sappyoak.dsanalyzer.shared.math.Mat4
 import com.sappyoak.dsanalyzer.shared.math.Vec3
+import kotlin.math.max
 
 internal class ConvexShapeReader {
     private val box = StructView(BOX_SIZE)
@@ -39,7 +38,7 @@ internal class ConvexShapeReader {
         ShapeKind.ConvexTranslate -> translateAt(memory, shapeAt, transform)
         // A box is usually wrapped by a translate-shape, but nothing says it has to be: unwrapped,
         // its centre is simply the body's own origin
-        ShapeKind.Box -> boxAt(memory, shapeAt, Vec3.Zero, transform, extra = 0f)
+        ShapeKind.Box -> boxAt(memory, shapeAt, Vec3.Companion.Zero, transform, extra = 0f)
         else -> CollisionGeometry.Unread
     }
 
@@ -72,7 +71,7 @@ internal class ConvexShapeReader {
 
         val childAt = translate.pointer(TranslateShape.ChildShape)
         if (childAt.isNull || !child.refresh(memory, childAt)) return CollisionGeometry.Unread
-        if (ShapeKind.of(child.int(Shape.Type)) != ShapeKind.Box) return CollisionGeometry.Unread
+        if (ShapeKind.Companion.of(child.int(Shape.Type)) != ShapeKind.Box) return CollisionGeometry.Unread
 
         return boxAt(
             memory = memory,

@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onStart
 
 import com.sappyoak.dsanalyzer.app.runtime.GameLink
-import com.sappyoak.dsanalyzer.app.runtime.RuntimeEffects
 import com.sappyoak.dsanalyzer.app.settings.SettingsAccess
 import com.sappyoak.dsanalyzer.app.settings.SettingsEdit
 import com.sappyoak.dsanalyzer.app.store.EffectRunner
@@ -57,6 +56,7 @@ public class ConnectionEffects(
         is RuntimeEvent.Sampled -> null
         is RuntimeEvent.PlacedEnemies -> null
         is RuntimeEvent.Collision -> null
+        is RuntimeEvent.CharacterEffects -> null
     }
 }
 

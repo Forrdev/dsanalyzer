@@ -16,6 +16,8 @@ public data class Mat4(
     public val r2: Vec4,
     public val r3: Vec4
 ) {
+    public val position: Vec3 = Vec3(r3.x, r3.y, r3.z)
+
     /** The inverse, valid only when the 3x3 part is orthonormal */
     public val orthonormalInverse: Mat4 get() = Mat4(
         r0 = Vec4(r0.x, r1.x, r2.x, 0f),

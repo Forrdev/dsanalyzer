@@ -1,8 +1,10 @@
-package com.sappyoak.dsanalyzer.runtime.ptde.read
+package com.sappyoak.dsanalyzer.runtime.read
 
+import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.pointers.StructView
 import com.sappyoak.dsanalyzer.runtime.pointers.TableView
+import com.sappyoak.dsanalyzer.runtime.ptde.LoadStage
 import com.sappyoak.dsanalyzer.runtime.ptde.WORLD_BLOCK_RES_SIZE
 import com.sappyoak.dsanalyzer.runtime.ptde.WorldBlockRes
 import com.sappyoak.dsanalyzer.runtime.ptde.WorldRes
@@ -31,12 +33,20 @@ internal class LoadQueueReader {
         )
     }
 
-    private fun blockAt(game: GameMemory, index: Int, at: com.sappyoak.dsanalyzer.native.memory.Address): BlockLoad? {
+    private fun blockAt(game: GameMemory, index: Int, at: Address): BlockLoad? {
         if (!block.refresh(game.memory, at)) return null
+
+        // The stage numbers are this edition's, so they are interpreted here and the snapshot
+        // carries the answers. It keeps its raw `stage` as well, because an unrecognised value is
+        // worth seeing rather than flattening into three falses
+        val stage = block.int(WorldBlockRes.Stage)
 
         return BlockLoad(
             index = index,
-            stage = block.int(WorldBlockRes.Stage),
+            stage = stage,
+            idle = stage == LoadStage.Idle,
+            loaded = stage == LoadStage.Loaded,
+            pending = LoadStage.isPending(stage),
             requested = block.unsigned(WorldBlockRes.Requested) != 0 ||
                     block.unsigned(WorldBlockRes.ForceLoad) != 0,
             wanted = block.unsigned(WorldBlockRes.WantLoaded) != 0,
