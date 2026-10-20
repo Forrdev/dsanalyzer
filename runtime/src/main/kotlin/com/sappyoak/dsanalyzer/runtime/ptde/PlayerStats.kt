@@ -9,12 +9,15 @@ public object PlayerStats {
         base = PTDESignatures.GameDataMan,
         offsets = listOf(0L, GameDataMan.PlayerGameDataPointer.toLong()),
         lifetime = Lifetime.World,
-        size = 0x2A4
+        size = 0x4C0
     )
+
 
     public const val Health: Int = 0xC
     public const val HealthModifiedMax: Int = 0x10
     public const val HealthMax: Int = 0x14
+    public const val Mp: Int = 0x18
+    public const val MpMax: Int = 0x20
     public const val Stamina: Int = 0x28
     public const val StaminaModMax: Int = 0x2
     public const val StaminaMax: Int = 0x30
@@ -33,6 +36,8 @@ public object PlayerStats {
     public const val Sex: Int = 0xC2
     public const val CharacterClass: Int = 0xC0
     public const val Physique: Int = 0xC7
+    public const val MultiplayCount: Int = 0x0CC
+    public const val CoopPlaySuccessCount: Int = 0x0D0
     public const val WarriorsOfSunlightPoints: Int = 0xE5
     public const val DarkwraithPoints: Int = 0xE6
     public const val PathOfTheDragonPoints: Int = 0xE7
@@ -40,7 +45,17 @@ public object PlayerStats {
     public const val ForestHunterPoints: Int = 0xE9
     public const val DarkmoonBladePoints: Int = 0xEA
     public const val ChaosServantPoints: Int = 0xEB
+    public const val EggLevel: Int = 0x0F4
+    public const val PoisonResist: Int = 0x0F8
+    public const val BleedResist: Int = 0x0FC
+    public const val ToxicResist: Int = 0x100
+    public const val CurseResist: Int = 0x104
     public const val Covenant: Int = 0x10B
+    public const val FaceType: Int = 0x10C
+    public const val HairType: Int = 0x10E
+    public const val HairColor: Int = 0x10E
+    public const val CurseLevel: Int = 0x10F
+    public const val InvadeType: Int = 0x110
     public const val InventoryIndexStart: Int = 0x188
     public const val EquipLeft1Index: Int = 0x1D4
     public const val EquipRight1Index: Int = 0x1D8
@@ -83,4 +98,5 @@ public object PlayerStats {
     public const val EquipItem3ID: Int = 0x290
     public const val EquipItem4ID: Int = 0x294
     public const val EquipItem5ID: Int = 0x298
+    public const val IsUseConsumeInvadeType: Int = 0x4BC
 }
