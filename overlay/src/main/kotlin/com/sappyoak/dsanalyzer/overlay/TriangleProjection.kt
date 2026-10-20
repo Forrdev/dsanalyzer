@@ -32,9 +32,11 @@ internal class TriangleProjector(private val capacity: Int) {
     /** Screen y, paired with [xs] */
     val ys: FloatArray = FloatArray(capacity * CollisionMesh.CORNERS)
 
+    /** Clip 'w' of every emitted corner, paired with [xs] */
+    val ws: FloatArray = FloatArray(capacity * CollisionMesh.CORNERS)
+
     /** One per triangle, not per corner: view depth, in world units, of its nearest corner */
     val depths: FloatArray = FloatArray(capacity)
-    val occludes: BooleanArray = BooleanArray(capacity)
 
     var count: Int = 0
         private set
@@ -57,10 +59,14 @@ internal class TriangleProjector(private val capacity: Int) {
      * both signatures longer for a value that is constant across the whole frame
      */
     private var cull: FaceCull = FaceCull.Off
-    private var occluding: Boolean = true
 
     fun reset() {
         count = 0
+    }
+
+    /** Drops everything appended after the first [triangles], so a body cut short by the budget goes whole */
+    fun rewind(triangles: Int) {
+        count = triangles.coerceIn(0, count)
     }
 
     /**
@@ -75,11 +81,9 @@ internal class TriangleProjector(private val capacity: Int) {
         worldToClip: Mat4,
         width: Int,
         height: Int,
-        cull: FaceCull = FaceCull.Off,
-        occludes: Boolean = true
+        cull: FaceCull = FaceCull.Off
     ): Boolean {
         this.cull = cull
-        this.occluding = occludes
 
         val indices = mesh.indices
         val vertices = mesh.vertices
@@ -113,7 +117,7 @@ internal class TriangleProjector(private val capacity: Int) {
      *
      * Sutherland–Hodgman over a single plane: walk the edges, keep the inside corners, and where an
      * edge crosses, add the crossing point. Solving for `t` on `z` alone is what makes a
-     * single-plane clip this short — and `w` has to be interpolated along with `x` and `y`, because
+     * single-plane clip this short, and `w` has to be interpolated along with `x` and `y`, because
      * the projection divides by it and every triangle's depth is read off it.
      */
     private fun clipToNearPlane(): Int {
@@ -173,14 +177,10 @@ internal class TriangleProjector(private val capacity: Int) {
         val at = count * CollisionMesh.CORNERS
         xs[at] = ax; xs[at + 1] = bx; xs[at + 2] = cx
         ys[at] = ay; ys[at + 1] = by; ys[at + 2] = cy
+        ws[at] = outW[a]; ws[at + 1] = outW[b]; ws[at + 2] = outW[c]
         depths[count] = minOf(outW[a], outW[b], outW[c])
-        occludes[count] = occluding
         count++
     }
-
-    private fun screenX(x: Float, w: Float, width: Int): Float = (x / w + 1f) * 0.5f * width
-
-    private fun screenY(y: Float, w: Float, height: Int): Float = (1f - y / w) * 0.5f * height
 }
 
 /**

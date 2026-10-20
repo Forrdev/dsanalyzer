@@ -15,6 +15,7 @@ public sealed interface HitFilter {
 public enum class Passability {
     Solid,
     Passable,
+    Liquid,
     Unknown;
 }
 
@@ -52,7 +53,8 @@ private val CollisionHitFilter.passability: Passability
         CollisionHitFilter.FallProtection -> Passability.Solid
 
         CollisionHitFilter.WaterA,
-        CollisionHitFilter.WaterB,
+        CollisionHitFilter.WaterB, -> Passability.Liquid
+
         CollisionHitFilter.GroupSwitch,
         CollisionHitFilter.Unknown10,
         CollisionHitFilter.Unknown12,

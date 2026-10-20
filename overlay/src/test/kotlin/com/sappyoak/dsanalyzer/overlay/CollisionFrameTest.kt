@@ -72,7 +72,7 @@ class CollisionFrameTest : FunSpec({
             // Nothing to draw — the wall is well outside the draw radius
             drawable shouldBe false
             // but it was projected and rasterised all the same
-            frame.projector.count shouldBe 1
+            frame.occluders.count shouldBe 1
             frame.occlusion.isReady shouldBe true
             frame.centreHidden(depth = 60f) shouldBe true
         }
@@ -84,7 +84,7 @@ class CollisionFrameTest : FunSpec({
 
         assertSoftly {
             drawable shouldBe false
-            frame.projector.count shouldBe 0
+            frame.occluders.count shouldBe 0
             frame.centreHidden(depth = 60f) shouldBe false
         }
     }
@@ -95,7 +95,7 @@ class CollisionFrameTest : FunSpec({
 
         assertSoftly {
             drawable shouldBe false
-            frame.projector.count shouldBe 0
+            frame.occluders.count shouldBe 0
             // Abandoned rather than left holding an older frame, which would occlude against a
             // camera that has since moved
             frame.occlusion.isReady shouldBe false
@@ -110,7 +110,7 @@ class CollisionFrameTest : FunSpec({
         assertSoftly {
             drawable shouldBe true
             // Both projected...
-            frame.projector.count shouldBe 2
+            frame.occluders.count shouldBe 2
             // ...one drawn. The near body sorts first, so the drawn triangles are a prefix
             frame.buckets.count shouldBe 1
             // and the far one still occludes
@@ -127,7 +127,8 @@ class CollisionFrameTest : FunSpec({
 
         assertSoftly {
             drawable shouldBe true
-            frame.projector.count shouldBe 2
+            frame.occluders.count shouldBe 2
+            frame.surfaces.count shouldBe 1
             frame.buckets.count shouldBe 1
         }
     }

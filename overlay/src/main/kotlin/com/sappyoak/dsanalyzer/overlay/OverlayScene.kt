@@ -24,7 +24,7 @@ public data class MarkerView(
     public val occludeByCollision: Boolean = false
 ) {
     public companion object {
-        public const val DEFAULT_DRAW_DISTANCE = 120f
+        public const val DEFAULT_DRAW_DISTANCE = 50f
 
         public val Empty: MarkerView = MarkerView()
     }
@@ -47,7 +47,7 @@ public data class CollisionView(
 ) {
     public companion object {
         public const val DEFAULT_RADIUS: Float = 30f
-        public const val DEFAULT_TRIANGLE_BUDGET = 5000
+        public const val DEFAULT_TRIANGLE_BUDGET = 3500
         public const val DEFAULT_OCCLUSION_BUDGET = 20_000
         public const val DEFAULT_SEGMENTS = 12
         public const val DEFAULT_OPACITY: Float = 0.55f

@@ -16,3 +16,6 @@ internal fun Mat4.clipZ(x: Float, y: Float, z: Float): Float =
 
 internal fun Mat4.clipW(x: Float, y: Float, z: Float): Float =
     x * r0.w + y * r1.w + z * r2.w + r3.w
+
+internal fun screenX(x: Float, w: Float, width: Int): Float = (x / w + 1f) * 0.5f * width
+internal fun screenY(y: Float, w: Float, height: Int): Float = (1f - y / w) * 0.5f * height

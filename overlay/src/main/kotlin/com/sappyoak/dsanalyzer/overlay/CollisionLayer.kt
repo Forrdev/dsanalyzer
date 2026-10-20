@@ -22,7 +22,7 @@ private const val MIN_NEARNESS = 0.25f
 
 
 internal fun DrawScope.drawCollision(frame: CollisionFrame, view: CollisionView, path: Path) {
-    val projector = frame.projector
+    val projector = frame.surfaces
     val buckets = frame.buckets
     val stroke = Stroke(width = WIREFRAME_WIDTH.toPx())
 
@@ -37,41 +37,29 @@ internal fun DrawScope.drawCollision(frame: CollisionFrame, view: CollisionView,
             if (slots == 0) continue
 
             path.reset()
-            var any = false
             val from = buckets.startOf(bucket)
-            for (slot in from until from + slots) {
-                val triangle = buckets.order[slot]
-                if (!projector.occludes[triangle]) continue
-                path.addTriangle(projector, triangle)
-                any = true
-            }
-
-            if (!any) continue
+            for (slot in from until from + slots) path.addTriangle(projector, buckets.order[slot])
 
             drawPath(path, SURFACE)
             drawPath(path, WIREFRAME.fadedTo(view.depthCue, buckets.nearness(bucket)), style = stroke)
         }
 
-        drawVolumes(projector, buckets, path, Stroke(width = VOLUME_WIDTH.toPx()))
+        drawVolumes(frame.volumes, path, Stroke(width = VOLUME_WIDTH.toPx()))
         canvas.restore()
     }
 }
 
-private fun DrawScope.drawVolumes(
-    projector: TriangleProjector,
-    buckets: DepthBuckets,
-    path: Path,
-    stroke: Stroke
-) {
+/** The stretches of volume outline in front of solid collision; the rest was dropped by [VolumeSpans] */
+private fun DrawScope.drawVolumes(volumes: VolumeSpans, path: Path, stroke: Stroke) {
+    if (volumes.count == 0) return
     path.reset()
-    var any = false
-    for (slot in 0 until buckets.count) {
-        val triangle = buckets.order[slot]
-        if (projector.occludes[triangle]) continue
-        path.addTriangle(projector, triangle)
-        any = true
+    val coords = volumes.coords
+    for (span in 0 until volumes.count) {
+        val at = span * SPAN_COMPONENTS
+        path.moveTo(coords[at], coords[at + 1])
+        path.lineTo(coords[at + 2], coords[at + 3])
     }
-    if (any) drawPath(path, VOLUME, style = stroke)
+    drawPath(path, VOLUME, style = stroke)
 }
 
 private fun Path.addTriangle(projector: TriangleProjector, triangle: Int) {

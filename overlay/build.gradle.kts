@@ -12,4 +12,6 @@ dependencies {
     implementation(project(":runtime"))
 
     implementation(libs.kotlinx.coroutines.core)
+
+    testImplementation(project(":formats"))
 }
