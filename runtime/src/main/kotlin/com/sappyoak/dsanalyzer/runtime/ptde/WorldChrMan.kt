@@ -1,6 +1,5 @@
 package com.sappyoak.dsanalyzer.runtime.ptde
 
-import com.sappyoak.dsanalyzer.runtime.dsr.CHARACTER_SLOT_SIZE
 import com.sappyoak.dsanalyzer.runtime.pointers.GamePointer
 import com.sappyoak.dsanalyzer.runtime.pointers.GameTable
 import com.sappyoak.dsanalyzer.runtime.pointers.Lifetime

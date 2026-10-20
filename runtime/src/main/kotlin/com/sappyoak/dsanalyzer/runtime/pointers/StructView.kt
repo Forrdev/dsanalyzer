@@ -66,7 +66,7 @@ public class StructView private constructor(
     public fun ascii(offset: Int, max: Int): String {
         val text = StringBuilder(max)
         for (i in 0 until max) {
-            val c = view.byte(offset + 1).toInt() and 0xFF
+            val c = view.byte(offset + i).toInt() and 0xFF
             if (c == 0) break
             text.append(if (c in 0x20..0x7E) c.toChar() else '?')
         }

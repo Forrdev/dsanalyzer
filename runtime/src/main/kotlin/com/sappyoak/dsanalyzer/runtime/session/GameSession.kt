@@ -6,7 +6,6 @@ import com.sappyoak.dsanalyzer.runtime.GameConnection
 import com.sappyoak.dsanalyzer.runtime.GameProcess
 import com.sappyoak.dsanalyzer.runtime.layout.GameLayout
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
-import com.sappyoak.dsanalyzer.runtime.pointers.GamePointer
 import com.sappyoak.dsanalyzer.runtime.pointers.Lifetime
 import com.sappyoak.dsanalyzer.runtime.pointers.ResolvedPointers
 import com.sappyoak.dsanalyzer.runtime.pointers.resolvePointers
