@@ -6,7 +6,6 @@ import com.sappyoak.dsanalyzer.runtime.ptde.AnimData
 import com.sappyoak.dsanalyzer.runtime.ptde.ChrPosData
 import com.sappyoak.dsanalyzer.runtime.ptde.ChrCtrl
 import com.sappyoak.dsanalyzer.runtime.ptde.ChrIns
-import com.sappyoak.dsanalyzer.runtime.ptde.DeathCam
 import com.sappyoak.dsanalyzer.runtime.ptde.GameDataMan
 import com.sappyoak.dsanalyzer.runtime.ptde.GameMan
 import com.sappyoak.dsanalyzer.runtime.ptde.PlayerStats
@@ -23,11 +22,10 @@ internal class PlayerReader {
     private val animation = StructView(AnimData.Pointer)
     private val attributes = StructView(PlayerStats.Pointer)
     private val worldState = StructView(GameMan.Pointer)
-    private val deathCam = StructView(DeathCam.Pointer)
     private val gameData = StructView(GameDataMan.Pointer)
 
     private val all = listOf(
-        character, position, placement, animation, attributes, worldState, deathCam, gameData, manager
+        character, position, placement, animation, attributes, worldState, gameData, manager
     )
 
     val structures: Int get() = all.size
