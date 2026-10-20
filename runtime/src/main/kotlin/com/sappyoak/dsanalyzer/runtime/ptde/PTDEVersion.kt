@@ -1,27 +1,42 @@
 package com.sappyoak.dsanalyzer.runtime.ptde
 
+import com.sappyoak.dsanalyzer.native.memory.Address
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
 import com.sappyoak.dsanalyzer.native.memory.AddressRange
 import com.sappyoak.dsanalyzer.native.process.ProcessMemory
 
-private const val PREFERRED_BASE = 0x400000L
+/** Where the DOS stub records the PE header's offset */
+private const val E_LFANEW_AT = 0x3CL
 
-public enum class PTDEVersion(private val version: UInt) {
-    Steam(0xFC293654u),
-    Debug(0xCE9634B4u),
-    SteamworksBeta(0xE91B11E2u);
+/** `TimeDateStamp`, measured from the start of the PE signature */
+private const val TIME_DATE_STAMP_AT = 8L
+
+/** The MSVC Rich header's encrypted `DanS` marker */
+private const val RICH_MARKER_AT = 0x80L
+
+public enum class PTDEVersion(
+    private val timestamp: UInt?,
+    private val richMarker: UInt
+) {
+    Steam(null, 0xFC293654u),
+    Debug(null, 0xCE9634B4u),
+    SteamworksBeta(0x54B6EFC0u, 0xE91B11E2u);
 
     public companion object {
-        internal const val VersionAddress: Long = 0x400080
-
-        public fun of(version: UInt): PTDEVersion? = PTDEVersion.entries.firstOrNull { it.version == version }
+        public fun of(timestamp: UInt, richMarker: UInt): PTDEVersion? =
+            entries.firstOrNull { it.timestamp == timestamp }
+                ?: entries.firstOrNull { it.richMarker == richMarker }
     }
 }
 
 public fun ProcessMemory.ptdeVersion(module: AddressRange): PTDEVersion? {
-    val at = module.start + (PTDEVersion.VersionAddress - PREFERRED_BASE)
-    val word = read(at, Int.SIZE_BYTES) ?: return null
-    return PTDEVersion.of(ByteBuffer.wrap(word).order(ByteOrder.LITTLE_ENDIAN).int.toUInt())
+    val lfanew = dwordAt(module.start + E_LFANEW_AT) ?: return null
+    val timestamp = dwordAt(module.start + lfanew.toLong() + TIME_DATE_STAMP_AT) ?: return null
+    val richMarker = dwordAt(module.start + RICH_MARKER_AT) ?: return null
+    return PTDEVersion.of(timestamp, richMarker)
 }
+
+private fun ProcessMemory.dwordAt(at: Address): UInt? = read(at, Int.SIZE_BYTES)
+    ?.let { ByteBuffer.wrap(it).order(ByteOrder.LITTLE_ENDIAN).int.toUInt() }
