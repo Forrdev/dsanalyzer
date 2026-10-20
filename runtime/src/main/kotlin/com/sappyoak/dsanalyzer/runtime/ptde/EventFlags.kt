@@ -48,6 +48,7 @@ public object EventFlags {
     /** The block runs to the end of the last group, which holds every area */
     private const val BLOCK_SIZE: Int = 0x11300 + 18 * AREA_STRIDE
 
+    private const val MANAGER_SIZE: Int = 0x118
     /**
      * How many areas each group has room for, which is not the same for all of them.
      *
@@ -64,15 +65,47 @@ public object EventFlags {
 
     public val Pointer: GamePointer = GamePointer(
         name = "EventFlags",
-        base = Signature.parse(
-            name = "EventFlags",
-            pattern = "56 8B F1 8B 46 1C 50 A1 ?? ?? ?? ?? 32 C9",
-            target = SignatureTarget.Embedded(8)
-        ),
+        base = PTDESignatures.EventFlags,
         offsets = listOf(0L, 0L),
         lifetime = Lifetime.Session,
         size = BLOCK_SIZE
     )
+
+    /**
+     * The flag manager itself, one deref short of [Pointer]
+     *
+     * The manager keeps **two banks**. Bank A is the local word and bank B is the host's world while
+     * you are in it, selected on every map by the session sate.
+     *
+     * Bank B is also not a drop-in substitute for Bank A, it only holds groups 0, 1, and 6 and its group
+     * 0 sections 6, 7, and 8 are **aliases onto bank A's arrays**, so the flat model does not transfer
+     */
+    public val Manager: GamePointer = GamePointer(
+        name = "EventFlagMan",
+        base = PTDESignatures.EventFlags,
+        offsets = listOf(0L),
+        lifetime = Lifetime.Session,
+        size = MANAGER_SIZE
+    )
+
+    /** Bank A's bit buffer, which is what [Pointer] resolves to */
+    public const val BufferA: Int = 0x00
+    /** Bank B's bit buffer, `SizeB` bytes and sparsely populated */
+    public const val BufferB: Int = 0x04
+
+    public const val SizeA: Int = 0x08
+    public const val SizeB: Int = 0x0C
+
+    public const val BankA: Int = 0x14
+    public const val BankB: Int = 0x90
+
+    public const val GroupRecordStride: Int = 0x0C
+
+    public const val CurrentBank: Int = 0x10C
+    /** `0` for bank A, `1` for bank B */
+    public const val BankIndex: Int = 0x110
+
+    public const val Ready: Int = 0x114
 
     /** Where [flagId] lives, or null when those digits are not a flag the block has room for */
     public fun locate(flagId: Int): FlagLocation? {

@@ -21,7 +21,7 @@ internal const val EFFECT_NODE_SIZE: Int = 0x40
 public object SpecialEffects {
     public val Pointer: GamePointer = GamePointer(
         name = "SpecialEffect",
-        base = ChrIns.Base,
+        base = PTDESignatures.ChrIns,
         offsets = THROUGH_CHARACTER + ChrIns.SpecialEffectPointer.toLong(),
         lifetime = Lifetime.World,
         size = SPECIAL_EFFECT_SIZE

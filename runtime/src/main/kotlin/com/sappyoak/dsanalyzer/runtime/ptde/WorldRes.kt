@@ -31,7 +31,7 @@ public const val NO_MAP: Int = -1
 public object WorldRes {
     public val Pointer: GamePointer = GamePointer(
         name = "WorldRes",
-        base = WorldChrMan.Base,
+        base = PTDESignatures.WorldChrMan,
         offsets = listOf(0L, WorldChrMan.WorldResPointer.toLong()),
         lifetime = Lifetime.Session,
         // A read width rather than object size. WorldInfoOwner runs well past this, but

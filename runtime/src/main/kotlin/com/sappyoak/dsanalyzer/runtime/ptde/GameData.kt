@@ -18,11 +18,7 @@ private val TICK_HZ = GameEdition.PrepareToDie.logicTickHz
 public object GameDataMan {
     public val Pointer: GamePointer = GamePointer(
         name = "GameDataMan",
-        base = Signature.parse(
-            name = "GameDataMan",
-            pattern = "8B 0D ?? ?? ?? ?? 8B 41 30 8B 4D 64",
-            target = SignatureTarget.Embedded(2)
-        ),
+        base = PTDESignatures.GameDataMan,
         offsets = listOf(0L),
         lifetime = Lifetime.Session,
         size = 0x80

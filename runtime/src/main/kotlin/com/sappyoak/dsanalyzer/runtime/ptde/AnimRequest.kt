@@ -17,7 +17,7 @@ private val THROUGH_POOL: List<Long> = THROUGH_CHARACTER + listOf(
 
 private fun channel(name: String, at: Long): GamePointer = GamePointer(
     name = name,
-    base = ChrIns.Base,
+    base = PTDESignatures.ChrIns,
     offsets = THROUGH_POOL,
     lifetime = Lifetime.World,
     size = SLOT_SIZE,

@@ -1,7 +1,5 @@
 package com.sappyoak.dsanalyzer.runtime.ptde
 
-import com.sappyoak.dsanalyzer.native.memory.Signature
-import com.sappyoak.dsanalyzer.native.memory.SignatureTarget
 import com.sappyoak.dsanalyzer.runtime.pointers.GamePointer
 import com.sappyoak.dsanalyzer.runtime.pointers.GameTable
 import com.sappyoak.dsanalyzer.runtime.pointers.Lifetime
@@ -18,15 +16,9 @@ import com.sappyoak.dsanalyzer.runtime.pointers.TableShape
  * whose MSB is resident but whose events are not is a state worth noticing
  */
 public object EmevdMan {
-    internal val Base: Signature = Signature.parse(
-        name = "EmevdMan",
-        pattern = "83 FF FF 73 06 03 F8 03 39 EB 02 33 FF A1 ?? ?? ?? ?? 83 C0 04",
-        target = SignatureTarget.Embedded(14)
-    )
-
     public val Pointer: GamePointer = GamePointer(
         name = "EmevdMan",
-        base = Base,
+        base = PTDESignatures.EmevdMan,
         offsets = listOf(0L),
         lifetime = Lifetime.Session,
         size = 0x1C

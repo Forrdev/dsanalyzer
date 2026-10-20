@@ -1,7 +1,5 @@
 package com.sappyoak.dsanalyzer.runtime.ptde
 
-import com.sappyoak.dsanalyzer.native.memory.Signature
-import com.sappyoak.dsanalyzer.native.memory.SignatureTarget
 import com.sappyoak.dsanalyzer.runtime.pointers.GamePointer
 import com.sappyoak.dsanalyzer.runtime.pointers.Lifetime
 
@@ -13,11 +11,7 @@ import com.sappyoak.dsanalyzer.runtime.pointers.Lifetime
 public object MenuMan {
     public val Pointer: GamePointer = GamePointer(
         name = "MenuMan",
-        base = Signature.parse(
-            name = "MenuMan",
-            pattern = "E8 ?? ?? ?? ?? 8B 35 ?? ?? ?? ?? A1 ?? ?? ?? ?? 3B C3 74 0D",
-            target = SignatureTarget.Embedded(7)
-        ),
+        base = PTDESignatures.MenuMan,
         offsets = listOf(0L),
         lifetime = Lifetime.Volatile,
         size = 0x2E8

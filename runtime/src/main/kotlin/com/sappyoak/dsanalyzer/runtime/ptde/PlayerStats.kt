@@ -8,11 +8,7 @@ import com.sappyoak.dsanalyzer.runtime.pointers.Lifetime
 public object PlayerStats {
     public val Pointer: GamePointer = GamePointer(
         name = "CharData2",
-        base = Signature.parse(
-            name = "CharData2",
-            pattern = "A1 ?? ?? ?? ?? 8B 40 34 53 32 DB 85 C0",
-            target = SignatureTarget.Embedded(1)
-        ),
+        base = PTDESignatures.CharData2,
         offsets = listOf(0L, 8L),
         lifetime = Lifetime.World,
         size = 0x2A4

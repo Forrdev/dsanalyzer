@@ -24,7 +24,7 @@ internal val THROUGH_CHARACTER: List<Long> = listOf(0L, 4L, 0L)
 public object ChrCtrl {
     public val Pointer: GamePointer = GamePointer(
         name = "ChrCtrl",
-        base = ChrIns.Base,
+        base = PTDESignatures.ChrIns,
         offsets = THROUGH_CHARACTER + ChrIns.ChrCtrlPointer.toLong(),
         lifetime = Lifetime.World,
         size = 0x2E0
@@ -70,7 +70,7 @@ public object ChrCtrlFlags {
 public object ChrPosData {
     public val Pointer: GamePointer = GamePointer(
         name = "ChrPosData",
-        base = ChrIns.Base,
+        base = PTDESignatures.ChrIns,
         offsets = THROUGH_CHARACTER + listOf(
             ChrIns.ChrCtrlPointer.toLong(),
             ChrCtrl.PositionPointer.toLong()
@@ -89,7 +89,7 @@ public object ChrPosData {
 public object AnimData {
     public val Pointer: GamePointer = GamePointer(
         name = "AnimData",
-        base = ChrIns.Base,
+        base = PTDESignatures.ChrIns,
         offsets = THROUGH_CHARACTER + listOf(
             ChrIns.ChrCtrlPointer.toLong(),
             ChrCtrl.AnimDataPointer.toLong()

@@ -9,11 +9,7 @@ import com.sappyoak.dsanalyzer.runtime.pointers.Lifetime
 public object WorldState {
     public val Pointer: GamePointer = GamePointer(
         name = "WorldState",
-        base = Signature.parse(
-            name = "WorldState",
-            pattern = "8B 54 24 10 8B C8 F7 D9 39 8A B8 0E 00 00 B3 01 0F 95 C2 8B 0D ?? ?? ?? ?? 80 B9 A5 0B 00 00 00",
-            target = SignatureTarget.Embedded(0x15)
-        ),
+        base = PTDESignatures.WorldState,
         offsets = listOf(0L),
         lifetime = Lifetime.Session,
         size = 0xB9C
@@ -29,12 +25,7 @@ public object WorldState {
 public object WorldArea {
     public val Pointer: GamePointer = GamePointer(
         name = "WorldArea",
-        base = Signature.parse(
-            name = "WorldArea",
-            pattern = "8B 48 04 8B 11 50 8B 42 34 FF D0 C7 46 2C 00 00 00 00 C3 8B 0D ?? ?? ?? ?? " +
-                    "8B 89 50 0B 00 00 32 C0 83 79 28 00",
-            target = SignatureTarget.Embedded(0x15)
-        ),
+        base = PTDESignatures.WorldArea,
         offsets = listOf(0L),
         lifetime = Lifetime.Session,
         size = 0xA2C
@@ -54,11 +45,7 @@ public object WorldArea {
 public object DeathCam {
     public val Pointer: GamePointer = GamePointer(
         name = "DeathCam",
-        base = Signature.parse(
-            name = "DeathCam",
-            pattern = "88 5D 15 88 5D 16 88 5D 17 A1 ?? ?? ?? ?? 3B C3",
-            target = SignatureTarget.Embedded(0xA)
-        ),
+        base = PTDESignatures.DeathCam,
         offsets = listOf(0L),
         lifetime = Lifetime.Session,
         size = 0x60

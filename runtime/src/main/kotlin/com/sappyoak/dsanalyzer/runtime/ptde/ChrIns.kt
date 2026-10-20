@@ -18,15 +18,9 @@ import com.sappyoak.dsanalyzer.runtime.pointers.Lifetime
  */
 
 public object ChrIns {
-    internal val Base: Signature = Signature.parse(
-        name = "ChrIns",
-        pattern = "8B 15 ?? ?? ?? ?? F3 0F 10 44 24 30 52",
-        target = SignatureTarget.Embedded(2)
-    )
-
     public val Pointer: GamePointer = GamePointer(
         name = "ChrIns",
-        base = Base,
+        base = PTDESignatures.ChrIns,
         offsets = listOf(0L, 4L, 0L),
         lifetime = Lifetime.World,
         size = 0x640

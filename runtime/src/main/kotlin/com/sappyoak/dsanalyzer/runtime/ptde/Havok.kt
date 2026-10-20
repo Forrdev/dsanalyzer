@@ -1,8 +1,5 @@
 package com.sappyoak.dsanalyzer.runtime.ptde
 
-
-import com.sappyoak.dsanalyzer.native.memory.Signature
-import com.sappyoak.dsanalyzer.native.memory.SignatureTarget
 import com.sappyoak.dsanalyzer.runtime.pointers.GamePointer
 import com.sappyoak.dsanalyzer.runtime.pointers.GameTable
 import com.sappyoak.dsanalyzer.runtime.pointers.Lifetime
@@ -25,11 +22,7 @@ internal const val BODY_SIZE: Int = 0x130
 public object Havok {
     public val Manager: GamePointer = GamePointer(
         name = "FrpgHavokMan",
-        base = Signature.parse(
-            name = "FrpgHavokMan",
-            pattern = "51 A1 ?? ?? ?? ?? 8B 48 14 53 55 8B 6C 24 10 8B 5D 3C 56 57",
-            target = SignatureTarget.Embedded(2)
-        ),
+        base = PTDESignatures.FrpgHavokMan,
         offsets = listOf(0L),
         lifetime = Lifetime.Volatile,
         size = MANAGER_SIZE

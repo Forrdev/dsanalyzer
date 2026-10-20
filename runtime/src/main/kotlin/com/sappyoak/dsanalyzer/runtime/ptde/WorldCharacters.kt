@@ -16,7 +16,7 @@ import com.sappyoak.dsanalyzer.runtime.pointers.TableShape
 public object WorldCharacters {
     public val Pointer: GamePointer = GamePointer(
         name = "Characters",
-        base = ChrIns.Base,
+        base = PTDESignatures.ChrIns,
         offsets = listOf(0L),
         lifetime = Lifetime.World,
         size = 0x20
