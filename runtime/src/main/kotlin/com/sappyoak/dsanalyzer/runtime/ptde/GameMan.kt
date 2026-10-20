@@ -9,7 +9,7 @@ public object GameMan {
         base = PTDESignatures.GameMan,
         offsets = listOf(0L),
         lifetime = Lifetime.Session,
-        size = 0xB9C
+        size = 0xB90
     )
 
     public const val LastBonfire: Int = 0xB04

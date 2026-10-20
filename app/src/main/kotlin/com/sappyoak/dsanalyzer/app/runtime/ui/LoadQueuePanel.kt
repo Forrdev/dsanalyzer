@@ -11,8 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 import com.sappyoak.dsanalyzer.runtime.session.BlockLoad
+import com.sappyoak.dsanalyzer.runtime.session.BlockState
+import com.sappyoak.dsanalyzer.runtime.session.HeldBy
 import com.sappyoak.dsanalyzer.runtime.session.LoadQueueSnapshot
-import com.sappyoak.dsanalyzer.runtime.ptde.LoadStage
 
 @Composable
 internal fun LoadQueuePanel(queue: LoadQueueSnapshot?) {
@@ -39,36 +40,62 @@ internal fun LoadQueuePanel(queue: LoadQueueSnapshot?) {
             )
         }
 
+        val releasing = queue.releasing
+        if (releasing.isNotEmpty()) {
+            Text(
+                text = "Releasing: ${releasing.joinToString { it.label() }} - resident but no longer wanted",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.tertiary
+            )
+        }
+
         val active = queue.blocks.filter { it.active }
         if (active.isEmpty()) {
-            Text("No block is loaded or requested", style = MaterialTheme.typography.bodySmall)
+            Text("No block is loaded or wanted", style = MaterialTheme.typography.bodySmall)
             return@Column
         }
 
         Text(
-            text = "${queue.loaded.size} loaded, ${queue.pending.size} in flight " +
-            "of ${queue.blocks.size} blocks",
+            text = counts(queue),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
-        active.forEach { Field("Block ${it.index}", it.describe()) }
+        active.forEach { Field(it.label(), it.describe()) }
     }
 }
 
-private fun BlockLoad.describe(): String {
-    val marks = buildList {
-        if (requested) add("requested")
-        if (wanted) add("wanted")
-        if (pinned) add("pinned")
-    }
-    val suffix = if (marks.isEmpty()) "" else " - ${marks.joinToString()}"
-    return stageName() + suffix
-}
+private fun counts(queue: LoadQueueSnapshot): String = buildList {
+    add("${queue.resident.size} resident")
+    if (queue.loading.isNotEmpty()) add("${queue.loading.size} loading")
+    if (queue.unloading.isNotEmpty()) add("${queue.unloading.size} unloading")
+    if (queue.queued.isNotEmpty()) add("${queue.queued.size} queued")
+}.joinToString() + " of ${queue.blocks.size} blocks"
 
-/** Only the three stages pinned from both ends are named */
-private fun BlockLoad.stageName(): String = when (stage) {
-    LoadStage.Idle -> "idle"
-    LoadStage.Loading -> "loading"
-    LoadStage.Loaded -> "loaded"
-    else -> "stage $stage"
+private fun BlockLoad.label(): String =
+    mapId?.let { "Block $index (${it.name})" } ?: "Block $index"
+
+private fun BlockLoad.describe(): String = buildList {
+    add(
+        when (state) {
+            BlockState.Absent -> "absent"
+            BlockState.Loading -> "loading (stage $stage)"
+            BlockState.Resident -> "resident"
+            BlockState.Unloading -> "unloading (stage $stage)"
+            BlockState.Unknown -> "unrecognised stage $stage"
+        }
+    )
+    reason()?.let { add("held by $it") }
+    if (queued) add("queued")
+    if (releasing) add("releasing")
+    if (suppressed) add("suppressed")
+}.joinToString(" - ")
+
+private fun BlockLoad.reason(): String? = when (heldBy) {
+    HeldBy.CurrentMap -> "current map"
+    HeldBy.PreviousMap -> "previous map"
+    HeldBy.WarpTarget -> "warp target"
+    HeldBy.Forced -> "a force-load"
+    HeldBy.Pinned -> "a pin"
+    HeldBy.Referenced -> "a reference"
+    HeldBy.Nothing -> null
 }

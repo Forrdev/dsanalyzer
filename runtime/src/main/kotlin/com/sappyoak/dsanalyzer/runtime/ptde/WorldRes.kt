@@ -10,6 +10,8 @@ import com.sappyoak.dsanalyzer.runtime.pointers.TableShape
 /** One `NS_FRPG::WorldBlockRes` — the resource side of a block, not [WorldBlock] */
 internal const val WORLD_BLOCK_RES_SIZE = 0x170
 
+internal const val WORLD_BLOCK_INFO_SIZE = 0x3C
+
 /** No map requested. Every one of the three slots reads this when empty */
 public const val NO_MAP: Int = -1
 
@@ -46,6 +48,20 @@ public object WorldRes {
         elements = TableElements.Inline(WORLD_BLOCK_RES_SIZE),
         limit = 64
     )
+
+    public val BlockInfos: GameTable = GameTable(
+        name = "WorldBlockInfo",
+        shape = TableShape.Counted(
+            lengthAt = BlockInfoCount,
+            firstAt = BlockInfosPointer,
+            indirect = true
+        ),
+        elements = TableElements.Inline(WORLD_BLOCK_INFO_SIZE),
+        limit = 64
+    )
+
+    public const val BlockInfoCount: Int = 0x0C
+    public const val BlockInfosPointer: Int = 0x10
 
     public const val AreaCount: Int = 0x700
 
@@ -112,8 +128,15 @@ public object WorldBlockRes {
     /** See [LoadStage] */
     public const val Stage: Int = 0x68
 
+    /** One of the two pins [Latched] reads */
+    public const val PinOther: Int = 0x16C
+
     /** Held while something is waiting on this block, which keeps it from unloading underneath */
     public const val PinLoaded: Int = 0x160
+}
+
+public object WorldBlockInfo {
+    public const val PackedMapId: Int = 0x04
 }
 
 /**
@@ -126,9 +149,13 @@ public object WorldBlockRes {
  */
 public object LoadStage {
     public const val Idle: Int = 0
-    public const val Loading: Int = 2
     public const val Loaded: Int = 7
 
-    /** Whether a block is past requesting and not yet finished */
-    public fun isPending(stage: Int): Boolean = stage != Idle && stage != Loaded
+    private val LOADING = setOf(1, 2, 3, 4, 6)
+    private val UNLOADING = setOf(5, 8, 9)
+
+    public fun isIdle(stage: Int): Boolean = stage == Idle
+    public fun isLoading(stage: Int): Boolean = stage in LOADING
+    public fun isResident(stage: Int): Boolean = stage == Loaded
+    public fun isUnloading(stage: Int): Boolean = stage in UNLOADING
 }

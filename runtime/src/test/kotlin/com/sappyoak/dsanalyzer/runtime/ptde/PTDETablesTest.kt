@@ -22,9 +22,10 @@ private val LAST_FIELDS = listOf(
     Triple("AnimData", AnimData.Pointer, AnimData.PlaySpeed),
     Triple("AnimRequestA", AnimRequest.ChannelA, AnimRequest.Times + 8),
     Triple("AnimRequestB", AnimRequest.ChannelB, AnimRequest.Times + 8),
-    Triple("PlayerGameData", PlayerStats.Pointer, PlayerStats.Stance),
+    Triple("PlayerGameData", PlayerGameData.Pointer, PlayerGameData.Stance),
     Triple("GameMan", GameMan.Pointer, GameMan.StableAngle),
     Triple("WorldArea", WorldArea.Pointer, WorldArea.World),
+    Triple("HitIns", HitIns.Pointer, HitIns.BlockIndex),
     Triple("GameDataMan", GameDataMan.Pointer, GameDataMan.InGameTimeMillis)
 )
 
@@ -39,13 +40,17 @@ class PTDETablesTest : FunSpec({
         }
     }
 
-    test("the structures reached through the character share its scan") {
-        val throughCharacter = PTDEPointers.filter { it.base === PTDESignatures.WorldChrMan }
+    test("the structures reached through the character share the manager's scan") {
+        val throughManager = PTDEPointers.filter { it.base === PTDESignatures.WorldChrMan }
 
         assertSoftly {
-            throughCharacter.map { it.name } shouldBe
-                    listOf("ChrIns", "ChrCtrl", "ChrPosData", "AnimData", "AnimRequestA", "AnimRequestB", "SpecialEffect", "WorldChrMan", "WorldRes")
-            throughCharacter.drop(1).forEach { it.offsets.take(3) shouldBe listOf(0L, 4L, 0L) }
+            throughManager.map { it.name } shouldBe
+                    listOf("ChrIns", "ChrCtrl", "ChrPosData", "AnimData", "AnimRequestA", "AnimRequestB", "SpecialEffect", "HitIns", "WorldChrMan", "WorldRes")
+
+            throughManager
+                .filterNot { it.name == "WorldChrMan" || it.name == "WorldRes" }
+                .forEach { withClue(it.name) { it.offsets.take(2) shouldBe THROUGH_CHARACTER } }
+
             WorldChrMan.Pointer.offsets shouldBe listOf(0L)
         }
     }

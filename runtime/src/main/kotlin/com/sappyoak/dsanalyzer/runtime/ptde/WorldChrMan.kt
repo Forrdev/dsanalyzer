@@ -32,7 +32,8 @@ public object WorldChrMan {
         base = PTDESignatures.WorldChrMan,
         offsets = listOf(0L),
         lifetime = Lifetime.World,
-        size = 0x13A0
+        // read width
+        size = 0x50
     )
 
     /**

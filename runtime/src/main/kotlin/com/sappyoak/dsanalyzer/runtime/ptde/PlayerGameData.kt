@@ -3,24 +3,27 @@ package com.sappyoak.dsanalyzer.runtime.ptde
 import com.sappyoak.dsanalyzer.runtime.pointers.GamePointer
 import com.sappyoak.dsanalyzer.runtime.pointers.Lifetime
 
-public object PlayerStats {
+public object PlayerGameData {
     public val Pointer: GamePointer = GamePointer(
-        name = "PlayerStats",
+        name = "PlayerGameData",
         base = PTDESignatures.GameDataMan,
         offsets = listOf(0L, GameDataMan.PlayerGameDataPointer.toLong()),
         lifetime = Lifetime.World,
-        size = 0x4C0
+        size = 0x4D0
     )
 
 
+    public const val PlayerNo: Int = 0x08
     public const val Health: Int = 0xC
-    public const val HealthModifiedMax: Int = 0x10
-    public const val HealthMax: Int = 0x14
+    /** The effective max, after equipment and effects */
+    public const val MaxHp: Int = 0x10
+    public const val BaseMaxHp: Int = 0x14
+
     public const val Mp: Int = 0x18
     public const val MpMax: Int = 0x20
     public const val Stamina: Int = 0x28
-    public const val StaminaModMax: Int = 0x2
-    public const val StaminaMax: Int = 0x30
+    public const val MaxStamina: Int = 0x2
+    public const val BaseMaxStamina: Int = 0x30
     public const val Vitality: Int = 0x38
     public const val Attunement: Int = 0x40
     public const val Endurance: Int = 0x48
@@ -32,12 +35,17 @@ public object PlayerStats {
     public const val Resistance: Int = 0x80
     public const val SoulLevel: Int = 0x88
     public const val Souls: Int = 0x8C
+    public const val TotalAddParam: Int = 0x98
+
+    public const val CharType: Int = 0x9C
     public const val CharacterName: Int = 0xA0
     public const val Sex: Int = 0xC2
-    public const val CharacterClass: Int = 0xC0
+    public const val CharacterClass: Int = 0xC6
     public const val Physique: Int = 0xC7
-    public const val MultiplayCount: Int = 0x0CC
-    public const val CoopPlaySuccessCount: Int = 0x0D0
+    public const val Gift: Int = 0xC8
+
+    public const val MultiplayCount: Int = 0xCC
+    public const val CoopPlaySuccessCount: Int = 0xD0
     public const val WarriorsOfSunlightPoints: Int = 0xE5
     public const val DarkwraithPoints: Int = 0xE6
     public const val PathOfTheDragonPoints: Int = 0xE7
@@ -45,17 +53,20 @@ public object PlayerStats {
     public const val ForestHunterPoints: Int = 0xE9
     public const val DarkmoonBladePoints: Int = 0xEA
     public const val ChaosServantPoints: Int = 0xEB
-    public const val EggLevel: Int = 0x0F4
-    public const val PoisonResist: Int = 0x0F8
-    public const val BleedResist: Int = 0x0FC
+    public const val EggLevel: Int = 0xF4
+    public const val PoisonResist: Int = 0xF8
+    public const val BleedResist: Int = 0xFC
     public const val ToxicResist: Int = 0x100
     public const val CurseResist: Int = 0x104
+
+    public const val ClearItem: Int = 0x108
     public const val Covenant: Int = 0x10B
     public const val FaceType: Int = 0x10C
     public const val HairType: Int = 0x10E
     public const val HairColor: Int = 0x10E
     public const val CurseLevel: Int = 0x10F
     public const val InvadeType: Int = 0x110
+
     public const val InventoryIndexStart: Int = 0x188
     public const val EquipLeft1Index: Int = 0x1D4
     public const val EquipRight1Index: Int = 0x1D8

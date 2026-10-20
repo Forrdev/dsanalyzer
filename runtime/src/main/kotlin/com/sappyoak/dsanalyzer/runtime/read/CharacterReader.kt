@@ -82,7 +82,8 @@ internal class CharacterReader(effectLayout: SpecialEffectLayout) {
             teamType = one.int(ChrIns.TeamType),
             targetHandle = target.takeIf { it != NO_TARGET },
             isPlayer = isPlayer,
-            // Read off the ChrIns copy already in hand, so the holder costs no walk of its own
+            // Read off the ChrIns copy already in hand, so the holder costs no walk of its own.
+            // The slot carries one too, at CharacterSlot.SpecialEffect, which is the same object
             effects = if (isPlayer || allEffects) {
                 effects.read(game, one.pointer(ChrIns.SpecialEffectPointer))
             } else {

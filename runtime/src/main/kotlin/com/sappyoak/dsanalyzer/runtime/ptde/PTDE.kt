@@ -16,10 +16,11 @@ public val PTDEPointers: List<GamePointer> = listOf(
     AnimRequest.ChannelA,
     AnimRequest.ChannelB,
     SpecialEffects.Pointer,
+    HitIns.Pointer,
     WorldChrMan.Pointer,
     WorldRes.Pointer,
     EmevdMan.Pointer,
-    PlayerStats.Pointer,
+    PlayerGameData.Pointer,
     GameMan.Pointer,
     WorldArea.Pointer,
     GameDataMan.Pointer,
@@ -36,6 +37,7 @@ public val PTDETables: List<Pair<GamePointer, GameTable>> = listOf(
     SpecialEffects.Pointer to SpecialEffects.Active,
     WorldChrMan.Pointer to WorldChrMan.Blocks,
     WorldRes.Pointer to WorldRes.Blocks,
+    WorldRes.Pointer to WorldRes.BlockInfos,
     EmevdMan.Pointer to EmevdMan.Scripts
 )
 

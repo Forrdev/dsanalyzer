@@ -8,7 +8,7 @@ import com.sappyoak.dsanalyzer.runtime.ptde.ChrCtrl
 import com.sappyoak.dsanalyzer.runtime.ptde.ChrIns
 import com.sappyoak.dsanalyzer.runtime.ptde.GameDataMan
 import com.sappyoak.dsanalyzer.runtime.ptde.GameMan
-import com.sappyoak.dsanalyzer.runtime.ptde.PlayerStats
+import com.sappyoak.dsanalyzer.runtime.ptde.PlayerGameData
 import com.sappyoak.dsanalyzer.runtime.ptde.WorldChrMan
 import com.sappyoak.dsanalyzer.runtime.session.AttributeSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.PlayerSnapshot
@@ -20,7 +20,7 @@ internal class PlayerReader {
     private val position = StructView(ChrPosData.Pointer)
     private val placement = StructView(ChrCtrl.Pointer)
     private val animation = StructView(AnimData.Pointer)
-    private val attributes = StructView(PlayerStats.Pointer)
+    private val attributes = StructView(PlayerGameData.Pointer)
     private val worldState = StructView(GameMan.Pointer)
     private val gameData = StructView(GameDataMan.Pointer)
 
@@ -72,13 +72,13 @@ internal class PlayerReader {
         if (!attributes.isPresent) return null
 
         return AttributeSnapshot(
-            healthMax = attributes.int(PlayerStats.HealthMax),
-            staminaMax = attributes.int(PlayerStats.StaminaMax),
-            soulLevel = attributes.int(PlayerStats.SoulLevel),
-            souls = attributes.int(PlayerStats.Souls),
-            humanity = attributes.int(PlayerStats.Humanity),
-            covenant = attributes.unsigned(PlayerStats.Covenant),
-            stance = attributes.int(PlayerStats.Stance)
+            healthMax = attributes.int(PlayerGameData.MaxHp),
+            staminaMax = attributes.int(PlayerGameData.MaxStamina),
+            soulLevel = attributes.int(PlayerGameData.SoulLevel),
+            souls = attributes.int(PlayerGameData.Souls),
+            humanity = attributes.int(PlayerGameData.Humanity),
+            covenant = attributes.unsigned(PlayerGameData.Covenant),
+            stance = attributes.int(PlayerGameData.Stance)
         )
     }
 }

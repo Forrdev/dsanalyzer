@@ -105,6 +105,9 @@ public object ChrIns {
     public const val Flags1: Int = 0x1FC
     public const val PlayRegion: Int = 0x284
 
+    /** The 'NS_FRPG::HitIns' this character is standing on */
+    public const val HitInsPointer: Int = 0x29C
+
     public const val Health: Int = 0x2D4
     public const val HealthMax: Int = 0x2D8
     public const val Mp: Int = 0x2DC

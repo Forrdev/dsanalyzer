@@ -18,7 +18,7 @@ import com.sappyoak.dsanalyzer.runtime.ptde.EventFlags
 import com.sappyoak.dsanalyzer.runtime.ptde.FollowCam
 import com.sappyoak.dsanalyzer.runtime.ptde.GameDataMan
 import com.sappyoak.dsanalyzer.runtime.ptde.GameMan
-import com.sappyoak.dsanalyzer.runtime.ptde.PlayerStats
+import com.sappyoak.dsanalyzer.runtime.ptde.PlayerGameData
 import com.sappyoak.dsanalyzer.runtime.ptde.PTDEEdition
 import com.sappyoak.dsanalyzer.runtime.ptde.PTDEPointers
 import com.sappyoak.dsanalyzer.runtime.ptde.PTDESignatures
@@ -50,7 +50,6 @@ internal const val ANIMATION_AT = 0x6100
 internal const val ATTRIBUTES_AT = 0x7000
 internal const val WORLD_AT = 0x8000
 internal const val AREA_AT = 0x9000
-internal const val DEATH_CAM_AT = 0xA000
 internal const val GAME_DATA_AT = 0xA100
 internal const val FLAGS_AT = 0x20000
 internal const val FOLLOW_CAM_AT = 0xC000
@@ -97,10 +96,10 @@ internal class PTDEFixture {
         game.float(POSITION_AT + ChrPosData.Position + 8, 44f)
         game.float(POSITION_AT + ChrPosData.Angle, 1.25f)
         game.float(ANIMATION_AT + AnimData.PlaySpeed, 2f)
-        game.int(ATTRIBUTES_AT + PlayerStats.HealthMax, 1000)
-        game.int(ATTRIBUTES_AT + PlayerStats.SoulLevel, 42)
-        game.int(ATTRIBUTES_AT + PlayerStats.Souls, 55_000)
-        game.write(ATTRIBUTES_AT + PlayerStats.Covenant, 3)
+        game.int(ATTRIBUTES_AT + PlayerGameData.MaxHp, 1000)
+        game.int(ATTRIBUTES_AT + PlayerGameData.SoulLevel, 42)
+        game.int(ATTRIBUTES_AT + PlayerGameData.Souls, 55_000)
+        game.write(ATTRIBUTES_AT + PlayerGameData.Covenant, 3)
         game.float(WORLD_AT + GameMan.StablePosition, 12.5f)
         game.float(WORLD_AT + GameMan.StablePosition + 4, -30f)
         game.float(WORLD_AT + GameMan.StablePosition + 8, 44f)
@@ -175,12 +174,14 @@ internal class PTDEFixture {
         game.pointer(PLACEMENT_AT + ChrCtrl.AnimDataPointer, ANIMATION_AT)
 
         // CharData2: static -> +0 -> +8
-        game.pointer(statics.getValue(PlayerStats.Pointer.base), LINKS_AT + 0x200)
+        game.pointer(statics.getValue(PlayerGameData.Pointer.base), LINKS_AT + 0x200)
         game.pointer(LINKS_AT + 0x208, ATTRIBUTES_AT)
 
         game.pointer(statics.getValue(GameMan.Pointer.base), WORLD_AT)
         game.pointer(statics.getValue(WorldArea.Pointer.base), AREA_AT)
         game.pointer(statics.getValue(GameDataMan.Pointer.base), GAME_DATA_AT)
+
+        game.pointer(GAME_DATA_AT + com.sappyoak.dsanalyzer.runtime.dsr.GameDataMan.PlayerGameDataPointer, ATTRIBUTES_AT)
 
         // EventFlags: static -> +0 -> +0
         game.pointer(statics.getValue(EventFlags.Pointer.base), LINKS_AT + 0x300)
