@@ -17,11 +17,11 @@ import kotlinx.coroutines.launch
 import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.native.process.Processes
 import com.sappyoak.dsanalyzer.runtime.session.BlockRoster
-import com.sappyoak.dsanalyzer.runtime.session.CollisionSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeEvent
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.SampleRequests
 import com.sappyoak.dsanalyzer.runtime.session.sampling
+import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionSnapshot
 import com.sappyoak.dsanalyzer.runtime.watchForGame
 
 private val logger = KotlinLogging.logger {  }

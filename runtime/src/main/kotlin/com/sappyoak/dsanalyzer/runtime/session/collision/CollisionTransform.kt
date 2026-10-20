@@ -1,4 +1,4 @@
-package com.sappyoak.dsanalyzer.runtime.session
+package com.sappyoak.dsanalyzer.runtime.session.collision
 
 import kotlin.math.abs
 
@@ -12,6 +12,14 @@ internal fun Mat4.place(x: Float, y: Float, z: Float): Vec3 = Vec3(
     x * r0.y + y * r1.y + z * r2.y + r3.y,
     x * r0.z + y * r1.z + z * r2.z + r3.z
 )
+
+/** One local direction in world space, the rotation without the translation */
+internal fun Mat4.turn(x: Float, y: Float, z: Float): Vec3 = Vec3(
+    x * r0.x + y * r1.x + z * r2.x,
+    x * r0.y + y * r1.y + z * r2.y,
+    x * r0.z + y * r1.z + z * r2.z
+)
+
 
 /**
  * An axis-aligned box that still contains the shape after [transform]

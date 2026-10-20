@@ -3,6 +3,7 @@ package com.sappyoak.dsanalyzer.runtime.session
 import com.sappyoak.dsanalyzer.runtime.GameProcess
 import com.sappyoak.dsanalyzer.runtime.pointers.ResolvedPointers
 import com.sappyoak.dsanalyzer.runtime.ptde.PTDEBuild
+import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionSnapshot
 
 public sealed interface RuntimeEvent {
     public data object Searching : RuntimeEvent

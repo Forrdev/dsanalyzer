@@ -53,6 +53,15 @@ public object HavokIsland {
 
 internal object RigidBody {
     const val Shape: Int = 0x10
+    /** The collision filter id */
+    const val CollisionFilterInfo: Int = 0x2C
+
+    /**
+     * 'hkpCollidable.allowedPenetrationDepth' at the collidable's '+0x4C'
+     *
+     * How far the solver permits something to be penetrated before pushing it out
+     */
+    const val AllowedPenetrationDepth: Int = 0x5C
     const val Name: Int = 0x78
 
     /**

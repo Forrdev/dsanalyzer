@@ -1,6 +1,4 @@
-package com.sappyoak.dsanalyzer.runtime.session
-
-import io.github.oshai.kotlinlogging.KotlinLogging
+package com.sappyoak.dsanalyzer.runtime.ptde.read.collision
 
 import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.native.memory.MemoryView
@@ -20,14 +18,17 @@ import com.sappyoak.dsanalyzer.runtime.ptde.MoppShape
 import com.sappyoak.dsanalyzer.runtime.ptde.RigidBody
 import com.sappyoak.dsanalyzer.runtime.ptde.SHAPE_SIZE
 import com.sappyoak.dsanalyzer.runtime.ptde.Shape
-import com.sappyoak.dsanalyzer.runtime.ptde.ShapeKind
 import com.sappyoak.dsanalyzer.runtime.ptde.WORLD_SIZE
+import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionBody
+import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionGeometry
+import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionSnapshot
+import com.sappyoak.dsanalyzer.runtime.session.collision.HitFilter
+import com.sappyoak.dsanalyzer.runtime.session.collision.ShapeKind
+import com.sappyoak.dsanalyzer.runtime.session.collision.transformedBy
 import com.sappyoak.dsanalyzer.shared.math.Aabb
 import com.sappyoak.dsanalyzer.shared.math.Mat4
 
 private const val NAME_LIMIT: Int = 64
-
-private val logger = KotlinLogging.logger {  }
 
 internal class CollisionReader {
     private val manager = StructView(Havok.Manager)
@@ -39,7 +40,9 @@ internal class CollisionReader {
     private val mopp = StructView(MOPP_SIZE)
     private val mesh = StructView(MESH_SIZE)
     private val name = MemoryView(NAME_LIMIT)
-    private val geometry = MeshGeometryReader()
+    private val meshes = MeshGeometryReader()
+    private val convex = ConvexShapeReader()
+    private val hitFilters = HitFilterReader()
 
     fun read(game: GameMemory): CollisionSnapshot {
         if (!manager.refresh(game)) return CollisionSnapshot.Empty
@@ -55,15 +58,20 @@ internal class CollisionReader {
         if (!entities.refresh(game.memory, island.address)) return CollisionSnapshot.Empty
 
         val bodies = ArrayList<CollisionBody>(entities.elements.size)
-        var skipped = 0
+        var failed = 0
 
         for (at in entities.elements) {
+            // Only a read that never arrived is counted here. A body that was read and has no
+            // reader for its shape is in the list carrying `Unread`, and `CollisionSnapshot`
+            // derives that count from the list rather than keeping a second tally to disagree with
             val read = bodyAt(game.memory, at)
-            if (read == null || read.mesh == null) skipped++
-            if (read != null) bodies += read
+            if (read == null) failed++ else bodies += read
         }
 
-        return CollisionSnapshot(bodies = bodies, skipped = skipped)
+        return CollisionSnapshot(
+            bodies = bodies.withHitFilters(hitFilters.read(game)).resolvingDeathVolumes(),
+            failed = failed
+        )
     }
 
     private fun bodyAt(memory: ProcessMemory, at: Address): CollisionBody? {
@@ -73,19 +81,30 @@ internal class CollisionReader {
         if (shapeAt.isNull || !shape.refresh(memory, shapeAt)) return null
 
         val kind = ShapeKind.of(shape.int(Shape.Type))
-        val label = nameAt(memory, body.pointer(RigidBody.Name))
 
-        if (kind != ShapeKind.Mopp) {
-            return CollisionBody(name = label, kind = kind, bounds = Aabb.Empty, mesh = null)
-        }
-        return moppBody(memory, shapeAt, label, body.mat4(RigidBody.Transform))
+        // Everything that comes off `body` is taken here, before the shape walk, because the copy
+        // is reused by the next element. All four are free: every one of these offsets is inside
+        // the BODY_SIZE copy the refresh above already fetched
+        val header = RigidBodyHeader(
+            label = nameAt(memory, body.pointer(RigidBody.Name)),
+            filterInfo = body.int(RigidBody.CollisionFilterInfo),
+            allowedPenetration = body.float(RigidBody.AllowedPenetrationDepth),
+            transform = body.mat4(RigidBody.Transform)
+        )
+
+        if (kind == ShapeKind.Mopp) return moppBody(memory, shapeAt, header)
+
+        // Every other kind is a convex shape, which is parametric and exact — so the bounds come
+        // from the parameters rather than from the engine's own `boundingVolumeData`. That field
+        // looks free and is not: it is a quantised integer box needing the broadphase's scale and
+        // offset to dequantise, and a subtly wrong AABB culls the wrong bodies and says nothing
+        return header.describing(kind, convex.read(memory, shapeAt, kind, header.transform))
     }
 
     private fun moppBody(
         memory: ProcessMemory,
         shapeAt: Address,
-        label: String,
-        transform: Mat4
+        header: RigidBodyHeader
     ): CollisionBody? {
         if (!mopp.refresh(memory, shapeAt)) return null
 
@@ -96,19 +115,22 @@ internal class CollisionReader {
         // anything else would read a foreign layout through the mesh's offsets and return a mesh
         val childKind = ShapeKind.of(mesh.int(Shape.Type))
         if (childKind != ShapeKind.Mesh) {
-            return CollisionBody(name = label, kind = childKind, bounds = Aabb.Empty, mesh = null)
+            return header.describing(childKind, CollisionGeometry.Unread)
         }
 
         val bounds = Aabb(
             center = mesh.vec3(MeshShape.AabbCenter),
             halfExtents = mesh.vec3(MeshShape.AabbHalfExtents)
         )
+        val triangles = meshes.read(memory, mesh.address, header.transform)
 
         return CollisionBody(
-            name = label,
+            name = header.label,
             kind = ShapeKind.Mopp,
-            bounds = bounds.transformedBy(transform),
-            mesh = geometry.read(memory, mesh.address, transform)
+            filterInfo = header.filterInfo,
+            allowedPenetration = header.allowedPenetration,
+            bounds = bounds.transformedBy(header.transform),
+            geometry = triangles?.let { CollisionGeometry.Mesh(it) } ?: CollisionGeometry.Unread
         )
     }
 

@@ -17,7 +17,13 @@ import com.sappyoak.dsanalyzer.runtime.ptde.GameDataMan
 import com.sappyoak.dsanalyzer.runtime.ptde.MenuMan
 import com.sappyoak.dsanalyzer.runtime.ptde.MenuOpenMask
 import com.sappyoak.dsanalyzer.runtime.ptde.WorldArea
-
+import com.sappyoak.dsanalyzer.runtime.ptde.read.CharacterReader
+import com.sappyoak.dsanalyzer.runtime.ptde.read.LoadQueueReader
+import com.sappyoak.dsanalyzer.runtime.ptde.read.PlacedPartsReader
+import com.sappyoak.dsanalyzer.runtime.ptde.read.PlayerReader
+import com.sappyoak.dsanalyzer.runtime.ptde.read.cameraOf
+import com.sappyoak.dsanalyzer.runtime.ptde.read.collision.CollisionReader
+import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionSnapshot
 
 public class GameSession internal constructor(
     public val game: GameProcess,
@@ -113,11 +119,15 @@ public class GameSession internal constructor(
     private fun menu(): MenuSnapshot? {
         if (!menuMan.refresh(memory)) return null
 
+        val mask = MenuOpenMask.of(menuMan::int)
+        val boxKind = menuMan.int(MenuMan.BoxKind)
+
         return MenuSnapshot(
-            mask = MenuOpenMask.of(menuMan::int),
-            boxKind = menuMan.int(MenuMan.BoxKind),
+            mask = mask,
+            boxKind = boxKind,
             screen = menuMan.int(MenuMan.Screen),
-            defaultQuantity = menuMan.int(MenuMan.DefaultQuantity)
+            defaultQuantity = menuMan.int(MenuMan.DefaultQuantity),
+            isBlocking = MenuOpenMask.blocks(mask, boxKind)
         )
     }
 

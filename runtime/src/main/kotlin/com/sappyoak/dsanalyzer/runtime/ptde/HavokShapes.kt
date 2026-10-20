@@ -4,20 +4,6 @@ import com.sappyoak.dsanalyzer.runtime.pointers.GameTable
 import com.sappyoak.dsanalyzer.runtime.pointers.TableElements
 import com.sappyoak.dsanalyzer.runtime.pointers.TableShape
 
-public enum class ShapeKind(public val code: Int) {
-    Cylinder(2),
-    ConvexVertices(6),
-    Mopp(10),
-    ConvexTranslate(11),
-    Mesh(14);
-
-    public companion object {
-        private val byCode = entries.associateBy { it.code }
-
-        public fun of(code: Int): ShapeKind? = byCode[code]
-    }
-}
-
 internal object Shape {
     const val Type: Int = 0x0C
 }

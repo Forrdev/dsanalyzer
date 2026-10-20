@@ -6,7 +6,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.floats.plusOrMinus
 import io.kotest.matchers.shouldBe
 
-import com.sappyoak.dsanalyzer.runtime.session.CollisionMesh
+import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionMesh
 import com.sappyoak.dsanalyzer.shared.math.Frustum
 import com.sappyoak.dsanalyzer.shared.math.Mat4
 
@@ -132,6 +132,19 @@ class TriangleProjectionTest : FunSpec({
         // Not two: the frame starts over rather than accumulating, which is the whole point of
         // reusing the arrays
         projector.count shouldBe 1
+    }
+
+    test("a triangle's depth is its nearest corner, in world units") {
+        val projector = project(triangle(
+            -1f, -1f, 10f,
+            1f, -1f, 30f,
+            0f, 1f, 20f
+        ))
+
+        assertSoftly {
+            projector.count shouldBe 1
+            projector.depths[0] shouldBe (10f plusOrMinus 0.01f)
+        }
     }
 
     test("an index past the end of the vertices stops the walk instead of throwing") {

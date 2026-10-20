@@ -8,8 +8,8 @@ import kotlin.time.Duration.Companion.milliseconds
 
 import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
-import com.sappyoak.dsanalyzer.runtime.ptde.FlagChange
 import com.sappyoak.dsanalyzer.runtime.ptde.PTDEBuild
+import com.sappyoak.dsanalyzer.runtime.session.FlagChange
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.SampleCost
 import com.sappyoak.dsanalyzer.runtime.session.WorldPlace

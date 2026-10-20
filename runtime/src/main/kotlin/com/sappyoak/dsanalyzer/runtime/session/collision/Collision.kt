@@ -1,6 +1,5 @@
-package com.sappyoak.dsanalyzer.runtime.session
+package com.sappyoak.dsanalyzer.runtime.session.collision
 
-import com.sappyoak.dsanalyzer.runtime.ptde.ShapeKind
 import com.sappyoak.dsanalyzer.shared.math.Aabb
 import com.sappyoak.dsanalyzer.shared.math.Vec3
 
@@ -27,17 +26,22 @@ public class CollisionMesh(
 public data class CollisionBody(
     public val name: String,
     public val kind: ShapeKind?,
+    public val filterInfo: Int,
+    public val allowedPenetration: Float,
     public val bounds: Aabb,
-    public val mesh: CollisionMesh?
+    public val geometry: CollisionGeometry,
+    public val hitFilter: HitFilter = HitFilter.Absent
 )
 
 public data class CollisionSnapshot(
     public val bodies: List<CollisionBody>,
-    public val skipped: Int
+    public val failed: Int
 ) {
-    public val triangleCount: Int get() = bodies.sumOf { it.mesh?.triangleCount ?: 0 }
+    public val unread: Int get() = bodies.count { it.geometry is CollisionGeometry.Unread }
+
+    public val triangleCount: Int get() = bodies.sumOf { it.geometry.triangleCount }
 
     public companion object {
-        public val Empty: CollisionSnapshot = CollisionSnapshot(emptyList(), 0)
+        public val Empty: CollisionSnapshot = CollisionSnapshot(emptyList(), failed = 0)
     }
 }

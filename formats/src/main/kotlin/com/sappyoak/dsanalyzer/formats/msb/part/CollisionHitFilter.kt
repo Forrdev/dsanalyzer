@@ -5,7 +5,7 @@ import kotlin.math.abs
 private const val STABLE_FOOTING_BASE = -10
 
 public enum class CollisionHitFilter(public val id: Int) {
-    NoHitHitNoFeetIK(0),
+    NoHiHitNoFeetIK(0),
     NoHiHit1(1),
     NoHiHit2(2),
     NoHiHit3(3),
@@ -14,22 +14,27 @@ public enum class CollisionHitFilter(public val id: Int) {
     NoHiHit6(6),
     NoHiHit7(7),
     Normal(8),
-    Water(9),
+    WaterA(9),
+    Unknown10(10),
     SolidForNpcsOnlyA(11),
+    Unknown12(12),
     DeathCam(13),
     LethalFall(14),
     KillPlane(15),
     WaterB(16),
     GroupSwitch(17),
+    Unknown18(18),
     SolidForNpcsOnlyB(19),
     LevelExitA(20),
-    Slide(32),
+    Slide(21),
     FallProtection(22),
     LevelExitB(23);
 }
 
+private val BY_ID: Map<Int, CollisionHitFilter> = CollisionHitFilter.entries.associateBy { it.id }
+
 public val Part.Collision.hitFilter: CollisionHitFilter?
-    get() = CollisionHitFilter.entries.firstOrNull { it.id == hitFilterId }
+    get() = BY_ID[hitFilterId]
 
 /** Place name id or null to take the name from the map's area and block */
 public val Part.Collision.placeNameId: Int?

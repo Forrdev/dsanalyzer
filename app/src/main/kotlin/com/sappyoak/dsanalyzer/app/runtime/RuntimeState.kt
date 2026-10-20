@@ -1,11 +1,12 @@
 package com.sappyoak.dsanalyzer.app.runtime
 
 import com.sappyoak.dsanalyzer.game.GameEdition
+import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.runtime.ptde.PTDEBuild
 import com.sappyoak.dsanalyzer.runtime.session.BlockRoster
-import com.sappyoak.dsanalyzer.runtime.session.CollisionSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.WorldPlace
+import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionSnapshot
 
 public data class RuntimeState(
     public val attached: AttachedGame? = null,
@@ -16,6 +17,8 @@ public data class RuntimeState(
      */
     public val placedEnemies: List<BlockRoster>? = null,
     public val collision: CollisionSnapshot? = null,
+    public val collisionMap: MapId? = null,
+    public val collisionPending: Boolean = false,
     public val problem: String? = null
 ) {
     public val live: Boolean get() = attached != null

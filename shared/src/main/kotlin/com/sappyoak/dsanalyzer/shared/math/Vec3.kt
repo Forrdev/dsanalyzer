@@ -15,6 +15,12 @@ public data class Vec3(public val x: Float, public val y: Float, public val z: F
 
     public infix fun dot(other: Vec3): Float = x * other.x + y * other.y + z * other.z
 
+    public infix fun cross(other: Vec3): Vec3 = Vec3(
+        y * other.z - z * other.y,
+        z * other.x - x * other.z,
+        x * other.y - y * other.x
+    )
+
     public companion object {
         public val Zero: Vec3 = Vec3(0f, 0f, 0f)
     }

@@ -3,7 +3,6 @@ package com.sappyoak.dsanalyzer.runtime.session
 import kotlin.time.Duration
 
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
-import com.sappyoak.dsanalyzer.runtime.ptde.FlagChange
 
 private const val UNSTABLE_DISTANCE = 1f
 

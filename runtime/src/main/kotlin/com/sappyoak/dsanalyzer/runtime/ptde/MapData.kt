@@ -2,7 +2,6 @@ package com.sappyoak.dsanalyzer.runtime.ptde
 
 import com.sappyoak.dsanalyzer.runtime.pointers.GamePointer
 import com.sappyoak.dsanalyzer.runtime.pointers.GameTable
-import com.sappyoak.dsanalyzer.runtime.pointers.Lifetime
 import com.sappyoak.dsanalyzer.runtime.pointers.TableElements
 import com.sappyoak.dsanalyzer.runtime.pointers.TableShape
 
@@ -81,6 +80,8 @@ public object MapPart {
     /** Pitch, yaw, and roll in **radians** matching the live transform rather than the file's degrees */
     public const val Rotation: Int = 0x20
     public const val Scale: Int = 0x2C
+
+    public const val TypeParams: Int = 0x5C
 
     /** The MSB part name as ASCII, `"c1000_0005"` for an enemy and `"m2000B1"` for a map piece */
     public const val Name: Int = 0x64

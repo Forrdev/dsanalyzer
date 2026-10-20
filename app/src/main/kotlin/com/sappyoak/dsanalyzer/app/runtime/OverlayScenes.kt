@@ -81,6 +81,7 @@ private fun RuntimeState.collisionFor(
         bodies = read.bodies,
         radius = settings.radius.coerceAtLeast(0f),
         triangleBudget = settings.triangleBudget.coerceAtLeast(0),
+        kinds = settings.kinds,
         draw = settings.enabled,
         cull = settings.cull,
         opacity = settings.opacity.coerceIn(0f, 1f),

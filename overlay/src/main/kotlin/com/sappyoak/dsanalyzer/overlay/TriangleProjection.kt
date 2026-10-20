@@ -1,6 +1,6 @@
 package com.sappyoak.dsanalyzer.overlay
 
-import com.sappyoak.dsanalyzer.runtime.session.CollisionMesh
+import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionMesh
 import com.sappyoak.dsanalyzer.shared.math.Mat4
 
 
@@ -34,6 +34,7 @@ internal class TriangleProjector(private val capacity: Int) {
 
     /** One per triangle, not per corner: view depth, in world units, of its nearest corner */
     val depths: FloatArray = FloatArray(capacity)
+    val occludes: BooleanArray = BooleanArray(capacity)
 
     var count: Int = 0
         private set
@@ -56,6 +57,7 @@ internal class TriangleProjector(private val capacity: Int) {
      * both signatures longer for a value that is constant across the whole frame
      */
     private var cull: FaceCull = FaceCull.Off
+    private var occluding: Boolean = true
 
     fun reset() {
         count = 0
@@ -73,9 +75,12 @@ internal class TriangleProjector(private val capacity: Int) {
         worldToClip: Mat4,
         width: Int,
         height: Int,
-        cull: FaceCull = FaceCull.Off
+        cull: FaceCull = FaceCull.Off,
+        occludes: Boolean = true
     ): Boolean {
         this.cull = cull
+        this.occluding = occludes
+
         val indices = mesh.indices
         val vertices = mesh.vertices
 
@@ -169,6 +174,7 @@ internal class TriangleProjector(private val capacity: Int) {
         xs[at] = ax; xs[at + 1] = bx; xs[at + 2] = cx
         ys[at] = ay; ys[at + 1] = by; ys[at + 2] = cy
         depths[count] = minOf(outW[a], outW[b], outW[c])
+        occludes[count] = occluding
         count++
     }
 

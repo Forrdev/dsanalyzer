@@ -13,7 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-import com.sappyoak.dsanalyzer.runtime.session.CollisionSnapshot
+import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionSnapshot
 
 @Composable
 internal fun CollisionPanel(collision: CollisionSnapshot?, onRead: () -> Unit) {
@@ -37,8 +37,12 @@ internal fun CollisionPanel(collision: CollisionSnapshot?, onRead: () -> Unit) {
         Field("Bodies", collision.bodies.size.toString())
         Field("Triangles", collision.triangleCount.toString())
 
-        if (collision.skipped > 0) {
-            Field("Without geometry", "${collision.skipped} (shapes with no reader yet)")
+        if (collision.unread > 0) {
+            Field("Without geometry", "${collision.unread} (shape kinds with no reader)")
+        }
+
+        if (collision.failed > 0) {
+            Field("Not read", "${collision.failed} (bodies whose read did not arrive)")
         }
     }
 }

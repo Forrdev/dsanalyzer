@@ -1,8 +1,5 @@
 package com.sappyoak.dsanalyzer.runtime.session
 
-import com.sappyoak.dsanalyzer.runtime.pointers.StructView
-import com.sappyoak.dsanalyzer.runtime.ptde.FollowCam
-import com.sappyoak.dsanalyzer.runtime.ptde.FrpgCam
 import com.sappyoak.dsanalyzer.shared.math.Frustum
 import com.sappyoak.dsanalyzer.shared.math.Mat4
 import com.sappyoak.dsanalyzer.shared.math.Vec3
@@ -29,16 +26,3 @@ public data class CameraSnapshot(
 ) {
     public val worldToClip: Mat4 get() = transform.orthonormalInverse * frustum.projection
 }
-
-internal fun cameraOf(view: StructView): CameraSnapshot = CameraSnapshot(
-    position = view.vec3(FollowCam.PosX),
-    orientation = view.vec3(FollowCam.Orientation),
-    targetPitch = view.float(FollowCam.TargetPitch),
-    transform = view.mat4(FrpgCam.Transform),
-    frustum = Frustum(
-        fovRadians = view.float(FrpgCam.FieldOfView),
-        aspect = view.float(FrpgCam.Aspect),
-        near = view.float(FrpgCam.Near),
-        far = view.float(FrpgCam.Far)
-    )
-)

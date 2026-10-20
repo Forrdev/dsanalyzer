@@ -7,6 +7,7 @@ dependencies {
     implementation(project(":shared"))
     implementation(project(":game"))
     implementation(project(":native"))
+    api(project(":formats"))
 
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.serialization.json)

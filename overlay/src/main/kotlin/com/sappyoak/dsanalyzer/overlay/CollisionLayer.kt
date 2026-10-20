@@ -10,12 +10,13 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.unit.dp
 
-import com.sappyoak.dsanalyzer.runtime.session.CollisionMesh
+import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionMesh
 
 private val WIREFRAME = Color(0x993F8EFC)
 private val WIREFRAME_WIDTH = 1.dp
 private val SURFACE = Color(0xFF05080F)
-
+private val VOLUME = Color(0xFFFFB020)
+private val VOLUME_WIDTH = 1.dp
 /** How faint the farthest slice is drawn when the depth cue is on */
 private const val MIN_NEARNESS = 0.25f
 
@@ -36,17 +37,41 @@ internal fun DrawScope.drawCollision(frame: CollisionFrame, view: CollisionView,
             if (slots == 0) continue
 
             path.reset()
+            var any = false
             val from = buckets.startOf(bucket)
             for (slot in from until from + slots) {
-                path.addTriangle(projector, buckets.order[slot])
+                val triangle = buckets.order[slot]
+                if (!projector.occludes[triangle]) continue
+                path.addTriangle(projector, triangle)
+                any = true
             }
+
+            if (!any) continue
 
             drawPath(path, SURFACE)
             drawPath(path, WIREFRAME.fadedTo(view.depthCue, buckets.nearness(bucket)), style = stroke)
         }
 
+        drawVolumes(projector, buckets, path, Stroke(width = VOLUME_WIDTH.toPx()))
         canvas.restore()
     }
+}
+
+private fun DrawScope.drawVolumes(
+    projector: TriangleProjector,
+    buckets: DepthBuckets,
+    path: Path,
+    stroke: Stroke
+) {
+    path.reset()
+    var any = false
+    for (slot in 0 until buckets.count) {
+        val triangle = buckets.order[slot]
+        if (projector.occludes[triangle]) continue
+        path.addTriangle(projector, triangle)
+        any = true
+    }
+    if (any) drawPath(path, VOLUME, style = stroke)
 }
 
 private fun Path.addTriangle(projector: TriangleProjector, triangle: Int) {

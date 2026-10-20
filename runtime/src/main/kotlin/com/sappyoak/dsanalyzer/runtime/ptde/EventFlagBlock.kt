@@ -2,12 +2,10 @@ package com.sappyoak.dsanalyzer.runtime.ptde
 
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.pointers.StructView
+import com.sappyoak.dsanalyzer.runtime.session.FlagChange
 
 /** The high bit of a word, which is where a flag's bit zero sits */
 private const val HIGH_BIT: Int = Int.MIN_VALUE
-
-/** A flag and the state it has just taken */
-public data class FlagChange(public val flagId: Int, public val set: Boolean)
 
 /**
  * The whole flag block, fetched as one and compared against the previous fetch

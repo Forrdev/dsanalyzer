@@ -21,6 +21,7 @@ import com.sappyoak.dsanalyzer.app.runtime.CharacterDrawDistance
 import com.sappyoak.dsanalyzer.app.runtime.CharacterDrawing
 import com.sappyoak.dsanalyzer.app.runtime.CollisionCull
 import com.sappyoak.dsanalyzer.app.runtime.CollisionDepthCue
+import com.sappyoak.dsanalyzer.app.runtime.CollisionKindDrawn
 import com.sappyoak.dsanalyzer.app.runtime.CollisionOpacity
 import com.sappyoak.dsanalyzer.app.runtime.CollisionRadius
 import com.sappyoak.dsanalyzer.app.runtime.CollisionTriangleBudget
@@ -32,6 +33,7 @@ import com.sappyoak.dsanalyzer.app.runtime.OverlayEnabled
 import com.sappyoak.dsanalyzer.app.runtime.OverlaySettings
 import com.sappyoak.dsanalyzer.app.settings.SettingsEdit
 import com.sappyoak.dsanalyzer.overlay.FaceCull
+import com.sappyoak.dsanalyzer.runtime.session.collision.ShapeKind
 
 private val DRAW_DISTANCE = 10f..400f
 private val COLLISION_RADIUS = 5f..200f
@@ -180,6 +182,27 @@ private fun CollisionSettings(overlay: OverlaySettings, onEdit: (SettingsEdit) -
                     )
                     Text(text = mode.describe(), style = MaterialTheme.typography.bodySmall)
                 }
+            }
+        }
+
+        Text(
+            text = "Shapes",
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.padding(top = 6.dp, bottom = 2.dp)
+        )
+
+        ShapeKind.entries.forEach { kind ->
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Checkbox(
+                    checked = kind in settings.kinds,
+                    onCheckedChange = { onEdit(CollisionKindDrawn(kind, it)) },
+                    enabled = on
+                )
+                Text(
+                    text = kind.name,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
             }
         }
     }

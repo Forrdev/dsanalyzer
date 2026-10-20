@@ -1,6 +1,5 @@
-package com.sappyoak.dsanalyzer.runtime.session
+package com.sappyoak.dsanalyzer.runtime.ptde.read.collision
 
-import io.github.oshai.kotlinlogging.KotlinLogging
 import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.native.memory.MemoryView
 import com.sappyoak.dsanalyzer.native.process.ProcessMemory
@@ -9,12 +8,16 @@ import com.sappyoak.dsanalyzer.runtime.pointers.TableView
 import com.sappyoak.dsanalyzer.runtime.ptde.MeshShape
 import com.sappyoak.dsanalyzer.runtime.ptde.SUBPART_SIZE
 import com.sappyoak.dsanalyzer.runtime.ptde.Subpart
+import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionMesh
+import com.sappyoak.dsanalyzer.runtime.session.collision.place
 import com.sappyoak.dsanalyzer.shared.math.Mat4
 
+/** The most bytes one subpart's vertices or indices may occupy */
 private const val BUFFER_CAPACITY: Int = 1 shl 20
+
+/** At or above this many bytes per triangle, indices are 32-bit rather than 16-bit */
 private const val WIDE_INDEX_STRIDE: Int = 12
 
-private val logger = KotlinLogging.logger {  }
 private class SubpartHeader(
     val vertexBase: Address,
     val vertexCount: Int,
@@ -27,6 +30,15 @@ private class SubpartHeader(
     val indexBytes: Int get() = triangleCount * indexStride
 }
 
+/**
+ * Reads a 'CustomParamStorageExtendedMeshShapes triangles
+ *
+ * Every subpart header is read first, so the totals are known, then one exactly-sized
+ * [FloatArray] and [IntArray] are allocated and filled
+ *
+ * Subparts are inline elements, so resolving their addressses costs no reads at all, only their contents
+ * are fetched
+ */
 internal class MeshGeometryReader {
     private val subparts = TableView(MeshShape.Subparts)
     private val subpart = StructView(SUBPART_SIZE)
@@ -106,7 +118,6 @@ internal class MeshGeometryReader {
             into[to + 1] = placed.y
             into[to + 2] = placed.z
         }
-
         return true
     }
 
@@ -132,8 +143,6 @@ internal class MeshGeometryReader {
         }
         return true
     }
-
-
     private companion object {
         const val VERTEX_COMPONENT_BYTES = 4
     }

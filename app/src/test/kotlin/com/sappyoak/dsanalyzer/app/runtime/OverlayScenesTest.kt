@@ -10,12 +10,13 @@ import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.overlay.MarkerKind
 import com.sappyoak.dsanalyzer.overlay.OverlayScene
 import com.sappyoak.dsanalyzer.runtime.ptde.MenuOpenMask
-import com.sappyoak.dsanalyzer.runtime.ptde.ShapeKind
 import com.sappyoak.dsanalyzer.runtime.session.BlockRoster
 import com.sappyoak.dsanalyzer.runtime.session.CameraSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.CollisionBody
-import com.sappyoak.dsanalyzer.runtime.session.CollisionSnapshot
+import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionBody
+import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionGeometry
+import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionSnapshot
+import com.sappyoak.dsanalyzer.runtime.session.collision.ShapeKind
 import com.sappyoak.dsanalyzer.runtime.session.MenuSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.PlacedEnemy
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
@@ -92,8 +93,9 @@ private fun menu(
     mask: Int = 0,
     boxKind: Int = 0,
     screen: Int = 0,
-    defaultQuantity: Int = 0
-): MenuSnapshot = MenuSnapshot(mask, boxKind, screen, defaultQuantity)
+    defaultQuantity: Int = 0,
+    blocked: Boolean = false,
+): MenuSnapshot = MenuSnapshot(mask, boxKind, screen, defaultQuantity, blocked)
 
 class OverlayScenesTest : FunSpec({
     test("no world means nothing to draw") {
@@ -295,8 +297,17 @@ class OverlayScenesTest : FunSpec({
     test("collision needs both a read and the switch") {
         val characters = listOf(character(0f, player = true))
         val read = CollisionSnapshot(
-            bodies = listOf(CollisionBody("1000B1", ShapeKind.Mopp, Aabb.Empty, null)),
-            skipped = 0
+            bodies = listOf(
+                CollisionBody(
+                    name = "1000B1",
+                    kind = ShapeKind.Mopp,
+                    filterInfo = 0x1C,
+                    allowedPenetration = Float.MAX_VALUE,
+                    bounds = Aabb.Empty,
+                    geometry = CollisionGeometry.Unread
+                )
+            ),
+            failed = 0
         )
         val on = OverlaySettings(collision = CollisionOverlaySettings(enabled = true))
 
@@ -312,7 +323,7 @@ class OverlayScenesTest : FunSpec({
 
     test("a hand-edited negative budget is coerced rather than reaching an array allocation") {
         val characters = listOf(character(0f, player = true))
-        val read = CollisionSnapshot(bodies = emptyList(), skipped = 0)
+        val read = CollisionSnapshot(bodies = emptyList(), failed = 0)
         val nonsense = OverlaySettings(
             collision = CollisionOverlaySettings(enabled = true, radius = -5f, triangleBudget = -100)
         )

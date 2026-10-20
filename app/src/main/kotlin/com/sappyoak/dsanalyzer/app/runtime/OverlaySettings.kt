@@ -7,7 +7,7 @@ import com.sappyoak.dsanalyzer.app.settings.SettingsEdit
 import com.sappyoak.dsanalyzer.overlay.CollisionView
 import com.sappyoak.dsanalyzer.overlay.FaceCull
 import com.sappyoak.dsanalyzer.overlay.MarkerView
-import com.sappyoak.dsanalyzer.runtime.ptde.ShapeKind
+import com.sappyoak.dsanalyzer.runtime.session.collision.ShapeKind
 
 /** Beyond this a draw distance stops meaning anything: the frustum cull is doing the work */
 private const val MAX_DRAW_DISTANCE = 1000f
@@ -42,6 +42,7 @@ public data class CollisionOverlaySettings(
     public val enabled: Boolean = false,
     public val radius: Float = CollisionView.DEFAULT_RADIUS,
     public val triangleBudget: Int = CollisionView.DEFAULT_TRIANGLE_BUDGET,
+    public val kinds: Set<ShapeKind> = ShapeKind.entries.toSet(),
     public val cull: FaceCull = FaceCull.Off,
     public val opacity: Float = CollisionView.DEFAULT_OPACITY,
     public val depthCue: Boolean = true
@@ -108,6 +109,19 @@ public data class CollisionOpacity(public val opacity: Float) : SettingsEdit {
 public data class CollisionDepthCue(public val enabled: Boolean) : SettingsEdit {
     override fun applyTo(settings: Settings): Settings =
         settings.overlay.collision.copy(depthCue = enabled).into(settings)
+}
+
+public data class CollisionKindDrawn(
+    public val kind: ShapeKind,
+    public val drawn: Boolean
+) : SettingsEdit {
+    override fun applyTo(settings: Settings): Settings {
+        val kinds = settings.overlay.collision.kinds
+        return settings.overlay.collision
+            .copy(kinds = if (drawn) kinds + kind else kinds - kind)
+            .into(settings)
+
+    }
 }
 
 private fun CharacterOverlaySettings.into(settings: Settings): Settings =
