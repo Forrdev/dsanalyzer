@@ -20,8 +20,8 @@ import com.sappyoak.dsanalyzer.runtime.pointers.Lifetime
 public object ChrIns {
     public val Pointer: GamePointer = GamePointer(
         name = "ChrIns",
-        base = PTDESignatures.ChrIns,
-        offsets = listOf(0L, 4L, 0L),
+        base = PTDESignatures.WorldChrMan,
+        offsets = THROUGH_CHARACTER,
         lifetime = Lifetime.World,
         size = 0x640
     )

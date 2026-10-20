@@ -9,7 +9,6 @@ import com.sappyoak.dsanalyzer.runtime.session.EditionTables
 
 public val PTDEPointers: List<GamePointer> = listOf(
     FollowCam.Pointer,
-    WorldCharacters.Pointer,
     ChrIns.Pointer,
     ChrCtrl.Pointer,
     ChrPosData.Pointer,
@@ -35,7 +34,6 @@ public val PTDEPointers: List<GamePointer> = listOf(
  * Every collection the tables name, each paired with the structure it is read out of
  */
 public val PTDETables: List<Pair<GamePointer, GameTable>> = listOf(
-    WorldCharacters.Pointer to WorldCharacters.All,
     SpecialEffects.Pointer to SpecialEffects.Active,
     WorldChrMan.Pointer to WorldChrMan.Blocks,
     WorldRes.Pointer to WorldRes.Blocks,

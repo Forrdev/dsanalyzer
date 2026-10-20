@@ -10,16 +10,20 @@ import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.pointers.GamePointer
 import com.sappyoak.dsanalyzer.runtime.pointers.resolvePointers
 import com.sappyoak.dsanalyzer.runtime.ptde.AnimData
+import com.sappyoak.dsanalyzer.runtime.ptde.ChrPosData
+import com.sappyoak.dsanalyzer.runtime.ptde.CharacterSlot
 import com.sappyoak.dsanalyzer.runtime.ptde.ChrCtrl
 import com.sappyoak.dsanalyzer.runtime.ptde.ChrIns
-import com.sappyoak.dsanalyzer.runtime.ptde.ChrPosData
 import com.sappyoak.dsanalyzer.runtime.ptde.DeathCam
 import com.sappyoak.dsanalyzer.runtime.ptde.EventFlags
 import com.sappyoak.dsanalyzer.runtime.ptde.FollowCam
 import com.sappyoak.dsanalyzer.runtime.ptde.GameDataMan
 import com.sappyoak.dsanalyzer.runtime.ptde.PlayerStats
+import com.sappyoak.dsanalyzer.runtime.ptde.PTDEEdition
 import com.sappyoak.dsanalyzer.runtime.ptde.PTDEPointers
+import com.sappyoak.dsanalyzer.runtime.ptde.PTDESignatures
 import com.sappyoak.dsanalyzer.runtime.ptde.WorldArea
+import com.sappyoak.dsanalyzer.runtime.ptde.WorldChrMan
 import com.sappyoak.dsanalyzer.runtime.ptde.WorldState
 
 internal val PTDE_PROCESS = GameProcess(ProcessInfo(4242, "DARKSOULS.exe"), GameEdition.PrepareToDie)
@@ -50,6 +54,8 @@ internal const val DEATH_CAM_AT = 0xA000
 internal const val GAME_DATA_AT = 0xA100
 internal const val FLAGS_AT = 0x20000
 internal const val FOLLOW_CAM_AT = 0xC000
+internal const val WORLD_CHR_MAN_AT = 0xD000
+internal const val PLAYER_SLOTS_AT = 0xD100
 
 /** A second character structure, for proving a reload re-resolves the walk to it */
 internal const val RELOADED_CHARACTER_AT = 0xB000
@@ -70,8 +76,8 @@ internal class PTDEFixture {
     }
 
     fun session(): GameSession {
-        val resolved = game.resolvePointers(PTDEPointers, game.module)
-        return GameSession(PTDE_PROCESS, resolved, GameMemory(game, resolved))
+        val resolved = game.resolvePointers(PTDEEdition.pointers, game.module)
+        return GameSession(PTDE_PROCESS, resolved, GameMemory(game, resolved), PTDEEdition.layout)
     }
 
     /** The same process behind a connection, for anything testing the watch rather than a tick */
@@ -104,7 +110,8 @@ internal class PTDEFixture {
 
     /** Breaks the last link of the character walk, the way a load frees it */
     fun deallocateCharacter() {
-        game.nullPointer(LINKS_AT + 0x100)
+        game.nullPointer(WORLD_CHR_MAN_AT + WorldChrMan.PlayerPointer)
+        game.nullPointer(PLAYER_SLOTS_AT + CharacterSlot.Character)
     }
 
     /**
@@ -123,7 +130,8 @@ internal class PTDEFixture {
 
     /** Points the character walk at [RELOADED_CHARACTER_AT], the way a load reallocates it */
     fun reallocateCharacter() {
-        game.pointer(LINKS_AT + 0x100, RELOADED_CHARACTER_AT)
+        game.pointer(WORLD_CHR_MAN_AT + WorldChrMan.PlayerPointer, RELOADED_CHARACTER_AT)
+        game.pointer(PLAYER_SLOTS_AT + CharacterSlot.Character, RELOADED_CHARACTER_AT)
         game.pointer(RELOADED_CHARACTER_AT + ChrIns.ChrCtrlPointer, PLACEMENT_AT)
     }
 
@@ -157,14 +165,16 @@ internal class PTDEFixture {
         }
 
         // ChrIns1: static -> +0 -> +4 -> +0
-        game.pointer(statics.getValue(ChrIns.Base), LINKS_AT)
-        game.pointer(LINKS_AT + 4, LINKS_AT + 0x100)
-        game.pointer(LINKS_AT + 0x100, CHARACTER_AT)
+        game.pointer(statics.getValue(PTDESignatures.WorldChrMan), WORLD_CHR_MAN_AT)
+        game.pointer(WORLD_CHR_MAN_AT + WorldChrMan.PlayerPointer, CHARACTER_AT)
+        game.int(WORLD_CHR_MAN_AT + WorldChrMan.PlayerSlotCount, 1)
+        game.pointer(WORLD_CHR_MAN_AT + WorldChrMan.PlayerSlotsPointer, PLAYER_SLOTS_AT)
+        game.pointer(PLAYER_SLOTS_AT + CharacterSlot.Character, CHARACTER_AT)
         game.pointer(CHARACTER_AT + ChrIns.ChrCtrlPointer, PLACEMENT_AT)
         game.pointer(PLACEMENT_AT + ChrCtrl.PositionPointer, POSITION_AT)
         game.pointer(PLACEMENT_AT + ChrCtrl.AnimDataPointer, ANIMATION_AT)
 
-        // ChrIns2: static -> +0 -> +8
+        // CharData2: static -> +0 -> +8
         game.pointer(statics.getValue(PlayerStats.Pointer.base), LINKS_AT + 0x200)
         game.pointer(LINKS_AT + 0x208, ATTRIBUTES_AT)
 

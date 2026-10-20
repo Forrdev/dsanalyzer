@@ -4,11 +4,14 @@ import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.pointers.StructView
 import com.sappyoak.dsanalyzer.runtime.pointers.TableView
+import com.sappyoak.dsanalyzer.runtime.ptde.CHARACTER_SLOT_SIZE
 import com.sappyoak.dsanalyzer.runtime.ptde.ChrPosData
 import com.sappyoak.dsanalyzer.runtime.ptde.ChrCtrl
 import com.sappyoak.dsanalyzer.runtime.ptde.ChrIns
-import com.sappyoak.dsanalyzer.runtime.ptde.WorldCharacters
+import com.sappyoak.dsanalyzer.runtime.ptde.WorldBlock
+import com.sappyoak.dsanalyzer.runtime.ptde.WorldChrMan
 import com.sappyoak.dsanalyzer.runtime.layout.SpecialEffectLayout
+import com.sappyoak.dsanalyzer.runtime.ptde.CharacterSlot
 import com.sappyoak.dsanalyzer.runtime.read.effects.SpecialEffectReader
 import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
 import com.sappyoak.dsanalyzer.shared.math.Vec3
@@ -16,8 +19,11 @@ import com.sappyoak.dsanalyzer.shared.math.Vec3
 private const val NO_TARGET = -1
 
 internal class CharacterReader(effectLayout: SpecialEffectLayout) {
-    private val container = StructView(WorldCharacters.Pointer)
-    private val all = TableView(WorldCharacters.All)
+    private val manager = StructView(WorldChrMan.Pointer)
+    private val playerSlots = TableView(WorldChrMan.PlayerSlots)
+    private val blocks = TableView(WorldChrMan.Blocks)
+    private val characters = TableView(WorldBlock.Characters)
+    private val slot = StructView(CHARACTER_SLOT_SIZE)
     private val one = StructView(ChrIns.Pointer.size)
 
     private val control = StructView(ChrCtrl.PositionPointer + Int.SIZE_BYTES)
@@ -26,23 +32,43 @@ internal class CharacterReader(effectLayout: SpecialEffectLayout) {
     private val effects = SpecialEffectReader(effectLayout)
 
     fun read(game: GameMemory, allEffects: Boolean = false): List<CharacterSnapshot> {
-        if (!container.refresh(game)) return emptyList()
-        if (!all.refresh(game.memory, container.address)) return emptyList()
+        if (!manager.refresh(game)) return emptyList()
 
-        return all.elements.mapIndexedNotNull { index, at -> characterAt(game, index, at, allEffects) }
+        val player = manager.pointer(WorldChrMan.PlayerPointer)
+        val found = ArrayList<CharacterSnapshot>()
+
+        if (playerSlots.refresh(game.memory, manager.address)) {
+            playerSlots.elements.forEach { at ->
+                characterAt(game, at, player, allEffects)?.let(found::add)
+            }
+        }
+
+        if (blocks.refresh(game.memory, manager.address)) {
+            blocks.elements.forEach { block ->
+                if (characters.refresh(game.memory, block)) {
+                    characters.elements.forEach { at ->
+                        characterAt(game, at, player, allEffects)?.let(found::add)
+                    }
+                }
+            }
+        }
+
+        return found
     }
 
     private fun characterAt(
         game: GameMemory,
-        index: Int,
         at: Address,
+        player: Address,
         allEffects: Boolean
     ): CharacterSnapshot? {
-        if (!one.refresh(game.memory, at)) return null
+        if (!slot.refresh(game.memory, at)) return null
 
+        val character = slot.pointer(CharacterSlot.Character)
+        if (character.isNull || !one.refresh(game.memory, character)) return null
+
+        val isPlayer = character == player
         val target = one.int(ChrIns.TargetHandle)
-
-        val isPlayer = index == 0
 
         return CharacterSnapshot(
             handle = one.int(ChrIns.Handle),

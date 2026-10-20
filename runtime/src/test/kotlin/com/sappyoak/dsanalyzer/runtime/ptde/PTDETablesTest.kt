@@ -13,7 +13,6 @@ import io.kotest.matchers.types.shouldBeInstanceOf
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.runtime.pointers.TableElements
 import com.sappyoak.dsanalyzer.runtime.pointers.TableShape
-import io.kotest.matchers.comparables.shouldBeGreaterThan
 
 /** The last field each structure declares, which its size has to reach past */
 private val LAST_FIELDS = listOf(
@@ -42,19 +41,19 @@ class PTDETablesTest : FunSpec({
     }
 
     test("the structures reached through the character share its scan") {
-        val throughCharacter = PTDEPointers.filter { it.base === ChrIns.Base }
+        val throughCharacter = PTDEPointers.filter { it.base === PTDESignatures.WorldChrMan }
 
         assertSoftly {
             throughCharacter.map { it.name } shouldBe
-                    listOf("ChrIns", "ChrCtrl", "ChrPosData", "AnimData", "AnimRequestA", "AnimRequestB", "SpecialEffect", "MapData", "MapParts")
+                    listOf("ChrIns", "ChrCtrl", "ChrPosData", "AnimData", "AnimRequestA", "AnimRequestB", "SpecialEffect", "WorldChrMan", "WorldRes")
             throughCharacter.drop(1).forEach { it.offsets.take(3) shouldBe listOf(0L, 4L, 0L) }
-            WorldCharacters.Pointer.offsets shouldBe listOf(0L)
+            WorldChrMan.Pointer.offsets shouldBe listOf(0L)
         }
     }
 
     test("every table's inline element has room for the fields read out of it") {
         val elements = listOf(
-            Triple("ActiveSpecialEffects", SpecialEffects.Active, ActiveEffect.Previous)
+            Triple("ActiveSpecialEffects", SpecialEffects.Active, EffectNode.Previous)
         )
 
         assertSoftly {
@@ -80,6 +79,16 @@ class PTDETablesTest : FunSpec({
 
     test("a block's parts are declared as a param list") {
         MapParts.All.shape.shouldBeInstanceOf<TableShape.ParamList>()
+    }
+
+    test("a characters slot is strided with room for the fields read out of it") {
+        assertSoftly {
+            CHARACTER_SLOT_SIZE shouldBeGreaterThan CharacterSlot.SpecialEffect
+            (WorldBlock.Characters.elements as TableElements.Inline).stride shouldBe
+                    CHARACTER_SLOT_SIZE
+            (WorldChrMan.PlayerSlots.elements as TableElements.Inline).stride shouldBe
+                    CHARACTER_SLOT_SIZE
+        }
     }
 
     test("no two tables answer to the same name") {
@@ -143,9 +152,11 @@ class PTDETablesTest : FunSpec({
 
     test("a build is named by its version word, and an unknown one is not guessed at") {
         assertSoftly {
-            PTDEBuild.of(0xFC293654u) shouldBe PTDEBuild.Steam
-            PTDEBuild.of(0xCE9634B4u) shouldBe PTDEBuild.Debug
-            PTDEBuild.of(0u) shouldBe null
+            PTDEVersion.of(0x54B6EFC0u, 0u) shouldBe PTDEVersion.SteamworksBeta
+            PTDEVersion.of(0u, 0xFC293654u) shouldBe PTDEVersion.Steam
+            PTDEVersion.of(0u, 0xCE9634B4u) shouldBe PTDEVersion.Debug
+            PTDEVersion.of(0u, 0u) shouldBe null
+            PTDEVersion.of(0x54B6EFC0u, 0xFC293654u) shouldBe PTDEVersion.SteamworksBeta
         }
     }
 })
