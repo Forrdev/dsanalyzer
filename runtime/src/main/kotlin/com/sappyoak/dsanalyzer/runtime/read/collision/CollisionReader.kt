@@ -19,7 +19,6 @@ import com.sappyoak.dsanalyzer.runtime.ptde.RigidBody
 import com.sappyoak.dsanalyzer.runtime.ptde.SHAPE_SIZE
 import com.sappyoak.dsanalyzer.runtime.ptde.Shape
 import com.sappyoak.dsanalyzer.runtime.ptde.WORLD_SIZE
-import com.sappyoak.dsanalyzer.runtime.read.collision.RigidBodyHeader
 import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionBody
 import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionGeometry
 import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionSnapshot
@@ -38,7 +37,7 @@ internal class CollisionReader {
     private val shape = StructView(SHAPE_SIZE)
     private val mopp = StructView(MOPP_SIZE)
     private val mesh = StructView(MESH_SIZE)
-    private val name = MemoryView(NAME_LIMIT)
+    private val name = StructView(NAME_LIMIT)
     private val meshes = MeshGeometryReader()
     private val convex = ConvexShapeReader()
     private val hitFilters = HitFilterReader()
@@ -133,15 +132,6 @@ internal class CollisionReader {
         )
     }
 
-    private fun nameAt(memory: ProcessMemory, at: Address): String {
-        if (at.isNull || !name.refresh(memory, at, NAME_LIMIT)) return ""
-
-        val text = StringBuilder(NAME_LIMIT)
-        for (i in 0 until NAME_LIMIT) {
-            val character = name.byte(i).toInt() and 0xFF
-            if (character == 0) break
-            text.append(if (character in 0x20..0x7E) character.toChar() else '?')
-        }
-        return text.toString()
-    }
+    private fun nameAt(memory: ProcessMemory, at: Address): String =
+        if (at.isNull || !name.refresh(memory, at)) "" else name.ascii(0, NAME_LIMIT)
 }

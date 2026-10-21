@@ -15,6 +15,9 @@ import com.sappyoak.dsanalyzer.shared.math.Mat4
 /** The most bytes one subpart's vertices or indices may occupy */
 private const val BUFFER_CAPACITY: Int = 1 shl 20
 
+/** The narrowest a triangle's indices can be: three 16-bit corners */
+private const val NARROW_TRIANGLE_BYTES: Int = 6
+
 /** At or above this many bytes per triangle, indices are 32-bit rather than 16-bit */
 private const val WIDE_INDEX_STRIDE: Int = 12
 
@@ -65,17 +68,19 @@ internal class MeshGeometryReader {
 
         for (header in headers) {
             if (!readVertices(memory, header, vertices, vertexCursor, transform)) return null
-            if (!readIndices(memory, header, indices, indexCursor, vertexBase)) return null
+
+            val kept = readIndices(memory, header, indices, indexCursor, vertexBase)
+            if (kept < 0) return null
 
             vertexCursor += header.vertexCount * CollisionMesh.COMPONENTS
-            indexCursor += header.triangleCount * CollisionMesh.CORNERS
+            indexCursor += kept * CollisionMesh.CORNERS
             // Each subpart indexes its own vertices from zero, so every subpart after the first
             // has to be rebased into the combined array. Getting this wrong draws a recognisable
             // mesh made of triangles joining the wrong corners
             vertexBase += header.vertexCount
         }
 
-        return CollisionMesh(vertices, indices)
+        return CollisionMesh(vertices, if (indexCursor < indices.size) indices.copyOf(indexCursor) else indices)
     }
 
     private fun headerAt(memory: ProcessMemory, at: Address): SubpartHeader? {
@@ -96,7 +101,8 @@ internal class MeshGeometryReader {
         if (header.vertexBase.isNull || header.indexBase.isNull) return null
         if (header.vertexCount <= 0 || header.triangleCount <= 0) return null
         if (header.vertexStride < VERTEX_COMPONENT_BYTES * CollisionMesh.COMPONENTS) return null
-        if (header.indexStride <= 0) return null
+        // Narrower than three corners, the last triangle would read past the indices fetched for it
+        if (header.indexStride < NARROW_TRIANGLE_BYTES) return null
         if (header.vertexBytes > BUFFER_CAPACITY || header.indexBytes > BUFFER_CAPACITY) return null
 
         return header
@@ -133,22 +139,28 @@ internal class MeshGeometryReader {
         into: IntArray,
         cursor: Int,
         vertexBase: Int
-    ): Boolean {
-        if (!buffer.refresh(memory, header.indexBase, header.indexBytes.toInt())) return false
+    ): Int {
+        if (!buffer.refresh(memory, header.indexBase, header.indexBytes.toInt())) return -1
 
         val width = if (header.indexStride >= WIDE_INDEX_STRIDE) 4 else 2
+        var kept = 0
 
         for (triangle in 0 until header.triangleCount) {
             val from = triangle * header.indexStride
-            val to = cursor + triangle * CollisionMesh.CORNERS
+            val to = cursor + kept * CollisionMesh.CORNERS
+            var inside = true
             for (corner in 0 until CollisionMesh.CORNERS) {
                 val at = from + corner * width
                 val index = if (width == 4) buffer.int(at) else buffer.short(at).toInt() and 0xFFFF
+                if (index !in 0 until header.vertexCount) inside = false
                 into[to + corner] = vertexBase + index
             }
+            if (inside) kept++
         }
-        return true
+
+        return kept
     }
+
     private companion object {
         const val VERTEX_COMPONENT_BYTES = 4
     }

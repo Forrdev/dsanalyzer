@@ -15,6 +15,9 @@ public sealed interface RuntimeEvent {
 
     public data class Sampled(public val snapshot: RuntimeSnapshot) : RuntimeEvent
 
+    /** Signatures the attach scan missed and a later one found */
+    public data class Resolved(public val pointers: ResolvedPointers) : RuntimeEvent
+
     /** The answer to a [SampleRequests.requestPlacedEnemies] */
     public data class PlacedEnemies(public val rosters: List<BlockRoster>) : RuntimeEvent
 

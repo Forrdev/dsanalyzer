@@ -9,7 +9,7 @@ import com.sappyoak.dsanalyzer.native.process.ProcessMemory
  */
 public class GameMemory(
     public val memory: ProcessMemory,
-    private val pointers: ResolvedPointers
+    private var pointers: ResolvedPointers
 ) {
     private val resolved = HashMap<GamePointer, Address>()
 
@@ -40,6 +40,15 @@ public class GameMemory(
     public fun forget(pointer: GamePointer) {
         resolved.remove(pointer)
     }
+
+    /**
+     * Takes [pointers] in place of the ones this was made with, once a later scan has found more.
+     * Nothing cached needs forgetting, a pointer whose signature was missing never resolved
+     */
+    public fun adopt(pointers: ResolvedPointers) {
+        this.pointers = pointers
+    }
+
     /**
      * Forgets every walk that does not outlive [event]
      */

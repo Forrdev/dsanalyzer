@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 
 import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.native.process.Processes
+import com.sappyoak.dsanalyzer.runtime.pointers.ResolvedPointers
 import com.sappyoak.dsanalyzer.runtime.session.BlockRoster
 import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeEvent
@@ -106,9 +107,7 @@ public class GameLink(
 
     private suspend fun record(event: RuntimeEvent) {
         if (event is RuntimeEvent.Attached) event.log()
-        if (event is RuntimeEvent.Collision) {
-            logger.info { "collision snapshot: $event" }
-        }
+        if (event is RuntimeEvent.Collision) event.log()
         mutableState.update { it.after(event) }
         if (event.changesConnection) mutableEvents.emit(event)
     }
@@ -126,6 +125,18 @@ public class GameLink(
             )
         }
     }
+
+    private fun RuntimeEvent.Collision.log() {
+        logger.atInfo {
+            message = "Read the collision"
+            payload = mapOf(
+                "bodies" to snapshot.bodies.size,
+                "triangles" to snapshot.triangleCount,
+                "unread" to snapshot.unread,
+                "failed" to snapshot.failed
+            )
+        }
+    }
 }
 
 internal fun LinkState.after(event: RuntimeEvent): LinkState = when (event) {
@@ -134,6 +145,7 @@ internal fun LinkState.after(event: RuntimeEvent): LinkState = when (event) {
     is RuntimeEvent.Collision -> copy(collision = event.snapshot)
     is RuntimeEvent.CharacterEffects -> copy(characterEffects = event.characters)
     is RuntimeEvent.Attached -> LinkState(attached = event.describe())
+    is RuntimeEvent.Resolved -> copy(attached = attached?.copy(unresolved = event.pointers.unresolvedNames))
     RuntimeEvent.Searching -> LinkState()
     is RuntimeEvent.Refused -> LinkState(note = event.reason)
     is RuntimeEvent.Unsupported -> LinkState(note = "${event.game.edition.name} is not read yet")
@@ -150,5 +162,7 @@ private fun RuntimeEvent.Attached.describe(): AttachedGame = AttachedGame(
     pid = game.process.pid,
     edition = game.edition,
     build = build,
-    unresolved = pointers.unresolved.map { it.signature }
+    unresolved = pointers.unresolvedNames
 )
+
+private val ResolvedPointers.unresolvedNames: List<String> get() = unresolved.map { it.signature }

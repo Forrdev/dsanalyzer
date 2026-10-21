@@ -88,9 +88,14 @@ private suspend fun FlowCollector<RuntimeEvent>.sampleWhileConnected(
     emit(RuntimeEvent.Attached(game, build, session.pointers))
 
     val wait = period(game.edition)
+    val retry = SignatureRetry()
 
     while (true) {
         emit(RuntimeEvent.Sampled(session.sample()))
+        if (!session.pointers.complete && retry.due()) {
+            session.resolveMissing(edition.pointers, connection.mainModule)?.let { emit(RuntimeEvent.Resolved(it)) }
+        }
+
         // After the tick rather than before it so an expensive read never delays the sample it shares
         // an instant with
         if (requests.takePlacedEnemies()) {

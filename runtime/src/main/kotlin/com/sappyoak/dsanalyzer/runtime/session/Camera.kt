@@ -24,5 +24,5 @@ public data class CameraSnapshot(
     public val transform: Mat4,
     public val frustum: Frustum
 ) {
-    public val worldToClip: Mat4 get() = transform.orthonormalInverse * frustum.projection
+    public val worldToClip: Mat4 = transform.orthonormalInverse * frustum.projection
 }

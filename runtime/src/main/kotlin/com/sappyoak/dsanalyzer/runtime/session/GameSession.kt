@@ -1,13 +1,16 @@
 package com.sappyoak.dsanalyzer.runtime.session
 
+import com.sappyoak.dsanalyzer.native.memory.AddressRange
 import kotlin.time.TimeSource
 
 import com.sappyoak.dsanalyzer.runtime.GameConnection
 import com.sappyoak.dsanalyzer.runtime.GameProcess
 import com.sappyoak.dsanalyzer.runtime.layout.GameLayout
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
+import com.sappyoak.dsanalyzer.runtime.pointers.GamePointer
 import com.sappyoak.dsanalyzer.runtime.pointers.Lifetime
 import com.sappyoak.dsanalyzer.runtime.pointers.ResolvedPointers
+import com.sappyoak.dsanalyzer.runtime.pointers.resolveMissing
 import com.sappyoak.dsanalyzer.runtime.pointers.resolvePointers
 import com.sappyoak.dsanalyzer.runtime.read.CameraReader
 import com.sappyoak.dsanalyzer.runtime.read.CharacterReader
@@ -22,10 +25,13 @@ import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionSnapshot
 
 public class GameSession internal constructor(
     public val game: GameProcess,
-    public val pointers: ResolvedPointers,
+    pointers: ResolvedPointers,
     private val memory: GameMemory,
     layout: GameLayout
 ) {
+    public var pointers: ResolvedPointers = pointers
+        private set
+
     private val flags = EventFlagBlock()
 
     private val cameraReader = CameraReader(layout.camera)
@@ -99,6 +105,13 @@ public class GameSession internal constructor(
 
     public fun readCharacterEffects(): List<CharacterSnapshot> =
         characterReader.read(memory, allEffects = true)
+
+    public fun resolveMissing(declared: List<GamePointer>, module: AddressRange): ResolvedPointers? {
+        val found = memory.memory.resolveMissing(pointers, declared, module) ?: return null
+        pointers = found
+        memory.adopt(found)
+        return found
+    }
 
     private fun forgetWorld() {
         memory.invalidate(Lifetime.World)
