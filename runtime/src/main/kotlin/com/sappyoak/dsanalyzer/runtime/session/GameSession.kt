@@ -38,6 +38,7 @@ public class GameSession internal constructor(
     private val collisionReader = CollisionReader()
 
     private var lastPlace: WorldPlace? = null
+    private var wasLoaded: Boolean = false
 
     private var world = WorldTier()
     private var sinceWorld = 0
@@ -55,15 +56,14 @@ public class GameSession internal constructor(
 
 
         val reloaded = lastPlace != null && place != lastPlace
-        if (reloaded) {
-            memory.invalidate(Lifetime.World)
-            flags.reset()
-            // Carrying the old world's blocks and characters across a reload would show a map that
-            // is no longer loaded, so the slow tier is dropped and re-read on this tick
-            world = WorldTier()
-            sinceWorld = 0
-        }
+        // Coming back from a load screen is a reload even when the map is the same one. A death
+        // rebuilds every character without the place every changing, and the old addresses would
+        // still read, as whatever the allocator put there next
+        val returned = loaded && !wasLoaded
+        if (reloaded || returned) forgetWorld()
+        if (reloaded) flags.reset()
         lastPlace = place
+        wasLoaded = loaded
 
         var present = if (loaded) 1 else 0
         present += if (areaPresent) 1 else 0
@@ -99,6 +99,12 @@ public class GameSession internal constructor(
 
     public fun readCharacterEffects(): List<CharacterSnapshot> =
         characterReader.read(memory, allEffects = true)
+
+    private fun forgetWorld() {
+        memory.invalidate(Lifetime.World)
+        world = WorldTier()
+        sinceWorld = 0
+    }
 
     private fun refreshWorldTier() {
         if (sinceWorld > 0) {

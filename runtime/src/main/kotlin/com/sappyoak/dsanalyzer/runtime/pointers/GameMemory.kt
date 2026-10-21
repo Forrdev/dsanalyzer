@@ -32,6 +32,15 @@ public class GameMemory(
     }
 
     /**
+     * Forgets where [pointer] was, so the next [addressOf] walks again
+     *
+     * For an address that stopped reading, the structure it named has gone, and a cached address
+     * would otherwise go on failing until the next [invalidate], however soon the game rebuilt it
+     */
+    public fun forget(pointer: GamePointer) {
+        resolved.remove(pointer)
+    }
+    /**
      * Forgets every walk that does not outlive [event]
      */
     public fun invalidate(event: Lifetime) {

@@ -54,10 +54,13 @@ internal class HullGeometryReader {
         // otherwise be read past the end of the buffer
         val blocks = hull.int(HullShape.RotatedVertices + ARRAY_LENGTH)
         if (at.isNull || blocks <= 0) return null
-        if (blocks * POINTS_PER_BLOCK < count) return null
 
-        val bytes = blocks * FOUR_VECTORS_SIZE
-        if (bytes > BUFFER_CAPACITY || !points.refresh(memory, at, bytes)) return null
+        // Long because a block count read out of the wrong memory overflows an Int and
+        // comes back negative, which passes every bound below and then fails the read
+        if (blocks.toLong() * POINTS_PER_BLOCK < count) return null
+
+        val bytes = blocks.toLong() * FOUR_VECTORS_SIZE
+        if (bytes > BUFFER_CAPACITY || !points.refresh(memory, at, bytes.toInt())) return null
 
         val vertices = FloatArray(count * CollisionMesh.COMPONENTS)
         for (i in 0 until count) {
@@ -87,7 +90,7 @@ internal class HullGeometryReader {
 
         if (indicesAt.isNull || sizesAt.isNull) return null
         if (indexCount <= 0 || faceCount <= 0) return null
-        if (indexCount * INDEX_BYTES > BUFFER_CAPACITY || faceCount > BUFFER_CAPACITY) return null
+        if (indexCount.toLong() * INDEX_BYTES > BUFFER_CAPACITY || faceCount > BUFFER_CAPACITY) return null
         if (!faces.refresh(memory, indicesAt, indexCount * INDEX_BYTES)) return null
         if (!sizes.refresh(memory, sizesAt, faceCount)) return null
 

@@ -18,6 +18,9 @@ private const val BUFFER_CAPACITY: Int = 1 shl 20
 /** At or above this many bytes per triangle, indices are 32-bit rather than 16-bit */
 private const val WIDE_INDEX_STRIDE: Int = 12
 
+private const val MESH_VERTEX_LIMIT: Long = 1L shl 20
+private const val MESH_TRIANGLE_LIMIT: Long = 1L shl 21
+
 private class SubpartHeader(
     val vertexBase: Address,
     val vertexCount: Int,
@@ -26,8 +29,8 @@ private class SubpartHeader(
     val triangleCount: Int,
     val indexStride: Int
 ) {
-    val vertexBytes: Int get() = vertexCount * vertexStride
-    val indexBytes: Int get() = triangleCount * indexStride
+    val vertexBytes: Long get() = vertexCount.toLong() * vertexStride
+    val indexBytes: Long get() = triangleCount.toLong() * indexStride
 }
 
 /**
@@ -50,8 +53,11 @@ internal class MeshGeometryReader {
         val headers = subparts.elements.mapNotNull { headerAt(memory, it) }
         if (headers.isEmpty()) return null
 
-        val vertices = FloatArray(headers.sumOf { it.vertexCount } * CollisionMesh.COMPONENTS)
-        val indices = IntArray(headers.sumOf { it.triangleCount } * CollisionMesh.CORNERS)
+        val vertexCount = headers.sumOf { it.vertexCount.toLong() }
+        val triangleCount = headers.sumOf { it.triangleCount.toLong() }
+
+        val vertices = FloatArray(vertexCount.toInt() * CollisionMesh.COMPONENTS)
+        val indices = IntArray(triangleCount.toInt() * CollisionMesh.CORNERS)
 
         var vertexCursor = 0
         var indexCursor = 0
@@ -103,7 +109,7 @@ internal class MeshGeometryReader {
         cursor: Int,
         transform: Mat4
     ): Boolean {
-        if (!buffer.refresh(memory, header.vertexBase, header.vertexBytes)) return false
+        if (!buffer.refresh(memory, header.vertexBase, header.vertexBytes.toInt())) return false
 
         for (i in 0 until header.vertexCount) {
             val from = i * header.vertexStride
@@ -128,7 +134,7 @@ internal class MeshGeometryReader {
         cursor: Int,
         vertexBase: Int
     ): Boolean {
-        if (!buffer.refresh(memory, header.indexBase, header.indexBytes)) return false
+        if (!buffer.refresh(memory, header.indexBase, header.indexBytes.toInt())) return false
 
         val width = if (header.indexStride >= WIDE_INDEX_STRIDE) 4 else 2
 

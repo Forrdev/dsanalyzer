@@ -28,7 +28,10 @@ public class StructView private constructor(
         val owner = checkNotNull(pointer) {
             "This view was made for a table element, which has no pointer to resolve"
         }
-        return refresh(game.memory, game.addressOf(owner))
+
+        if (refresh(game.memory, game.addressOf(owner))) return true
+        game.forget(owner)
+        return false
     }
 
     public fun refresh(memory: ProcessMemory, at: Address): Boolean {
