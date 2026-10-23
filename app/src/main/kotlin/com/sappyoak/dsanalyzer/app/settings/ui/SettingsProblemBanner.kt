@@ -14,7 +14,7 @@ private fun SettingsProblem.describe(): String = when (this) {
     is SettingsProblem.Recovered ->
         "Settings could not be read and have been reset. The old file is at $backup"
     is SettingsProblem.Unreadable ->
-        "Settings could not be loaded, so default are in use: $detail"
+        "Settings could not be loaded, so default are in use and changes will not be saved: $detail"
     is SettingsProblem.NotSaved ->
         "Settings changes could not be saved and will be lost when you quit: $detail"
 }

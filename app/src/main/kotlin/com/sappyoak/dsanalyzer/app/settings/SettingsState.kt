@@ -7,6 +7,7 @@ public data class SettingsState(
     public val loaded: Boolean = false,
     /** Edits that arrived before loading finished */
     public val pending: List<SettingsEdit> = emptyList(),
+    public val writable: Boolean = true,
     public val problem: SettingsProblem? = null
 )
 

@@ -14,7 +14,7 @@ public fun reduceSettings(
         problem = message.recoveredFrom?.let(SettingsProblem::Recovered)
     )
 
-    is SettingsMessage.LoadFailed -> state.finishLoading(
+    is SettingsMessage.LoadFailed -> state.copy(writable = false).finishLoading(
         loaded = Settings(),
         problem = SettingsProblem.Unreadable(message.detail)
     )
@@ -38,6 +38,8 @@ private fun SettingsState.finishLoading(
     return next.saving(applied)
 }
 
-private fun SettingsState.saving(next: Settings): Transition<SettingsState, SettingsEffect> =
-    if (next == settings) with()
-    else copy(settings = next).with(SettingsEffect.Save(next))
+private fun SettingsState.saving(next: Settings): Transition<SettingsState, SettingsEffect> = when {
+    next == settings -> with()
+    !writable -> copy(settings = next).with()
+    else -> copy(settings = next).with(SettingsEffect.Save(next))
+}

@@ -9,7 +9,6 @@ import androidx.compose.ui.unit.dp
 import com.sappyoak.dsanalyzer.app.startup.*
 import com.sappyoak.dsanalyzer.app.ui.chooseInstallationDirectory
 import com.sappyoak.dsanalyzer.app.workspace.ui.WorkspacePicker
-import com.sappyoak.dsanalyzer.game.RejectionReason
 
 @Composable
 public fun StartupScreen(state: StartupState, store: StartupStore) {
@@ -71,10 +70,4 @@ private fun ChooseFolderButton(store: StartupStore) {
     }) {
         Text("Choose installation folder")
     }
-}
-
-private fun RejectionReason.describe(): String = when (this) {
-    RejectionReason.NoExecutable -> "No Dark Souls executable was found"
-    is RejectionReason.UnrecognizedExecutable -> "$name is not an executable this tool knows"
-    is RejectionReason.MissingFiles -> "these files are missing: ${names.joinToString()}"
 }

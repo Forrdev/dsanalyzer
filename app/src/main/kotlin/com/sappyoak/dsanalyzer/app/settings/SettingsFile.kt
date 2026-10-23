@@ -5,7 +5,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
@@ -32,16 +31,20 @@ public class SettingsFile(
 
         try {
             SettingsReadResult(json.decodeFromString<Settings>(location.readText()))
-        } catch (err: SerializationException) {
-            val backup = location.parent.resolve("settings.corrupt=${System.currentTimeMillis()}.json")
-            location.moveTo(backup)
-            logger.error(err) { "Settings.json could not be parsed: kept as $backup" }
-            SettingsReadResult(materializeDefaults(), backup)
+        } catch (err: Throwable) {
+            recover(err)
         }
     }
 
     public suspend fun write(settings: Settings): Unit = writing.withLock {
         withContext(Dispatchers.IO) { persist(settings) }
+    }
+
+    private fun recover(err: Throwable): SettingsReadResult {
+        val backup = location.parent.resolve("settings.corrupt-${System.currentTimeMillis()}.json")
+        location.moveTo(backup)
+        logger.error(err) { "Settings.json could not be parsed: kept as $backup" }
+        return SettingsReadResult(materializeDefaults(), backup)
     }
 
     private fun materializeDefaults(): Settings {

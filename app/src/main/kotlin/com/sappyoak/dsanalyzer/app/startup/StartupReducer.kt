@@ -14,26 +14,33 @@ public fun reduceStartup(
     StartupMessage.Start -> state.with(StartupEffect.LoadSettings)
 
     is StartupMessage.SettingsLoaded -> state
-        .copy(lastActiveWorkspaceId = message.settings.lastActiveWorkspaceId)
+        .copy(
+            lastActiveWorkspaceId = message.settings.lastActiveWorkspaceId,
+            unavailable = message.settings.installations
+        )
         .with(StartupEffect.CheckInstallations(message.settings.installations))
 
     is StartupMessage.FolderChosen -> state
-        .copy(phase = StartupPhase.Validating(message.folder))
+        .copy(phase = if (state.workspaceOpen) state.phase else StartupPhase.Validating(message.folder))
         .with(StartupEffect.InspectFolder(message.folder))
 
     is StartupMessage.FolderInspected -> when (val check = message.check) {
-        is InstallationCheck.Rejected -> state
-            .copy(phase = StartupPhase.Rejected(message.folder, check.reason))
-            .with()
+        is InstallationCheck.Rejected ->
+            if (state.workspaceOpen) state.noting(StartupNotice.FolderRejected(message.folder, check.reason)).with()
+            else state.copy(phase = StartupPhase.Rejected(message.folder, check.reason)).with()
 
         is InstallationCheck.Valid -> state.copy(
-            phase = StartupPhase.NeedsWorkspace,
-            installations = state.installations.replacing(check.installation)
+            phase = if (state.workspaceOpen) state.phase else StartupPhase.NeedsWorkspace,
+            installations = state.installations.replacing(check.installation),
+            unavailable = state.unavailable.filterNot { it.id == check.installation.id }
         ).persisting()
     }
 
     is StartupMessage.InstallationsChecked -> state
-        .copy(installations = message.installations)
+        .copy(
+            installations = message.installations,
+            unavailable = state.unavailable.filterNot { saved -> message.installations.any { it.id == saved.id } }
+        )
         .with(StartupEffect.ListWorkspaces)
 
     is StartupMessage.WorkspacesListed -> resume(state.copy(workspaces = message.workspaces))
@@ -54,7 +61,7 @@ public fun reduceStartup(
     )
 
     is StartupMessage.WorkspaceCreated -> state
-        .copy(workspaces = state.workspaces + message.workspace)
+        .copy(workspaces = state.workspaces + message.workspace, creatingWorkspace = false)
         .opening(message.workspace)
 
     StartupMessage.RejectionDismissed -> state
@@ -93,7 +100,7 @@ private fun StartupState.opening(workspace: Workspace): Transition<StartupState,
     ).persisting()
 
 private fun StartupState.persisting(): Transition<StartupState, StartupEffect> =
-    with(StartupEffect.Remember(StartupChoices(installations, lastActiveWorkspaceId)))
+    with(StartupEffect.Remember(StartupChoices(installations + unavailable, lastActiveWorkspaceId)))
 
 private fun StartupState.noting(notice: StartupNotice?): StartupState =
     if (notice == null) this else copy(notices = notices + notice)
@@ -109,7 +116,8 @@ private fun noticeFor(message: StartupMessage.OperationFailed): StartupNotice =
 private fun FailedStartupOperation.recover(
     state: StartupState
 ): Transition<StartupState, StartupEffect> = when (this) {
-    is FailedStartupOperation.InspectFolder -> state.copy(phase = idlePhase(state)).with()
+    is FailedStartupOperation.InspectFolder ->
+        if (state.workspaceOpen) state.with() else state.copy(phase = idlePhase(state)).with()
     FailedStartupOperation.CheckInstallations -> state
         .copy(installations = emptyList())
         .with(StartupEffect.ListWorkspaces)

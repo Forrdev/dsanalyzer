@@ -11,11 +11,15 @@ import com.sappyoak.dsanalyzer.game.RejectionReason
 public data class StartupState(
     public val phase: StartupPhase = StartupPhase.Loading,
     public val installations: List<Installation> = emptyList(),
+    // Saved installations the last check could not use
+    public val unavailable: List<Installation> = emptyList(),
     public val workspaces: List<Workspace> = emptyList(),
     public val lastActiveWorkspaceId: WorkspaceId? = null,
     public val notices: List<StartupNotice> = emptyList(),
     public val creatingWorkspace: Boolean = false
-)
+) {
+    public val workspaceOpen: Boolean get() = phase is StartupPhase.Ready
+}
 
 public sealed interface StartupPhase {
     /** Reading settings and re-checking known installations */
