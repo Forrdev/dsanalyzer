@@ -53,6 +53,7 @@ public fun reduceMaps(
     ).with()
 
     is MapsMessage.Failed -> state.copy(loading = false, problem = message.reason).with()
+    is MapsMessage.IndexFailed -> state.copy(problem = "Entities could not be indexed: ${message.reason}").with()
 }
 
 /** Moves to [ref], remembering where it came from so back and forward work */

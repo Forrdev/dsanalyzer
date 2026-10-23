@@ -25,4 +25,6 @@ public sealed interface MapsMessage {
     public data class KindToggled(public val kind: EntryKind) : MapsMessage
 
     public data class Failed(public val reason: String) : MapsMessage
+    /** The entity index could not be built, which leaves any map load running untouched */
+    public data class IndexFailed(public val reason: String) : MapsMessage
 }

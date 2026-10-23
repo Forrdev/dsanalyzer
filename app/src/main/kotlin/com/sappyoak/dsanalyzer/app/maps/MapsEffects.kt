@@ -22,8 +22,11 @@ public class MapsEffects(private val files: InstallationFiles) : EffectRunner<Ma
 
     override fun execute(effect: MapsEffect): Flow<MapsMessage> = flow { emit(perform(effect)) }
 
-    override fun onFailure(effect: MapsEffect, failure: Throwable): MapsMessage =
-        MapsMessage.Failed(failure.message ?: failure.toString())
+    override fun onFailure(effect: MapsEffect, failure: Throwable): MapsMessage {
+        val reason = failure.message ?: failure.toString()
+        return if (effect is MapsEffect.IndexEntities) MapsMessage.IndexFailed(reason)
+        else MapsMessage.Failed(reason)
+    }
 
     private suspend fun perform(effect: MapsEffect): MapsMessage = when (effect) {
         is MapsEffect.LoadCatalog -> MapsMessage.CatalogLoaded(
