@@ -36,6 +36,11 @@ public fun reduceScripts(
     is ScriptsMessage.FlagRequested -> state.findFlag(message.flagId, message.seenIn)
     is ScriptsMessage.QueryChanged -> state.copy(query = message.query).with()
     is ScriptsMessage.Failed -> state.copy(loading = false, pendingFlag = null, problem = message.reason).with()
+    is ScriptsMessage.IndexFailed -> state.copy(
+        indexing = false,
+        pendingFlag = null,
+        problem = "Scripts could not be searched for flags: ${message.reason}"
+    ).with()
 }
 
 private fun ScriptsState.loaded(loadedContents: ScriptContents): Transition<ScriptsState, ScriptsEffect> = copy(
@@ -77,7 +82,8 @@ private fun ScriptsState.findFlag(flagId: Int, seenIn: MapId?): Transition<Scrip
         findings = null,
         problem = "Reading every script to find flag $flagId"
     ).with()
-    else -> copy(problem = "No installation is open").with()
+    installation == null -> copy(problem = "No installation is open").with()
+    else -> copy(problem = "Scripts could not be searched, so flag $flagId could not be found").with()
 }
 
 private fun ScriptsState.showFlag(flagId: Int, seenIn: MapId?): Transition<ScriptsState, ScriptsEffect> {

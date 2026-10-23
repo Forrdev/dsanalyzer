@@ -38,8 +38,11 @@ public class ScriptsEffects(
 
     override fun execute(effect: ScriptsEffect): Flow<ScriptsMessage> = flow { emit(perform(effect)) }
 
-    override fun onFailure(effect: ScriptsEffect, failure: Throwable): ScriptsMessage =
-        ScriptsMessage.Failed(failure.message ?: failure.toString())
+    override fun onFailure(effect: ScriptsEffect, failure: Throwable): ScriptsMessage {
+        val reason = failure.message ?: failure.toString()
+        return if (effect is ScriptsEffect.IndexFlags) ScriptsMessage.IndexFailed(reason)
+        else ScriptsMessage.Failed(reason)
+    }
 
     private suspend fun perform(effect: ScriptsEffect): ScriptsMessage = when (effect) {
         is ScriptsEffect.LoadCatalog -> ScriptsMessage.CatalogLoaded(

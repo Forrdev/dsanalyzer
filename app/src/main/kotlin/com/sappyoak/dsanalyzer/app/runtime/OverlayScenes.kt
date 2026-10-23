@@ -45,7 +45,7 @@ internal fun RuntimeState.overlayScene(settings: OverlaySettings): OverlayScene 
             drawDistance = settings.characters.drawDistance,
             occludeByCollision = settings.characters.occludeByCollision
         ),
-        collision = collisionFor(settings.collision, settings.characters.occludeByCollision)
+        collision = collisionFor(settings.collision, settings.characters)
     )
 }
 
@@ -72,15 +72,16 @@ private fun RuntimeState.markersFor(settings: CharacterOverlaySettings): List<Wo
 
 private fun RuntimeState.collisionFor(
     settings: CollisionOverlaySettings,
-    occluding: Boolean
+    markers: CharacterOverlaySettings
 ): CollisionView? {
-    if (!settings.enabled && !occluding) return null
+    if (!settings.enabled && !markers.occludeByCollision) return null
     val read = collision ?: return null
 
     return CollisionView(
         bodies = read.bodies,
         radius = settings.radius.coerceAtLeast(0f),
         triangleBudget = settings.triangleBudget.coerceAtLeast(0),
+        occlusionRadius = markers.drawDistance.coerceAtLeast(0f),
         kinds = settings.kinds,
         draw = settings.enabled,
         cull = settings.cull,

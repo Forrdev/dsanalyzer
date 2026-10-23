@@ -30,4 +30,6 @@ public sealed interface ScriptsMessage {
     public data class QueryChanged(public val query: String) : ScriptsMessage
 
     public data class Failed(public val reason: String) : ScriptsMessage
+
+    public data class IndexFailed(public val reason: String) : ScriptsMessage
 }

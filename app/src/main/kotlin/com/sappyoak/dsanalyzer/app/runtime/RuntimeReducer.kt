@@ -26,7 +26,10 @@ public fun reduceRuntime(
 private fun RuntimeState.logAfter(link: LinkState): List<FlagEntry> {
     val carried = if (link.attached != null && link.attached == attached) flagLog else emptyList()
     val snapshot = link.snapshot ?: return carried
-    if (snapshot.flagChanges.isEmpty()) return carried
+
+    // the link changes for more than ticks. If a collision or roster answer arrives beside the tick already logged
+    // and logging its changes again would list every one of them twice
+    if (snapshot === this.snapshot || snapshot.flagChanges.isEmpty()) return carried
 
     val added = snapshot.flagChanges.map { FlagEntry(it.flagId, it.set, snapshot.frame, snapshot.place) }
     return (added + carried).take(LOG_LIMIT)
