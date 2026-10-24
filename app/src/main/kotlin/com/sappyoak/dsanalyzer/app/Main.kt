@@ -20,7 +20,7 @@ import com.sappyoak.dsanalyzer.app.connection.ui.ConnectionStatusBar
 import com.sappyoak.dsanalyzer.app.logging.coroutineErrorLogging
 import com.sappyoak.dsanalyzer.app.logging.installCrashLogging
 import com.sappyoak.dsanalyzer.app.paths.ToolPaths
-import com.sappyoak.dsanalyzer.app.runtime.overlayScene
+import com.sappyoak.dsanalyzer.app.runtime.ui.RuntimeOverlay
 import com.sappyoak.dsanalyzer.app.settings.SettingsMessage
 import com.sappyoak.dsanalyzer.app.settings.ui.SettingsProblemBanner
 import com.sappyoak.dsanalyzer.app.startup.StartupMessage
@@ -34,7 +34,6 @@ import com.sappyoak.dsanalyzer.app.verification.ui.VerificationDialog
 import com.sappyoak.dsanalyzer.app.workspace.ui.NewWorkspaceDialog
 import com.sappyoak.dsanalyzer.app.workspace.ui.WorkspaceShell
 import com.sappyoak.dsanalyzer.native.windows.GameWindowSource
-import com.sappyoak.dsanalyzer.overlay.GameOverlay
 
 fun main() {
     val paths = ToolPaths()
@@ -62,6 +61,11 @@ fun main() {
     val viewportSource = GameWindowSource()
 
     application {
+        val onQuit = {
+            model.close()
+            exitApplication()
+        }
+
         Window(
             onCloseRequest = ::exitApplication,
             title = "dsanalyzer",
@@ -79,7 +83,7 @@ fun main() {
                 startupState = startupState,
                 connectionState = connectionState,
                 autoConnect = settingsState.settings.connection.autoConnect,
-                onQuit = ::exitApplication
+                onQuit = onQuit
             )
             MaterialTheme {
                 Surface {
@@ -89,7 +93,8 @@ fun main() {
                         }
 
                         if (startupState.notices.isNotEmpty()) {
-                            NoticeBanner(startupState.notices.map { it.describe() }) {
+                            val notices = remember(startupState.notices) { startupState.notices.map { it.describe() } }
+                            NoticeBanner(notices) {
                                 model.startup.dispatch(StartupMessage.NoticesDismissed)
                             }
                         }
@@ -126,13 +131,11 @@ fun main() {
                         )
                     }
 
-                    val runtimeState by model.workspace.runtime.state.collectAsState()
-                    val overlaySettings = settingsState.settings.overlay
-
-                    GameOverlay(
+                    RuntimeOverlay(
                         source = viewportSource,
-                        scene = runtimeState.overlayScene(overlaySettings),
-                        enabled = connectionState.status is ConnectionStatus.Connected && overlaySettings.enabled
+                        runtime = model.workspace.runtime,
+                        settings = settingsState.settings.overlay,
+                        connected = connectionState.status is ConnectionStatus.Connected
                     )
 
                     verificationState.viewing

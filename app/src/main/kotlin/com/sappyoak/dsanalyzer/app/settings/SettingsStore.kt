@@ -7,7 +7,7 @@ import com.sappyoak.dsanalyzer.app.store.Store
 
 public class SettingsStore(
     scope: CoroutineScope,
-    effects: SettingsEffects
+    private val effects: SettingsEffects
 ) : Store<SettingsState, SettingsMessage, SettingsEffect>(
     scope = scope,
     name = "settings",
@@ -17,4 +17,6 @@ public class SettingsStore(
 ), SettingsAccess {
     override suspend fun loaded(): Settings = state.first { it.loaded }.settings
     override fun edit(edit: SettingsEdit): Unit = dispatch(SettingsMessage.Edited(edit))
+
+    public suspend fun flush(): Unit = effects.flush()
 }

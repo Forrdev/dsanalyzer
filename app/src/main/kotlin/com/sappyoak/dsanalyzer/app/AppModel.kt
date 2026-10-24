@@ -1,7 +1,8 @@
 package com.sappyoak.dsanalyzer.app
 
-
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.runBlocking
 
 import com.sappyoak.dsanalyzer.app.connection.ConnectionEffects
 import com.sappyoak.dsanalyzer.app.connection.ConnectionMessage
@@ -31,6 +32,8 @@ import com.sappyoak.dsanalyzer.app.workspace.WorkspaceStores
 import com.sappyoak.dsanalyzer.game.files.InstallationFiles
 import com.sappyoak.dsanalyzer.native.process.Processes
 
+private val logger = KotlinLogging.logger {  }
+
 public class AppModel(
     public val settings: SettingsStore,
     public val workspace: WorkspaceStores,
@@ -47,6 +50,8 @@ public class AppModel(
     }
 
     override fun close() {
+        runCatching { settings.flush() }
+            .onFailure { logger.error(it) { "Settings were not saved on exit" } }
         installationFiles.close()
     }
 }

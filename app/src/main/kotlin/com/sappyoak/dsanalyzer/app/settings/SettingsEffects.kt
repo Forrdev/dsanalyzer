@@ -10,13 +10,15 @@ private const val SAVE_KEY = "save"
 public class SettingsEffects(
     private val file: SettingsFile
 ) : EffectRunner<SettingsEffect, SettingsMessage> {
+    private val saver = SettingsSaver(file::write)
+
     override fun keyOf(effect: SettingsEffect): Any? =
         if (effect is SettingsEffect.Save) SAVE_KEY else null
 
     override fun execute(effect: SettingsEffect): Flow<SettingsMessage> = flow {
         when (effect) {
             SettingsEffect.Load -> file.read().let { emit(SettingsMessage.Loaded(it.settings, it.recoveredFrom)) }
-            is SettingsEffect.Save -> file.write(effect.settings)
+            is SettingsEffect.Save -> saver.save(effect.settings)
         }
     }
 
@@ -27,6 +29,8 @@ public class SettingsEffects(
             is SettingsEffect.Save -> SettingsMessage.SaveFailed(detail)
         }
     }
+
+    public suspend fun flush(): Unit = saver.flush()
 
 }
 public sealed interface SettingsEffect {

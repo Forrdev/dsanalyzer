@@ -1,5 +1,6 @@
 package com.sappyoak.dsanalyzer.runtime
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -12,6 +13,8 @@ import kotlin.time.Duration.Companion.seconds
 
 import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.native.process.Processes
+
+private val logger = KotlinLogging.logger {  }
 
 public sealed interface ConnectionEvent {
     /** No game is connected. Emitted first and again whenever a game exists or a refused on goes away */
@@ -49,6 +52,7 @@ public fun Processes.watchForGame(
         val candidate = games.firstOrNull { it.process.pid !in refused }
         when (val result = candidate?.let { connect(it) }) {
             null -> Unit
+            is ConnectResult.NotYet -> logger.debug { "${candidate.process.executableName} not ready: ${result.reason}" }
             is ConnectResult.Refused -> {
                 refused.add(candidate.process.pid)
                 emit(ConnectionEvent.Refused(candidate, result.reason))

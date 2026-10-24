@@ -26,6 +26,12 @@ public class GameConnection internal constructor(
 public sealed interface ConnectResult {
     public data class Connected(public val connection: GameConnection) : ConnectResult
     public data class Refused(public val reason: String) : ConnectResult
+
+    /**
+     * Attached but the process could not be looked into yet. A game that is still starting fails
+     * its module snapshot for a moment, which is a reason to try again rather than give up on it
+     */
+    public data class NotYet(public val reason: String) : ConnectResult
 }
 
 public fun Processes.connect(game: GameProcess): ConnectResult {
@@ -43,7 +49,14 @@ public fun Processes.connect(game: GameProcess): ConnectResult {
         )
     }
 
-    val main = process.modules().firstOrNull { it.name.equals(game.edition.executableName, ignoreCase = true) }
+    val modules = try {
+        process.modules()
+    } catch (err: ProcessAccessException) {
+        process.close()
+        return ConnectResult.NotYet(err.message ?: "The process's modules could not be listed")
+    }
+
+    val main = modules.firstOrNull { it.name.equals(game.edition.executableName, ignoreCase = true) }
 
     if (main == null) {
         process.close()
