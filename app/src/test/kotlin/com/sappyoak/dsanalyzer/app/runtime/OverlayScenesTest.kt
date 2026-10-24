@@ -46,7 +46,8 @@ private fun character(x: Float, player: Boolean = false) = CharacterSnapshot(
     characterType = 0,
     teamType = 0,
     targetHandle = null,
-    isPlayer = player
+    isPlayer = player,
+    effects = null
 )
 
 private fun placed(x: Float, entityId: Int = 0) = PlacedEnemy(
