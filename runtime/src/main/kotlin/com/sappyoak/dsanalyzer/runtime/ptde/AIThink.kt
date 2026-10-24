@@ -27,6 +27,8 @@ public object AIThink {
 
     public const val TargetingSystemPointer: Int = 0x18
 
+    public const val TopGoalPointer: Int = 0x24
+
     public const val Timers: Int = 0x44
     public const val Numbers: Int = 0x54
 

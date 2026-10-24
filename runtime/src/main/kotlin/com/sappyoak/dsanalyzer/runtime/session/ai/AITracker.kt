@@ -39,6 +39,11 @@ internal class AITracker(gracePeriod: Int) {
         val selected = selection.select(scope, targets, reading.playerHandle)
         return found.filter { it.handle in selected }
     }
+
+    /* Drops what is kept between reads, for a load that rebuilds every AI */
+    fun forget() {
+        reader.forget()
+    }
 }
 
 private val AITarget.handle: Int? get() = (this as? AITarget.Character)?.handle

@@ -21,5 +21,6 @@ public data class AISnapshot(
     public val requestedAction: Int?,
     public val playingAction: Int?,
     public val timers: List<Float>,
-    public val numbers: List<Int>
+    public val numbers: List<Int>,
+    public val goals: GoalSnapshot? = null
 )

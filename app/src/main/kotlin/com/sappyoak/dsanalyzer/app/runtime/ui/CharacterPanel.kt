@@ -1,5 +1,6 @@
 package com.sappyoak.dsanalyzer.app.runtime.ui
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
@@ -7,6 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.ui.Alignment
+import com.sappyoak.dsanalyzer.app.runtime.planLine
 
 import com.sappyoak.dsanalyzer.runtime.session.BlockRoster
 import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
@@ -43,8 +45,11 @@ internal fun LazyListScope.characterItems(
     items(
         others,
         contentType = {CHARACTER_ROW }
-    ) {
-        Field(it.modelName, it.describe(), ROW_PADDING)
+    ) { character ->
+        Column {
+            Field(character.modelName, character.describe(), ROW_PADDING)
+            character.ai?.goals?.let { Field(" plan", it.planLine(), ROW_PADDING) }
+        }
     }
 
     item(key = "placed") {

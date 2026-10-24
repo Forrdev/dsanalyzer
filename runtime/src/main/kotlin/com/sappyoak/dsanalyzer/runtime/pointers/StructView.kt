@@ -77,4 +77,7 @@ public class StructView private constructor(
     }
 
     public fun flag(offset: Int, mask: Int): Boolean = view.int(offset) and mask != 0
+
+    public fun pointerAt(memory: ProcessMemory, at: Address): Address =
+        if (refresh(memory, at)) pointer(0) else Address.Null
 }

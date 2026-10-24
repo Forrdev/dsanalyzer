@@ -34,6 +34,7 @@ internal class AIReader {
     private val think = StructView(AI_THINK_SIZE)
     private val actions = StructView(ActionCtrl.RequestedAction + Int.SIZE_BYTES)
     private val node = StructView(TargetNode.SIZE)
+    private val goals = GoalReader()
 
     fun read(memory: ProcessMemory, source: AISource): AISnapshot? {
         if (!readThink(memory, source.think, source.owner)) return null
@@ -45,26 +46,27 @@ internal class AIReader {
             requestedAction = actions.int(ActionCtrl.RequestedAction).takeIf { it != NONE },
             playingAction = actions.int(ActionCtrl.PlayingAction).takeIf { it != NONE },
             timers = List(AI_THINK_TIMER_COUNT) { think.float(AIThink.Timers + it * Float.SIZE_BYTES) },
-            numbers = List(AI_THINK_NUMBER_COUNT) { think.int(AIThink.Numbers + it * Int.SIZE_BYTES) }
+            numbers = List(AI_THINK_NUMBER_COUNT) { think.int(AIThink.Numbers + it * Int.SIZE_BYTES) },
+            goals = goals.read(memory, think.pointer(AIThink.TopGoalPointer), source.think)
         )
     }
 
     fun locate(memory: ProcessMemory, character: CharacterRef): AISource? {
         if (character.comManipulator.isNull || character.controller.isNull) return null
 
-        val at = pointerAt(memory, character.comManipulator + ComManipulator.AIThinkPointer.toLong())
+        val at = pointer.pointerAt(memory, character.comManipulator + ComManipulator.AIThinkPointer.toLong())
         val owner = character.comManipulator + ComManipulator.ThinkOwner.toLong()
         if (at.isNull || !readThink(memory, at, owner)) return null
 
         val targeting = think.pointer(AIThink.TargetingSystemPointer)
-        val actionCtrl = pointerAt(memory, character.controller + ChrCtrl.ActionCtrlPointer.toLong())
+        val actionCtrl = pointer.pointerAt(memory, character.controller + ChrCtrl.ActionCtrlPointer.toLong())
         if (targeting.isNull || actionCtrl.isNull) return null
 
         return AISource(character.handle, at, owner, targeting, actionCtrl)
     }
 
     fun targetOf(memory: ProcessMemory, source: AISource): AITarget {
-        var at = pointerAt(memory, source.targeting + TargetingSystem.Known.toLong())
+        var at = pointer.pointerAt(memory, source.targeting + TargetingSystem.Known.toLong())
         var alert: AITarget? = null
         var combat: AITarget? = null
         var weight = Float.NEGATIVE_INFINITY
@@ -87,6 +89,10 @@ internal class AIReader {
         return alert ?: combat ?: sound ?: AITarget.None
     }
 
+    fun forget() {
+        goals.forget()
+    }
+
     private fun entryTarget(): AITarget = when (node.int(TargetNode.Shape)) {
         TargetNode.CHARACTER -> node.int(TargetNode.Handle).let { if (it == NONE) AITarget.None else AITarget.Character(it) }
         TargetNode.PLACE -> AITarget.Sound
@@ -95,7 +101,4 @@ internal class AIReader {
 
     private fun readThink(memory: ProcessMemory, at: Address, owner: Address): Boolean =
         think.refresh(memory, at) && think.pointer(AIThink.OwnerPointer) == owner
-
-    private fun pointerAt(memory: ProcessMemory, at: Address): Address =
-        if (pointer.refresh(memory, at)) pointer.pointer(0) else Address.Null
 }
