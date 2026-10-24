@@ -1,6 +1,9 @@
 package com.sappyoak.dsanalyzer.game.world.maps
 
 import com.sappyoak.dsanalyzer.formats.binder.OpenBinder
+import com.sappyoak.dsanalyzer.formats.havok.readHavokFile
+import com.sappyoak.dsanalyzer.formats.havok.physics.StaticBody
+import com.sappyoak.dsanalyzer.formats.havok.physics.rigidBodies
 import com.sappyoak.dsanalyzer.formats.msb.MSB
 import com.sappyoak.dsanalyzer.formats.msb.readMSB
 import com.sappyoak.dsanalyzer.formats.nvm.Navmesh
@@ -17,6 +20,14 @@ public fun GameFiles.loadMSB(name: String): MSB? = MapId.parse(name)?.let { load
  */
 public fun GameFiles.openCollision(map: MapId, detail: CollisionDetail): OpenBinder? =
     openBinder(map.collisionPaths(detail))
+
+/**
+ * Every collision body the map's binder holds, in each body's own frame
+ */
+public fun GameFiles.loadCollision(map: MapId, detail: CollisionDetail): List<StaticBody>? =
+    openCollision(map, detail)?.let { binder ->
+        binder.binder.entries.flatMap { readHavokFile(binder.open(it)).rigidBodies() }
+    }
 
 /**
  * The map's navigation meshes, as a binder of one '.nvm' per navmesh part

@@ -1,5 +1,6 @@
 package com.sappyoak.dsanalyzer.runtime.read.attack
 
+import com.sappyoak.dsanalyzer.formats.havok.ptde.HkpCapsuleShape
 import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.native.process.ProcessMemory
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
@@ -10,7 +11,6 @@ import com.sappyoak.dsanalyzer.runtime.ptde.BulletIns
 import com.sappyoak.dsanalyzer.runtime.ptde.BulletMan
 import com.sappyoak.dsanalyzer.runtime.ptde.HkpShapeType
 import com.sappyoak.dsanalyzer.runtime.ptde.PhysShapePhantom
-import com.sappyoak.dsanalyzer.runtime.ptde.havok.HkpCapsuleShape
 import com.sappyoak.dsanalyzer.runtime.session.attack.HitShape
 import com.sappyoak.dsanalyzer.shared.math.Mat4
 import com.sappyoak.dsanalyzer.shared.math.Vec3
@@ -94,12 +94,12 @@ internal class AttackReader {
         val at = pointerAt(memory, phantom + PhysShapePhantom.ShapePointer.toLong())
         if (!shape.refresh(memory, at)) return null
 
-        val radius = shape.float(HkpCapsuleShape.radius)
-        return when (shape.int(HkpCapsuleShape.type)) {
+        val radius = shape.float(HkpCapsuleShape.Radius)
+        return when (shape.int(HkpCapsuleShape.Type)) {
             HkpShapeType.SPHERE -> HitShape.Sphere(transform.r3.xyz, radius)
             HkpShapeType.CAPSULE -> HitShape.Capsule(
-                a = transform.place(shape.vec3(HkpCapsuleShape.vertexA)),
-                b = transform.place(shape.vec3(HkpCapsuleShape.vertexB)),
+                a = transform.place(shape.vec3(HkpCapsuleShape.VertexA)),
+                b = transform.place(shape.vec3(HkpCapsuleShape.VertexB)),
                 radius = radius
             )
             else -> null

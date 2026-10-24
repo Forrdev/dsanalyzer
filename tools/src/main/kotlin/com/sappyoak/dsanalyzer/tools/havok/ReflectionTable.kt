@@ -7,7 +7,7 @@ import java.nio.file.Path
  * One member exactly as the binary declares it
  *
  * [owner] is the class whose 'declaredMembers' array this came from, which is **not** necessarily the class
- * it is looked up on [ReflectTable.resolvedMembers]
+ * it is looked up on [ReflectionTable.resolvedMembers]
  */
 public data class HavokMember(
     val owner: String,
@@ -20,7 +20,7 @@ public data class HavokMember(
 )
 
 /**
- * one relected class
+ * one reflected class
  *
  * [parent] is empty for a root, and also for a class whose base was never registered.
  */
@@ -72,17 +72,21 @@ public fun readReflectionTable(path: Path): ReflectionTable {
 
     Files.readAllLines(path).forEachIndexed { index, raw ->
         // Trimmed only for the blank/comment/section tests. Trimming the row itself would eat the
-        // trailing tab on a class with no parent
+        // trailing tab the PTDE extractor writes for a class with no parent
         val line = raw.trimEnd('\r', '\n')
         val probe = line.trim()
         when {
             probe.isEmpty() || probe.startsWith("#") -> Unit
             probe == CLASS_SECTION || probe == MEMBER_SECTION -> section = probe
             section == CLASS_SECTION -> {
+                // A parentless class is written either way: PTDE's extractor leaves a trailing tab
+                // and an empty third column, the Remastered one stops after the size
                 val f = line.split('\t')
-                require(f.size == 3) { "${path.fileName}:${index + 1}: expected 3 class columns, got ${f.size}" }
+                require(f.size == 2 || f.size == 3) {
+                    "${path.fileName}:${index + 1}: expected 2 or 3 class columns, got ${f.size}"
+                }
                 sizes[f[0]] = hex(f[1], path, index)
-                parents[f[0]] = f[2]
+                parents[f[0]] = f.getOrElse(2) { "" }
             }
             section == MEMBER_SECTION -> {
                 val f = line.split('\t')
