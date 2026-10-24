@@ -50,8 +50,9 @@ public class AppModel(
     }
 
     override fun close() {
-        runCatching { settings.flush() }
-            .onFailure { logger.error(it) { "Settings were not saved on exit" } }
+        runCatching {
+            runBlocking { settings.flush() }
+        }.onFailure { logger.error(it) { "Settings were not saved on exit" } }
         installationFiles.close()
     }
 }
