@@ -45,6 +45,7 @@ internal class AIReader {
             target = targetOf(memory, source),
             requestedAction = actions.int(ActionCtrl.RequestedAction).takeIf { it != NONE },
             playingAction = actions.int(ActionCtrl.PlayingAction).takeIf { it != NONE },
+            playingTime = actions.float(ActionCtrl.PlayingTime),
             timers = List(AI_THINK_TIMER_COUNT) { think.float(AIThink.Timers + it * Float.SIZE_BYTES) },
             numbers = List(AI_THINK_NUMBER_COUNT) { think.int(AIThink.Numbers + it * Int.SIZE_BYTES) },
             goals = goals.read(memory, think.pointer(AIThink.TopGoalPointer), source.think)

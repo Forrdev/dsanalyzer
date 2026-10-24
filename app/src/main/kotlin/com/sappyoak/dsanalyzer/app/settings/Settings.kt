@@ -3,8 +3,8 @@ package com.sappyoak.dsanalyzer.app.settings
 import kotlinx.serialization.Serializable
 
 import com.sappyoak.dsanalyzer.app.connection.ConnectionSettings
-import com.sappyoak.dsanalyzer.app.runtime.AISettings
 import com.sappyoak.dsanalyzer.app.runtime.OverlaySettings
+import com.sappyoak.dsanalyzer.app.runtime.RuntimeSettings
 import com.sappyoak.dsanalyzer.app.workspace.WorkspaceId
 import com.sappyoak.dsanalyzer.game.Installation
 
@@ -14,7 +14,7 @@ public data class Settings(
     public val lastActiveWorkspaceId: WorkspaceId? = null,
     public val connection: ConnectionSettings = ConnectionSettings(),
     public val overlay: OverlaySettings = OverlaySettings(),
-    public val ai: AISettings = AISettings()
+    public val runtime: RuntimeSettings = RuntimeSettings()
 )
 
 public interface SettingsEdit {

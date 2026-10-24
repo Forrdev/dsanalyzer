@@ -8,7 +8,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.ui.Alignment
+import com.sappyoak.dsanalyzer.app.runtime.listed
 import com.sappyoak.dsanalyzer.app.runtime.planLine
+import com.sappyoak.dsanalyzer.app.runtime.timing.TimingLibrary
+import com.sappyoak.dsanalyzer.app.runtime.timing.countdownOf
+import com.sappyoak.dsanalyzer.app.runtime.timing.describe
 
 import com.sappyoak.dsanalyzer.runtime.session.BlockRoster
 import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
@@ -20,13 +24,17 @@ private const val CHARACTER_ROW = "character"
 
 internal fun LazyListScope.characterItems(
     characters: List<CharacterSnapshot>,
+    timings: TimingLibrary,
     placed: List<BlockRoster>?,
+    hideDead: Boolean,
     onReadPlaced: () -> Unit
 ) {
-    val others = characters.filterNot { it.isPlayer }
+    val others = characters.listed(hideDead)
+    val dead = others.count { !it.alive }
+
     item(key = "characters") {
         Text(
-            text = "Instantiated characters (${others.size})",
+            text = "Instantiated characters (${others.size}${if (dead > 0) ", $dead dead" else ""})",
             style = MaterialTheme.typography.titleSmall,
             modifier = HEADER_PADDING
         )
@@ -47,8 +55,12 @@ internal fun LazyListScope.characterItems(
         contentType = {CHARACTER_ROW }
     ) { character ->
         Column {
-            Field(character.modelName, character.describe(), ROW_PADDING)
-            character.ai?.goals?.let { Field(" plan", it.planLine(), ROW_PADDING) }
+            val windows = timings[character.modelId]
+            val countdown = timings.countdownOf(character)?.let { " - ${it.describe()}" }.orEmpty()
+            Field(character.modelName, character.describe() + countdown, ROW_PADDING)
+            character.ai?.goals?.let { goals ->
+                Field("  plan", goals.planLine { windows?.windowsOf(it).orEmpty()}, ROW_PADDING)
+            }
         }
     }
 

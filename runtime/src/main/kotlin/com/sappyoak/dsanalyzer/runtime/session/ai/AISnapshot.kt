@@ -20,6 +20,7 @@ public data class AISnapshot(
     public val target: AITarget?,
     public val requestedAction: Int?,
     public val playingAction: Int?,
+    public val playingTime: Float = 0f,
     public val timers: List<Float>,
     public val numbers: List<Int>,
     public val goals: GoalSnapshot? = null

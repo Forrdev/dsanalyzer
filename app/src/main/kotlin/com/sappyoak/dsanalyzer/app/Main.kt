@@ -107,7 +107,7 @@ fun main() {
                                         .firstOrNull { it.id == phase.workspace.installationId },
                                     stores = model.workspace,
                                     overlay = settingsState.settings.overlay,
-                                    ai = settingsState.settings.ai,
+                                    runtime = settingsState.settings.runtime,
                                     onSettingsEdit = { model.settings.edit(it) }
                                 )
                                 else -> StartupScreen(startupState, model.startup)

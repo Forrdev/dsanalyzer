@@ -1,5 +1,7 @@
 package com.sappyoak.dsanalyzer.app.runtime
 
+import com.sappyoak.dsanalyzer.app.runtime.timing.TimingRequest
+import com.sappyoak.dsanalyzer.app.runtime.timing.requestsFor
 import com.sappyoak.dsanalyzer.app.store.Transition
 import com.sappyoak.dsanalyzer.app.store.with
 
@@ -10,7 +12,8 @@ public fun reduceRuntime(
     state: RuntimeState,
     message: RuntimeMessage
 ): Transition<RuntimeState, RuntimeEffect> = when (message) {
-    RuntimeMessage.Opened -> state.with(RuntimeEffect.Observe, RuntimeEffect.FollowAITracking)
+    is RuntimeMessage.Opened -> state.copy(installation = message.installation)
+        .with(RuntimeEffect.Observe, RuntimeEffect.FollowAITracking, RuntimeEffect.FollowTimingsWanted)
     RuntimeMessage.PlacedEnemiesRequested -> state.with(RuntimeEffect.RequestPlacedEnemies)
     RuntimeMessage.CollisionRequested -> state.with(RuntimeEffect.RequestCollision)
     is RuntimeMessage.LinkChanged -> state.copy(
@@ -20,7 +23,26 @@ public fun reduceRuntime(
         placedEnemies = message.link.placedEnemies,
         collision = message.link.collision,
         problem = message.link.note,
-    ).with()
+    ).withTimingRequests()
+
+    is RuntimeMessage.TimingsWanted -> state.copy(timings = state.timings.copy(wanted = message.wanted))
+        .withTimingRequests()
+
+    is RuntimeMessage.TimingsLoaded -> state.copy(timings = state.timings.loaded(message.models, message.map))
+        .withTimingRequests()
+}
+
+private fun RuntimeState.withTimingRequests(): Transition<RuntimeState, RuntimeEffect> {
+    val installation = installation ?: return this.with()
+    val (library, requests) = timings.requestsFor(snapshot)
+    val effects = requests.map { request ->
+        when (request) {
+            is TimingRequest.ForMap -> RuntimeEffect.LoadMapTimings(installation, request.map, request.known)
+            is TimingRequest.ForModels -> RuntimeEffect.LoadModelTimings(installation, request.models)
+        }
+    }
+
+    return copy(timings = library).with(effects)
 }
 
 private fun RuntimeState.logAfter(link: LinkState): List<FlagEntry> {

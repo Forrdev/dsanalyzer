@@ -12,6 +12,7 @@ import com.sappyoak.dsanalyzer.runtime.ptde.MsbResCap
 import com.sappyoak.dsanalyzer.runtime.ptde.WORLD_BLOCK_SIZE
 import com.sappyoak.dsanalyzer.runtime.ptde.WorldBlock
 import com.sappyoak.dsanalyzer.runtime.ptde.WorldChrMan
+import com.sappyoak.dsanalyzer.runtime.session.BONFIRE_PART_PREFIX
 import com.sappyoak.dsanalyzer.runtime.session.BlockRoster
 import com.sappyoak.dsanalyzer.runtime.session.PlacedEnemy
 
@@ -51,9 +52,12 @@ internal class PlacedPartsReader {
         if (!part.refresh(game.memory, at)) return null
         if (part.int(MapPart.Type) != MapPartType.Enemy) return null
 
+        val name = part.ascii(MapPart.Name, NAME_LIMIT)
+        if (name.startsWith(BONFIRE_PART_PREFIX)) return null
+
         return PlacedEnemy(
             index = slot,
-            name = part.ascii(MapPart.Name, NAME_LIMIT),
+            name = name,
             entityId = part.int(MapPart.EntityId),
             position = part.vec3(MapPart.Position),
             npcParamId = part.int(MapPart.NpcParamId),

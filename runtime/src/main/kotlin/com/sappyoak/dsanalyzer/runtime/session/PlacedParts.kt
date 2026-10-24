@@ -2,6 +2,9 @@ package com.sappyoak.dsanalyzer.runtime.session
 
 import com.sappyoak.dsanalyzer.shared.math.Vec3
 
+internal const val BONFIRE_MODEL: Int = 1000
+internal const val BONFIRE_PART_PREFIX: String = "c1000_"
+
 /**
  * An enemy a loaded block places, whether or not the gme has built a character out of it yet
  */

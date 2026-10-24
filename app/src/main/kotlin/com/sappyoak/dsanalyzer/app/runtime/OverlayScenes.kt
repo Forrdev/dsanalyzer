@@ -1,5 +1,8 @@
 package com.sappyoak.dsanalyzer.app.runtime
 
+import com.sappyoak.dsanalyzer.app.runtime.timing.countdownOf
+import com.sappyoak.dsanalyzer.app.runtime.timing.describe
+import com.sappyoak.dsanalyzer.app.runtime.timing.ring
 import com.sappyoak.dsanalyzer.overlay.CollisionView
 import com.sappyoak.dsanalyzer.overlay.MarkerKind
 import com.sappyoak.dsanalyzer.overlay.MarkerView
@@ -41,7 +44,7 @@ internal fun RuntimeState.overlayScene(settings: OverlaySettings): OverlayScene 
     return OverlayScene(
         camera = camera,
         markers = MarkerView(
-            markers = markersFor(settings.characters),
+            markers = markersFor(settings.characters, windows = settings.attackHitboxes),
             drawDistance = settings.characters.drawDistance,
             occludeByCollision = settings.characters.occludeByCollision
         ),
@@ -50,16 +53,17 @@ internal fun RuntimeState.overlayScene(settings: OverlaySettings): OverlayScene 
     )
 }
 
-private fun RuntimeState.markersFor(settings: CharacterOverlaySettings): List<WorldMarker> {
+private fun RuntimeState.markersFor(settings: CharacterOverlaySettings, windows: Boolean): List<WorldMarker> {
     val characters = snapshot?.characters.orEmpty()
 
     val player = characters
         .filter { it.isPlayer && settings.drawPlayer }
-        .map { it.marker() }
+        .map { markerOf(it, windows) }
 
     if (settings.draw == CharacterDrawing.None) return player
 
-    val live = characters.filterNot { it.isPlayer }.map { it.marker() }
+    // the dead are left standing in the block lists until it unloads, so they are passed over here
+    val live = characters.filterNot { !it.isPlayer && it.alive }.map { markerOf(it, windows) }
     if (settings.draw == CharacterDrawing.Instantiated) return player + live
 
     // The full list, not the filtered one - see the note on settings above
@@ -107,11 +111,21 @@ private fun BlockRoster.agreementWith(characters: List<CharacterSnapshot>): Int 
 private fun Vec3.near(other: Vec3): Boolean =
     abs(x - other.x) < SAME_SPOT && abs(y - other.y) < SAME_SPOT && abs(z - other.z) < SAME_SPOT
 
-private fun CharacterSnapshot.marker(): WorldMarker = WorldMarker(
-    position = position,
-    label = if (isPlayer) "you" else "$modelId  ${health}hp" + ai?.requestedAction?.let { "  a$it" }.orEmpty(),
-    kind = if (isPlayer) MarkerKind.Player else MarkerKind.Character
-)
+private fun RuntimeState.markerOf(
+    character: CharacterSnapshot,
+    windows: Boolean
+): WorldMarker {
+    if (character.isPlayer) return WorldMarker(character.position, "you", MarkerKind.Player)
+
+    val countdown = if (windows) timings.countdownOf(character) else null
+    val action = character.ai?.requestedAction?.let { " a$it" }.orEmpty()
+    return WorldMarker(
+        position = character.position,
+        label = "${character.modelId}  ${character.health}hp$action" + countdown?.let { "  ${it.describe()}" }.orEmpty(),
+        kind = MarkerKind.Character,
+        ring = countdown?.ring(snapshot?.frame ?: 0L)
+    )
+}
 
 private fun PlacedEnemy.marker(): WorldMarker = WorldMarker(
     position = position,

@@ -15,7 +15,16 @@ public enum class MarkerKind {
 public data class WorldMarker(
     public val position: Vec3,
     public val label: String,
-    public val kind: MarkerKind
+    public val kind: MarkerKind,
+    public val ring: HitRing? = null
+)
+
+/** A hit window drawn as a ring around a marker's head, filling through the wind-up, then flashing */
+data class HitRing(
+    public val fill: Float,
+    public val live: Boolean,
+    /** Whether a live ring shows this frame, alternating so it flashes */
+    public val lit: Boolean = true
 )
 
 public data class MarkerView(

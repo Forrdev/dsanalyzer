@@ -13,6 +13,8 @@ import com.sappyoak.dsanalyzer.app.paths.ToolPaths
 import com.sappyoak.dsanalyzer.app.runtime.GameLink
 import com.sappyoak.dsanalyzer.app.runtime.RuntimeEffects
 import com.sappyoak.dsanalyzer.app.runtime.RuntimeStore
+import com.sappyoak.dsanalyzer.app.runtime.drawsHitWindows
+import com.sappyoak.dsanalyzer.app.runtime.timing.TimingLoader
 import com.sappyoak.dsanalyzer.app.scripts.ScriptsEffects
 import com.sappyoak.dsanalyzer.app.scripts.ScriptsStore
 import com.sappyoak.dsanalyzer.app.serialization.jsonSerializer
@@ -74,8 +76,10 @@ public fun createAppModel(
             maps = MapsStore(scope, MapsEffects(installationFiles)),
             scripts = ScriptsStore(scope, ScriptsEffects(installationFiles)),
             runtime = RuntimeStore(scope, RuntimeEffects(
-                link,
-                settings.state.map { it.settings.ai.tracking }.distinctUntilChanged()
+                link = link,
+                aiTracking = settings.state.map { it.settings.runtime.ai.tracking }.distinctUntilChanged(),
+                timingsWanted = settings.state.map { it.settings.drawsHitWindows }.distinctUntilChanged(),
+                timings = TimingLoader(installationFiles)
             ))
         ),
         startup = StartupStore(

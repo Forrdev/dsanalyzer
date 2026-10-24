@@ -31,9 +31,11 @@ import com.sappyoak.dsanalyzer.app.runtime.DrawAttackHitboxes
 import com.sappyoak.dsanalyzer.app.runtime.DrawCharacters
 import com.sappyoak.dsanalyzer.app.runtime.DrawCollision
 import com.sappyoak.dsanalyzer.app.runtime.DrawPlayer
+import com.sappyoak.dsanalyzer.app.runtime.HideDeadCharacters
 import com.sappyoak.dsanalyzer.app.runtime.OccludeMarkers
 import com.sappyoak.dsanalyzer.app.runtime.OverlayEnabled
 import com.sappyoak.dsanalyzer.app.runtime.OverlaySettings
+import com.sappyoak.dsanalyzer.app.runtime.RuntimeSettings
 import com.sappyoak.dsanalyzer.app.runtime.TrackAI
 import com.sappyoak.dsanalyzer.app.settings.SettingsEdit
 import com.sappyoak.dsanalyzer.overlay.FaceCull
@@ -45,7 +47,7 @@ private val TRIANGLE_BUDGET = 500f..20_000f
 private val OPACITY = 0.1f..1f
 
 @Composable
-public fun SettingsScreen(overlay: OverlaySettings, ai: AISettings, onEdit: (SettingsEdit) -> Unit) {
+public fun SettingsScreen(overlay: OverlaySettings, runtime: RuntimeSettings, onEdit: (SettingsEdit) -> Unit) {
     Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
         SettingsSection("Overlay") {
             ToggleRow(
@@ -56,18 +58,18 @@ public fun SettingsScreen(overlay: OverlaySettings, ai: AISettings, onEdit: (Set
         }
         HorizontalDivider()
 
-        CharacterSettings(overlay, onEdit)
+        CharacterSettings(overlay, runtime, onEdit)
         HorizontalDivider()
 
         CollisionSettings(overlay, onEdit)
         HorizontalDivider()
 
-        AISettingsSection(ai, overlay, onEdit)
+        AISettingsSection(runtime.ai, overlay, onEdit)
     }
 }
 
 @Composable
-private fun CharacterSettings(overlay: OverlaySettings, onEdit: (SettingsEdit) -> Unit) {
+private fun CharacterSettings(overlay: OverlaySettings, runtime: RuntimeSettings, onEdit: (SettingsEdit) -> Unit) {
     val settings = overlay.characters
     val on = overlay.enabled
 
@@ -119,6 +121,13 @@ private fun CharacterSettings(overlay: OverlaySettings, onEdit: (SettingsEdit) -
             enabled = on,
             explain = "Drops a marker only when collision covers it completely. Reads collision even if the wireframe is off"
         ) { onEdit(OccludeMarkers(it)) }
+
+        ToggleRow(
+            label = "Hide the dead",
+            checked = runtime.hideDeadCharacters,
+            explain = "Leaves dead characters out of the Runtime tab's list. off keeps them at the foot of the list. " +
+            "The overlay never draws them"
+        ) { onEdit(HideDeadCharacters(it)) }
     }
 }
 

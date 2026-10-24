@@ -40,6 +40,7 @@ public object AIThink {
 /** 'NS_FRPG::ActionCtrl' */
 public object ActionCtrl {
     public const val PlayingAction: Int = 0x60
+    public const val PlayingTime: Int = 0x48C
     public const val RequestedAction: Int = 0x518
 }
 

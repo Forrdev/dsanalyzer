@@ -26,6 +26,7 @@ import com.sappyoak.dsanalyzer.runtime.session.ai.AIScope
 import com.sappyoak.dsanalyzer.runtime.session.sampling
 import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionSnapshot
 import com.sappyoak.dsanalyzer.runtime.watchForGame
+import kotlinx.coroutines.flow.getAndUpdate
 
 private val logger = KotlinLogging.logger {  }
 
@@ -37,12 +38,6 @@ public data class LinkState(
     public val attached: AttachedGame? = null,
     public val note: String? = null,
     public val snapshot: RuntimeSnapshot? = null,
-    /**
-     * The last answer to a placed enemy request, which is not part of a tick.
-     * Null until something asks. It is deliberately not cleared as the world changes.
-     * A roster from the block you just left is stale rather than wrong, and dropping it would
-     * empty the view everytime the player moved
-     */
     public val placedEnemies: List<BlockRoster>? = null,
     public val collision: CollisionSnapshot? = null,
     public val characterEffects: List<CharacterSnapshot>? = null
@@ -64,6 +59,7 @@ public class GameLink(
 
     private var watch: Job? = null
     private val requests = SampleRequests()
+    private val maps = MapFollower()
 
     /** Begins watching */
     public fun start() {
@@ -114,9 +110,16 @@ public class GameLink(
         if (event is RuntimeEvent.Attached) event.log()
         if (event is RuntimeEvent.Collision) event.log()
         mutableState.update { it.after(event) }
+        if (event is RuntimeEvent.Sampled && maps.entered(event.snapshot)) readWorldAgain()
+        if (event is RuntimeEvent.Attached || event == RuntimeEvent.Searching) maps.forget()
         if (event.changesConnection) mutableEvents.emit(event)
     }
 
+    private fun readWorldAgain() {
+        val before = mutableState.getAndUpdate { it.copy(placedEnemies = null, collision = null) }
+        if (before.placedEnemies != null) requests.requestPlacedEnemies()
+        if (before.collision != null) requests.requestCollision()
+    }
 
     private fun RuntimeEvent.Attached.log() {
         val attached = describe()

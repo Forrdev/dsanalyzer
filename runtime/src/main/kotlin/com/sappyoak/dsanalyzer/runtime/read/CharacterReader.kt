@@ -13,6 +13,7 @@ import com.sappyoak.dsanalyzer.runtime.ptde.WorldChrMan
 import com.sappyoak.dsanalyzer.runtime.layout.SpecialEffectLayout
 import com.sappyoak.dsanalyzer.runtime.ptde.CharacterSlot
 import com.sappyoak.dsanalyzer.runtime.read.effects.SpecialEffectReader
+import com.sappyoak.dsanalyzer.runtime.session.BONFIRE_MODEL
 import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
 import com.sappyoak.dsanalyzer.shared.math.Vec3
 
@@ -88,6 +89,8 @@ internal class CharacterReader(effectLayout: SpecialEffectLayout) {
         if (character.isNull || !one.refresh(game.memory, character)) return
 
         val isPlayer = character == player
+        if (!isPlayer && one.int(ChrIns.ModelId) == BONFIRE_MODEL) return
+
         val handle = one.int(ChrIns.Handle)
         if (!isPlayer) {
             others.add(CharacterRef(

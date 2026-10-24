@@ -27,6 +27,7 @@ import com.sappyoak.dsanalyzer.app.maps.ui.MapsScreen
 import com.sappyoak.dsanalyzer.app.runtime.AISettings
 import com.sappyoak.dsanalyzer.app.runtime.OverlaySettings
 import com.sappyoak.dsanalyzer.app.runtime.RuntimeMessage
+import com.sappyoak.dsanalyzer.app.runtime.RuntimeSettings
 import com.sappyoak.dsanalyzer.app.runtime.ui.RuntimeScreen
 import com.sappyoak.dsanalyzer.app.scripts.ScriptsMessage
 import com.sappyoak.dsanalyzer.app.scripts.ui.ScriptsScreen
@@ -44,7 +45,7 @@ public fun WorkspaceShell(
     installation: Installation?,
     stores: WorkspaceStores,
     overlay: OverlaySettings,
-    ai: AISettings,
+    runtime: RuntimeSettings,
     onSettingsEdit: (SettingsEdit) -> Unit
 ) {
     var tab by remember { mutableStateOf(WorkspaceTab.Maps) }
@@ -53,7 +54,7 @@ public fun WorkspaceShell(
         installation?.let {
             stores.maps.dispatch(MapsMessage.Opened(it))
             stores.scripts.dispatch(ScriptsMessage.Opened(it))
-            stores.runtime.dispatch(RuntimeMessage.Opened)
+            stores.runtime.dispatch(RuntimeMessage.Opened(it))
         }
     }
 
@@ -111,6 +112,7 @@ public fun WorkspaceShell(
                         val state by stores.runtime.state.collectAsState()
                         RuntimeScreen(
                             state = state,
+                            settings = runtime,
                             onFollow = follow,
                             onReadPlacedEnemies = {
                                 stores.runtime.dispatch(RuntimeMessage.PlacedEnemiesRequested)
@@ -121,7 +123,7 @@ public fun WorkspaceShell(
                         )
                     }
 
-                    WorkspaceTab.Settings -> SettingsScreen(overlay, ai, onSettingsEdit)
+                    WorkspaceTab.Settings -> SettingsScreen(overlay, runtime, onSettingsEdit)
                 }
             }
         }

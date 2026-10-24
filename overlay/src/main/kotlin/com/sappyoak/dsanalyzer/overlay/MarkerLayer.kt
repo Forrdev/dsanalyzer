@@ -1,6 +1,7 @@
 package com.sappyoak.dsanalyzer.overlay
 
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -13,6 +14,12 @@ import androidx.compose.ui.unit.sp
 private val PLAYER_COLOR = Color(0xFF69F0AE)
 private val CHARACTER_COLOR = Color(0xFFFF5252)
 private val PLACED_COLOR = Color(0xFFFFC107)
+private val WINDUP_COLOR = Color(0xFFFFAB40)
+private val LIVE_COLOR = Color(0xFFFF1744)
+
+private val RING_RADIUS = 9.dp
+private val RING_WIDTH = 2.5.dp
+private const val RING_TRACK_ALPHA = 0.25f
 
 private val DOT_RADIUS = 3.5.dp
 private val STEM_WIDTH = 1.5.dp
@@ -49,7 +56,7 @@ internal fun DrawScope.drawMarkers(
     }
 
     visible.forEach { drawPin(it) }
-
+    visible.forEach { projected -> projected.marker.ring?.let { drawRing(projected, it) } }
     // Nearest last in the list, so the closest markers are the ones that keep their labels
     visible.takeLast(LABEL_LIMIT).forEach { drawLabel(it, measurer) }
 }
@@ -77,6 +84,22 @@ private fun DrawScope.drawPin(projected: ProjectedMarker) {
     val radius = DOT_RADIUS.toPx()
     drawCircle(color.copy(alpha = projected.strength * 0.4f), radius = radius, center = head)
     drawCircle(color, radius = radius, center = head, style = Stroke(width = stem))
+}
+
+private fun DrawScope.drawRing(projected: ProjectedMarker, ring: HitRing) {
+    if (ring.live && !ring.lit) return
+
+    val radius = RING_RADIUS.toPx()
+    val topLeft = Offset(projected.head.x - radius, projected.head.y - radius)
+    val bounds = Size(radius * 2, radius * 2)
+    val stroke = Stroke(width = RING_WIDTH.toPx())
+
+    if (ring.live) {
+        drawArc(LIVE_COLOR, 0f, 360f, useCenter = false, topLeft = topLeft, size = bounds, style = stroke)
+        return
+    }
+    drawArc(WINDUP_COLOR.copy(alpha = RING_TRACK_ALPHA), 0f, 360f, useCenter = false, topLeft = topLeft, size = bounds, style = stroke)
+    drawArc(WINDUP_COLOR, -90f, ring.fill.coerceIn(0f, 1f) * 360f, useCenter = false, topLeft = topLeft, size = bounds, style = stroke)
 }
 
 private fun DrawScope.drawLabel(projected: ProjectedMarker, measurer: TextMeasurer) {
