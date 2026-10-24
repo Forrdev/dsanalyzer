@@ -27,6 +27,7 @@ import com.sappyoak.dsanalyzer.app.runtime.CollisionKindDrawn
 import com.sappyoak.dsanalyzer.app.runtime.CollisionOpacity
 import com.sappyoak.dsanalyzer.app.runtime.CollisionRadius
 import com.sappyoak.dsanalyzer.app.runtime.CollisionTriangleBudget
+import com.sappyoak.dsanalyzer.app.runtime.DrawAttackHitboxes
 import com.sappyoak.dsanalyzer.app.runtime.DrawCharacters
 import com.sappyoak.dsanalyzer.app.runtime.DrawCollision
 import com.sappyoak.dsanalyzer.app.runtime.DrawPlayer
@@ -61,7 +62,7 @@ public fun SettingsScreen(overlay: OverlaySettings, ai: AISettings, onEdit: (Set
         CollisionSettings(overlay, onEdit)
         HorizontalDivider()
 
-        AISettingsSection(ai, onEdit)
+        AISettingsSection(ai, overlay, onEdit)
     }
 }
 
@@ -217,6 +218,7 @@ private fun CollisionSettings(overlay: OverlaySettings, onEdit: (SettingsEdit) -
 @Composable
 internal fun AISettingsSection(
     ai: AISettings,
+    overlay: OverlaySettings,
     onEdit: (SettingsEdit) -> Unit
 ) {
     SettingsSection("Enemy AI") {
@@ -235,6 +237,15 @@ internal fun AISettingsSection(
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
+
+        ToggleRow(
+            label = "Draw Attack Hitboxes",
+            checked = overlay.attackHitboxes,
+            enabled = overlay.attackHitboxes && ai.tracking != AITracking.Off,
+            explain = "The active hitbox volume of an incoming attack, kept on screen for half a second after it closes. Only enemies tracked above"
+        ) {
+            onEdit(DrawAttackHitboxes(it))
+        }
     }
 }
 

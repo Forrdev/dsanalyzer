@@ -19,7 +19,8 @@ private const val MAX_TRIANGLE_BUDGET = 100_000
 public data class OverlaySettings(
     public val enabled: Boolean = true,
     public val characters: CharacterOverlaySettings = CharacterOverlaySettings(),
-    public val collision: CollisionOverlaySettings = CollisionOverlaySettings()
+    public val collision: CollisionOverlaySettings = CollisionOverlaySettings(),
+    public val attackHitboxes: Boolean = true
 )
 
 @Serializable
@@ -51,6 +52,11 @@ public data class CollisionOverlaySettings(
 public data class OverlayEnabled(public val enabled: Boolean) : SettingsEdit {
     override fun applyTo(settings: Settings): Settings =
         settings.copy(overlay = settings.overlay.copy(enabled = enabled))
+}
+
+public data class DrawAttackHitboxes(public val enabled: Boolean) : SettingsEdit {
+    override fun applyTo(settings: Settings): Settings =
+        settings.copy(overlay = settings.overlay.copy(attackHitboxes = enabled))
 }
 
 public data class DrawPlayer(public val enabled: Boolean) : SettingsEdit {

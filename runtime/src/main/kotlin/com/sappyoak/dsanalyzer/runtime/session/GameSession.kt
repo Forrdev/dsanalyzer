@@ -21,9 +21,11 @@ import com.sappyoak.dsanalyzer.runtime.read.PlaceReader
 import com.sappyoak.dsanalyzer.runtime.read.PlacedPartsReader
 import com.sappyoak.dsanalyzer.runtime.read.PlayerReader
 import com.sappyoak.dsanalyzer.runtime.read.ai.AISource
+import com.sappyoak.dsanalyzer.runtime.read.attack.AttackReader
 import com.sappyoak.dsanalyzer.runtime.read.collision.CollisionReader
 import com.sappyoak.dsanalyzer.runtime.session.ai.AIScope
 import com.sappyoak.dsanalyzer.runtime.session.ai.AITracker
+import com.sappyoak.dsanalyzer.runtime.session.attack.HitTracker
 import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionSnapshot
 
 public class GameSession internal constructor(
@@ -46,6 +48,8 @@ public class GameSession internal constructor(
     private val placedPartsReader = PlacedPartsReader()
     private val collisionReader = CollisionReader()
     private val aiTracker = AITracker(AI_GRACE_PERIOD)
+    private val attackReader = AttackReader()
+    private val hitTracker = HitTracker(HIT_LINGER_TICKS, HIT_SWEEP_LIMIT)
 
     private var lastPlace: WorldPlace? = null
     private var wasLoaded: Boolean = false
@@ -99,6 +103,7 @@ public class GameSession internal constructor(
             loadQueue = world.loadQueue,
             characters = aiTracker.read(memory.memory, world.ai, world.characters),
             flagChanges = changes,
+            hits = hitTracker.update(attackReader.read(memory, world.tracked)),
             cost = SampleCost(started.elapsedNow(), present, playerReader.structures + AROUND_PLAYER)
         )
     }
@@ -149,6 +154,9 @@ public class GameSession internal constructor(
         const val WORLD_TIER_PERIOD = 6
 
         const val AI_GRACE_PERIOD: Int = 15
+
+        const val HIT_LINGER_TICKS = 15
+        const val HIT_SWEEP_LIMIT = 32
     }
 }
 
@@ -157,7 +165,9 @@ private data class WorldTier(
     val loadQueue: LoadQueueSnapshot? = null,
     val characters: List<CharacterSnapshot> = emptyList(),
     val ai: List<AISource> = emptyList()
-)
+) {
+    val tracked: Set<Int> = ai.mapTo(HashSet()) { it.handle }
+}
 
 public fun GameConnection.openSession(edition: EditionTables): GameSession {
     val resolved = memory.resolvePointers(edition.pointers, mainModule)

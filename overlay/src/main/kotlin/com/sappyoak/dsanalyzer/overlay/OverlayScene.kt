@@ -1,6 +1,7 @@
 package com.sappyoak.dsanalyzer.overlay
 
 import com.sappyoak.dsanalyzer.runtime.session.CameraSnapshot
+import com.sappyoak.dsanalyzer.runtime.session.attack.HitSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionBody
 import com.sappyoak.dsanalyzer.runtime.session.collision.ShapeKind
 import com.sappyoak.dsanalyzer.shared.math.Vec3
@@ -58,6 +59,7 @@ public data class OverlayScene(
     public val camera: CameraSnapshot?,
     public val markers: MarkerView = MarkerView.Empty,
     public val collision: CollisionView? = null,
+    public val hits: List<HitSnapshot> = emptyList(),
     public val suppressWorldDrawing: Boolean = false
 ) {
     public companion object {

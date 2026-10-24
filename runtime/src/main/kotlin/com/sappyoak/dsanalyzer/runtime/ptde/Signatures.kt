@@ -1,7 +1,9 @@
 package com.sappyoak.dsanalyzer.runtime.ptde
 
+import com.sappyoak.dsanalyzer.*
 import com.sappyoak.dsanalyzer.native.memory.Signature
 import com.sappyoak.dsanalyzer.native.memory.SignatureTarget
+
 
 object PTDESignatures {
     public val ChrIns: Signature = Signature.parse(
@@ -69,5 +71,17 @@ object PTDESignatures {
         name = "EventFlags",
         pattern = "56 8B F1 8B 46 1C 50 A1 ?? ?? ?? ?? 32 C9",
         target = SignatureTarget.Embedded(8)
+    )
+
+    public val AttackMan: Signature = Signature.parse(
+        name = "AttackMan",
+        pattern = "A1 ?? ?? ?? ?? 51 8B 4D 0C D9 1C 24 51 52 6A 00 56 50",
+        target = SignatureTarget.Embedded(1)
+    )
+
+    public val BulletMan: Signature = Signature.parse(
+        name = "BulletMan",
+        pattern = "8B 57 04 83 FA FF 74 ?? A1 ?? ?? ?? ?? 56 E8",
+        target = SignatureTarget.Embedded(9)
     )
 }

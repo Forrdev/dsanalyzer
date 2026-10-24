@@ -37,6 +37,7 @@ internal fun WorldLayer(scene: OverlayScene) {
 
         if (built && collision != null && collision.draw) drawCollision(frame, collision, path)
 
+        drawHits(scene)
         drawMarkers(
             scene = scene,
             measurer = measurer,

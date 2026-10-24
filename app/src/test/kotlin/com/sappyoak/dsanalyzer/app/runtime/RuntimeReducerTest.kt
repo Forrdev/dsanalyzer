@@ -8,7 +8,6 @@ import kotlin.time.Duration.Companion.milliseconds
 
 import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
-import com.sappyoak.dsanalyzer.runtime.ptde.PTDEBuild
 import com.sappyoak.dsanalyzer.runtime.session.FlagChange
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.SampleCost
@@ -18,7 +17,7 @@ private val GAME = AttachedGame(
     executableName = "DARKSOULS.exe",
     pid = 10,
     edition = GameEdition.PrepareToDie,
-    build = PTDEBuild.Steam,
+    build = "ptde",
     unresolved = emptyList()
 )
 
@@ -48,8 +47,8 @@ private fun tick(state: RuntimeState, link: LinkState): RuntimeState =
     reduceRuntime(state, RuntimeMessage.LinkChanged(link)).state
 
 class RuntimeReducerTest : FunSpec({
-    test("opening the view watches the link rather than the game") {
-        reduceRuntime(RuntimeState(), RuntimeMessage.Opened).effects shouldBe listOf(RuntimeEffect.Observe)
+    test("opening the view watches the link rather than the game, and keeps the AI tracking applied") {
+        reduceRuntime(RuntimeState(), RuntimeMessage.Opened).effects shouldBe listOf(RuntimeEffect.Observe, RuntimeEffect.FollowAITracking)
     }
 
     test("what the link reports becomes the state") {

@@ -45,7 +45,8 @@ internal fun RuntimeState.overlayScene(settings: OverlaySettings): OverlayScene 
             drawDistance = settings.characters.drawDistance,
             occludeByCollision = settings.characters.occludeByCollision
         ),
-        collision = collisionFor(settings.collision, settings.characters)
+        collision = collisionFor(settings.collision, settings.characters),
+        hits = if (settings.attackHitboxes) snapshot.hits else emptyList()
     )
 }
 
@@ -108,7 +109,7 @@ private fun Vec3.near(other: Vec3): Boolean =
 
 private fun CharacterSnapshot.marker(): WorldMarker = WorldMarker(
     position = position,
-    label = if (isPlayer) "you" else "$modelId  ${health}hp",
+    label = if (isPlayer) "you" else "$modelId  ${health}hp" + ai?.requestedAction?.let { "  a$it" }.orEmpty(),
     kind = if (isPlayer) MarkerKind.Player else MarkerKind.Character
 )
 
