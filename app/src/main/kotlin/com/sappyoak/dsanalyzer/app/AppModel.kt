@@ -31,6 +31,8 @@ import com.sappyoak.dsanalyzer.app.workspace.WorkspaceDirectory
 import com.sappyoak.dsanalyzer.app.workspace.WorkspaceStores
 import com.sappyoak.dsanalyzer.game.files.InstallationFiles
 import com.sappyoak.dsanalyzer.native.process.Processes
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 
 private val logger = KotlinLogging.logger {  }
 
@@ -71,7 +73,10 @@ public fun createAppModel(
         workspace = WorkspaceStores(
             maps = MapsStore(scope, MapsEffects(installationFiles)),
             scripts = ScriptsStore(scope, ScriptsEffects(installationFiles)),
-            runtime = RuntimeStore(scope, RuntimeEffects(link))
+            runtime = RuntimeStore(scope, RuntimeEffects(
+                link,
+                settings.state.map { it.settings.ai.tracking }.distinctUntilChanged()
+            ))
         ),
         startup = StartupStore(
             scope,

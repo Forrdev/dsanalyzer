@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import com.sappyoak.dsanalyzer.runtime.session.BlockRoster
 import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.PlacedEnemy
+import com.sappyoak.dsanalyzer.runtime.session.ai.AISnapshot
 
 private const val CHARACTER_ROW = "character"
 
@@ -90,9 +91,16 @@ internal fun LazyListScope.characterItems(
 }
 
 private fun CharacterSnapshot.describe(): String {
-    val target = targetHandle?.let { "- fighting %08X".format(it) }.orEmpty()
+    val target = (ai?.targetHandle ?: targetHandle)?.let { "- fighting %08X".format(it) }.orEmpty()
     val dead = if (alive) "" else " - dead"
-    return "$health/$healthMax hp, npc $npcParamId, ${position.describe()}$dead$target"
+    val thinking = ai?.describe().orEmpty()
+
+    return "$health/$healthMax hp, npc $npcParamId, ${position.describe()}$dead$target$thinking"
+}
+
+private fun AISnapshot.describe(): String {
+    val playing = playingAction?.let { " (playing $it)" }.orEmpty()
+    return " - think $thinkId, action ${requestedAction ?: "none"}$playing"
 }
 
 private fun PlacedEnemy.describe(): String =

@@ -11,10 +11,12 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicReference
 
 import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.runtime.ConnectionEvent
 import com.sappyoak.dsanalyzer.runtime.GameConnection
+import com.sappyoak.dsanalyzer.runtime.session.ai.AIScope
 import com.sappyoak.dsanalyzer.runtime.tablesFor
 
 
@@ -27,6 +29,9 @@ public class SampleRequests {
     private val placedEnemies = AtomicBoolean(false)
     private val collision = AtomicBoolean(false)
     private val characterEffects = AtomicBoolean(false)
+    private val ai = AtomicReference(AIScope.TargetingPlayer)
+
+    internal val aiScope: AIScope get() = ai.get()
 
     public fun requestPlacedEnemies() {
         placedEnemies.set(true)
@@ -45,6 +50,10 @@ public class SampleRequests {
     }
 
     internal fun takeCharacterEffects(): Boolean = characterEffects.getAndSet(false)
+
+    public fun setAIScope(scope: AIScope) {
+        ai.set(scope)
+    }
 }
 
 /**

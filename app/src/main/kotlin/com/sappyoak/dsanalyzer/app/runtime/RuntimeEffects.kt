@@ -6,12 +6,16 @@ import kotlinx.coroutines.flow.map
 
 import com.sappyoak.dsanalyzer.app.store.EffectRunner
 
-public class RuntimeEffects(private val link: GameLink) : EffectRunner<RuntimeEffect, RuntimeMessage> {
+public class RuntimeEffects(
+    private val link: GameLink,
+    private val aiTracking: Flow<AITracking>
+) : EffectRunner<RuntimeEffect, RuntimeMessage> {
     override fun keyOf(effect: RuntimeEffect): Any? = effect
     override fun execute(effect: RuntimeEffect): Flow<RuntimeMessage> = when (effect) {
         RuntimeEffect.Observe -> link.state.map(RuntimeMessage::LinkChanged)
         RuntimeEffect.RequestPlacedEnemies -> flow { link.requestPlacedEnemies() }
         RuntimeEffect.RequestCollision -> flow { link.requestCollision() }
+        RuntimeEffect.FollowAITracking -> flow { aiTracking.collect { link.setAIScope(it.scope) } }
     }
 
     override fun onFailure(effect: RuntimeEffect, failure: Throwable): RuntimeMessage? = null
@@ -22,4 +26,5 @@ public sealed interface RuntimeEffect {
     public data object Observe : RuntimeEffect
     public data object RequestPlacedEnemies : RuntimeEffect
     public data object RequestCollision : RuntimeEffect
+    public data object FollowAITracking : RuntimeEffect
 }

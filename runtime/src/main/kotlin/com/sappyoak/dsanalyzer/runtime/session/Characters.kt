@@ -1,5 +1,6 @@
 package com.sappyoak.dsanalyzer.runtime.session
 
+import com.sappyoak.dsanalyzer.runtime.session.ai.AISnapshot
 import com.sappyoak.dsanalyzer.runtime.session.effects.SpecialEffectSnapshot
 import com.sappyoak.dsanalyzer.shared.math.Vec3
 
@@ -17,7 +18,8 @@ public data class CharacterSnapshot(
     /** The [handle] this character is targeting, or null */
     public val targetHandle: Int?,
     public val isPlayer: Boolean,
-    public val effects: SpecialEffectSnapshot?
+    public val effects: SpecialEffectSnapshot?,
+    public val ai: AISnapshot? = null
 ) {
     public val alive: Boolean get() = health > 0
     public val modelName: String get() = "c%04d".format(modelId)

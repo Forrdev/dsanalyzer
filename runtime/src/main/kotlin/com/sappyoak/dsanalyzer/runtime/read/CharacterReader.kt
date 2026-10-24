@@ -18,6 +18,23 @@ import com.sappyoak.dsanalyzer.shared.math.Vec3
 
 private const val NO_TARGET = -1
 
+internal data class CharacterRef(
+    val handle: Int,
+    val comManipulator: Address,
+    val controller: Address
+)
+
+internal class CharacterReading(
+    val characters: List<CharacterSnapshot>,
+    val others: List<CharacterRef>
+) {
+    val playerHandle: Int? get() = characters.firstOrNull { it.isPlayer }?.handle
+
+    companion object {
+        val Empty = CharacterReading(emptyList(), emptyList())
+    }
+}
+
 internal class CharacterReader(effectLayout: SpecialEffectLayout) {
     private val manager = StructView(WorldChrMan.Pointer)
     private val playerSlots = TableView(WorldChrMan.PlayerSlots)
@@ -31,15 +48,16 @@ internal class CharacterReader(effectLayout: SpecialEffectLayout) {
 
     private val effects = SpecialEffectReader(effectLayout)
 
-    fun read(game: GameMemory, allEffects: Boolean = false): List<CharacterSnapshot> {
-        if (!manager.refresh(game)) return emptyList()
+    fun read(game: GameMemory, allEffects: Boolean = false): CharacterReading {
+        if (!manager.refresh(game)) return CharacterReading.Empty
 
         val player = manager.pointer(WorldChrMan.PlayerPointer)
         val found = ArrayList<CharacterSnapshot>()
+        val others = ArrayList<CharacterRef>()
 
         if (playerSlots.refresh(game.memory, manager.address)) {
             playerSlots.elements.forEach { at ->
-                characterAt(game, at, player, allEffects)?.let(found::add)
+                characterAt(game, at, player, allEffects, found, others)
             }
         }
 
@@ -47,48 +65,64 @@ internal class CharacterReader(effectLayout: SpecialEffectLayout) {
             blocks.elements.forEach { block ->
                 if (characters.refresh(game.memory, block)) {
                     characters.elements.forEach { at ->
-                        characterAt(game, at, player, allEffects)?.let(found::add)
+                        characterAt(game, at, player, allEffects, found, others)
                     }
                 }
             }
         }
 
-        return found
+        return CharacterReading(found, others)
     }
 
     private fun characterAt(
         game: GameMemory,
         at: Address,
         player: Address,
-        allEffects: Boolean
-    ): CharacterSnapshot? {
-        if (!slot.refresh(game.memory, at)) return null
+        allEffects: Boolean,
+        found: MutableList<CharacterSnapshot>,
+        others: MutableList<CharacterRef>
+    ) {
+        if (!slot.refresh(game.memory, at)) return
 
         val character = slot.pointer(CharacterSlot.Character)
-        if (character.isNull || !one.refresh(game.memory, character)) return null
+        if (character.isNull || !one.refresh(game.memory, character)) return
 
         val isPlayer = character == player
+        val handle = one.int(ChrIns.Handle)
+        if (!isPlayer) {
+            others.add(CharacterRef(
+                handle = handle,
+                comManipulator = one.pointer(ChrIns.ComManipulatorPointer),
+                controller = one.pointer(ChrIns.ChrCtrlPointer)
+            ))
+        }
+
+        found.add(snapshotOf(game, handle, isPlayer, allEffects))
+    }
+
+    private fun snapshotOf(
+        game: GameMemory,
+        handle: Int,
+        isPlayer: Boolean,
+        allEffects: Boolean
+    ): CharacterSnapshot {
         val target = one.int(ChrIns.TargetHandle)
 
         return CharacterSnapshot(
-            handle = one.int(ChrIns.Handle),
+            handle = handle,
             modelId = one.int(ChrIns.ModelId),
             npcParamId = one.int(ChrIns.NpcParamId),
             position = if (isPlayer) posedPosition(game) ?: transformOf(one) else transformOf(one),
-            health = one.int(ChrIns.Health),
+            health = one.int(ChrIns.Handle),
             healthMax = one.int(ChrIns.HealthMax),
             stamina = one.int(ChrIns.Stamina),
             characterType = one.int(ChrIns.ChrType),
             teamType = one.int(ChrIns.TeamType),
             targetHandle = target.takeIf { it != NO_TARGET },
             isPlayer = isPlayer,
-            // Read off the ChrIns copy already in hand, so the holder costs no walk of its own.
-            // The slot carries one too, at CharacterSlot.SpecialEffect, which is the same object
             effects = if (isPlayer || allEffects) {
                 effects.read(game, one.pointer(ChrIns.SpecialEffectPointer))
-            } else {
-                null
-            }
+            } else null
         )
     }
 

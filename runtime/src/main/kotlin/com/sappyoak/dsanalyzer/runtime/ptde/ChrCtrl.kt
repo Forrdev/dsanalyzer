@@ -45,6 +45,9 @@ public object ChrCtrl {
 
     public const val PositionPointer: Int = 0x1C
 
+    /** 'NS_FRPG::ActionCtrl' */
+    public const val ActionCtrlPointer: Int = 0x2C
+
     /** 'NS_FRPG::ComManipulator', the same object [ChrIns.ComManipulatorPointer] points at */
     public const val ComManipulatorPointer: Int = 0x54
 

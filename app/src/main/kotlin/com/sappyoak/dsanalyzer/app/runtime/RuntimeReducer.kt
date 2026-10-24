@@ -10,7 +10,7 @@ public fun reduceRuntime(
     state: RuntimeState,
     message: RuntimeMessage
 ): Transition<RuntimeState, RuntimeEffect> = when (message) {
-    RuntimeMessage.Opened -> state.with(RuntimeEffect.Observe)
+    RuntimeMessage.Opened -> state.with(RuntimeEffect.Observe, RuntimeEffect.FollowAITracking)
     RuntimeMessage.PlacedEnemiesRequested -> state.with(RuntimeEffect.RequestPlacedEnemies)
     RuntimeMessage.CollisionRequested -> state.with(RuntimeEffect.RequestCollision)
     is RuntimeMessage.LinkChanged -> state.copy(

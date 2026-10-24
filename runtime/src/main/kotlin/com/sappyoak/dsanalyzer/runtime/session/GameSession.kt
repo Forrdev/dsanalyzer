@@ -20,7 +20,10 @@ import com.sappyoak.dsanalyzer.runtime.read.MenuReader
 import com.sappyoak.dsanalyzer.runtime.read.PlaceReader
 import com.sappyoak.dsanalyzer.runtime.read.PlacedPartsReader
 import com.sappyoak.dsanalyzer.runtime.read.PlayerReader
+import com.sappyoak.dsanalyzer.runtime.read.ai.AISource
 import com.sappyoak.dsanalyzer.runtime.read.collision.CollisionReader
+import com.sappyoak.dsanalyzer.runtime.session.ai.AIScope
+import com.sappyoak.dsanalyzer.runtime.session.ai.AITracker
 import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionSnapshot
 
 public class GameSession internal constructor(
@@ -42,6 +45,7 @@ public class GameSession internal constructor(
     private val characterReader = CharacterReader(layout.specialEffect)
     private val placedPartsReader = PlacedPartsReader()
     private val collisionReader = CollisionReader()
+    private val aiTracker = AITracker(AI_GRACE_PERIOD)
 
     private var lastPlace: WorldPlace? = null
     private var wasLoaded: Boolean = false
@@ -51,7 +55,7 @@ public class GameSession internal constructor(
 
     public fun isFlagSet(flagId: Int): Boolean? = flags.isSet(flagId)
 
-    public fun sample(): RuntimeSnapshot {
+    public fun sample(aiScope: AIScope = AIScope.TargetingPlayer): RuntimeSnapshot {
         val started = TimeSource.Monotonic.markNow()
 
         val loaded = cameraReader.refresh(memory)
@@ -80,7 +84,7 @@ public class GameSession internal constructor(
             present++
         }
 
-        refreshWorldTier()
+        refreshWorldTier(aiScope)
 
         return RuntimeSnapshot(
             inGameTimeMillis = playerReader.timeMillis(),
@@ -93,7 +97,7 @@ public class GameSession internal constructor(
             camera = if (loaded) cameraReader.camera() else null,
             menu = menu,
             loadQueue = world.loadQueue,
-            characters = world.characters,
+            characters = aiTracker.read(memory.memory, world.ai, world.characters),
             flagChanges = changes,
             cost = SampleCost(started.elapsedNow(), present, playerReader.structures + AROUND_PLAYER)
         )
@@ -104,7 +108,7 @@ public class GameSession internal constructor(
     public fun readCollision(): CollisionSnapshot = collisionReader.read(memory)
 
     public fun readCharacterEffects(): List<CharacterSnapshot> =
-        characterReader.read(memory, allEffects = true)
+        characterReader.read(memory, allEffects = true).characters
 
     public fun resolveMissing(declared: List<GamePointer>, module: AddressRange): ResolvedPointers? {
         val found = memory.memory.resolveMissing(pointers, declared, module) ?: return null
@@ -119,15 +123,18 @@ public class GameSession internal constructor(
         sinceWorld = 0
     }
 
-    private fun refreshWorldTier() {
+    private fun refreshWorldTier(scope: AIScope) {
         if (sinceWorld > 0) {
             sinceWorld--
             return
         }
         sinceWorld = WORLD_TIER_PERIOD - 1
+
+        val reading = characterReader.read(memory)
         world = WorldTier(
             loadQueue = loadQueueReader.read(memory),
-            characters = characterReader.read(memory)
+            characters = reading.characters,
+            ai = aiTracker.select(memory.memory, scope, reading)
         )
     }
 
@@ -140,13 +147,16 @@ public class GameSession internal constructor(
          * which is faster than a block can load and faster than anyone can read a list
          */
         const val WORLD_TIER_PERIOD = 6
+
+        const val AI_GRACE_PERIOD: Int = 15
     }
 }
 
 /** The slow tier's last reading, held between the ticks that do not refresh it */
 private data class WorldTier(
     val loadQueue: LoadQueueSnapshot? = null,
-    val characters: List<CharacterSnapshot> = emptyList()
+    val characters: List<CharacterSnapshot> = emptyList(),
+    val ai: List<AISource> = emptyList()
 )
 
 public fun GameConnection.openSession(edition: EditionTables): GameSession {

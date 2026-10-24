@@ -16,6 +16,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.sappyoak.dsanalyzer.app.runtime.AISettings
+import com.sappyoak.dsanalyzer.app.runtime.AITracking
 
 import com.sappyoak.dsanalyzer.app.runtime.CharacterDrawDistance
 import com.sappyoak.dsanalyzer.app.runtime.CharacterDrawing
@@ -31,6 +33,7 @@ import com.sappyoak.dsanalyzer.app.runtime.DrawPlayer
 import com.sappyoak.dsanalyzer.app.runtime.OccludeMarkers
 import com.sappyoak.dsanalyzer.app.runtime.OverlayEnabled
 import com.sappyoak.dsanalyzer.app.runtime.OverlaySettings
+import com.sappyoak.dsanalyzer.app.runtime.TrackAI
 import com.sappyoak.dsanalyzer.app.settings.SettingsEdit
 import com.sappyoak.dsanalyzer.overlay.FaceCull
 import com.sappyoak.dsanalyzer.runtime.session.collision.ShapeKind
@@ -41,7 +44,7 @@ private val TRIANGLE_BUDGET = 500f..20_000f
 private val OPACITY = 0.1f..1f
 
 @Composable
-public fun SettingsScreen(overlay: OverlaySettings, onEdit: (SettingsEdit) -> Unit) {
+public fun SettingsScreen(overlay: OverlaySettings, ai: AISettings, onEdit: (SettingsEdit) -> Unit) {
     Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
         SettingsSection("Overlay") {
             ToggleRow(
@@ -56,6 +59,9 @@ public fun SettingsScreen(overlay: OverlaySettings, onEdit: (SettingsEdit) -> Un
         HorizontalDivider()
 
         CollisionSettings(overlay, onEdit)
+        HorizontalDivider()
+
+        AISettingsSection(ai, onEdit)
     }
 }
 
@@ -208,6 +214,30 @@ private fun CollisionSettings(overlay: OverlaySettings, onEdit: (SettingsEdit) -
     }
 }
 
+@Composable
+internal fun AISettingsSection(
+    ai: AISettings,
+    onEdit: (SettingsEdit) -> Unit
+) {
+    SettingsSection("Enemy AI") {
+        Column(modifier = Modifier.selectableGroup()) {
+            AITracking.entries.forEach { tracking ->
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    RadioButton(selected = ai.tracking == tracking, onClick = { onEdit(TrackAI(tracking)) })
+                    Text(text = tracking.describe(), style = MaterialTheme.typography.bodySmall)
+                }
+            }
+        }
+
+        Text(
+            text = "Read every tick, so each enemy tracked costs a few reads per tick. An enemy stays tracked " +
+            "for three seconds after it last targeted you, so it does not drop out between attacks",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
 private fun FaceCull.describe(): String = when (this) {
     FaceCull.Off -> "Draw every face, including the ones pointing away"
     FaceCull.Clockwise -> "Drop clockwise faces"
@@ -218,4 +248,10 @@ private fun CharacterDrawing.describe(): String = when (this) {
     CharacterDrawing.None -> "None"
     CharacterDrawing.Instantiated -> "Only the ones the game has built"
     CharacterDrawing.All -> "Those, and the placed enemies it has not built"
+}
+
+private fun AITracking.describe(): String = when (this) {
+    AITracking.Off -> "Off"
+    AITracking.TargetingPlayer -> "Enemies targeting you"
+    AITracking.All -> "Every enemy"
 }

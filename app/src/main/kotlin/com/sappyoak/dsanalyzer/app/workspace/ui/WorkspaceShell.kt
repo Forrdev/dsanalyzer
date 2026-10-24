@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 
 import com.sappyoak.dsanalyzer.app.maps.MapsMessage
 import com.sappyoak.dsanalyzer.app.maps.ui.MapsScreen
+import com.sappyoak.dsanalyzer.app.runtime.AISettings
 import com.sappyoak.dsanalyzer.app.runtime.OverlaySettings
 import com.sappyoak.dsanalyzer.app.runtime.RuntimeMessage
 import com.sappyoak.dsanalyzer.app.runtime.ui.RuntimeScreen
@@ -43,6 +44,7 @@ public fun WorkspaceShell(
     installation: Installation?,
     stores: WorkspaceStores,
     overlay: OverlaySettings,
+    ai: AISettings,
     onSettingsEdit: (SettingsEdit) -> Unit
 ) {
     var tab by remember { mutableStateOf(WorkspaceTab.Maps) }
@@ -119,7 +121,7 @@ public fun WorkspaceShell(
                         )
                     }
 
-                    WorkspaceTab.Settings -> SettingsScreen(overlay, onSettingsEdit)
+                    WorkspaceTab.Settings -> SettingsScreen(overlay, ai, onSettingsEdit)
                 }
             }
         }
