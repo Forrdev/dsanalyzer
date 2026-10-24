@@ -14,6 +14,7 @@ import com.sappyoak.dsanalyzer.runtime.ptde.TargetNode
 import com.sappyoak.dsanalyzer.runtime.ptde.TargetingSystem
 import com.sappyoak.dsanalyzer.runtime.read.CharacterRef
 import com.sappyoak.dsanalyzer.runtime.session.ai.AISnapshot
+import com.sappyoak.dsanalyzer.runtime.session.ai.AITarget
 
 private const val NONE = -1
 
@@ -40,7 +41,7 @@ internal class AIReader {
 
         return AISnapshot(
             thinkId = think.int(AIThink.ThinkId),
-            targetHandle = targetOf(memory, source),
+            target = targetOf(memory, source),
             requestedAction = actions.int(ActionCtrl.RequestedAction).takeIf { it != NONE },
             playingAction = actions.int(ActionCtrl.PlayingAction).takeIf { it != NONE },
             timers = List(AI_THINK_TIMER_COUNT) { think.float(AIThink.Timers + it * Float.SIZE_BYTES) },
@@ -62,35 +63,35 @@ internal class AIReader {
         return AISource(character.handle, at, owner, targeting, actionCtrl)
     }
 
-    fun targetOf(memory: ProcessMemory, source: AISource): Int? {
+    fun targetOf(memory: ProcessMemory, source: AISource): AITarget {
         var at = pointerAt(memory, source.targeting + TargetingSystem.Known.toLong())
-        var special = false
-        var hostile: Int? = null
-        var hostileScore = Float.NEGATIVE_INFINITY
-        var other: Int? = null
+        var alert: AITarget? = null
+        var combat: AITarget? = null
+        var weight = Float.NEGATIVE_INFINITY
+        var sound: AITarget? = null
 
         for (step in 0 until NODE_LIMIT) {
             if (at.isNull || !node.refresh(memory, at)) break
             when (node.unsigned(TargetNode.Kind) and TargetNode.KIND_MASK) {
-                TargetNode.FORCED -> return handleOfNode()
-                TargetNode.SPECIAL -> special = true
-                TargetNode.HOSTILE -> if (node.float(TargetNode.Score) > hostileScore) {
-                    hostileScore = node.float(TargetNode.Score)
-                    hostile = handleOfNode()
+                TargetNode.URGENT_SOUND -> return entryTarget()
+                TargetNode.ALERT_SOUND -> if (alert == null) alert = entryTarget()
+                TargetNode.COMBAT -> if (node.float(TargetNode.Weight) > weight) {
+                    weight = node.float(TargetNode.Weight)
+                    combat = entryTarget()
                 }
-                TargetNode.OTHER -> if (other == null) other = handleOfNode()
+                TargetNode.SOUND -> if (sound == null) sound = entryTarget()
             }
             at = node.pointer(TargetNode.Next)
         }
 
-        return if (special) null else hostile ?: other
+        return alert ?: combat ?: sound ?: AITarget.None
     }
 
-    private fun handleOfNode(): Int? = when (node.int(TargetNode.Shape)) {
-        TargetNode.SINGLE -> node.int(TargetNode.SingleHandle)
-        TargetNode.DOUBLE -> node.int(TargetNode.DoubleHandle)
-        else -> null
-    }?.takeIf { it != NONE && it != 0 }
+    private fun entryTarget(): AITarget = when (node.int(TargetNode.Shape)) {
+        TargetNode.CHARACTER -> node.int(TargetNode.Handle).let { if (it == NONE) AITarget.None else AITarget.Character(it) }
+        TargetNode.PLACE -> AITarget.Sound
+        else -> AITarget.None
+    }
 
     private fun readThink(memory: ProcessMemory, at: Address, owner: Address): Boolean =
         think.refresh(memory, at) && think.pointer(AIThink.OwnerPointer) == owner

@@ -12,6 +12,7 @@ import com.sappyoak.dsanalyzer.runtime.session.BlockRoster
 import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.PlacedEnemy
 import com.sappyoak.dsanalyzer.runtime.session.ai.AISnapshot
+import com.sappyoak.dsanalyzer.runtime.session.ai.AITarget
 
 private const val CHARACTER_ROW = "character"
 
@@ -91,7 +92,12 @@ internal fun LazyListScope.characterItems(
 }
 
 private fun CharacterSnapshot.describe(): String {
-    val target = (ai?.targetHandle ?: targetHandle)?.let { "- fighting %08X".format(it) }.orEmpty()
+    val target = when (val aiTarget = ai?.target) {
+        is AITarget.Character -> " - fighting %08X".format(aiTarget.handle)
+        AITarget.Sound -> " - turned to a sound"
+        AITarget.None -> ""
+        null -> targetHandle?.let { " - fighting %08X".format(it) }.orEmpty()
+    }
     val dead = if (alive) "" else " - dead"
     val thinking = ai?.describe().orEmpty()
 

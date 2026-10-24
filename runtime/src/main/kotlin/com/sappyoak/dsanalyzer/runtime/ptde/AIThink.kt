@@ -49,23 +49,30 @@ public object TargetNode {
     public const val Kind: Int = 0x02
     public const val KIND_MASK: Int = 0x7F
 
-    public const val HOSTILE: Int = 1
-    public const val ALLY: Int = 2
-    public const val OTHER: Int = 3
-    public const val FORCED: Int = 4
-    public const val SPECIAL: Int = 5
+    /** The character being found, kept by 'TargetingSystemBase_Tick' through 'AiTargetEntryList_AddKind1' */
+    public const val COMBAT: Int = 1
+    /** A character known about, allies included */
+    public const val KNOWN: Int = 2
+    /** A sound of type 0, heard only while there is no [COMBAT] entry ('AiPerception_SoundPass') */
+    public const val SOUND: Int = 3
+    /** A sound of type 1 to 3, which wins over everything */
+    public const val URGENT_SOUND: Int = 4
+    /** A sound of type 4, second only to [URGENT_SOUND] */
+    public const val ALERT_SOUND: Int = 5
 
     public const val Next: Int = 0x04
 
+    /** Whether the entry points at a character or a place */
     public const val Shape: Int = 0x18
-    public const val SINGLE: Int = 1
-    public const val DOUBLE: Int = 2
+    public const val CHARACTER: Int = 1
+    public const val PLACE: Int = 2
 
-    public const val Score: Int = 0x20
+    /** What ranks [COMBAT] entries */
+    public const val Weight: Int = 0x20
 
-    public const val SingleHandle: Int = 0x38
-    public const val DoubleHandle: Int = 0x44
+    /** The character's handle when [Shape] is [CHARACTER], otherwise -1 until the entry is filled */
+    public const val Handle: Int = 0x38
 
-    public const val SIZE: Int = 0x48
+    public const val SIZE: Int = 0x3C
 
 }

@@ -34,11 +34,11 @@ internal class AITracker(gracePeriod: Int) {
 
         val found = reading.others.mapNotNull { reader.locate(memory, it) }
         val targets = found.associate { source ->
-            source.handle to if (scope == AIScope.TargetingPlayer) reader.targetOf(memory, source) else null
+            source.handle to if (scope == AIScope.TargetingPlayer) reader.targetOf(memory, source).handle else null
         }
         val selected = selection.select(scope, targets, reading.playerHandle)
         return found.filter { it.handle in selected }
     }
-
-
 }
+
+private val AITarget.handle: Int? get() = (this as? AITarget.Character)?.handle
