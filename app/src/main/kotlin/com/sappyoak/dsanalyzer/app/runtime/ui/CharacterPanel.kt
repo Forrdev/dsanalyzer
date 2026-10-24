@@ -1,62 +1,89 @@
 package com.sappyoak.dsanalyzer.app.runtime.ui
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 
 import com.sappyoak.dsanalyzer.runtime.session.BlockRoster
 import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.PlacedEnemy
 
-@Composable
-internal fun CharacterPanel(
+private const val CHARACTER_ROW = "character"
+
+internal fun LazyListScope.characterItems(
     characters: List<CharacterSnapshot>,
     placed: List<BlockRoster>?,
     onReadPlaced: () -> Unit
 ) {
-    Column(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(2.dp)
-    ) {
-        val others = characters.filterNot { it.isPlayer }
+    val others = characters.filterNot { it.isPlayer }
+    item(key = "characters") {
+        Text(
+            text = "Instantiated characters (${others.size})",
+            style = MaterialTheme.typography.titleSmall,
+            modifier = HEADER_PADDING
+        )
+    }
 
-        Text("Instantiated characters (${others.size})", style = MaterialTheme.typography.titleSmall)
-        if (others.isEmpty()) {
-            Text("Nothing but the player", style = MaterialTheme.typography.bodySmall)
+    if (others.isEmpty()) {
+        item(key = "characters-none") {
+            Text(
+                text = "Nothing but the player",
+                style = MaterialTheme.typography.bodySmall,
+                modifier = ROW_PADDING
+            )
         }
-        others.forEach { Field(it.modelName, it.describe()) }
+    }
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
+    items(
+        others,
+        contentType = {CHARACTER_ROW }
+    ) {
+        Field(it.modelName, it.describe(), ROW_PADDING)
+    }
+
+    item(key = "placed") {
+        Row(
+            modifier = ROW_PADDING,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text("Placed enemies", style = MaterialTheme.typography.titleSmall)
             TextButton(onClick = onReadPlaced) {
                 Text(if (placed == null) "Read" else "Re-read")
             }
         }
+    }
 
-        when {
-            placed == null -> Text(
-                text = "Not read. This walks every part of every loaded block, so it is on request",
+    when {
+        placed == null -> item(key = "placed-unread") {
+            Text(
+                text = "Not read",
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = ROW_PADDING
             )
-            placed.isEmpty() -> Text("No block is loaded", style = MaterialTheme.typography.bodySmall)
-            else -> placed.forEach { roster ->
+        }
+        placed.isEmpty() -> item(key = "placed-none") {
+            Text(
+                text = "No block is loaded",
+                style = MaterialTheme.typography.bodySmall,
+                modifier = ROW_PADDING
+            )
+        }
+        else -> placed.forEach { roster ->
+            item {
                 Text(
-                    text = "Block ${roster.blockIndex} - ${roster.enemies.size} enemies " +
-                    "of ${roster.partCount} parts",
+                    text = "Block ${roster.blockIndex} - ${roster.enemies.size} enemies of ${roster.partCount} parts",
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = ROW_PADDING
                 )
-                roster.enemies.forEach { Field(it.name, it.describe()) }
+            }
+            items(roster.enemies, contentType = { CHARACTER_ROW }) {
+                Field(it.name, it.describe(), ROW_PADDING)
             }
         }
     }

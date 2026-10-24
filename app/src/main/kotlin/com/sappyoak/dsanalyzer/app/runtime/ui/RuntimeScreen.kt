@@ -3,11 +3,13 @@ package com.sappyoak.dsanalyzer.app.runtime.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -20,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.sappyoak.dsanalyzer.app.runtime.RuntimeState
 import com.sappyoak.dsanalyzer.game.world.WorldRef
 
+private val LIST_END = 7.dp
 
 @Composable
 public fun RuntimeScreen(
@@ -28,89 +31,42 @@ public fun RuntimeScreen(
     onReadPlacedEnemies: () -> Unit,
     onReadCollision: () -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
-        Attachment(state, onFollow)
-        HorizontalDivider()
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
+        panel("attachment") { AttachmentPanel(state, onFollow) }
 
         val snapshot = state.snapshot
         if (snapshot == null) {
-            Text(
-                text = state.problem ?: "Connect to a running game",
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(16.dp)
-            )
-            return@Column
-        }
-
-        PlayerPanel(snapshot)
-        HorizontalDivider()
-        CameraPanel(snapshot.camera)
-        HorizontalDivider()
-        LoadQueuePanel(snapshot.loadQueue)
-        HorizontalDivider()
-        CharacterPanel(snapshot.characters, state.placedEnemies, onReadPlacedEnemies)
-        HorizontalDivider()
-        CollisionPanel(state.collision, onReadCollision)
-        HorizontalDivider()
-        FlagLog(state.flagLog, onFollow)
-    }
-}
-
-@Composable
-private fun Attachment(state: RuntimeState, onFollow: (WorldRef) -> Unit) {
-    val attached = state.attached
-
-    Column(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(2.dp)
-    ) {
-        Text(
-            text = attached?.let { "${it.executableName} (${it.pid})" } ?: "Not attached",
-            style = MaterialTheme.typography.titleMedium
-        )
-
-        attached?.let {
-            Text(
-                text = it.build ?: "unrecognized build, so the offsets might not apply",
-                style = MaterialTheme.typography.bodySmall
-            )
-        }
-
-        state.problem?.let {
-            Text(
-                text = it,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.error
-            )
-        }
-
-        attached?.unresolved?.takeIf { it.isNotEmpty() }?.let { missing ->
-            Text(
-                text = "Not found in this build: ${missing.joinToString()}",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.error
-            )
-        }
-
-        state.snapshot?.let { snapshot ->
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            item(key = "waiting") {
                 Text(
-                    text = "frame ${snapshot.frame} - ${snapshot.cost.present}/${snapshot.cost.expected} read in ${snapshot.cost.elapsed}",
-                    style = MaterialTheme.typography.bodySmall
+                    text = state.problem ?: "Connect to a running game",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(16.dp)
                 )
-                val map = snapshot.map
-                if (map != null) {
-                    TextButton(onClick = { onFollow(WorldRef.Map(map)) }) {
-                        Text(map.name)
-                    }
-                } else {
-                    Text(
-                        text = snapshot.place.label,
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
             }
+            return@LazyColumn
         }
+
+        panel("player") { PlayerPanel(snapshot) }
+        panel("camera") { CameraPanel(snapshot.camera) }
+        panel("load-queue") { LoadQueuePanel(snapshot.loadQueue) }
+        characterItems(snapshot.characters, state.placedEnemies, onReadPlacedEnemies)
+        listEnd("characters-end")
+        panel("collision") { CollisionPanel(state.collision, onReadCollision) }
+        flagItems(state.flagLog, onFollow)
     }
 }
+
+private fun LazyListScope.panel(key: String, content: @Composable () -> Unit) = item(key = key) {
+    Column {
+        content()
+        HorizontalDivider()
+    }
+}
+
+private fun LazyListScope.listEnd(key: String) = item(key = key) {
+    Column {
+        Spacer(modifier = Modifier.height(LIST_END))
+        HorizontalDivider()
+    }
+}
+
