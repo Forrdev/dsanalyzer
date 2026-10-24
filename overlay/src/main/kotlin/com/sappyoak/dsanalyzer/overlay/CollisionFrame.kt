@@ -72,13 +72,19 @@ internal class CollisionFrame(initialCapacity: Int = CollisionView.DEFAULT_TRIAN
 
         resizeTo(view.triangleBudget, view.occlusionBudget)
 
-        val drawn = view.bodies.nearest(camera.position, view.radius, view.kinds, view.filters)
-        val outlined = if (view.draw) drawn.filter { it.isVolume } else emptyList()
         hiding = occlude && view.occlusionRadius > 0f
 
-        if (view.occlusionBudget > 0 && (hiding || outlined.isNotEmpty())) {
+        val ranked = if (view.occlusionBudget > 0 && (hiding || view.draw)) {
             val reach = if (hiding) max(view.radius, view.occlusionRadius) else view.radius
-            projectOccluders(view, camera, reach, width, height)
+            view.bodies.ranked(camera.position, reach, kinds = null)
+        } else null
+
+        val drawn = ranked?.within(view.radius, view.kinds, view.filters)
+            ?: view.bodies.nearest(camera.position, view.radius, view.kinds, view.filters)
+        val outlined = if (view.draw) drawn.filter { it.isVolume } else emptyList()
+
+        if (ranked != null && (hiding || outlined.isNotEmpty())) {
+            projectOccluders(view, camera, ranked.bodies, width, height)
         } else {
             occluders.reset()
             occlusion.abandon()
@@ -100,12 +106,12 @@ internal class CollisionFrame(initialCapacity: Int = CollisionView.DEFAULT_TRIAN
     private fun projectOccluders(
         view: CollisionView,
         camera: CameraSnapshot,
-        reach: Float,
+        inReach: List<CollisionBody>,
         width: Int,
         height: Int
     ) {
         occluders.reset()
-        for (body in view.bodies.nearest(camera.position, reach, kinds = null)) {
+        for (body in inReach) {
             if (!body.isSolid) continue
             val mesh = tessellation.meshOf(body.geometry, view.bodies, view.segments) ?: continue
             // false means the project is full, and nearest-first is what makes stopping here right
