@@ -3,6 +3,8 @@ package com.sappyoak.dsanalyzer.game.world.maps
 import com.sappyoak.dsanalyzer.formats.binder.OpenBinder
 import com.sappyoak.dsanalyzer.formats.msb.MSB
 import com.sappyoak.dsanalyzer.formats.msb.readMSB
+import com.sappyoak.dsanalyzer.formats.nvm.Navmesh
+import com.sappyoak.dsanalyzer.formats.nvm.readNavmesh
 import com.sappyoak.dsanalyzer.game.files.GameFiles
 import com.sappyoak.dsanalyzer.game.files.openBinder
 
@@ -21,3 +23,11 @@ public fun GameFiles.openCollision(map: MapId, detail: CollisionDetail): OpenBin
  * Current returns bytes as not NVM reader is implemented yet
  */
 public fun GameFiles.openNavmeshes(map: MapId): OpenBinder? = openBinder(map.navmeshBinderPath)
+
+/** The map's navmeshes by file name without its extension */
+public fun GameFiles.loadNavmeshes(map: MapId): Map<String, Navmesh>? =
+    openNavmeshes(map)?.let { binder ->
+        binder.binder.entries.associate { entry ->
+            entry.name.orEmpty().substringAfterLast('\\').substringBefore('.') to readNavmesh(binder.open(entry))
+        }
+    }
