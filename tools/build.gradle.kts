@@ -12,11 +12,16 @@ dependencies {
     runtimeOnly(libs.logback)
 }
 
+fun JavaExec.useModuleToolchain() {
+    javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
+}
+
 tasks.register<JavaExec>("extractText") {
     group = "tools"
     description = "Writes the game's Japanese/English term pairs and event names as JSON"
     mainClass.set("com.sappyoak.dsanalyzer.tools.text.ExtractTextKt")
     classpath = sourceSets.main.get().runtimeClasspath
+    useModuleToolchain()
 
     val root = providers.gradleProperty("ds1")
     val out = providers.gradleProperty("out").orElse(layout.buildDirectory.dir("text").map { it.asFile.path })
@@ -34,6 +39,7 @@ fun registerHavokLayouts(name: String, edition: String, tableFile: String, sourc
     description = "Generates Kotlin offset constants for every reflected Havok class ($edition)"
     mainClass.set("com.sappyoak.dsanalyzer.tools.havok.GenerateHavokLayoutsKt")
     classpath = sourceSets.main.get().runtimeClasspath
+    useModuleToolchain()
 
     val table = providers.gradleProperty("table")
         .orElse(layout.projectDirectory.file("havok/$tableFile").asFile.path)
@@ -78,24 +84,28 @@ tasks.register("generateHavokLayouts") {
 
 tasks.register<JavaExec>("generateParamDefs") {
     group = "tools"
-    description = "Generates a typed row class for every GameParam def, and the GameParam file list"
+    description = "Generates a typed row class for every GameParam def in either edition, and the GameParam registry"
     mainClass.set("com.sappyoak.dsanalyzer.tools.params.GenerateParamDefsKt")
     classpath = sourceSets.main.get().runtimeClasspath
+    useModuleToolchain()
 
-    val root = providers.gradleProperty("ds1")
-    val defs = rootProject.layout.projectDirectory
+    val ptde = providers.gradleProperty("ptde")
+    val dsr = providers.gradleProperty("dsr")
+
+    val defaultDefs = rootProject.layout.projectDirectory
         .dir("formats/src/main/kotlin/com/sappyoak/dsanalyzer/formats/param/defs")
-    val game = rootProject.layout.projectDirectory
+    val defaultGame = rootProject.layout.projectDirectory
         .dir("game/src/main/kotlin/com/sappyoak/dsanalyzer/game/world/params")
 
-    outputs.dir(defs)
-    outputs.file(game.file("GameParam.Kt"))
+    val defs = providers.gradleProperty("defsOut").orElse(defaultDefs.asFile.path)
+    val game = providers.gradleProperty("gameOut").orElse(defaultGame.asFile.path)
 
     argumentProviders.add {
         listOf(
-            root.orNull ?: error("Pass the installations DATA directory as -Pds1=<path>"),
-            defs.asFile.path,
-            game.asFile.path
+            "--ptde=${ptde.orNull ?: error("Pass the Prepare to Die installation's DATA directory as -Pptde=<path>")}",
+            "--dsr=${dsr.orNull ?: error("Pass the Remastered installation's DATA directory as -Pdsr=<path>")}",
+            "--defs=${defs.get()}",
+            "--game=${game.get()}"
         )
     }
 }

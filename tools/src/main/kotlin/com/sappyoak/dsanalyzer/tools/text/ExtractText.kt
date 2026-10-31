@@ -31,6 +31,11 @@ private const val DESCRIBED_ENTRIES = 40
 
 private val JSON = Json { prettyPrint = true }
 
+private class Options(
+    val root: Path,
+    val out: Path,
+    val edition: GameEdition
+)
 /**
  * Pulls the text a translation needs out of an installation
  *
@@ -43,12 +48,11 @@ private val JSON = Json { prettyPrint = true }
  *  ./gradlew :tools:extractText -Pds1=/path/to/DATA -Pout=build/text
  */
 public fun main(args: Array<String>) {
-    val root = Path.of(args[0])
-    val out = Path.of(args[1])
+    val options = parse(args)
 
-    require(Files.isDirectory(root)) { "$root is not a directory" }
+    require(Files.isDirectory(options.root)) { "$args.root is not a directory" }
 
-    openGameFiles(installationAt(root)).use { files ->
+    openGameFiles(installationAt(options.root, options.edition)).use { files ->
         val languages = TextLanguage.entries.filter { files.hasText(it) }
         println("Languages present: ${languages.joinToString { it.folder }}")
 
@@ -57,9 +61,9 @@ public fun main(args: Array<String>) {
                     languages.joinToString { it.folder }
         }
 
-        Files.createDirectories(out)
-        write(out.resolve(TERMS_FILE), TermCorpus(languages.map { it.folder }, files.termPairs()))
-        write(out.resolve(EVENT_NAMES_FILE), EventNameCorpus(files.eventNames()))
+        Files.createDirectories(options.out)
+        write(options.out.resolve(TERMS_FILE), TermCorpus(languages.map { it.folder }, files.termPairs()))
+        write(options.out.resolve(EVENT_NAMES_FILE), EventNameCorpus(files.eventNames()))
     }
 }
 
@@ -121,4 +125,24 @@ private fun GameFiles.eventNames(): List<EventName> {
 private inline fun <reified T> write(path: Path, corpus: T) {
     Files.writeString(path, JSON.encodeToString(corpus))
     println("Wrote $path")
+}
+
+private fun parse(args: Array<String>): Options {
+    val values = args.associate { argument ->
+        val separator = argument.indexOf('=')
+        require(argument.startsWith("--") && separator > 2) {
+            "Expected --key=value arguments, got '$argument'"
+        }
+        argument.substring(2, separator) to argument.substring(separator + 1)
+    }
+
+    fun required(key: String): String = values[key] ?: error("Missing --$key")
+
+    val edition = required("edition")
+    return Options(
+        Path.of(required("root")),
+        Path.of(required("out")),
+        edition = GameEdition.entries.firstOrNull { it.name.equals(edition, ignoreCase = true) }
+            ?: error("'$edition' is no edition. Known: ${GameEdition.entries.joinToString { it.name }}")
+    )
 }
