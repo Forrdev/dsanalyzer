@@ -15,6 +15,8 @@ public open class ParamRowType<R : ParamRow>(
     public val paramType: String,
     public val rowSize: Int,
     public val dataVersion: Int,
+    /** In paramdef order, padding left out */
+    public val fields: List<ParamField<R>>,
     private val create: (ParamRowData) -> R
 ) {
     public fun wrap(row: ParamRowData): R = create(row)
@@ -29,6 +31,14 @@ public class TypedParam<R : ParamRow>(public val type: ParamRowType<R>, public v
 
     /** Every row with [id]; more than one when the file repeats it */
     public fun all(id: Int): List<R> = byId[id].orEmpty()
+
+    /** Every field [type] declares, read from the row at [index] in file order */
+    public fun fieldsAt(index: Int): List<FieldValue> {
+        val row = rows[index]
+        return type.fields.map {
+            FieldValue(it, it.valueOf(row))
+        }
+    }
 }
 
 /**

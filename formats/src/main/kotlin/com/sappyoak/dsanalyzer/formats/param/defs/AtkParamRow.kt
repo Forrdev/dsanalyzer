@@ -8,9 +8,11 @@
 
 package com.sappyoak.dsanalyzer.formats.param.defs
 
+import com.sappyoak.dsanalyzer.formats.param.ParamField
 import com.sappyoak.dsanalyzer.formats.param.ParamRow
 import com.sappyoak.dsanalyzer.formats.param.ParamRowData
 import com.sappyoak.dsanalyzer.formats.param.ParamRowType
+import com.sappyoak.dsanalyzer.formats.param.paramdef.ParamFieldType
 
 /** `ATK_PARAM_ST`: PrepareToDie 0x80, Remastered 0x80 a row, data version 1 */
 public class AtkParamRow(row: ParamRowData) : ParamRow(row) {
@@ -224,5 +226,78 @@ public class AtkParamRow(row: ParamRowData) : ParamRow(row) {
     /** bit 7 of the `u8` at 0x7E, `ATK_PARAM_BOOL` */
     public val isDisableNoDamage: Boolean get() = bytes.flag(0x7E, 7)
 
-    public companion object : ParamRowType<AtkParamRow>("ATK_PARAM_ST", 0x80, 1, ::AtkParamRow)
+    public companion object : ParamRowType<AtkParamRow>("ATK_PARAM_ST", 0x80, 1, FIELDS, ::AtkParamRow)
 }
+
+private val FIELDS: List<ParamField<AtkParamRow>> = listOf<ParamField<AtkParamRow>>(
+    ParamField("hit0_Radius", ParamFieldType.F32, 0x0, null, null, null, "あたり0 半径") { it.hit0_Radius },
+    ParamField("hit1_Radius", ParamFieldType.F32, 0x4, null, null, null, "あたり1 半径") { it.hit1_Radius },
+    ParamField("hit2_Radius", ParamFieldType.F32, 0x8, null, null, null, "あたり2 半径") { it.hit2_Radius },
+    ParamField("hit3_Radius", ParamFieldType.F32, 0xC, null, null, null, "あたり3 半径") { it.hit3_Radius },
+    ParamField("knockbackDist", ParamFieldType.F32, 0x10, null, null, null, "ノックバック距離[m]") { it.knockbackDist },
+    ParamField("hitStopTime", ParamFieldType.F32, 0x14, null, null, null, "ヒットストップ時間[s]") { it.hitStopTime },
+    ParamField("spEffectId0", ParamFieldType.S32, 0x18, null, null, null, "特殊効果0") { it.spEffectId0 },
+    ParamField("spEffectId1", ParamFieldType.S32, 0x1C, null, null, null, "特殊効果1") { it.spEffectId1 },
+    ParamField("spEffectId2", ParamFieldType.S32, 0x20, null, null, null, "特殊効果2") { it.spEffectId2 },
+    ParamField("spEffectId3", ParamFieldType.S32, 0x24, null, null, null, "特殊効果3") { it.spEffectId3 },
+    ParamField("spEffectId4", ParamFieldType.S32, 0x28, null, null, null, "特殊効果4") { it.spEffectId4 },
+    ParamField("hit0_DmyPoly1", ParamFieldType.S16, 0x2C, null, null, null, "あたり0 ダミポリ1") { it.hit0_DmyPoly1 },
+    ParamField("hit1_DmyPoly1", ParamFieldType.S16, 0x2E, null, null, null, "あたり1 ダミポリ1") { it.hit1_DmyPoly1 },
+    ParamField("hit2_DmyPoly1", ParamFieldType.S16, 0x30, null, null, null, "あたり2 ダミポリ1") { it.hit2_DmyPoly1 },
+    ParamField("hit3_DmyPoly1", ParamFieldType.S16, 0x32, null, null, null, "あたり3 ダミポリ1") { it.hit3_DmyPoly1 },
+    ParamField("hit0_DmyPoly2", ParamFieldType.S16, 0x34, null, null, null, "あたり0 ダミポリ2") { it.hit0_DmyPoly2 },
+    ParamField("hit1_DmyPoly2", ParamFieldType.S16, 0x36, null, null, null, "あたり1 ダミポリ2") { it.hit1_DmyPoly2 },
+    ParamField("hit2_DmyPoly2", ParamFieldType.S16, 0x38, null, null, null, "あたり2 ダミポリ2") { it.hit2_DmyPoly2 },
+    ParamField("hit3_DmyPoly2", ParamFieldType.S16, 0x3A, null, null, null, "あたり3 ダミポリ2") { it.hit3_DmyPoly2 },
+    ParamField("blowingCorrection", ParamFieldType.U16, 0x3C, null, null, null, "吹き飛ばし補正値") { it.blowingCorrection },
+    ParamField("atkPhysCorrection", ParamFieldType.U16, 0x3E, null, null, null, "物理攻撃力補正値") { it.atkPhysCorrection },
+    ParamField("atkMagCorrection", ParamFieldType.U16, 0x40, null, null, null, "魔法攻撃力補正値") { it.atkMagCorrection },
+    ParamField("atkFireCorrection", ParamFieldType.U16, 0x42, null, null, null, "炎攻撃力補正値") { it.atkFireCorrection },
+    ParamField("atkThunCorrection", ParamFieldType.U16, 0x44, null, null, null, "電撃攻撃力補正値") { it.atkThunCorrection },
+    ParamField("atkStamCorrection", ParamFieldType.U16, 0x46, null, null, null, "スタミナ攻撃力補正値") { it.atkStamCorrection },
+    ParamField("guardAtkRateCorrection", ParamFieldType.U16, 0x48, null, null, null, "はじき攻撃力補正値") { it.guardAtkRateCorrection },
+    ParamField("guardBreakCorrection", ParamFieldType.U16, 0x4A, null, null, null, "はじき防御力補正値") { it.guardBreakCorrection },
+    ParamField("atkThrowEscapeCorrection", ParamFieldType.U16, 0x4C, null, null, null, "投げ抜け攻撃力補正値") { it.atkThrowEscapeCorrection },
+    ParamField("atkSuperArmorCorrection", ParamFieldType.U16, 0x4E, null, null, null, "SA攻撃力補正値") { it.atkSuperArmorCorrection },
+    ParamField("atkPhys", ParamFieldType.U16, 0x50, null, null, null, "物理攻撃力") { it.atkPhys },
+    ParamField("atkMag", ParamFieldType.U16, 0x52, null, null, null, "魔法攻撃力") { it.atkMag },
+    ParamField("atkFire", ParamFieldType.U16, 0x54, null, null, null, "炎攻撃力") { it.atkFire },
+    ParamField("atkThun", ParamFieldType.U16, 0x56, null, null, null, "電撃攻撃力") { it.atkThun },
+    ParamField("atkStam", ParamFieldType.U16, 0x58, null, null, null, "スタミナ攻撃力") { it.atkStam },
+    ParamField("guardAtkRate", ParamFieldType.U16, 0x5A, null, null, null, "はじき攻撃力") { it.guardAtkRate },
+    ParamField("guardBreakRate", ParamFieldType.U16, 0x5C, null, null, null, "はじき防御力") { it.guardBreakRate },
+    ParamField("atkSuperArmor", ParamFieldType.U16, 0x5E, null, null, null, "SA攻撃力") { it.atkSuperArmor },
+    ParamField("atkThrowEscape", ParamFieldType.U16, 0x60, null, null, null, "投げ抜け攻撃力") { it.atkThrowEscape },
+    ParamField("atkObj", ParamFieldType.U16, 0x62, null, null, null, "オブジェ攻撃力") { it.atkObj },
+    ParamField("guardStaminaCutRate", ParamFieldType.S16, 0x64, null, null, null, "ガード時スタミナカット率補正") { it.guardStaminaCutRate },
+    ParamField("guardRate", ParamFieldType.S16, 0x66, null, null, null, "ガード倍率") { it.guardRate },
+    ParamField("throwTypeId", ParamFieldType.U16, 0x68, null, null, null, "投げタイプID") { it.throwTypeId },
+    ParamField("hit0_hitType", ParamFieldType.U8, 0x6A, null, null, "ATK_PARAM_HIT_TYPE", "あたり0 部位") { it.hit0_hitType },
+    ParamField("hit1_hitType", ParamFieldType.U8, 0x6B, null, null, "ATK_PARAM_HIT_TYPE", "あたり1 部位") { it.hit1_hitType },
+    ParamField("hit2_hitType", ParamFieldType.U8, 0x6C, null, null, "ATK_PARAM_HIT_TYPE", "あたり2 部位") { it.hit2_hitType },
+    ParamField("hit3_hitType", ParamFieldType.U8, 0x6D, null, null, "ATK_PARAM_HIT_TYPE", "あたり3 部位") { it.hit3_hitType },
+    ParamField("hti0_Priority", ParamFieldType.U8, 0x6E, null, null, null, "あたり0 優先順位") { it.hti0_Priority },
+    ParamField("hti1_Priority", ParamFieldType.U8, 0x6F, null, null, null, "あたり1 優先順位") { it.hti1_Priority },
+    ParamField("hti2_Priority", ParamFieldType.U8, 0x70, null, null, null, "あたり2 優先順位") { it.hti2_Priority },
+    ParamField("hti3_Priority", ParamFieldType.U8, 0x71, null, null, null, "あたり3 優先順位") { it.hti3_Priority },
+    ParamField("dmgLevel", ParamFieldType.U8, 0x72, null, null, null, "ダメージレベル") { it.dmgLevel },
+    ParamField("mapHitType", ParamFieldType.U8, 0x73, null, null, "ATK_PARAM_MAP_HIT", "マップあたり参照") { it.mapHitType },
+    ParamField("guardCutCancelRate", ParamFieldType.S8, 0x74, null, null, null, "ガードカット率無効化倍率") { it.guardCutCancelRate },
+    ParamField("atkAttribute", ParamFieldType.U8, 0x75, null, null, "ATKPARAM_ATKATTR_TYPE", "物理属性") { it.atkAttribute },
+    ParamField("spAttribute", ParamFieldType.U8, 0x76, null, null, "ATKPARAM_SPATTR_TYPE", "特殊属性") { it.spAttribute },
+    ParamField("atkType", ParamFieldType.U8, 0x77, null, null, "BEHAVIOR_ATK_TYPE", "攻撃属性[SFX/SE]") { it.atkType },
+    ParamField("atkMaterial", ParamFieldType.U8, 0x78, null, null, "WEP_MATERIAL_ATK", "攻撃材質[SFX/SE]") { it.atkMaterial },
+    ParamField("atkSize", ParamFieldType.U8, 0x79, null, null, "BEHAVIOR_ATK_SIZE", "攻撃サイズ[SFX/SE]") { it.atkSize },
+    ParamField("defMaterial", ParamFieldType.U8, 0x7A, null, null, "WEP_MATERIAL_DEF", "防御材質[SE]") { it.defMaterial },
+    ParamField("defSfxMaterial", ParamFieldType.U8, 0x7B, null, null, "WEP_MATERIAL_DEF_SFX", "防御材質[SFX]") { it.defSfxMaterial },
+    ParamField("hitSourceType", ParamFieldType.U8, 0x7C, null, null, "ATK_PARAM_HIT_SOURCE", "あたり発生源") { it.hitSourceType },
+    ParamField("throwFlag", ParamFieldType.U8, 0x7D, null, null, "ATK_PATAM_THROWFLAG_TYPE", "投げ") { it.throwFlag },
+    ParamField("disableGuard", ParamFieldType.U8, 0x7E, 0, 1, "ATK_PARAM_BOOL", "ガード不可フラグ") { it.disableGuard },
+    ParamField("disableStaminaAttack", ParamFieldType.U8, 0x7E, 1, 1, "ATK_PARAM_BOOL", "スタミナ減らない") { it.disableStaminaAttack },
+    ParamField("disableHitSpEffect", ParamFieldType.U8, 0x7E, 2, 1, "ATK_PARAM_BOOL", "ヒット時特殊効果無効") { it.disableHitSpEffect },
+    ParamField("ignoreNotifyMissSwingForAI", ParamFieldType.U8, 0x7E, 3, 1, "ATK_PARAM_BOOL", "AIに空振り通知しない") { it.ignoreNotifyMissSwingForAI },
+    ParamField("repeatHitSfx", ParamFieldType.U8, 0x7E, 4, 1, "ATK_PARAM_BOOL", "ＨＩＴ時にＳＦＸを何度も出すか") { it.repeatHitSfx },
+    ParamField("isArrowAtk", ParamFieldType.U8, 0x7E, 5, 1, "ATK_PARAM_BOOL", "矢攻撃か") { it.isArrowAtk },
+    ParamField("isGhostAtk", ParamFieldType.U8, 0x7E, 6, 1, "ATK_PARAM_BOOL", "霊体攻撃か") { it.isGhostAtk },
+    ParamField("isDisableNoDamage", ParamFieldType.U8, 0x7E, 7, 1, "ATK_PARAM_BOOL", "無敵無効か") { it.isDisableNoDamage }
+)

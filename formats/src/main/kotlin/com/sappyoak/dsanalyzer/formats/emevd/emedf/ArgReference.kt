@@ -21,7 +21,11 @@ public enum class ArgReference(private val suffix: String?) {
     Region(null),
     Collision(null),
     Text(null),
-    Item(null);
+    Item(null),
+    ItemLot("Item Lot ID"),
+    SpEffect("SpEffect ID"),
+    Behavior("Behavior ID"),
+    Think("AI ID");
 
     /** Whether what this names is placed in a map */
     public val placed: Boolean

@@ -9,6 +9,8 @@ import com.sappyoak.dsanalyzer.app.connection.ConnectionMessage
 import com.sappyoak.dsanalyzer.app.connection.ConnectionStore
 import com.sappyoak.dsanalyzer.app.data.maps.MapsEffects
 import com.sappyoak.dsanalyzer.app.data.maps.MapsStore
+import com.sappyoak.dsanalyzer.app.data.params.ParamsEffects
+import com.sappyoak.dsanalyzer.app.data.params.ParamsStore
 import com.sappyoak.dsanalyzer.app.paths.ToolPaths
 import com.sappyoak.dsanalyzer.app.runtime.GameLink
 import com.sappyoak.dsanalyzer.app.runtime.RuntimeEffects
@@ -73,6 +75,7 @@ public fun createAppModel(
     return AppModel(
         settings = settings,
         workspace = WorkspaceStores(
+            params = ParamsStore(scope, ParamsEffects(installationFiles)),
             maps = MapsStore(scope, MapsEffects(installationFiles)),
             scripts = ScriptsStore(scope, ScriptsEffects(installationFiles)),
             runtime = RuntimeStore(scope, RuntimeEffects(

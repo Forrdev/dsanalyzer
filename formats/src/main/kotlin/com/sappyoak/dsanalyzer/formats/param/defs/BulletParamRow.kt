@@ -8,9 +8,11 @@
 
 package com.sappyoak.dsanalyzer.formats.param.defs
 
+import com.sappyoak.dsanalyzer.formats.param.ParamField
 import com.sappyoak.dsanalyzer.formats.param.ParamRow
 import com.sappyoak.dsanalyzer.formats.param.ParamRowData
 import com.sappyoak.dsanalyzer.formats.param.ParamRowType
+import com.sappyoak.dsanalyzer.formats.param.paramdef.ParamFieldType
 
 /** `BULLET_PARAM_ST`: PrepareToDie 0xA0, Remastered 0xA0 a row, data version 2 */
 public class BulletParamRow(row: ParamRowData) : ParamRow(row) {
@@ -212,5 +214,74 @@ public class BulletParamRow(row: ParamRowData) : ParamRow(row) {
     /** bit 1 of the `u8` at 0x9C */
     public val isHitDarkForceMagic: Boolean get() = bytes.flag(0x9C, 1)
 
-    public companion object : ParamRowType<BulletParamRow>("BULLET_PARAM_ST", 0xA0, 2, ::BulletParamRow)
+    public companion object : ParamRowType<BulletParamRow>("BULLET_PARAM_ST", 0xA0, 2, FIELDS, ::BulletParamRow)
 }
+
+private val FIELDS: List<ParamField<BulletParamRow>> = listOf<ParamField<BulletParamRow>>(
+    ParamField("atkId_Bullet", ParamFieldType.S32, 0x0, null, null, null, "攻撃ID") { it.atkId_Bullet },
+    ParamField("sfxId_Bullet", ParamFieldType.S32, 0x4, null, null, null, "SFXID【弾】") { it.sfxId_Bullet },
+    ParamField("sfxId_Hit", ParamFieldType.S32, 0x8, null, null, null, "SFXID【着弾】") { it.sfxId_Hit },
+    ParamField("sfxId_Flick", ParamFieldType.S32, 0xC, null, null, null, "SFXID【はじき時】") { it.sfxId_Flick },
+    ParamField("life", ParamFieldType.F32, 0x10, null, null, null, "寿命[s]") { it.life },
+    ParamField("dist", ParamFieldType.F32, 0x14, null, null, null, "射程距離[m]") { it.dist },
+    ParamField("shootInterval", ParamFieldType.F32, 0x18, null, null, null, "発射間隔[s]") { it.shootInterval },
+    ParamField("gravityInRange", ParamFieldType.F32, 0x1C, null, null, null, "射程距離内重力[m/s^2]") { it.gravityInRange },
+    ParamField("gravityOutRange", ParamFieldType.F32, 0x20, null, null, null, "射程距離外重力[m/s^2]") { it.gravityOutRange },
+    ParamField("hormingStopRange", ParamFieldType.F32, 0x24, null, null, null, "誘導停止距離[m]") { it.hormingStopRange },
+    ParamField("initVellocity", ParamFieldType.F32, 0x28, null, null, null, "初速[m/s]") { it.initVellocity },
+    ParamField("accelInRange", ParamFieldType.F32, 0x2C, null, null, null, "射程距離内加速度[m/s^2]") { it.accelInRange },
+    ParamField("accelOutRange", ParamFieldType.F32, 0x30, null, null, null, "射程距離外加速度[m/s^2]") { it.accelOutRange },
+    ParamField("maxVellocity", ParamFieldType.F32, 0x34, null, null, null, "最高速度[m/s]") { it.maxVellocity },
+    ParamField("minVellocity", ParamFieldType.F32, 0x38, null, null, null, "最低速度[m/s]") { it.minVellocity },
+    ParamField("accelTime", ParamFieldType.F32, 0x3C, null, null, null, "加速開始時間[s]") { it.accelTime },
+    ParamField("homingBeginDist", ParamFieldType.F32, 0x40, null, null, null, "誘導開始距離[m]") { it.homingBeginDist },
+    ParamField("hitRadius", ParamFieldType.F32, 0x44, null, null, null, "初期弾半径[m]") { it.hitRadius },
+    ParamField("hitRadiusMax", ParamFieldType.F32, 0x48, null, null, null, "最大弾半径[m]") { it.hitRadiusMax },
+    ParamField("spreadTime", ParamFieldType.F32, 0x4C, null, null, null, "範囲拡散時間[s]") { it.spreadTime },
+    ParamField("expDelay", ParamFieldType.F32, 0x50, null, null, null, "発動遅延[s]") { it.expDelay },
+    ParamField("hormingOffsetRange", ParamFieldType.F32, 0x54, null, null, null, "誘導ずらし量[m]") { it.hormingOffsetRange },
+    ParamField("dmgHitRecordLifeTime", ParamFieldType.F32, 0x58, null, null, null, "ダメージヒット履歴の生存時間[s]") { it.dmgHitRecordLifeTime },
+    ParamField("externalForce", ParamFieldType.F32, 0x5C, null, null, null, "外力[m/s^2]") { it.externalForce },
+    ParamField("spEffectIDForShooter", ParamFieldType.S32, 0x60, null, null, null, "射撃した人にかける特殊効果") { it.spEffectIDForShooter },
+    ParamField("autoSearchNPCThinkID", ParamFieldType.S32, 0x64, null, null, null, "ファンネルNPC思考ID") { it.autoSearchNPCThinkID },
+    ParamField("hitBulletID", ParamFieldType.S32, 0x68, null, null, null, "発生弾丸ID") { it.hitBulletID },
+    ParamField("spEffectId0", ParamFieldType.S32, 0x6C, null, null, null, "特殊効果ID0") { it.spEffectId0 },
+    ParamField("spEffectId1", ParamFieldType.S32, 0x70, null, null, null, "特殊効果ID1") { it.spEffectId1 },
+    ParamField("spEffectId2", ParamFieldType.S32, 0x74, null, null, null, "特殊効果ID2") { it.spEffectId2 },
+    ParamField("spEffectId3", ParamFieldType.S32, 0x78, null, null, null, "特殊効果ID3") { it.spEffectId3 },
+    ParamField("spEffectId4", ParamFieldType.S32, 0x7C, null, null, null, "特殊効果ID4") { it.spEffectId4 },
+    ParamField("numShoot", ParamFieldType.U16, 0x80, null, null, null, "発射数") { it.numShoot },
+    ParamField("homingAngle", ParamFieldType.S16, 0x82, null, null, null, "誘導性能[deg/s]") { it.homingAngle },
+    ParamField("shootAngle", ParamFieldType.S16, 0x84, null, null, null, "発射角度[deg]") { it.shootAngle },
+    ParamField("shootAngleInterval", ParamFieldType.S16, 0x86, null, null, null, "発射角度間隔[deg]") { it.shootAngleInterval },
+    ParamField("shootAngleXInterval", ParamFieldType.S16, 0x88, null, null, null, "発射仰角間隔[deg]") { it.shootAngleXInterval },
+    ParamField("damageDamp", ParamFieldType.S8, 0x8A, null, null, null, "物理攻撃力減衰率[%/s]") { it.damageDamp },
+    ParamField("spelDamageDamp", ParamFieldType.S8, 0x8B, null, null, null, "魔法攻撃力減衰率[%/s]") { it.spelDamageDamp },
+    ParamField("fireDamageDamp", ParamFieldType.S8, 0x8C, null, null, null, "炎攻撃力減衰率[%/s]") { it.fireDamageDamp },
+    ParamField("thunderDamageDamp", ParamFieldType.S8, 0x8D, null, null, null, "電撃攻撃力減衰率[%/s]") { it.thunderDamageDamp },
+    ParamField("staminaDamp", ParamFieldType.S8, 0x8E, null, null, null, "スタミナダメージ減衰率[%/s]") { it.staminaDamp },
+    ParamField("knockbackDamp", ParamFieldType.S8, 0x8F, null, null, null, "ノックバック減衰率[%/s]") { it.knockbackDamp },
+    ParamField("shootAngleXZ", ParamFieldType.S8, 0x90, null, null, null, "発射仰角[deg]") { it.shootAngleXZ },
+    ParamField("lockShootLimitAng", ParamFieldType.U8, 0x91, null, null, null, "ロック方向制限角度") { it.lockShootLimitAng },
+    ParamField("isPenetrate", ParamFieldType.U8, 0x92, null, null, null, "キャラ・OBJを貫通？") { it.isPenetrate },
+    ParamField("prevVelocityDirRate", ParamFieldType.U8, 0x93, null, null, null, "前回の移動方向加算率[%]") { it.prevVelocityDirRate },
+    ParamField("atkAttribute", ParamFieldType.U8, 0x94, null, null, "ATKPARAM_ATKATTR_TYPE", "物理属性") { it.atkAttribute },
+    ParamField("spAttribute", ParamFieldType.U8, 0x95, null, null, "ATKPARAM_SPATTR_TYPE", "特殊属性") { it.spAttribute },
+    ParamField("material_AttackType", ParamFieldType.U8, 0x96, null, null, "ATK_TYPE", "SFX材質 攻撃タイプ") { it.material_AttackType },
+    ParamField("material_AttackMaterial", ParamFieldType.U8, 0x97, null, null, "WEP_MATERIAL_ATK", "SFX材質 攻撃材質") { it.material_AttackMaterial },
+    ParamField("material_Size", ParamFieldType.U8, 0x98, null, null, "ATK_SIZE", "SFX材質 サイズ") { it.material_Size },
+    ParamField("launchConditionType", ParamFieldType.U8, 0x99, null, null, "BULLET_LAUNCH_CONDITION_TYPE", "発生条件") { it.launchConditionType },
+    ParamField("followType", ParamFieldType.U8, 0x9A, 0, 3, "BULLET_FOLLOW_TYPE", "追従タイプ") { it.followType },
+    ParamField("emittePosType", ParamFieldType.U8, 0x9A, 3, 3, "BULLET_EMITTE_POS_TYPE", "発生源タイプ") { it.emittePosType },
+    ParamField("isAttackSFX", ParamFieldType.U8, 0x9A, 6, 1, "ON_OFF", "刺さったままになるか") { it.isAttackSFX },
+    ParamField("isEndlessHit", ParamFieldType.U8, 0x9A, 7, 1, "ON_OFF", "あたり続けるか？") { it.isEndlessHit },
+    ParamField("isPenetrateMap", ParamFieldType.U8, 0x9B, 0, 1, "ON_OFF", "マップを貫通？") { it.isPenetrateMap },
+    ParamField("isHitBothTeam", ParamFieldType.U8, 0x9B, 1, 1, "ON_OFF", "敵味方共にあたる？") { it.isHitBothTeam },
+    ParamField("isUseSharedHitList", ParamFieldType.U8, 0x9B, 2, 1, "ON_OFF", "ヒットリストを共有するか？") { it.isUseSharedHitList },
+    ParamField("isUseMultiDmyPolyIfPlace", ParamFieldType.U8, 0x9B, 3, 1, "ON_OFF", "複数のダミポリを使うか？") { it.isUseMultiDmyPolyIfPlace },
+    ParamField("attachEffectType", ParamFieldType.U8, 0x9B, 4, 2, "BULLET_ATTACH_EFFECT_TYPE", "アタッチ効果タイプ") { it.attachEffectType },
+    ParamField("isHitForceMagic", ParamFieldType.U8, 0x9B, 6, 1, null, "フォース魔法に当たるか") { it.isHitForceMagic },
+    ParamField("isIgnoreSfxIfHitWater", ParamFieldType.U8, 0x9B, 7, 1, null, "水面衝突時のエフェクト無視するか") { it.isIgnoreSfxIfHitWater },
+    ParamField("isIgnoreMoveStateIfHitWater", ParamFieldType.U8, 0x9C, 0, 1, null, "水面衝突時の状態遷移を無視するか") { it.isIgnoreMoveStateIfHitWater },
+    ParamField("isHitDarkForceMagic", ParamFieldType.U8, 0x9C, 1, 1, null, "闇フォース魔法に当たるか") { it.isHitDarkForceMagic }
+)

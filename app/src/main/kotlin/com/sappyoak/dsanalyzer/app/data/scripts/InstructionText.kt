@@ -1,5 +1,6 @@
 package com.sappyoak.dsanalyzer.app.data.scripts
 
+import com.sappyoak.dsanalyzer.app.data.params.paramAddress
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.ArgReference
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.ArgType
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.ArgValue
@@ -9,6 +10,7 @@ import com.sappyoak.dsanalyzer.formats.emevd.emedf.Emedf
 import com.sappyoak.dsanalyzer.game.ref.Address
 import com.sappyoak.dsanalyzer.game.ref.DataAddress
 import com.sappyoak.dsanalyzer.game.ref.DataSpace
+import com.sappyoak.dsanalyzer.game.world.params.GameParam
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
 
 public data class ArgumentLine(
@@ -62,17 +64,18 @@ public val DecodedInstruction.displayName: String get() = definition?.name ?: "n
 public fun DecodedInstruction.summary(): String? = definition?.summary
 public fun DecodedInstruction.argumentLines(
     emedf: Emedf,
-    callers: CallerArguments = CallerArguments.Unknown
+    callers: CallerArguments = CallerArguments.Unknown,
 ): List<ArgumentLine> = when (definition) {
     null -> listOf(
         ArgumentLine("bytes", ArgumentValue.Raw(instruction.args.toString()), null)
     )
-    else -> args.map { it.line(emedf, callers) }
+    else -> args.map { it.line(emedf, callers, args) }
 }
 
 private fun DecodedArg.line(
     emedf: Emedf,
-    callers: CallerArguments = CallerArguments.Unknown
+    callers: CallerArguments = CallerArguments.Unknown,
+    siblings: List<DecodedArg>
 ): ArgumentLine {
     val resolved = resolveValue(emedf, callers)
     val raw = (value as? ArgValue.Literal)?.raw ?: (resolved as? ArgumentValue.Passed)?.raw
@@ -80,7 +83,7 @@ private fun DecodedArg.line(
     return ArgumentLine(
         label = definition.name,
         value = resolved,
-        link = raw?.let { definition.reference?.linkTo(it) }
+        link = raw?.let { definition.reference?.linkTo(it, siblings) }
     )
 }
 
@@ -98,16 +101,41 @@ private fun DecodedArg.resolveValue(
     )
 }
 
-private fun ArgReference.linkTo(raw: Long): Address? {
+private fun ArgReference.linkTo(raw: Long, siblings: List<DecodedArg>): Address? {
     val id = raw.toInt()
     if (id <= 0) return null
 
     return when {
         placed -> DataAddress(DataSpace.Entity.token, listOf(id.toString()))
         this == ArgReference.EventFlag -> DataAddress(DataSpace.Flag.token, listOf(id.toString()))
+        this == ArgReference.Item -> siblings.itemParam()?.let { paramAddress(it, id) }
+        else -> paramNamed?.let { paramAddress(it, id) }
+    }
+}
+
+/** The param a reference that names one directly lands in */
+private val ArgReference.paramNamed: GameParam<*>?
+    get() = when (this) {
+        ArgReference.ItemLot -> GameParam.ItemLotParam
+        ArgReference.SpEffect -> GameParam.SpEffectParam
+        ArgReference.Behavior -> GameParam.BehaviorParam
+        ArgReference.Think -> GameParam.NpcThinkParam
+        else -> null
+    }
+
+/** 'Item Type' 0 to 3, as the EMEDF enum names them; null when the type is not stated literally */
+private fun List<DecodedArg>.itemParam(): GameParam<*>? {
+    val type = firstOrNull { it.definition.enumName == ITEM_TYPE }?.value as? ArgValue.Literal ?: return null
+    return when (type.raw) {
+        0L -> GameParam.EquipParamWeapon
+        1L -> GameParam.EquipParamProtector
+        2L -> GameParam.EquipParamAccessory
+        3L -> GameParam.EquipParamGoods
         else -> null
     }
 }
+
+private const val ITEM_TYPE = "Item Type"
 
 private fun Double.asArgument(type: ArgType): String =
     if (type == ArgType.Float) toString() else toLong().toString()

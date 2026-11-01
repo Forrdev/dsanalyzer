@@ -15,6 +15,8 @@ import androidx.compose.ui.Modifier
 
 import com.sappyoak.dsanalyzer.app.data.maps.MapsMessage
 import com.sappyoak.dsanalyzer.app.data.maps.ui.MapsDetail
+import com.sappyoak.dsanalyzer.app.data.params.ParamsMessage
+import com.sappyoak.dsanalyzer.app.data.params.ui.ParamsDetail
 import com.sappyoak.dsanalyzer.app.data.scripts.ScriptsMessage
 import com.sappyoak.dsanalyzer.app.data.scripts.ui.ScriptsDetail
 import com.sappyoak.dsanalyzer.app.data.ui.DataNavigator
@@ -48,22 +50,25 @@ public fun WorkspaceShell(
     val navigator = remember { Navigator() }
     var settingsOpen by remember { mutableStateOf(false) }
 
+    val paramsState by stores.params.state.collectAsState()
     val mapsState by stores.maps.state.collectAsState()
     val scriptsState by stores.scripts.state.collectAsState()
     val runtimeState by stores.runtime.state.collectAsState()
 
     LaunchedEffect(installation?.id) {
         installation?.let {
+            stores.params.dispatch(ParamsMessage.Opened(it))
             stores.maps.dispatch(MapsMessage.Opened(it))
             stores.scripts.dispatch(ScriptsMessage.Opened(it))
             stores.runtime.dispatch(RuntimeMessage.Opened(it))
         }
     }
 
-    val context: ResolveContext = remember(mapsState.maps, mapsState.entities, scriptsState.scripts) {
+    val context: ResolveContext = remember(mapsState.maps, mapsState.entities, scriptsState.scripts, paramsState.entries) {
         WorkspaceResolveContext(
             maps = mapsState.maps.toSet(),
             scripts = scriptsState.scripts.toSet(),
+            params = paramsState.entries.keys,
             entryForEntity = { id -> mapsState.entities[id].firstOrNull() }
         )
     }
@@ -86,6 +91,7 @@ public fun WorkspaceShell(
             navigatorPane = { view ->
                 when (view) {
                     is View.Data -> DataNavigator(
+                        params = paramsState.catalog,
                         maps = mapsState.maps,
                         scripts = scriptsState.scripts,
                         view = view,
@@ -100,6 +106,9 @@ public fun WorkspaceShell(
                     is View.Data.Script,
                     is View.Data.ScriptEvent,
                     is View.Data.EventFlag -> ScriptsDetail(scriptsState, stores.scripts, view, resolve, navigator::go)
+
+                    is View.Data.Param,
+                    is View.Data.ParamRow -> ParamsDetail(paramsState, stores.params, view, resolve, navigator::go)
 
                     is View.Data -> MapsDetail(mapsState, stores.maps,  view, resolve, navigator::go)
                     is View.Live -> RuntimeDetail(
@@ -139,7 +148,7 @@ private fun WorkspaceStores.sync(view: View) {
         is View.Data.ScriptEvent -> scripts.dispatch(ScriptsMessage.ScriptSelected(view.script))
         is View.Data.EventFlag ->
             scripts.dispatch(ScriptsMessage.FlagRequested(view.flagId, view.seenIn))
-        is View.Data.Overview, is View.Analysis, is View.Live -> Unit
+        is View.Data.Overview, is View.Data.Param, is View.Data.ParamRow, is View.Analysis, is View.Live -> Unit
     }
 }
 

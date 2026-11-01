@@ -8,9 +8,11 @@
 
 package com.sappyoak.dsanalyzer.formats.param.defs
 
+import com.sappyoak.dsanalyzer.formats.param.ParamField
 import com.sappyoak.dsanalyzer.formats.param.ParamRow
 import com.sappyoak.dsanalyzer.formats.param.ParamRowData
 import com.sappyoak.dsanalyzer.formats.param.ParamRowType
+import com.sappyoak.dsanalyzer.formats.param.paramdef.ParamFieldType
 
 /** `OBJ_ACT_PARAM_ST`: PrepareToDie 0x20, Remastered 0x20 a row, data version 1 */
 public class ObjActParamRow(row: ParamRowData) : ParamRow(row) {
@@ -62,5 +64,24 @@ public class ObjActParamRow(row: ParamRowData) : ParamRow(row) {
     /** `u8` at 0x1D, `OBJACT_EVENT_KICK_TIMING` */
     public val eventKickTiming: Int get() = bytes.u8(0x1D)
 
-    public companion object : ParamRowType<ObjActParamRow>("OBJ_ACT_PARAM_ST", 0x20, 1, ::ObjActParamRow)
+    public companion object : ParamRowType<ObjActParamRow>("OBJ_ACT_PARAM_ST", 0x20, 1, FIELDS, ::ObjActParamRow)
 }
+
+private val FIELDS: List<ParamField<ObjActParamRow>> = listOf<ParamField<ObjActParamRow>>(
+    ParamField("actionEnableMsgId", ParamFieldType.S32, 0x0, null, null, null, "アクション有効時のMsgID") { it.actionEnableMsgId },
+    ParamField("actionFailedMsgId", ParamFieldType.S32, 0x4, null, null, null, "アクション失敗時のMsgID") { it.actionFailedMsgId },
+    ParamField("spQualifiedPassEventFlag", ParamFieldType.S32, 0x8, null, null, null, "特殊条件パス用イベントフラグ") { it.spQualifiedPassEventFlag },
+    ParamField("validDist", ParamFieldType.U16, 0xC, null, null, null, "アクションの有効距離[cm]") { it.validDist },
+    ParamField("playerAnimId", ParamFieldType.U16, 0xE, null, null, null, "プレイヤのアニメID0") { it.playerAnimId },
+    ParamField("chrAnimId", ParamFieldType.U16, 0x10, null, null, null, "キャラのアニメID0") { it.chrAnimId },
+    ParamField("spQualifiedId", ParamFieldType.U16, 0x12, null, null, null, "特殊条件のID") { it.spQualifiedId },
+    ParamField("spQualifiedId2", ParamFieldType.U16, 0x14, null, null, null, "特殊条件のID 2") { it.spQualifiedId2 },
+    ParamField("objDummyId", ParamFieldType.U8, 0x16, null, null, null, "オブジェのダミポリID0") { it.objDummyId },
+    ParamField("objAnimId", ParamFieldType.U8, 0x17, null, null, null, "オブジェのアニメID0") { it.objAnimId },
+    ParamField("validPlayerAngle", ParamFieldType.U8, 0x18, null, null, null, "プレイヤのアクション有効角度") { it.validPlayerAngle },
+    ParamField("spQualifiedType", ParamFieldType.U8, 0x19, null, null, "OBJACT_SP_QUALIFIED_TYPE", "特殊条件のタイプ") { it.spQualifiedType },
+    ParamField("spQualifiedType2", ParamFieldType.U8, 0x1A, null, null, "OBJACT_SP_QUALIFIED_TYPE", "特殊条件のタイプ2") { it.spQualifiedType2 },
+    ParamField("validObjAngle", ParamFieldType.U8, 0x1B, null, null, null, "オブジェのアクション有効角度") { it.validObjAngle },
+    ParamField("chrSorbType", ParamFieldType.U8, 0x1C, null, null, "OBJACT_CHR_SORB_TYPE", "キャラの吸着タイプ") { it.chrSorbType },
+    ParamField("eventKickTiming", ParamFieldType.U8, 0x1D, null, null, "OBJACT_EVENT_KICK_TIMING", "イベント発動タイミング") { it.eventKickTiming }
+)

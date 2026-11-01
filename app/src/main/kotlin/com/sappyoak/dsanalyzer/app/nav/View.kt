@@ -23,6 +23,9 @@ public sealed interface View {
 
         public data object Overview : Data
 
+        public data class Param(public val file: String) : Data
+        public data class ParamRow(public val file: String, public val rowId: Int) : Data
+
         public data class Map(public val map: MapId) : Data
         public data class MapEntry(
             public val map: MapId,
@@ -40,6 +43,7 @@ public sealed interface View {
             public val flagId: Int,
             public val seenIn: MapId? = null
         ) : Data
+
     }
 
     public data class Live(public val panel: RuntimePanel) : View {

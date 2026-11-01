@@ -1,5 +1,6 @@
 package com.sappyoak.dsanalyzer.formats.param.refs
 
+import com.sappyoak.dsanalyzer.formats.param.ParamRow
 import com.sappyoak.dsanalyzer.formats.param.defs.BehaviorParamRow
 import com.sappyoak.dsanalyzer.formats.param.defs.ItemLotParamRow
 import com.sappyoak.dsanalyzer.formats.param.defs.MagicParamRow
@@ -60,6 +61,16 @@ public val ItemLotParamRow.items: List<ParamRef?> get() = List(LOT_SLOTS) { slot
     if (kind == null || id <= 0) null else ParamRef(kind, id)
 }
 
+public val ParamRow.references: Map<String, ParamRef> get() = when (this) {
+    is BehaviorParamRow -> listOfNotNull(target?.let { "refId" to it }).toMap()
+    is MagicParamRow -> listOfNotNull(target?.let { "refId" to it }).toMap()
+    is ShopLineupParamRow -> listOfNotNull(item?.let { "equipId" to it }).toMap()
+    is ItemLotParamRow -> items.withIndex()
+        .mapNotNull { (slot, ref) -> ref?.let { "lotItemId%02d".format(slot + 1) to it } }
+        .toMap()
+    else -> emptyMap()
+}
+
 private fun behaviorReference(type: Int, id: Int): ParamRef? {
     val kind = when (type) {
         0 -> ParamKind.Attack
@@ -69,3 +80,4 @@ private fun behaviorReference(type: Int, id: Int): ParamRef? {
     }
     return if (id < 0) null else ParamRef(kind, id)
 }
+

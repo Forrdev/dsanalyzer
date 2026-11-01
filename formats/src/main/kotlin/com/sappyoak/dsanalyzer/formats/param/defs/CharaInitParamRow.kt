@@ -8,9 +8,11 @@
 
 package com.sappyoak.dsanalyzer.formats.param.defs
 
+import com.sappyoak.dsanalyzer.formats.param.ParamField
 import com.sappyoak.dsanalyzer.formats.param.ParamRow
 import com.sappyoak.dsanalyzer.formats.param.ParamRowData
 import com.sappyoak.dsanalyzer.formats.param.ParamRowType
+import com.sappyoak.dsanalyzer.formats.param.paramdef.ParamFieldType
 
 /** `CHARACTER_INIT_PARAM`: PrepareToDie 0xF0, Remastered 0xF0 a row, data version 1 */
 public class CharaInitParamRow(row: ParamRowData) : ParamRow(row) {
@@ -284,5 +286,98 @@ public class CharaInitParamRow(row: ParamRowData) : ParamRow(row) {
     /** bits 0-3 of the `u8` at 0xE5, `CHRINIT_VOW_TYPE` */
     public val vowType: Int get() = bytes.bits(0xE5, 1, 0, 4)
 
-    public companion object : ParamRowType<CharaInitParamRow>("CHARACTER_INIT_PARAM", 0xF0, 1, ::CharaInitParamRow)
+    public companion object : ParamRowType<CharaInitParamRow>("CHARACTER_INIT_PARAM", 0xF0, 1, FIELDS, ::CharaInitParamRow)
 }
+
+private val FIELDS: List<ParamField<CharaInitParamRow>> = listOf<ParamField<CharaInitParamRow>>(
+    ParamField("baseRec_mp", ParamFieldType.F32, 0x0, null, null, null, "ＭＰ回復速度基本値[s]") { it.baseRec_mp },
+    ParamField("baseRec_sp", ParamFieldType.F32, 0x4, null, null, null, "スタミナ回復速度基本値[s]") { it.baseRec_sp },
+    ParamField("red_Falldam", ParamFieldType.F32, 0x8, null, null, null, "落下ダメージ軽減補正[%]") { it.red_Falldam },
+    ParamField("soul", ParamFieldType.S32, 0xC, null, null, null, "初期ソウル") { it.soul },
+    ParamField("equip_Wep_Right", ParamFieldType.S32, 0x10, null, null, null, "右手武器") { it.equip_Wep_Right },
+    ParamField("equip_Subwep_Right", ParamFieldType.S32, 0x14, null, null, null, "右手予備武器") { it.equip_Subwep_Right },
+    ParamField("equip_Wep_Left", ParamFieldType.S32, 0x18, null, null, null, "左手武器") { it.equip_Wep_Left },
+    ParamField("equip_Subwep_Left", ParamFieldType.S32, 0x1C, null, null, null, "左手予備武器") { it.equip_Subwep_Left },
+    ParamField("equip_Helm", ParamFieldType.S32, 0x20, null, null, null, "頭防具") { it.equip_Helm },
+    ParamField("equip_Armer", ParamFieldType.S32, 0x24, null, null, null, "胴体防具") { it.equip_Armer },
+    ParamField("equip_Gaunt", ParamFieldType.S32, 0x28, null, null, null, "腕防具") { it.equip_Gaunt },
+    ParamField("equip_Leg", ParamFieldType.S32, 0x2C, null, null, null, "脚防具") { it.equip_Leg },
+    ParamField("equip_Arrow", ParamFieldType.S32, 0x30, null, null, null, "矢") { it.equip_Arrow },
+    ParamField("equip_Bolt", ParamFieldType.S32, 0x34, null, null, null, "ボルト") { it.equip_Bolt },
+    ParamField("equip_SubArrow", ParamFieldType.S32, 0x38, null, null, null, "予備矢") { it.equip_SubArrow },
+    ParamField("equip_SubBolt", ParamFieldType.S32, 0x3C, null, null, null, "予備ボルト") { it.equip_SubBolt },
+    ParamField("equip_Accessory01", ParamFieldType.S32, 0x40, null, null, null, "装飾品1") { it.equip_Accessory01 },
+    ParamField("equip_Accessory02", ParamFieldType.S32, 0x44, null, null, null, "装飾品2") { it.equip_Accessory02 },
+    ParamField("equip_Accessory03", ParamFieldType.S32, 0x48, null, null, null, "装飾品3") { it.equip_Accessory03 },
+    ParamField("equip_Accessory04", ParamFieldType.S32, 0x4C, null, null, null, "装飾品4") { it.equip_Accessory04 },
+    ParamField("equip_Accessory05", ParamFieldType.S32, 0x50, null, null, null, "装飾品5") { it.equip_Accessory05 },
+    ParamField("equip_Skill_01", ParamFieldType.S32, 0x54, null, null, null, "スキル1") { it.equip_Skill_01 },
+    ParamField("equip_Skill_02", ParamFieldType.S32, 0x58, null, null, null, "スキル2") { it.equip_Skill_02 },
+    ParamField("equip_Skill_03", ParamFieldType.S32, 0x5C, null, null, null, "スキル3") { it.equip_Skill_03 },
+    ParamField("equip_Spell_01", ParamFieldType.S32, 0x60, null, null, null, "魔法・奇跡1") { it.equip_Spell_01 },
+    ParamField("equip_Spell_02", ParamFieldType.S32, 0x64, null, null, null, "魔法・奇跡2") { it.equip_Spell_02 },
+    ParamField("equip_Spell_03", ParamFieldType.S32, 0x68, null, null, null, "魔法・奇跡3") { it.equip_Spell_03 },
+    ParamField("equip_Spell_04", ParamFieldType.S32, 0x6C, null, null, null, "魔法・奇跡4") { it.equip_Spell_04 },
+    ParamField("equip_Spell_05", ParamFieldType.S32, 0x70, null, null, null, "魔法・奇跡5") { it.equip_Spell_05 },
+    ParamField("equip_Spell_06", ParamFieldType.S32, 0x74, null, null, null, "魔法・奇跡6") { it.equip_Spell_06 },
+    ParamField("equip_Spell_07", ParamFieldType.S32, 0x78, null, null, null, "魔法・奇跡7") { it.equip_Spell_07 },
+    ParamField("item_01", ParamFieldType.S32, 0x7C, null, null, null, "アイテム01") { it.item_01 },
+    ParamField("item_02", ParamFieldType.S32, 0x80, null, null, null, "アイテム02") { it.item_02 },
+    ParamField("item_03", ParamFieldType.S32, 0x84, null, null, null, "アイテム03") { it.item_03 },
+    ParamField("item_04", ParamFieldType.S32, 0x88, null, null, null, "アイテム04") { it.item_04 },
+    ParamField("item_05", ParamFieldType.S32, 0x8C, null, null, null, "アイテム05") { it.item_05 },
+    ParamField("item_06", ParamFieldType.S32, 0x90, null, null, null, "アイテム06") { it.item_06 },
+    ParamField("item_07", ParamFieldType.S32, 0x94, null, null, null, "アイテム07") { it.item_07 },
+    ParamField("item_08", ParamFieldType.S32, 0x98, null, null, null, "アイテム08") { it.item_08 },
+    ParamField("item_09", ParamFieldType.S32, 0x9C, null, null, null, "アイテム09") { it.item_09 },
+    ParamField("item_10", ParamFieldType.S32, 0xA0, null, null, null, "アイテム10") { it.item_10 },
+    ParamField("npcPlayerFaceGenId", ParamFieldType.S32, 0xA4, null, null, null, "フェイスジェンパラメータID") { it.npcPlayerFaceGenId },
+    ParamField("npcPlayerThinkId", ParamFieldType.S32, 0xA8, null, null, null, "NPCプレイヤーの思考ID") { it.npcPlayerThinkId },
+    ParamField("baseHp", ParamFieldType.U16, 0xAC, null, null, null, "ＨＰ基本値") { it.baseHp },
+    ParamField("baseMp", ParamFieldType.U16, 0xAE, null, null, null, "ＭＰ基本値") { it.baseMp },
+    ParamField("baseSp", ParamFieldType.U16, 0xB0, null, null, null, "スタミナ基本値") { it.baseSp },
+    ParamField("arrowNum", ParamFieldType.U16, 0xB2, null, null, null, "矢の所持数") { it.arrowNum },
+    ParamField("boltNum", ParamFieldType.U16, 0xB4, null, null, null, "ボルトの所持数") { it.boltNum },
+    ParamField("subArrowNum", ParamFieldType.U16, 0xB6, null, null, null, "予備矢の所持数") { it.subArrowNum },
+    ParamField("subBoltNum", ParamFieldType.U16, 0xB8, null, null, null, "予備ボルトの所持数") { it.subBoltNum },
+    ParamField("qWC_sb", ParamFieldType.S16, 0xBA, null, null, null, "傾向係数　S-B軸") { it.qWC_sb },
+    ParamField("qWC_mw", ParamFieldType.S16, 0xBC, null, null, null, "傾向係数　M-W軸") { it.qWC_mw },
+    ParamField("qWC_cd", ParamFieldType.S16, 0xBE, null, null, null, "傾向係数　C-D軸") { it.qWC_cd },
+    ParamField("soulLv", ParamFieldType.S16, 0xC0, null, null, null, "ソウルLv") { it.soulLv },
+    ParamField("baseVit", ParamFieldType.U8, 0xC2, null, null, null, "体力") { it.baseVit },
+    ParamField("baseWil", ParamFieldType.U8, 0xC3, null, null, null, "精神") { it.baseWil },
+    ParamField("baseEnd", ParamFieldType.U8, 0xC4, null, null, null, "頑強") { it.baseEnd },
+    ParamField("baseStr", ParamFieldType.U8, 0xC5, null, null, null, "筋力") { it.baseStr },
+    ParamField("baseDex", ParamFieldType.U8, 0xC6, null, null, null, "俊敏") { it.baseDex },
+    ParamField("baseMag", ParamFieldType.U8, 0xC7, null, null, null, "魔力") { it.baseMag },
+    ParamField("baseFai", ParamFieldType.U8, 0xC8, null, null, null, "信仰") { it.baseFai },
+    ParamField("baseLuc", ParamFieldType.U8, 0xC9, null, null, null, "運") { it.baseLuc },
+    ParamField("baseHeroPoint", ParamFieldType.U8, 0xCA, null, null, null, "人間性") { it.baseHeroPoint },
+    ParamField("baseDurability", ParamFieldType.U8, 0xCB, null, null, null, "耐久力") { it.baseDurability },
+    ParamField("itemNum_01", ParamFieldType.U8, 0xCC, null, null, null, "アイテム01の所持数") { it.itemNum_01 },
+    ParamField("itemNum_02", ParamFieldType.U8, 0xCD, null, null, null, "アイテム02の所持数") { it.itemNum_02 },
+    ParamField("itemNum_03", ParamFieldType.U8, 0xCE, null, null, null, "アイテム03の所持数") { it.itemNum_03 },
+    ParamField("itemNum_04", ParamFieldType.U8, 0xCF, null, null, null, "アイテム個数04") { it.itemNum_04 },
+    ParamField("itemNum_05", ParamFieldType.U8, 0xD0, null, null, null, "アイテム個数05") { it.itemNum_05 },
+    ParamField("itemNum_06", ParamFieldType.U8, 0xD1, null, null, null, "アイテム個数06") { it.itemNum_06 },
+    ParamField("itemNum_07", ParamFieldType.U8, 0xD2, null, null, null, "アイテム個数07") { it.itemNum_07 },
+    ParamField("itemNum_08", ParamFieldType.U8, 0xD3, null, null, null, "アイテム個数08") { it.itemNum_08 },
+    ParamField("itemNum_09", ParamFieldType.U8, 0xD4, null, null, null, "アイテム個数09") { it.itemNum_09 },
+    ParamField("itemNum_10", ParamFieldType.U8, 0xD5, null, null, null, "アイテム個数10") { it.itemNum_10 },
+    ParamField("bodyScaleHead", ParamFieldType.S8, 0xD6, null, null, null, "頭部") { it.bodyScaleHead },
+    ParamField("bodyScaleBreast", ParamFieldType.S8, 0xD7, null, null, null, "胸部") { it.bodyScaleBreast },
+    ParamField("bodyScaleAbdomen", ParamFieldType.S8, 0xD8, null, null, null, "腹部") { it.bodyScaleAbdomen },
+    ParamField("bodyScaleArm", ParamFieldType.S8, 0xD9, null, null, null, "腕部") { it.bodyScaleArm },
+    ParamField("bodyScaleLeg", ParamFieldType.S8, 0xDA, null, null, null, "脚部") { it.bodyScaleLeg },
+    ParamField("gestureId0", ParamFieldType.S8, 0xDB, null, null, null, "ジェスチャーID0") { it.gestureId0 },
+    ParamField("gestureId1", ParamFieldType.S8, 0xDC, null, null, null, "ジェスチャーID1") { it.gestureId1 },
+    ParamField("gestureId2", ParamFieldType.S8, 0xDD, null, null, null, "ジェスチャーID2") { it.gestureId2 },
+    ParamField("gestureId3", ParamFieldType.S8, 0xDE, null, null, null, "ジェスチャーID3") { it.gestureId3 },
+    ParamField("gestureId4", ParamFieldType.S8, 0xDF, null, null, null, "ジェスチャーID4") { it.gestureId4 },
+    ParamField("gestureId5", ParamFieldType.S8, 0xE0, null, null, null, "ジェスチャーID5") { it.gestureId5 },
+    ParamField("gestureId6", ParamFieldType.S8, 0xE1, null, null, null, "ジェスチャーID6") { it.gestureId6 },
+    ParamField("npcPlayerType", ParamFieldType.U8, 0xE2, null, null, "NPC_TYPE", "NPCプレイヤーのNPCタイプ") { it.npcPlayerType },
+    ParamField("npcPlayerDrawType", ParamFieldType.U8, 0xE3, null, null, "NPC_DRAW_TYPE", "NPCプレイヤーの描画タイプ") { it.npcPlayerDrawType },
+    ParamField("npcPlayerSex", ParamFieldType.U8, 0xE4, null, null, "CHARACTER_INIT_SEX", "NPCプレイヤーの性別") { it.npcPlayerSex },
+    ParamField("vowType", ParamFieldType.U8, 0xE5, 0, 4, "CHRINIT_VOW_TYPE", "誓約") { it.vowType }
+)

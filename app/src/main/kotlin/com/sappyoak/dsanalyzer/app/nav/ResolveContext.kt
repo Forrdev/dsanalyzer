@@ -12,6 +12,7 @@ import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
 public interface ResolveContext {
     public fun hasMap(map: MapId): Boolean
     public fun hasScript(script: ScriptId): Boolean
+    public fun hasParam(file: String): Boolean
 
     public fun entryFor(entityId: Int): View.Data.MapEntry?
 
@@ -19,6 +20,7 @@ public interface ResolveContext {
         public val Empty: ResolveContext = object : ResolveContext {
             override fun hasMap(map: MapId): Boolean = false
             override fun hasScript(script: ScriptId): Boolean = false
+            override fun hasParam(file: String): Boolean = false
             override fun entryFor(entityId: Int): View.Data.MapEntry? = null
         }
     }
@@ -36,6 +38,7 @@ private fun ResolveContext.resolveData(address: DataAddress): Resolution =
         DataSpace.Entity -> entityView(address)
         DataSpace.Flag -> flagView(address)
         DataSpace.Script -> scriptView(address)
+        DataSpace.Param -> paramView(address)
         else -> Resolution.NoView(address)
     }
 
@@ -79,6 +82,19 @@ private fun ResolveContext.scriptView(address: DataAddress): Resolution {
     } else {
         Resolution.Absent(address, script.token)
     }
+}
+
+private fun ResolveContext.paramView(address: DataAddress): Resolution {
+    val segments = address.segments
+    val file = segments.firstOrNull() ?: return Resolution.NoView(address)
+
+    val view: View.Data = when (segments.size) {
+        1 -> View.Data.Param(file)
+        2 -> View.Data.ParamRow(file, segments[1].toIntOrNull() ?: return Resolution.NoView(address))
+        else -> return Resolution.NoView(address)
+    }
+
+    return if (hasParam(file)) Resolution.Resolved(view) else Resolution.Absent(address, file)
 }
 
 private fun flagView(address: DataAddress): Resolution {

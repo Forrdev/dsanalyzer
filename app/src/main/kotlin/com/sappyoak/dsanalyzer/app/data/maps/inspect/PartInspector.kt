@@ -1,6 +1,7 @@
 package com.sappyoak.dsanalyzer.app.data.maps.inspect
 
 import com.sappyoak.dsanalyzer.app.data.maps.MapContents
+import com.sappyoak.dsanalyzer.app.data.params.paramAddress
 import com.sappyoak.dsanalyzer.app.nav.View
 import com.sappyoak.dsanalyzer.formats.msb.PartIndex
 import com.sappyoak.dsanalyzer.formats.msb.RegionIndex
@@ -11,7 +12,9 @@ import com.sappyoak.dsanalyzer.formats.msb.part.hitFilter
 import com.sappyoak.dsanalyzer.formats.msb.part.placeNameId
 import com.sappyoak.dsanalyzer.formats.msb.part.playRegionId
 import com.sappyoak.dsanalyzer.formats.msb.part.stableFootingFlag
+import com.sappyoak.dsanalyzer.game.ref.Address
 import com.sappyoak.dsanalyzer.game.world.maps.EntryKind
+import com.sappyoak.dsanalyzer.game.world.params.GameParam
 
 internal fun partSections(contents: MapContents, part: Part): List<InspectorSection> = buildList {
     add(InspectorSection("Placement", placementRows(contents, part)))
@@ -49,16 +52,17 @@ private fun objectRows(contents: MapContents, data: ObjectData) = rows {
 
 private fun enemyRows(contents: MapContents, data: EnemyData) = rows {
     reference("Draw parent", contents, contents.part(data.drawParent))
-    row("Think param", data.thinkParamId)
-    row("NPC param", data.npcParamId)
+    row("Think param", data.thinkParamId, paramLink(GameParam.NpcThinkParam, data.thinkParamId))
+    row("NPC param", data.npcParamId, paramLink(GameParam.NpcParam, data.npcParamId))
     row("Talk id", data.talkId)
-    row("Chara init", data.charaInitId)
+    row("Chara init", data.charaInitId, paramLink(GameParam.CharaInitParam, data.charaInitId))
     row("Platoon", data.platoonId)
     row("Initial animation", data.initialAnimation)
     data.movePoints.forEachIndexed { slot, point ->
         if (point != null) reference("Move point $slot", contents, contents.region(point))
     }
 }
+
 
 private fun collisionRows(contents: MapContents, part: Part.Collision) = rows {
     row("Hit filter", part.hitFilter?.name ?: "unknown (${part.hitFilterId})")
@@ -79,6 +83,8 @@ private fun connectRows(contents: MapContents, part: Part.ConnectCollision) = ro
     reference("Collision", contents, collision?.let { contents.ref(EntryKind.Part, it) })
     row("Connected map", part.connectedMap.joinToString("_") { "%02d".format(it) })
 }
+
+private fun paramLink(param: GameParam<*>, id: Int): Address? = if (id > 0) paramAddress(param, id) else null
 
 internal fun MapContents.ref(kind: EntryKind, index: Int): View.Data.MapEntry =
     View.Data.MapEntry(map, kind, index)

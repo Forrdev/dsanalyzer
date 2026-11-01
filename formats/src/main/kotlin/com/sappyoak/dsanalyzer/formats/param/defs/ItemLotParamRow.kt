@@ -8,9 +8,11 @@
 
 package com.sappyoak.dsanalyzer.formats.param.defs
 
+import com.sappyoak.dsanalyzer.formats.param.ParamField
 import com.sappyoak.dsanalyzer.formats.param.ParamRow
 import com.sappyoak.dsanalyzer.formats.param.ParamRowData
 import com.sappyoak.dsanalyzer.formats.param.ParamRowType
+import com.sappyoak.dsanalyzer.formats.param.paramdef.ParamFieldType
 
 /** `ITEMLOT_PARAM_ST`: PrepareToDie 0x94, Remastered 0x94 a row, data version 2 */
 public class ItemLotParamRow(row: ParamRowData) : ParamRow(row) {
@@ -218,5 +220,76 @@ public class ItemLotParamRow(row: ParamRowData) : ParamRow(row) {
     /** bit 15 of the `u16` at 0x92, `ITEMLOT_CUMULATE_RESET` */
     public val cumulateReset08: Boolean get() = bytes.flag(0x93, 7)
 
-    public companion object : ParamRowType<ItemLotParamRow>("ITEMLOT_PARAM_ST", 0x94, 2, ::ItemLotParamRow)
+    public companion object : ParamRowType<ItemLotParamRow>("ITEMLOT_PARAM_ST", 0x94, 2, FIELDS, ::ItemLotParamRow)
 }
+
+private val FIELDS: List<ParamField<ItemLotParamRow>> = listOf<ParamField<ItemLotParamRow>>(
+    ParamField("lotItemId01", ParamFieldType.S32, 0x0, null, null, null, "１：アイテムID") { it.lotItemId01 },
+    ParamField("lotItemId02", ParamFieldType.S32, 0x4, null, null, null, "２：アイテムID") { it.lotItemId02 },
+    ParamField("lotItemId03", ParamFieldType.S32, 0x8, null, null, null, "３：アイテムID") { it.lotItemId03 },
+    ParamField("lotItemId04", ParamFieldType.S32, 0xC, null, null, null, "４：アイテムID") { it.lotItemId04 },
+    ParamField("lotItemId05", ParamFieldType.S32, 0x10, null, null, null, "５：アイテムID") { it.lotItemId05 },
+    ParamField("lotItemId06", ParamFieldType.S32, 0x14, null, null, null, "６：アイテムID") { it.lotItemId06 },
+    ParamField("lotItemId07", ParamFieldType.S32, 0x18, null, null, null, "７：アイテムID") { it.lotItemId07 },
+    ParamField("lotItemId08", ParamFieldType.S32, 0x1C, null, null, null, "８：アイテムID") { it.lotItemId08 },
+    ParamField("lotItemCategory01", ParamFieldType.S32, 0x20, null, null, "ITEMLOT_ITEMCATEGORY", "１：アイテムカテゴリ") { it.lotItemCategory01 },
+    ParamField("lotItemCategory02", ParamFieldType.S32, 0x24, null, null, "ITEMLOT_ITEMCATEGORY", "２：アイテムカテゴリ") { it.lotItemCategory02 },
+    ParamField("lotItemCategory03", ParamFieldType.S32, 0x28, null, null, "ITEMLOT_ITEMCATEGORY", "３：アイテムカテゴリ") { it.lotItemCategory03 },
+    ParamField("lotItemCategory04", ParamFieldType.S32, 0x2C, null, null, "ITEMLOT_ITEMCATEGORY", "４：アイテムカテゴリ") { it.lotItemCategory04 },
+    ParamField("lotItemCategory05", ParamFieldType.S32, 0x30, null, null, "ITEMLOT_ITEMCATEGORY", "５：アイテムカテゴリ") { it.lotItemCategory05 },
+    ParamField("lotItemCategory06", ParamFieldType.S32, 0x34, null, null, "ITEMLOT_ITEMCATEGORY", "６：アイテムカテゴリ") { it.lotItemCategory06 },
+    ParamField("lotItemCategory07", ParamFieldType.S32, 0x38, null, null, "ITEMLOT_ITEMCATEGORY", "７：アイテムカテゴリ") { it.lotItemCategory07 },
+    ParamField("lotItemCategory08", ParamFieldType.S32, 0x3C, null, null, "ITEMLOT_ITEMCATEGORY", "８：アイテムカテゴリ") { it.lotItemCategory08 },
+    ParamField("lotItemBasePoint01", ParamFieldType.U16, 0x40, null, null, null, "基本出現ポイント") { it.lotItemBasePoint01 },
+    ParamField("lotItemBasePoint02", ParamFieldType.U16, 0x42, null, null, null, "基本出現ポイント") { it.lotItemBasePoint02 },
+    ParamField("lotItemBasePoint03", ParamFieldType.U16, 0x44, null, null, null, "基本出現ポイント") { it.lotItemBasePoint03 },
+    ParamField("lotItemBasePoint04", ParamFieldType.U16, 0x46, null, null, null, "基本出現ポイント") { it.lotItemBasePoint04 },
+    ParamField("lotItemBasePoint05", ParamFieldType.U16, 0x48, null, null, null, "基本出現ポイント") { it.lotItemBasePoint05 },
+    ParamField("lotItemBasePoint06", ParamFieldType.U16, 0x4A, null, null, null, "基本出現ポイント") { it.lotItemBasePoint06 },
+    ParamField("lotItemBasePoint07", ParamFieldType.U16, 0x4C, null, null, null, "基本出現ポイント") { it.lotItemBasePoint07 },
+    ParamField("lotItemBasePoint08", ParamFieldType.U16, 0x4E, null, null, null, "基本出現ポイント") { it.lotItemBasePoint08 },
+    ParamField("cumulateLotPoint01", ParamFieldType.U16, 0x50, null, null, null, "累積後出現ポイント") { it.cumulateLotPoint01 },
+    ParamField("cumulateLotPoint02", ParamFieldType.U16, 0x52, null, null, null, "累積後出現ポイント") { it.cumulateLotPoint02 },
+    ParamField("cumulateLotPoint03", ParamFieldType.U16, 0x54, null, null, null, "累積後出現ポイント") { it.cumulateLotPoint03 },
+    ParamField("cumulateLotPoint04", ParamFieldType.U16, 0x56, null, null, null, "累積後出現ポイント") { it.cumulateLotPoint04 },
+    ParamField("cumulateLotPoint05", ParamFieldType.U16, 0x58, null, null, null, "累積後出現ポイント") { it.cumulateLotPoint05 },
+    ParamField("cumulateLotPoint06", ParamFieldType.U16, 0x5A, null, null, null, "累積後出現ポイント") { it.cumulateLotPoint06 },
+    ParamField("cumulateLotPoint07", ParamFieldType.U16, 0x5C, null, null, null, "累積後出現ポイント") { it.cumulateLotPoint07 },
+    ParamField("cumulateLotPoint08", ParamFieldType.U16, 0x5E, null, null, null, "累積後出現ポイント") { it.cumulateLotPoint08 },
+    ParamField("getItemFlagId01", ParamFieldType.S32, 0x60, null, null, null, "別ザクザクフラグID") { it.getItemFlagId01 },
+    ParamField("getItemFlagId02", ParamFieldType.S32, 0x64, null, null, null, "別ザクザクフラグID") { it.getItemFlagId02 },
+    ParamField("getItemFlagId03", ParamFieldType.S32, 0x68, null, null, null, "別ザクザクフラグID") { it.getItemFlagId03 },
+    ParamField("getItemFlagId04", ParamFieldType.S32, 0x6C, null, null, null, "別ザクザクフラグID") { it.getItemFlagId04 },
+    ParamField("getItemFlagId05", ParamFieldType.S32, 0x70, null, null, null, "別ザクザクフラグID") { it.getItemFlagId05 },
+    ParamField("getItemFlagId06", ParamFieldType.S32, 0x74, null, null, null, "別ザクザクフラグID") { it.getItemFlagId06 },
+    ParamField("getItemFlagId07", ParamFieldType.S32, 0x78, null, null, null, "別ザクザクフラグID") { it.getItemFlagId07 },
+    ParamField("getItemFlagId08", ParamFieldType.S32, 0x7C, null, null, null, "別ザクザクフラグID") { it.getItemFlagId08 },
+    ParamField("getItemFlagId", ParamFieldType.S32, 0x80, null, null, null, "ザクザクフラグID") { it.getItemFlagId },
+    ParamField("cumulateNumFlagId", ParamFieldType.S32, 0x84, null, null, null, "抽選累積保存フラグID") { it.cumulateNumFlagId },
+    ParamField("cumulateNumMax", ParamFieldType.U8, 0x88, null, null, null, "抽選累積最大数") { it.cumulateNumMax },
+    ParamField("lotItem_Rarity", ParamFieldType.U8, 0x89, null, null, null, "レアリティ設定") { it.lotItem_Rarity },
+    ParamField("lotItemNum01", ParamFieldType.U8, 0x8A, null, null, null, "個数") { it.lotItemNum01 },
+    ParamField("lotItemNum02", ParamFieldType.U8, 0x8B, null, null, null, "個数") { it.lotItemNum02 },
+    ParamField("lotItemNum03", ParamFieldType.U8, 0x8C, null, null, null, "個数") { it.lotItemNum03 },
+    ParamField("lotItemNum04", ParamFieldType.U8, 0x8D, null, null, null, "個数") { it.lotItemNum04 },
+    ParamField("lotItemNum05", ParamFieldType.U8, 0x8E, null, null, null, "個数") { it.lotItemNum05 },
+    ParamField("lotItemNum06", ParamFieldType.U8, 0x8F, null, null, null, "個数") { it.lotItemNum06 },
+    ParamField("lotItemNum07", ParamFieldType.U8, 0x90, null, null, null, "個数") { it.lotItemNum07 },
+    ParamField("lotItemNum08", ParamFieldType.U8, 0x91, null, null, null, "個数") { it.lotItemNum08 },
+    ParamField("enableLuck01", ParamFieldType.U16, 0x92, 0, 1, "ITEMLOT_ENABLE_LUCK", "運パラメータ有効") { it.enableLuck01 },
+    ParamField("enableLuck02", ParamFieldType.U16, 0x92, 1, 1, "ITEMLOT_ENABLE_LUCK", "運パラメータ有効") { it.enableLuck02 },
+    ParamField("enableLuck03", ParamFieldType.U16, 0x92, 2, 1, "ITEMLOT_ENABLE_LUCK", "運パラメータ有効") { it.enableLuck03 },
+    ParamField("enableLuck04", ParamFieldType.U16, 0x92, 3, 1, "ITEMLOT_ENABLE_LUCK", "運パラメータ有効") { it.enableLuck04 },
+    ParamField("enableLuck05", ParamFieldType.U16, 0x92, 4, 1, "ITEMLOT_ENABLE_LUCK", "運パラメータ有効") { it.enableLuck05 },
+    ParamField("enableLuck06", ParamFieldType.U16, 0x92, 5, 1, "ITEMLOT_ENABLE_LUCK", "運パラメータ有効") { it.enableLuck06 },
+    ParamField("enableLuck07", ParamFieldType.U16, 0x92, 6, 1, "ITEMLOT_ENABLE_LUCK", "運パラメータ有効") { it.enableLuck07 },
+    ParamField("enableLuck08", ParamFieldType.U16, 0x92, 7, 1, "ITEMLOT_ENABLE_LUCK", "運パラメータ有効") { it.enableLuck08 },
+    ParamField("cumulateReset01", ParamFieldType.U16, 0x92, 8, 1, "ITEMLOT_CUMULATE_RESET", "累積リセット") { it.cumulateReset01 },
+    ParamField("cumulateReset02", ParamFieldType.U16, 0x92, 9, 1, "ITEMLOT_CUMULATE_RESET", "累積リセット") { it.cumulateReset02 },
+    ParamField("cumulateReset03", ParamFieldType.U16, 0x92, 10, 1, "ITEMLOT_CUMULATE_RESET", "累積リセット") { it.cumulateReset03 },
+    ParamField("cumulateReset04", ParamFieldType.U16, 0x92, 11, 1, "ITEMLOT_CUMULATE_RESET", "累積リセット") { it.cumulateReset04 },
+    ParamField("cumulateReset05", ParamFieldType.U16, 0x92, 12, 1, "ITEMLOT_CUMULATE_RESET", "累積リセット") { it.cumulateReset05 },
+    ParamField("cumulateReset06", ParamFieldType.U16, 0x92, 13, 1, "ITEMLOT_CUMULATE_RESET", "累積リセット") { it.cumulateReset06 },
+    ParamField("cumulateReset07", ParamFieldType.U16, 0x92, 14, 1, "ITEMLOT_CUMULATE_RESET", "累積リセット") { it.cumulateReset07 },
+    ParamField("cumulateReset08", ParamFieldType.U16, 0x92, 15, 1, "ITEMLOT_CUMULATE_RESET", "累積リセット") { it.cumulateReset08 }
+)

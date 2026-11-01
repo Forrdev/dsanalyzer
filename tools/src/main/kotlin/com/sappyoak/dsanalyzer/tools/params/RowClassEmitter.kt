@@ -48,9 +48,11 @@ internal fun emitRowClass(
         append(generatedHeader("paramdef.paramdefbnd, $defFile"))
         append("\n@file:Suppress(\"SpellCheckingInspection\")\n\n")
         append("package $DEFS_PACKAGE\n\n")
+        append("import com.sappyoak.dsanalyzer.formats.param.ParamField\n")
         append("import com.sappyoak.dsanalyzer.formats.param.ParamRow\n")
         append("import com.sappyoak.dsanalyzer.formats.param.ParamRowData\n")
-        append("import com.sappyoak.dsanalyzer.formats.param.ParamRowType\n\n")
+        append("import com.sappyoak.dsanalyzer.formats.param.ParamRowType\n")
+        append("import com.sappyoak.dsanalyzer.formats.param.paramdef.ParamFieldType\n\n")
         append(classDoc(defs, editions))
         append("public class $className(row: ParamRowData")
         if (varies) append(", private val ${editions.flag}: Boolean")
@@ -58,6 +60,23 @@ internal fun emitRowClass(
         plans.forEach { append(it.emit(editions, varies)).append("\n\n") }
         append(if (varies) variantTypes(className, defs, editions) else soleType(className, defs.values.first()))
         append("}\n")
+        append(fieldTables(className, plans, defs, editions, varies))
+    }
+}
+
+private fun fieldTables(
+    className: String,
+    plans: List<FieldPlan>,
+    defs: Map<GameEdition, ParamDef>,
+    editions: EditionPair,
+    varies: Boolean
+): String {
+    if (!varies) return "\n" + emitFieldTable(SOLE_TABLE, className, plans, varies = false) { it.base ?: it.other }
+
+    return orderedBy(editions, defs).joinToString("") { (edition, _) ->
+        "\n" + emitFieldTable(tableFor(edition), className, plans, varies = true) {
+            if (edition == editions.base) it.base else it.other
+        }
     }
 }
 
@@ -72,15 +91,15 @@ private fun classDoc(defs: Map<GameEdition, ParamDef>, editions: EditionPair): S
 
 private fun soleType(className: String, def: ParamDef): String =
     "    public companion object : ParamRowType<$className>(" +
-            "\"${def.paramType}\", ${hex(def.layout.rowSize)}, ${def.dataVersion}, ::$className)\n"
+            "\"${def.paramType}\", ${hex(def.layout.rowSize)}, ${def.dataVersion}, $SOLE_TABLE, ::$className)\n"
 
-/** One row type per edition, each with that edition's own row size, data version and flag value */
+/** One row type per edition, each with that edition's own row size, data version, table and flag value */
 private fun variantTypes(className: String, defs: Map<GameEdition, ParamDef>, editions: EditionPair): String =
     buildString {
         append("    public companion object {\n")
         orderedBy(editions, defs).forEach { (edition, def) ->
             append("        public val $edition: ParamRowType<$className> = ParamRowType(")
-            append("\"${def.paramType}\", ${hex(def.layout.rowSize)}, ${def.dataVersion}")
+            append("\"${def.paramType}\", ${hex(def.layout.rowSize)}, ${def.dataVersion}, ${tableFor(edition)}")
             append(") { $className(it, ${editions.flag} = ${edition == editions.other}) }\n")
         }
         append("    }\n")

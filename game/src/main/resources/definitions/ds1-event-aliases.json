@@ -2087,7 +2087,7 @@
    "args": [
     {
      "name": "item_lot",
-     "reference": "Item"
+     "reference": "ItemLot"
     },
     {
      "name": "region",

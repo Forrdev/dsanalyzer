@@ -8,9 +8,11 @@
 
 package com.sappyoak.dsanalyzer.formats.param.defs
 
+import com.sappyoak.dsanalyzer.formats.param.ParamField
 import com.sappyoak.dsanalyzer.formats.param.ParamRow
 import com.sappyoak.dsanalyzer.formats.param.ParamRowData
 import com.sappyoak.dsanalyzer.formats.param.ParamRowType
+import com.sappyoak.dsanalyzer.formats.param.paramdef.ParamFieldType
 
 /** `EQUIP_PARAM_ACCESSORY_ST`: PrepareToDie 0x40, Remastered 0x40 a row, data version 1 */
 public class EquipParamAccessoryRow(row: ParamRowData) : ParamRow(row) {
@@ -86,5 +88,32 @@ public class EquipParamAccessoryRow(row: ParamRowData) : ParamRow(row) {
     /** bit 2 of the `u8` at 0x3C, `EQUIP_BOOL` */
     public val disableMultiDropShare: Boolean get() = bytes.flag(0x3C, 2)
 
-    public companion object : ParamRowType<EquipParamAccessoryRow>("EQUIP_PARAM_ACCESSORY_ST", 0x40, 1, ::EquipParamAccessoryRow)
+    public companion object : ParamRowType<EquipParamAccessoryRow>("EQUIP_PARAM_ACCESSORY_ST", 0x40, 1, FIELDS, ::EquipParamAccessoryRow)
 }
+
+private val FIELDS: List<ParamField<EquipParamAccessoryRow>> = listOf<ParamField<EquipParamAccessoryRow>>(
+    ParamField("refId", ParamFieldType.S32, 0x0, null, null, null, "呼び出しID") { it.refId },
+    ParamField("sfxVariationId", ParamFieldType.S32, 0x4, null, null, null, "SFXバリエーションID") { it.sfxVariationId },
+    ParamField("weight", ParamFieldType.F32, 0x8, null, null, null, "重量[kg]") { it.weight },
+    ParamField("behaviorId", ParamFieldType.S32, 0xC, null, null, null, "行動ID") { it.behaviorId },
+    ParamField("basicPrice", ParamFieldType.S32, 0x10, null, null, null, "基本価格") { it.basicPrice },
+    ParamField("sellValue", ParamFieldType.S32, 0x14, null, null, null, "販売価格") { it.sellValue },
+    ParamField("sortId", ParamFieldType.S32, 0x18, null, null, null, "sortID") { it.sortId },
+    ParamField("qwcId", ParamFieldType.S32, 0x1C, null, null, null, "QWCID") { it.qwcId },
+    ParamField("equipModelId", ParamFieldType.U16, 0x20, null, null, null, "装備モデル番号") { it.equipModelId },
+    ParamField("iconId", ParamFieldType.U16, 0x22, null, null, null, "アイコンID") { it.iconId },
+    ParamField("shopLv", ParamFieldType.S16, 0x24, null, null, null, "ショップレベル") { it.shopLv },
+    ParamField("trophySGradeId", ParamFieldType.S16, 0x26, null, null, null, "トロフィー") { it.trophySGradeId },
+    ParamField("trophySeqId", ParamFieldType.S16, 0x28, null, null, null, "トロフィーSEQ番号") { it.trophySeqId },
+    ParamField("equipModelCategory", ParamFieldType.U8, 0x2A, null, null, "EQUIP_MODEL_CATEGORY", "装備モデル種別") { it.equipModelCategory },
+    ParamField("equipModelGender", ParamFieldType.U8, 0x2B, null, null, "EQUIP_MODEL_GENDER", "装備モデル性別") { it.equipModelGender },
+    ParamField("accessoryCategory", ParamFieldType.U8, 0x2C, null, null, "ACCESSORY_CATEGORY", "装飾カテゴリ") { it.accessoryCategory },
+    ParamField("refCategory", ParamFieldType.U8, 0x2D, null, null, "BEHAVIOR_REF_TYPE", "IDカテゴリ") { it.refCategory },
+    ParamField("spEffectCategory", ParamFieldType.U8, 0x2E, null, null, "BEHAVIOR_CATEGORY", "特殊効果カテゴリ") { it.spEffectCategory },
+    ParamField("vagrantItemLotId", ParamFieldType.S32, 0x30, null, null, null, "ベイグラント時アイテム抽選ID") { it.vagrantItemLotId },
+    ParamField("vagrantBonusEneDropItemLotId", ParamFieldType.S32, 0x34, null, null, null, "ベイグラントボーナス敵ドロップアイテム抽選ID") { it.vagrantBonusEneDropItemLotId },
+    ParamField("vagrantItemEneDropItemLotId", ParamFieldType.S32, 0x38, null, null, null, "ベイグラントアイテム敵ドロップアイテム抽選ID") { it.vagrantItemEneDropItemLotId },
+    ParamField("isDeposit", ParamFieldType.U8, 0x3C, 0, 1, "EQUIP_BOOL", "預けれるか") { it.isDeposit },
+    ParamField("isEquipOutBrake", ParamFieldType.U8, 0x3C, 1, 1, "EQUIP_BOOL", "外すと壊れるか") { it.isEquipOutBrake },
+    ParamField("disableMultiDropShare", ParamFieldType.U8, 0x3C, 2, 1, "EQUIP_BOOL", "マルチドロップ共有禁止か") { it.disableMultiDropShare }
+)

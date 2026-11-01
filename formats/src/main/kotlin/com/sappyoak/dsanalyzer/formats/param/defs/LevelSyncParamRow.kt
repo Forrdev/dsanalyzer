@@ -8,9 +8,11 @@
 
 package com.sappyoak.dsanalyzer.formats.param.defs
 
+import com.sappyoak.dsanalyzer.formats.param.ParamField
 import com.sappyoak.dsanalyzer.formats.param.ParamRow
 import com.sappyoak.dsanalyzer.formats.param.ParamRowData
 import com.sappyoak.dsanalyzer.formats.param.ParamRowType
+import com.sappyoak.dsanalyzer.formats.param.paramdef.ParamFieldType
 
 /** `LEVELSYNC_PARAM_ST`: 0xDC bytes (Remastered only) a row, data version 1 */
 public class LevelSyncParamRow(row: ParamRowData) : ParamRow(row) {
@@ -305,5 +307,105 @@ public class LevelSyncParamRow(row: ParamRowData) : ParamRow(row) {
     /** `u8` at 0xDB */
     public val generalPurposeParam6: Int get() = bytes.u8(0xDB)
 
-    public companion object : ParamRowType<LevelSyncParamRow>("LEVELSYNC_PARAM_ST", 0xDC, 1, ::LevelSyncParamRow)
+    public companion object : ParamRowType<LevelSyncParamRow>("LEVELSYNC_PARAM_ST", 0xDC, 1, FIELDS, ::LevelSyncParamRow)
 }
+
+private val FIELDS: List<ParamField<LevelSyncParamRow>> = listOf<ParamField<LevelSyncParamRow>>(
+    ParamField("sCLUA", ParamFieldType.S16, 0x0, null, null, null, "SCLUA") { it.sCLUA },
+    ParamField("sDCLUR", ParamFieldType.S16, 0x2, null, null, null, "SDCLUR") { it.sDCLUR },
+    ParamField("sDCWLM", ParamFieldType.S16, 0x4, null, null, null, "SDCWLM") { it.sDCWLM },
+    ParamField("mLWSUR", ParamFieldType.U8, 0x6, null, null, null, "MLWSUR") { it.mLWSUR },
+    ParamField("mLWSUA", ParamFieldType.U8, 0x7, null, null, null, "MLWSUA") { it.mLWSUA },
+    ParamField("mLRSUR", ParamFieldType.U8, 0x8, null, null, null, "MLRSUR") { it.mLRSUR },
+    ParamField("mLRSUA", ParamFieldType.U8, 0x9, null, null, null, "MLRSUA") { it.mLRSUA },
+    ParamField("mWLUWS0", ParamFieldType.U8, 0xA, null, null, null, "MWLUWS0") { it.mWLUWS0 },
+    ParamField("mWLUWS1", ParamFieldType.U8, 0xB, null, null, null, "MWLUWS1") { it.mWLUWS1 },
+    ParamField("mWLUWS2", ParamFieldType.U8, 0xC, null, null, null, "MWLUWS2") { it.mWLUWS2 },
+    ParamField("mWLUWS3", ParamFieldType.U8, 0xD, null, null, null, "MWLUWS3") { it.mWLUWS3 },
+    ParamField("mWLUWS4", ParamFieldType.U8, 0xE, null, null, null, "MWLUWS4") { it.mWLUWS4 },
+    ParamField("mWLUWS5", ParamFieldType.U8, 0xF, null, null, null, "MWLUWS5") { it.mWLUWS5 },
+    ParamField("mWLUWS6", ParamFieldType.U8, 0x10, null, null, null, "MWLUWS6") { it.mWLUWS6 },
+    ParamField("mWLUWS7", ParamFieldType.U8, 0x11, null, null, null, "MWLUWS7") { it.mWLUWS7 },
+    ParamField("mWLUWS8", ParamFieldType.U8, 0x12, null, null, null, "MWLUWS8") { it.mWLUWS8 },
+    ParamField("mWLUWS9", ParamFieldType.U8, 0x13, null, null, null, "MWLUWS9") { it.mWLUWS9 },
+    ParamField("mWLUWS10", ParamFieldType.U8, 0x14, null, null, null, "MWLUWS10") { it.mWLUWS10 },
+    ParamField("mWLURS0", ParamFieldType.U8, 0x15, null, null, null, "MWLURS0") { it.mWLURS0 },
+    ParamField("mWLURS1", ParamFieldType.U8, 0x16, null, null, null, "MWLURS1") { it.mWLURS1 },
+    ParamField("mWLURS2", ParamFieldType.U8, 0x17, null, null, null, "MWLURS2") { it.mWLURS2 },
+    ParamField("mWLURS3", ParamFieldType.U8, 0x18, null, null, null, "MWLURS3") { it.mWLURS3 },
+    ParamField("mWLURS4", ParamFieldType.U8, 0x19, null, null, null, "MWLURS4") { it.mWLURS4 },
+    ParamField("mWLURS5", ParamFieldType.U8, 0x1A, null, null, null, "MWLURS5") { it.mWLURS5 },
+    ParamField("mWLURS6", ParamFieldType.U8, 0x1B, null, null, null, "MWLURS6") { it.mWLURS6 },
+    ParamField("mWLURS7", ParamFieldType.U8, 0x1C, null, null, null, "MWLURS7") { it.mWLURS7 },
+    ParamField("mWLURS8", ParamFieldType.U8, 0x1D, null, null, null, "MWLURS8") { it.mWLURS8 },
+    ParamField("mWLURS9", ParamFieldType.U8, 0x1E, null, null, null, "MWLURS9") { it.mWLURS9 },
+    ParamField("mWLURS10", ParamFieldType.U8, 0x1F, null, null, null, "MWLURS10") { it.mWLURS10 },
+    ParamField("mWLUA0", ParamFieldType.U8, 0x20, null, null, null, "MWLUA0") { it.mWLUA0 },
+    ParamField("mWLUA1", ParamFieldType.U8, 0x21, null, null, null, "MWLUA1") { it.mWLUA1 },
+    ParamField("mWLUA2", ParamFieldType.U8, 0x22, null, null, null, "MWLUA2") { it.mWLUA2 },
+    ParamField("mWLUA3", ParamFieldType.U8, 0x23, null, null, null, "MWLUA3") { it.mWLUA3 },
+    ParamField("mWLUA4", ParamFieldType.U8, 0x24, null, null, null, "MWLUA4") { it.mWLUA4 },
+    ParamField("mWLUA5", ParamFieldType.U8, 0x25, null, null, null, "MWLUA5") { it.mWLUA5 },
+    ParamField("mWLUA6", ParamFieldType.U8, 0x26, null, null, null, "MWLUA6") { it.mWLUA6 },
+    ParamField("mWLUA7", ParamFieldType.U8, 0x27, null, null, null, "MWLUA7") { it.mWLUA7 },
+    ParamField("mWLUA8", ParamFieldType.U8, 0x28, null, null, null, "MWLUA8") { it.mWLUA8 },
+    ParamField("mWLUA9", ParamFieldType.U8, 0x29, null, null, null, "MWLUA9") { it.mWLUA9 },
+    ParamField("mWLUA10", ParamFieldType.U8, 0x2A, null, null, null, "MWLUA10") { it.mWLUA10 },
+    ParamField("mLASUR", ParamFieldType.U8, 0x2B, null, null, null, "MLASUR") { it.mLASUR },
+    ParamField("mLASUA", ParamFieldType.U8, 0x2C, null, null, null, "MLASUA") { it.mLASUA },
+    ParamField("summonTimeoutTime", ParamFieldType.F32, 0x30, null, null, null, "summonTimeoutTime") { it.summonTimeoutTime },
+    ParamField("singGetMax", ParamFieldType.U32, 0x34, null, null, null, "singGetMax") { it.singGetMax },
+    ParamField("signDownloadSpan", ParamFieldType.F32, 0x38, null, null, null, "signDownloadSpan") { it.signDownloadSpan },
+    ParamField("nitoSignDownloadSpan", ParamFieldType.F32, 0x3C, null, null, null, "nitoSignDownloadSpan") { it.nitoSignDownloadSpan },
+    ParamField("signUpdateSpan", ParamFieldType.F32, 0x40, null, null, null, "signUpdateSpan") { it.signUpdateSpan },
+    ParamField("maxBreakInTargetListCount", ParamFieldType.U32, 0x44, null, null, null, "maxBreakInTargetListCount") { it.maxBreakInTargetListCount },
+    ParamField("breakInRequestIntervalTimeSec", ParamFieldType.F32, 0x48, null, null, null, "breakInRequestIntervalTimeSec") { it.breakInRequestIntervalTimeSec },
+    ParamField("breakInRequestTimeOutSec", ParamFieldType.F32, 0x4C, null, null, null, "breakInRequestTimeOutSec") { it.breakInRequestTimeOutSec },
+    ParamField("reloadSignTotalCount_0", ParamFieldType.U32, 0x50, null, null, null, "reloadSignTotalCount_0") { it.reloadSignTotalCount_0 },
+    ParamField("reloadSignIntervalTime_0", ParamFieldType.F32, 0x54, null, null, null, "reloadSignIntervalTime_0") { it.reloadSignIntervalTime_0 },
+    ParamField("reloadSignIntervalTime_1", ParamFieldType.F32, 0x58, null, null, null, "reloadSignIntervalTime_1") { it.reloadSignIntervalTime_1 },
+    ParamField("reloadSignTotalCount_1", ParamFieldType.U32, 0x5C, null, null, null, "reloadSignTotalCount_1") { it.reloadSignTotalCount_1 },
+    ParamField("reloadSignCellCount", ParamFieldType.U32, 0x60, null, null, null, "reloadSignCellCount") { it.reloadSignCellCount },
+    ParamField("reloadSignIntervalTime_2", ParamFieldType.F32, 0x64, null, null, null, "reloadSignIntervalTime_2") { it.reloadSignIntervalTime_2 },
+    ParamField("reloadGhostTotalCount", ParamFieldType.U32, 0x68, null, null, null, "reloadGhostTotalCount") { it.reloadGhostTotalCount },
+    ParamField("reloadGhostCellCount", ParamFieldType.U32, 0x6C, null, null, null, "reloadGhostCellCount") { it.reloadGhostCellCount },
+    ParamField("maxGhostTotalCount", ParamFieldType.U32, 0x70, null, null, null, "maxGhostTotalCount") { it.maxGhostTotalCount },
+    ParamField("updateWanderGhostIntervalTime", ParamFieldType.F32, 0x74, null, null, null, "updateWanderGhostIntervalTime") { it.updateWanderGhostIntervalTime },
+    ParamField("minReplayIntervalTime", ParamFieldType.F32, 0x78, null, null, null, "minReplayIntervalTime") { it.minReplayIntervalTime },
+    ParamField("maxReplayIntervalTime", ParamFieldType.F32, 0x7C, null, null, null, "maxReplayIntervalTime") { it.maxReplayIntervalTime },
+    ParamField("reloadGhostIntervalTime", ParamFieldType.F32, 0x80, null, null, null, "reloadGhostIntervalTime") { it.reloadGhostIntervalTime },
+    ParamField("replayBonfireModeRange", ParamFieldType.F32, 0x84, null, null, null, "replayBonfireModeRange") { it.replayBonfireModeRange },
+    ParamField("wanderGhostIntervalLifeTime", ParamFieldType.F32, 0x88, null, null, null, "wanderGhostIntervalLifeTime") { it.wanderGhostIntervalLifeTime },
+    ParamField("summonMessageInterval", ParamFieldType.F32, 0x8C, null, null, null, "summonMessageInterval") { it.summonMessageInterval },
+    ParamField("hostRegisterUpdateTime", ParamFieldType.F32, 0x90, null, null, null, "hostRegisterUpdateTime") { it.hostRegisterUpdateTime },
+    ParamField("requestSearchQuickMatchLimit", ParamFieldType.U32, 0x94, null, null, null, "requestSearchQuickMatchLimit") { it.requestSearchQuickMatchLimit },
+    ParamField("myTeamInviteTimeoutTime", ParamFieldType.F32, 0x98, null, null, null, "myTeamInviteTimeoutTime") { it.myTeamInviteTimeoutTime },
+    ParamField("visitorListMax", ParamFieldType.U32, 0x9C, null, null, null, "VisitorListMax") { it.visitorListMax },
+    ParamField("visitorTimeOutTime", ParamFieldType.F32, 0xA0, null, null, null, "VisitorTimeOutTime") { it.visitorTimeOutTime },
+    ParamField("downloadSpan", ParamFieldType.F32, 0xA4, null, null, null, "DownloadSpan") { it.downloadSpan },
+    ParamField("bonfireLowerBoundCoolTime", ParamFieldType.F32, 0xA8, null, null, null, "bonfireLowerBoundCoolTime") { it.bonfireLowerBoundCoolTime },
+    ParamField("bonfireUpperBoundCoolTime", ParamFieldType.F32, 0xAC, null, null, null, "bonfireUpperBoundCoolTime") { it.bonfireUpperBoundCoolTime },
+    ParamField("resonanceMagicDbDistInterval", ParamFieldType.F32, 0xB0, null, null, null, "resonanceMagicDbDistInterval") { it.resonanceMagicDbDistInterval },
+    ParamField("inputTimeoutSec", ParamFieldType.F32, 0xB4, null, null, null, "inputTimeoutSec") { it.inputTimeoutSec },
+    ParamField("generalPurposeParam1", ParamFieldType.F32, 0xB8, null, null, null, "generalPurposeParam1") { it.generalPurposeParam1 },
+    ParamField("generalPurposeParam2", ParamFieldType.F32, 0xBC, null, null, null, "generalPurposeParam2") { it.generalPurposeParam2 },
+    ParamField("generalPurposeParam3", ParamFieldType.F32, 0xC0, null, null, null, "generalPurposeParam3") { it.generalPurposeParam3 },
+    ParamField("generalPurposeParam4", ParamFieldType.F32, 0xC4, null, null, null, "generalPurposeParam4") { it.generalPurposeParam4 },
+    ParamField("generalPurposeParam5", ParamFieldType.F32, 0xC8, null, null, null, "generalPurposeParam5") { it.generalPurposeParam5 },
+    ParamField("mWLUWS_11", ParamFieldType.U8, 0xCC, null, null, null, "MWLUWS_11") { it.mWLUWS_11 },
+    ParamField("mWLUWS_12", ParamFieldType.U8, 0xCD, null, null, null, "MWLUWS_12") { it.mWLUWS_12 },
+    ParamField("mWLUWS_13", ParamFieldType.U8, 0xCE, null, null, null, "MWLUWS_13") { it.mWLUWS_13 },
+    ParamField("mWLUWS_14", ParamFieldType.U8, 0xCF, null, null, null, "MWLUWS_14") { it.mWLUWS_14 },
+    ParamField("mWLUWS_15", ParamFieldType.U8, 0xD0, null, null, null, "MWLUWS_15") { it.mWLUWS_15 },
+    ParamField("mWLURS_11", ParamFieldType.U8, 0xD1, null, null, null, "MWLURS_11") { it.mWLURS_11 },
+    ParamField("mWLURS_12", ParamFieldType.U8, 0xD2, null, null, null, "MWLURS_12") { it.mWLURS_12 },
+    ParamField("mWLURS_13", ParamFieldType.U8, 0xD3, null, null, null, "MWLURS_13") { it.mWLURS_13 },
+    ParamField("mWLURS_14", ParamFieldType.U8, 0xD4, null, null, null, "MWLURS_14") { it.mWLURS_14 },
+    ParamField("mWLURS_15", ParamFieldType.U8, 0xD5, null, null, null, "MWLURS_15") { it.mWLURS_15 },
+    ParamField("mWLUAR_11", ParamFieldType.U8, 0xD6, null, null, null, "MWLUAR_11") { it.mWLUAR_11 },
+    ParamField("mWLUAR_12", ParamFieldType.U8, 0xD7, null, null, null, "MWLUAR_12") { it.mWLUAR_12 },
+    ParamField("mWLUAR_13", ParamFieldType.U8, 0xD8, null, null, null, "MWLUAR_13") { it.mWLUAR_13 },
+    ParamField("mWLUAR_14", ParamFieldType.U8, 0xD9, null, null, null, "MWLUAR_14") { it.mWLUAR_14 },
+    ParamField("mWLUAR_15", ParamFieldType.U8, 0xDA, null, null, null, "MWLUAR_15") { it.mWLUAR_15 },
+    ParamField("generalPurposeParam6", ParamFieldType.U8, 0xDB, null, null, null, "generalPurposeParam6") { it.generalPurposeParam6 }
+)

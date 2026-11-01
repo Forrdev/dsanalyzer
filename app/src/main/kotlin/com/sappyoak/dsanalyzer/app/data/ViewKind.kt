@@ -6,6 +6,7 @@ import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
 
 public val View.Data.kind: DataKind?
     get() = when (this) {
+        is View.Data.Param, is View.Data.ParamRow -> DataKind.Params
         is View.Data.Map, is View.Data.MapEntry -> DataKind.Maps
         is View.Data.Script, is View.Data.ScriptEvent -> DataKind.Scripts
         is View.Data.EventFlag -> DataKind.EventFlags
@@ -23,5 +24,12 @@ public val View.Data.shownScript: ScriptId?
     get() = when (this) {
         is View.Data.Script -> script
         is View.Data.ScriptEvent -> script
+        else -> null
+    }
+
+public val View.Data.shownParam: String?
+    get() = when (this) {
+        is View.Data.Param -> file
+        is View.Data.ParamRow -> file
         else -> null
     }

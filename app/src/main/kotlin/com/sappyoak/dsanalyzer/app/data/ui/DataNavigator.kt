@@ -20,7 +20,9 @@ import androidx.compose.ui.unit.sp
 
 import com.sappyoak.dsanalyzer.app.data.DataKind
 import com.sappyoak.dsanalyzer.app.data.kind
+import com.sappyoak.dsanalyzer.app.data.params.ParamSummary
 import com.sappyoak.dsanalyzer.app.data.shownMap
+import com.sappyoak.dsanalyzer.app.data.shownParam
 import com.sappyoak.dsanalyzer.app.data.shownScript
 import com.sappyoak.dsanalyzer.app.nav.View
 import com.sappyoak.dsanalyzer.app.ui.theme.AnalyzerTheme
@@ -33,6 +35,7 @@ private val TRACKING = 0.8.sp
 
 @Composable
 public fun ColumnScope.DataNavigator(
+    params: List<ParamSummary>,
     maps: List<MapId>,
     scripts: List<ScriptId>,
     view: View.Data,
@@ -58,25 +61,35 @@ public fun ColumnScope.DataNavigator(
             item(key = kind.name) {
                 KindRow(
                     kind = kind,
-                    count = kind.countIn(maps, scripts),
+                    count = kind.countIn(params, maps, scripts),
                     open = open,
                     onClick = { expanded = if (open) null else kind }
                 )
             }
 
-            if (open) children(kind, maps, scripts, view, onFollow)
+            if (open) children(kind, params, maps, scripts, view, onFollow)
         }
     }
 }
 
 private fun LazyListScope.children(
     kind: DataKind,
+    params: List<ParamSummary>,
     maps: List<MapId>,
     scripts: List<ScriptId>,
     view: View.Data,
     onFollow: (View) -> Unit
 ) {
     when (kind) {
+        DataKind.Params -> items(params, key = { "param:${it.file}" }) { param ->
+            ChildRow(
+                label = param.file,
+                detail = param.rows.toString(),
+                selected = view.shownParam == param.file,
+                onClick = { onFollow(View.Data.Param(param.file)) }
+            )
+        }
+
         DataKind.Maps -> items(maps, key = { "map:$it" }) { map ->
             ChildRow(
                 label = map.label,
@@ -107,7 +120,8 @@ private fun LazyListScope.children(
     }
 }
 
-private fun DataKind.countIn(maps: List<MapId>, scripts: List<ScriptId>): Int? = when (this) {
+private fun DataKind.countIn(params: List<ParamSummary>, maps: List<MapId>, scripts: List<ScriptId>): Int? = when (this) {
+    DataKind.Params -> params.size
     DataKind.Maps -> maps.size
     DataKind.Scripts -> scripts.size
     DataKind.Params, DataKind.Esd, DataKind.Animations, DataKind.EventFlags -> null

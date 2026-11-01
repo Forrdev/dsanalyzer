@@ -12,7 +12,9 @@ import com.sappyoak.dsanalyzer.game.files.GameFiles
 /** Whose attacks an id names: the player's rows ('AtkParam_Pc') or everyone else's ('AtkParam_Npc') */
 public enum class ParamSide { Player, Npc }
 
-public class GameParams internal constructor(private val tables: Map<GameParam<*>, TypedParam<*>>) {
+public class GameParams internal constructor(
+    public val tables: Map<GameParam<*>, TypedParam<*>>
+) {
     /**
      * Throws for a param the loaded edition does not have — [GameParam.typeFor] is how to ask whether
      * it does. Every param [resolve] reaches is in both editions
@@ -20,17 +22,25 @@ public class GameParams internal constructor(private val tables: Map<GameParam<*
     @Suppress("UNCHECKED_CAST")
     public operator fun <R : ParamRow> get(param: GameParam<R>): TypedParam<R> = tables.getValue(param) as TypedParam<R>
 
-    public fun resolve(ref: ParamRef, side: ParamSide): ParamRow? = when (ref.kind) {
-        ParamKind.Attack -> this[if (side == ParamSide.Player) GameParam.AtkParamPc else GameParam.AtkParamNpc][ref.id]
-        ParamKind.Bullet -> this[GameParam.Bullet][ref.id]
-        ParamKind.SpEffect -> this[GameParam.SpEffectParam][ref.id]
-        ParamKind.Weapon -> this[GameParam.EquipParamWeapon][ref.id]
-        ParamKind.Protector -> this[GameParam.EquipParamProtector][ref.id]
-        ParamKind.Accessory -> this[GameParam.EquipParamAccessory][ref.id]
-        ParamKind.Goods -> this[GameParam.EquipParamGoods][ref.id]
-        ParamKind.Magic -> this[GameParam.Magic][ref.id]
-    }
+    public fun resolve(ref: ParamRef, side: ParamSide): ParamRow? = tables.getValue(ref.kind.paramFor(side))[ref.id]
 }
+
+/** The param a reference of this kind lands in. Only an attack's depends on [side] */
+public fun ParamKind.paramFor(side: ParamSide): GameParam<*> = when (this) {
+    ParamKind.Attack -> if (side == ParamSide.Player) GameParam.AtkParamPc else GameParam.AtkParamNpc
+    ParamKind.Bullet -> GameParam.Bullet
+    ParamKind.SpEffect -> GameParam.SpEffectParam
+    ParamKind.Weapon -> GameParam.EquipParamWeapon
+    ParamKind.Protector -> GameParam.EquipParamProtector
+    ParamKind.Accessory -> GameParam.EquipParamAccessory
+    ParamKind.Goods -> GameParam.EquipParamGoods
+    ParamKind.Magic -> GameParam.Magic
+}
+
+/** Whose attacks this param's references name: the player's own behaviors and spells, else everyone else's */
+public val GameParam<*>.side: ParamSide
+    get() = if (this == GameParam.BehaviorParamPc || this == GameParam.Magic) ParamSide.Player else ParamSide.Npc
+
 
 /**
  * Reads 'GameParam.parambnd' through the generated row classes, as [edition] lays them out
