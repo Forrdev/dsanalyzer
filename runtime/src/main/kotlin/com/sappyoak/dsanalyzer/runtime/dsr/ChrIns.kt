@@ -11,11 +11,16 @@ public object ChrIns {
     public const val Health: Int = 0x3E8
     public const val HealthMax: Int = 0x3EC
     public const val Stamina: Int = 0x3F8
+
+    public const val PlayerGameDataPointer: Int = 0x578
 }
 
 
 public object ChrCtrl {
+    public const val AnimDataPointer: Int = 0x18
+    public const val AnimRequestMgrPointer: Int = 0x20
     public const val PositionPointer: Int = 0x28
+
 }
 
 /** The structure holding a chracter's live position */

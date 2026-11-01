@@ -6,5 +6,6 @@ import com.sappyoak.dsanalyzer.runtime.session.WorldPlace
 internal val WorldPlace.label: String get() = when (this) {
     is WorldPlace.InWorld -> map.label
     is WorldPlace.Loading -> "load screen"
+    is WorldPlace.NoWorld -> "no world"
     WorldPlace.Unreadable -> "unknown"
 }

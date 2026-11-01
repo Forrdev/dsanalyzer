@@ -1,40 +1,38 @@
 package com.sappyoak.dsanalyzer.runtime.read
 
+import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.native.memory.Address
+import com.sappyoak.dsanalyzer.runtime.layout.LoadQueueLayout
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.pointers.StructView
 import com.sappyoak.dsanalyzer.runtime.pointers.TableView
 import com.sappyoak.dsanalyzer.runtime.ptde.LoadStage
 import com.sappyoak.dsanalyzer.runtime.ptde.NO_MAP
-import com.sappyoak.dsanalyzer.runtime.ptde.WORLD_BLOCK_INFO_SIZE
-import com.sappyoak.dsanalyzer.runtime.ptde.WORLD_BLOCK_RES_SIZE
-import com.sappyoak.dsanalyzer.runtime.ptde.WorldBlockInfo
-import com.sappyoak.dsanalyzer.runtime.ptde.WorldBlockRes
-import com.sappyoak.dsanalyzer.runtime.ptde.WorldRes
 import com.sappyoak.dsanalyzer.runtime.session.BlockLoad
 import com.sappyoak.dsanalyzer.runtime.session.BlockState
 import com.sappyoak.dsanalyzer.runtime.session.HeldBy
 import com.sappyoak.dsanalyzer.runtime.session.LoadQueueSnapshot
 
+private const val NO_MAP: Int = -1
 
-internal class LoadQueueReader {
-    private val worldRes = StructView(WorldRes.Pointer)
-    private val blocks = TableView(WorldRes.Blocks)
-    private val infos = TableView(WorldRes.BlockInfos)
-    private val block = StructView(WORLD_BLOCK_RES_SIZE)
-    private val info = StructView(WORLD_BLOCK_INFO_SIZE)
+internal class LoadQueueReader(private val layout: LoadQueueLayout) {
+    private val owner = StructView(layout.pointer)
+    private val blocks = TableView(layout.blocks)
+    private val infos = TableView(layout.blockInfos)
+    private val block = StructView(layout.blockSize)
+    private val info = StructView(layout.blockInfoSize)
 
     fun read(game: GameMemory): LoadQueueSnapshot? {
-        if (!worldRes.refresh(game)) return null
+        if (!owner.refresh(game)) return null
 
         val requests = MapRequests(
-            current = worldRes.int(WorldRes.CurrentMap),
-            previous = worldRes.int(WorldRes.PreviousMap),
-            warpTarget = worldRes.int(WorldRes.WarpTarget)
+            current = owner.int(layout.currentMap),
+            previous = owner.int(layout.previousMap),
+            warpTarget = owner.int(layout.warpTarget)
         )
         val mapIds = mapIds(game)
 
-        val found = if (blocks.refresh(game.memory, worldRes.address)) {
+        val found = if (blocks.refresh(game.memory, owner.address)) {
             blocks.elements.mapIndexedNotNull { index, at ->
                 blockAt(game, index, at, mapIds.getOrElse(index) { NO_MAP }, requests)
             }
@@ -43,18 +41,18 @@ internal class LoadQueueReader {
         }
 
         return LoadQueueSnapshot(
-            current = WorldRes.mapOf(requests.current),
-            previous = WorldRes.mapOf(requests.previous),
-            warpTarget = WorldRes.mapOf(requests.warpTarget),
+            current = mapOf(requests.current),
+            previous = mapOf(requests.previous),
+            warpTarget = mapOf(requests.warpTarget),
             blocks = found
         )
     }
 
     private fun mapIds(game: GameMemory): List<Int> {
-        if (!infos.refresh(game.memory, worldRes.address)) return emptyList()
+        if (!infos.refresh(game.memory, owner.address)) return emptyList()
 
         return infos.elements.map { at ->
-            if (info.refresh(game.memory, at)) info.int(WorldBlockInfo.PackedMapId) else NO_MAP
+            if (info.refresh(game.memory, at)) info.int(layout.packedMapId) else NO_MAP
         }
     }
 
@@ -67,15 +65,14 @@ internal class LoadQueueReader {
     ): BlockLoad? {
         if (!block.refresh(game.memory, at)) return null
 
-        val stage = block.int(WorldBlockRes.Stage)
-        val forced = block.unsigned(WorldBlockRes.ForceLoad) != 0
-        val latched = block.unsigned(WorldBlockRes.Latched) != 0
-        val pinned = block.unsigned(WorldBlockRes.PinLoaded) != 0 ||
-                block.unsigned(WorldBlockRes.PinOther) != 0
+        val stage = block.int(layout.stage)
+        val forced = block.unsigned(layout.forceLoad) != 0
+        val latched = block.unsigned(layout.latched) != 0
+        val pinned = pinnedIn(block)
 
         return BlockLoad(
             index = index,
-            mapId = WorldRes.mapOf(packedMapId),
+            mapId = mapOf(packedMapId),
             stage = stage,
             state = blockStateOf(stage),
             heldBy = requests.slotFor(packedMapId) ?: when {
@@ -84,14 +81,28 @@ internal class LoadQueueReader {
                 latched -> HeldBy.Referenced
                 else -> HeldBy.Nothing
             },
-
-
-            requested = block.unsigned(WorldBlockRes.Requested) != 0,
+            requested = block.unsigned(layout.requested) != 0,
             latched = latched,
-            wanted = block.unsigned(WorldBlockRes.WantLoaded) != 0,
+            wanted = block.unsigned(layout.wantLoaded) != 0,
             pinned = pinned,
-            suppressed = block.unsigned(WorldBlockRes.Suppress) != 0
+            suppressed = block.unsigned(layout.suppress) != 0
         )
+    }
+
+    /** False where the edition's pin offsets are unmeasured, which understates rather than invents */
+    private fun pinnedIn(view: StructView): Boolean {
+        val loaded = layout.pinLoaded?.let { view.unsigned(it) != 0 } ?: false
+        val other = layout.pinOther?.let { view.unsigned(it) != 0 } ?: false
+        return loaded || other
+    }
+
+    /**
+     * Both editions pack the four bytes as `dd`, `cc`, block, area from low to high, so the dword is
+     * read apart rather than compared whole
+     */
+    private fun mapOf(slot: Int): MapId? {
+        if (slot == NO_MAP) return null
+        return MapId.of(area = (slot ushr 24) and 0xFF, block = (slot ushr 16) and 0xFF)
     }
 }
 

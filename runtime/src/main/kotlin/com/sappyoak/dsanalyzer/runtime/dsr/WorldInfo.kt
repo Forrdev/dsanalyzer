@@ -40,6 +40,13 @@ public object WorldInfoOwner {
     public val Areas: GameTable = GameTable(
         name = "WorldAreaInfo",
         shape = TableShape.Counted(lengthAt = AreaCount, firstAt = AreasPointer, indirect = true),
+        elements = TableElements.Inline(WORLD_AREA_INFO_SIZE),
+        limit = 64
+    )
+
+    public val Blocks: GameTable = GameTable(
+        name = "WorldBlockInfo",
+        shape = TableShape.Counted(lengthAt = BlockCount, firstAt = BlocksPointer, indirect = true),
         elements = TableElements.Inline(WORLD_BLOCK_INFO_SIZE),
         limit = 64
     )

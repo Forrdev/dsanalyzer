@@ -20,21 +20,20 @@ public object PlayerGameData {
     public const val BaseMaxHp: Int = 0x14
 
     public const val Mp: Int = 0x18
+    public const val BaseMaxMp: Int = 0x1C
     public const val MpMax: Int = 0x20
     public const val Stamina: Int = 0x28
     public const val MaxStamina: Int = 0x2
     public const val BaseMaxStamina: Int = 0x30
-    public const val Vitality: Int = 0x38
-    public const val Attunement: Int = 0x40
-    public const val Endurance: Int = 0x48
-    public const val Strength: Int = 0x50
-    public const val Dexterity: Int = 0x58
-    public const val Intelligence: Int = 0x60
-    public const val Faith: Int = 0x68
+
+    public const val Stats: Int = 0x038
+    public const val StatStride: Int = 0x08
+
     public const val Humanity: Int = 0x7C
-    public const val Resistance: Int = 0x80
+    public const val Durability: Int = 0x80
     public const val SoulLevel: Int = 0x88
     public const val Souls: Int = 0x8C
+    public const val SoulMemory: Int = 0x090
     public const val TotalAddParam: Int = 0x98
 
     public const val CharType: Int = 0x9C

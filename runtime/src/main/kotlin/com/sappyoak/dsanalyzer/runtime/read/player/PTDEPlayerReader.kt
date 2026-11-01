@@ -1,4 +1,4 @@
-package com.sappyoak.dsanalyzer.runtime.read
+package com.sappyoak.dsanalyzer.runtime.read.player
 
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.pointers.StructView
@@ -10,11 +10,12 @@ import com.sappyoak.dsanalyzer.runtime.ptde.GameDataMan
 import com.sappyoak.dsanalyzer.runtime.ptde.GameMan
 import com.sappyoak.dsanalyzer.runtime.ptde.PlayerGameData
 import com.sappyoak.dsanalyzer.runtime.ptde.WorldChrMan
+import com.sappyoak.dsanalyzer.runtime.read.cheatsIn
 import com.sappyoak.dsanalyzer.runtime.session.AttributeSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.PlayerSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.WorldSnapshot
 
-internal class PlayerReader {
+internal class PTDEPlayerReader : PlayerSource {
     private val manager = StructView(WorldChrMan.Pointer)
     private val character = StructView(ChrIns.Pointer)
     private val position = StructView(ChrPosData.Pointer)
@@ -28,15 +29,17 @@ internal class PlayerReader {
         character, position, placement, animation, attributes, worldState, gameData, manager
     )
 
-    val structures: Int get() = all.size
+    override val providesSnapshot: Boolean get() = true
 
-    fun refresh(memory: GameMemory): Int = all.count { it.refresh(memory) }
+    override val structures: Int get() = all.size
 
-    fun timeMillis(): Int = if (gameData.isPresent) gameData.int(GameDataMan.InGameTimeMillis) else 0
+    override fun refresh(memory: GameMemory): Int = all.count { it.refresh(memory) }
 
-    fun frame(): Long = GameDataMan.frameOf(timeMillis())
+    override fun timeMillis(): Int = if (gameData.isPresent) gameData.int(GameDataMan.InGameTimeMillis) else 0
 
-    fun player(): PlayerSnapshot? {
+    override fun frame(): Long = GameDataMan.frameOf(timeMillis())
+
+    override fun player(): PlayerSnapshot? {
         if (!character.isPresent || !position.isPresent) return null
 
         return PlayerSnapshot(
@@ -57,7 +60,7 @@ internal class PlayerReader {
         )
     }
 
-    fun world(): WorldSnapshot? {
+    override fun world(): WorldSnapshot? {
         if (!worldState.isPresent) return null
 
         return WorldSnapshot(

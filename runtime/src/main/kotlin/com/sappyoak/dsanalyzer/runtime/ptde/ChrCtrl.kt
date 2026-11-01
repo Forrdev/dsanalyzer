@@ -41,7 +41,7 @@ public object ChrCtrl {
      * Nothing points at either slot. See [AnimRequestChannelA] for how they are addressed and for why
      * and offset taken from here can run off the end of one allocation into the next
      */
-    public const val AnimRequestPoolPointer: Int = 0x18
+    public const val AnimRequestMgrPointer: Int = 0x18
 
     public const val PositionPointer: Int = 0x1C
 
@@ -86,20 +86,4 @@ public object ChrPosData {
 
     /** X, Y, and Z consecutively from here */
     public const val Position: Int = 0x10
-}
-
-
-public object AnimData {
-    public val Pointer: GamePointer = GamePointer(
-        name = "AnimData",
-        base = PTDESignatures.WorldChrMan,
-        offsets = THROUGH_CHARACTER + listOf(
-            ChrIns.ChrCtrlPointer.toLong(),
-            ChrCtrl.AnimDataPointer.toLong()
-        ),
-        lifetime = Lifetime.World,
-        size = 0x200
-    )
-
-    public const val PlaySpeed: Int = 0x64
 }

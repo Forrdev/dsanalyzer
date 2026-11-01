@@ -20,8 +20,7 @@ private val LAST_FIELDS = listOf(
     Triple("ChrCtrl", ChrCtrl.Pointer, ChrCtrl.NpcParamPairPointer),
     Triple("ChrPosData", ChrPosData.Pointer, ChrPosData.Position + 8),
     Triple("AnimData", AnimData.Pointer, AnimData.PlaySpeed),
-    Triple("AnimRequestA", AnimRequest.ChannelA, AnimRequest.Times + 8),
-    Triple("AnimRequestB", AnimRequest.ChannelB, AnimRequest.Times + 8),
+    Triple("AnimRequestMgr", AnimRequestMgr.Pointer, AnimRequestMgr.FrameFlags),
     Triple("PlayerGameData", PlayerGameData.Pointer, PlayerGameData.Stance),
     Triple("GameMan", GameMan.Pointer, GameMan.StableAngle),
     Triple("WorldArea", WorldArea.Pointer, WorldArea.World),
@@ -45,7 +44,7 @@ class PTDETablesTest : FunSpec({
 
         assertSoftly {
             throughManager.map { it.name } shouldBe
-                    listOf("ChrIns", "ChrCtrl", "ChrPosData", "AnimData", "AnimRequestA", "AnimRequestB", "SpecialEffect", "HitIns", "WorldChrMan", "WorldRes")
+                    listOf("ChrIns", "ChrCtrl", "ChrPosData", "AnimData", "AnimRequestMgr", "SpecialEffect", "HitIns", "WorldChrMan", "WorldRes")
 
             throughManager
                 .filterNot { it.name == "WorldChrMan" || it.name == "WorldRes" }
@@ -104,18 +103,6 @@ class PTDETablesTest : FunSpec({
         PTDETables.forEach { (owner, _) -> PTDEPointers shouldContain owner }
     }
 
-    test("The animation channels are one layout at two displacements") {
-        assertSoftly {
-            AnimRequest.ChannelA.offsets shouldBe AnimRequest.ChannelB.offsets
-            AnimRequest.ChannelA.size shouldBe AnimRequest.ChannelA.size
-            AnimRequest.ChannelA.displacement shouldNotBe AnimRequest.ChannelB.displacement
-        }
-    }
-
-    test("no pointer but the animation channels displaces") {
-        PTDEPointers.filter { it.displacement != 0L }.map { it.name } shouldBe listOf("AnimRequestA", "AnimRequestB")
-    }
-
     test("no two pointers answer to the same name") {
         PTDEPointers.groupBy { it.name }.filterValues { it.size > 1 }.keys.shouldBeEmpty()
     }
@@ -138,15 +125,6 @@ class PTDETablesTest : FunSpec({
             WORLD_BLOCK_SIZE shouldNotBe WORLD_BLOCK_RES_SIZE
             WORLD_BLOCK_RES_SIZE shouldBeGreaterThan WorldBlockRes.PinLoaded
             (WorldRes.Blocks.elements as TableElements.Inline).stride shouldBe WORLD_BLOCK_RES_SIZE
-        }
-    }
-
-    test("the load queue's slots sit inside the bytes its pointer fetches") {
-        assertSoftly {
-            WorldRes.Pointer.size shouldBeGreaterThan WorldRes.WarpTarget
-            LoadStage.isPending(LoadStage.Idle) shouldBe false
-            LoadStage.isPending(LoadStage.Loaded) shouldBe false
-            LoadStage.isPending(LoadStage.Loaded) shouldBe true
         }
     }
 

@@ -1,4 +1,4 @@
-package com.sappyoak.dsanalyzer.runtime.read
+package com.sappyoak.dsanalyzer.runtime.read.place
 
 import com.sappyoak.dsanalyzer.game.world.maps.exists
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
@@ -6,12 +6,12 @@ import com.sappyoak.dsanalyzer.runtime.pointers.StructView
 import com.sappyoak.dsanalyzer.runtime.ptde.WorldArea
 import com.sappyoak.dsanalyzer.runtime.session.WorldPlace
 
-internal class PlaceReader {
+internal class PTDEPlaceReader : PlaceSource {
     private val view = StructView(WorldArea.Pointer)
 
-    fun refresh(memory: GameMemory): Boolean = view.refresh(memory)
+    override fun refresh(memory: GameMemory): Boolean = view.refresh(memory)
 
-    fun place(): WorldPlace {
+    override fun place(): WorldPlace {
         if (!view.isPresent) return WorldPlace.Unreadable
 
         val map = WorldArea.mapId(

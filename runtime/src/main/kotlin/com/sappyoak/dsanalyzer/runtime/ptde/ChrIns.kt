@@ -28,6 +28,8 @@ public object ChrIns {
     /** The entity handle the character was constructed with */
     public const val Handle: Int = 0x04
 
+    public const val StatePointer: Int = 0x0C
+
     public const val ChrResPointer: Int = 0x18
     public const val ChrCtrlPointer: Int = 0x28
 

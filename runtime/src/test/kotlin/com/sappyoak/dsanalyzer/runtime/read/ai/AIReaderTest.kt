@@ -12,7 +12,7 @@ import com.sappyoak.dsanalyzer.runtime.ptde.ChrCtrl
 import com.sappyoak.dsanalyzer.runtime.ptde.ComManipulator
 import com.sappyoak.dsanalyzer.runtime.ptde.TargetNode
 import com.sappyoak.dsanalyzer.runtime.ptde.TargetingSystem
-import com.sappyoak.dsanalyzer.runtime.read.CharacterRef
+import com.sappyoak.dsanalyzer.runtime.read.character.CharacterRef
 import com.sappyoak.dsanalyzer.runtime.session.ai.AISnapshot
 import com.sappyoak.dsanalyzer.runtime.session.ai.AITarget
 

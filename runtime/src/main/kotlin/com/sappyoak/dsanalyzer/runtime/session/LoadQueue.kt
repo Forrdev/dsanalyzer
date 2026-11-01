@@ -1,7 +1,6 @@
 package com.sappyoak.dsanalyzer.runtime.session
 
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
-import com.sappyoak.dsanalyzer.runtime.ptde.LoadStage
 
 public enum class BlockState { Absent, Loading, Resident, Unloading, Unknown; }
 
@@ -49,4 +48,17 @@ public data class LoadQueueSnapshot(
 
     /** True while the game is holding two maps at once, which is the handoff a transition makes */
     public val handingOver: Boolean get() = previous != null && current != null
+}
+
+public object LoadStage {
+    public const val Idle: Int = 0
+    public const val Loaded: Int = 7
+
+    private val LOADING = setOf(1, 2, 3, 4, 6)
+    private val UNLOADING = setOf(5, 8, 9)
+
+    public fun isIdle(stage: Int): Boolean = stage == Idle
+    public fun isLoading(stage: Int): Boolean = stage in LOADING
+    public fun isResident(stage: Int): Boolean = stage == Loaded
+    public fun isUnloading(stage: Int): Boolean = stage in UNLOADING
 }

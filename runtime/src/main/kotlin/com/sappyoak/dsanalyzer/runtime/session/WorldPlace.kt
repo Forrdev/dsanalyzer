@@ -14,6 +14,9 @@ public sealed interface WorldPlace {
      */
     public data class Loading(public val map: MapId) : WorldPlace
 
+    /** Read cleanly, and there is no map */
+    public data object NoWorld : WorldPlace
+
     /** The area structure could not be read */
     public data object Unreadable : WorldPlace
 }

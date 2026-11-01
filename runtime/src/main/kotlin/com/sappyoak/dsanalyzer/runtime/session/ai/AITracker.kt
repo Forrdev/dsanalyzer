@@ -1,7 +1,7 @@
 package com.sappyoak.dsanalyzer.runtime.session.ai
 
 import com.sappyoak.dsanalyzer.native.process.ProcessMemory
-import com.sappyoak.dsanalyzer.runtime.read.CharacterReading
+import com.sappyoak.dsanalyzer.runtime.read.character.CharacterReading
 import com.sappyoak.dsanalyzer.runtime.read.ai.AIReader
 import com.sappyoak.dsanalyzer.runtime.read.ai.AISource
 import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot

@@ -1,4 +1,4 @@
-package com.sappyoak.dsanalyzer.runtime.read
+package com.sappyoak.dsanalyzer.runtime.read.character
 
 import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
@@ -11,32 +11,15 @@ import com.sappyoak.dsanalyzer.runtime.ptde.ChrIns
 import com.sappyoak.dsanalyzer.runtime.ptde.WorldBlock
 import com.sappyoak.dsanalyzer.runtime.ptde.WorldChrMan
 import com.sappyoak.dsanalyzer.runtime.layout.SpecialEffectLayout
-import com.sappyoak.dsanalyzer.runtime.ptde.CharacterSlot
 import com.sappyoak.dsanalyzer.runtime.read.effects.SpecialEffectReader
+import com.sappyoak.dsanalyzer.runtime.ptde.CharacterSlot
 import com.sappyoak.dsanalyzer.runtime.session.BONFIRE_MODEL
 import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
 import com.sappyoak.dsanalyzer.shared.math.Vec3
 
 private const val NO_TARGET = -1
 
-internal data class CharacterRef(
-    val handle: Int,
-    val comManipulator: Address,
-    val controller: Address
-)
-
-internal class CharacterReading(
-    val characters: List<CharacterSnapshot>,
-    val others: List<CharacterRef>
-) {
-    val playerHandle: Int? get() = characters.firstOrNull { it.isPlayer }?.handle
-
-    companion object {
-        val Empty = CharacterReading(emptyList(), emptyList())
-    }
-}
-
-internal class CharacterReader(effectLayout: SpecialEffectLayout) {
+internal class PTDECharacterReader(effectLayout: SpecialEffectLayout) : CharacterSource {
     private val manager = StructView(WorldChrMan.Pointer)
     private val playerSlots = TableView(WorldChrMan.PlayerSlots)
     private val blocks = TableView(WorldChrMan.Blocks)
@@ -49,7 +32,7 @@ internal class CharacterReader(effectLayout: SpecialEffectLayout) {
 
     private val effects = SpecialEffectReader(effectLayout)
 
-    fun read(game: GameMemory, allEffects: Boolean = false): CharacterReading {
+    override fun read(game: GameMemory, allEffects: Boolean): CharacterReading {
         if (!manager.refresh(game)) return CharacterReading.Empty
 
         val player = manager.pointer(WorldChrMan.PlayerPointer)
@@ -116,7 +99,7 @@ internal class CharacterReader(effectLayout: SpecialEffectLayout) {
             modelId = one.int(ChrIns.ModelId),
             npcParamId = one.int(ChrIns.NpcParamId),
             position = if (isPlayer) posedPosition(game) ?: transformOf(one) else transformOf(one),
-            health = one.int(ChrIns.Handle),
+            health = one.int(ChrIns.Health),
             healthMax = one.int(ChrIns.HealthMax),
             stamina = one.int(ChrIns.Stamina),
             characterType = one.int(ChrIns.ChrType),
