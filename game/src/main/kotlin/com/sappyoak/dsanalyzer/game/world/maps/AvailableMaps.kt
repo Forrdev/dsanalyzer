@@ -13,6 +13,7 @@ public fun GameFiles.availableMaps(manifest: FileManifest): List<MapId> = manife
     .mapNotNull { MapId.parse(it.removeSurrounding(MAP_STUDIO_DIRECTORY, MSB_EXTENSION)) }
     .map { it.canonical }
     .distinct()
+    .filterNot { it.isTestMap }
     .filter { exists(it.msbPath) }
     .sortedBy { it.name }
     .toList()

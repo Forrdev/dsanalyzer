@@ -3,6 +3,8 @@ package com.sappyoak.dsanalyzer.game.world.maps
 import kotlinx.serialization.Serializable
 
 private val PATTERN = Regex("""m(\d{2})_(\d{2})_(\d{2})_(\d{2})""")
+
+private const val TEST_AREA = 99
 private const val NAME_LENGTH = 12
 
 @JvmInline
@@ -39,7 +41,10 @@ public value class MapId(public val packed: Int) {
     }
 }
 
+public val MapId.isTestMap: Boolean get() = area == TEST_AREA
+
 private fun StringBuilder.appendComponent(value: Int) {
     if (value < 10) append('0')
     append(value)
 }
+
