@@ -74,7 +74,7 @@ class ScriptsReducerTest : FunSpec({
                 state.shown shouldBe null
                 state.loading shouldBe false
             }
-            effects shouldContainExactly listOf(ScriptsEffect.IndexFlags(INSTALLATION, catalog))
+            effects shouldContainExactly listOf(ScriptsEffect.IndexScripts(INSTALLATION, catalog))
         }
     }
 

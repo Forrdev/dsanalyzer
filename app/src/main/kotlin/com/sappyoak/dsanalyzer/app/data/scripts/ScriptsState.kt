@@ -1,7 +1,6 @@
 package com.sappyoak.dsanalyzer.app.data.scripts
 
 import com.sappyoak.dsanalyzer.game.Installation
-import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
 
 public data class ScriptsState(
@@ -11,6 +10,8 @@ public data class ScriptsState(
     public val loadingScript: ScriptId? = null,
     public val query: String = "",
     public val flagIndex: FlagIndex = FlagIndex.Empty,
+    /** Every place every event is started, and with what */
+    public val callIndex: EventCallIndex = EventCallIndex.Empty,
     public val indexing: Boolean = false,
     /** Scripts the index could not read */
     public val unreadable: List<ScriptId> = emptyList(),
@@ -36,6 +37,3 @@ public data class FlagFindings(
     public val flagId: Int,
     public val references: List<FlagReference>
 )
-
-/** A flag follow that arrived before the index was finished */
-public data class FlagRequest(public val flagId: Int, public val seenIn: MapId?)

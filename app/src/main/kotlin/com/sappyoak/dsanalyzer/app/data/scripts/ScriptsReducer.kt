@@ -21,14 +21,15 @@ public fun reduceScripts(
             next.with()
         } else {
             next.copy(indexing = true)
-                .with(ScriptsEffect.IndexFlags(installation, message.scripts))
+                .with(ScriptsEffect.IndexScripts(installation, message.scripts))
         }
     }
 
 
     is ScriptsMessage.ScriptLoaded -> state.accept(message.contents)
-    is ScriptsMessage.FlagsIndexed -> state.copy(
-        flagIndex = message.index,
+    is ScriptsMessage.ScriptsIndexed -> state.copy(
+        flagIndex = message.flags,
+        callIndex = message.calls,
         indexing = false,
         unreadable = message.unreadable,
         problem = null

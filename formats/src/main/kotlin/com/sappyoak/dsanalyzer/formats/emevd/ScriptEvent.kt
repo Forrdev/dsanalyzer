@@ -20,3 +20,9 @@ public enum class RestBehavior(override val code: Int) : Coded {
     Restart(1),
     End(2);
 }
+
+/**
+ * How many bytes of its caller's argument this event reads, or null when it reads none
+ */
+public fun ScriptEvent.callerBytesNeeded(): Int? =
+    parameters.maxOfOrNull { it.sourceStartByte + it.byteCount }

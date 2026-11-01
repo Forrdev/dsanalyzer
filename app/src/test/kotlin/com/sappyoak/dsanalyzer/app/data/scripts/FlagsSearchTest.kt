@@ -153,7 +153,7 @@ class FlagSearchTest : FunSpec({
 
         val (state, effects) = reduceScripts(
             waiting,
-            ScriptsMessage.FlagsIndexed(INDEX, unreadable = emptyList())
+            ScriptsMessage.ScriptsIndexed(INDEX, EventCallIndex.Empty, unreadable = emptyList())
         )
 
         assertSoftly {
@@ -169,7 +169,7 @@ class FlagSearchTest : FunSpec({
     test("and re-asking once it is built gives the answer") {
         val built = reduceScripts(
             READY.copy(flagIndex = FlagIndex.Empty, indexing = true),
-            ScriptsMessage.FlagsIndexed(INDEX, unreadable = listOf(IZALITH))
+            ScriptsMessage.ScriptsIndexed(INDEX, EventCallIndex.Empty, unreadable = listOf(IZALITH))
         ).state
 
         val state = follow(built, FLAG, seenIn = FIRELINK_MAP).state

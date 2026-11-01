@@ -12,8 +12,9 @@ public sealed interface ScriptsMessage {
 
     public data class ScriptLoaded(public val contents: ScriptContents) : ScriptsMessage
 
-    public data class FlagsIndexed(
-        public val index: FlagIndex,
+    public data class ScriptsIndexed(
+        public val flags: FlagIndex,
+        public val calls: EventCallIndex,
         public val unreadable: List<ScriptId>
     ) : ScriptsMessage
 
@@ -23,6 +24,7 @@ public sealed interface ScriptsMessage {
         public val flagId: Int,
         public val seenIn: MapId? = null
     ) : ScriptsMessage
+
     public data class QueryChanged(public val query: String) : ScriptsMessage
 
     public data class Failed(public val reason: String) : ScriptsMessage
