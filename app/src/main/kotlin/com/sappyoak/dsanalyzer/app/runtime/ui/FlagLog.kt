@@ -14,8 +14,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+import com.sappyoak.dsanalyzer.app.nav.View
 import com.sappyoak.dsanalyzer.app.runtime.FlagEntry
-import com.sappyoak.dsanalyzer.game.world.WorldRef
 import com.sappyoak.dsanalyzer.runtime.session.loadedMap
 
 private val FRAME_WIDTH = 96.dp
@@ -25,7 +25,7 @@ private const val FLAG_ROW = "flag"
 
 internal fun LazyListScope.flagItems(
     entries: List<FlagEntry>,
-    onFollow: (WorldRef) -> Unit
+    onFollow: (View) -> Unit
 ) {
     item(key = "flags") {
         Text(
@@ -38,7 +38,7 @@ internal fun LazyListScope.flagItems(
 }
 
 @Composable
-private fun FlagRow(entry: FlagEntry, onFollow: (WorldRef) -> Unit) {
+private fun FlagRow(entry: FlagEntry, onFollow: (View) -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -54,7 +54,7 @@ private fun FlagRow(entry: FlagEntry, onFollow: (WorldRef) -> Unit) {
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.width(STATE_WIDTH)
         )
-        TextButton(onClick = { onFollow(WorldRef.EventFlag(entry.flagId, entry.place.loadedMap)) }) {
+        TextButton(onClick = { onFollow(View.Data.EventFlag(entry.flagId, entry.place.loadedMap)) }) {
             Text(entry.flagId.toString())
         }
 

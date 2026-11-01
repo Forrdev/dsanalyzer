@@ -50,6 +50,8 @@ public class GameSession internal constructor(
     private var world = WorldTier()
     private var sinceWorld = 0
 
+    public val supports: Set<RuntimeFeature> get() = readers.supported
+    
     public fun isFlagSet(flagId: Int): Boolean? = flags.isSet(flagId)
 
     public fun sample(aiScope: AIScope = AIScope.TargetingPlayer): RuntimeSnapshot {

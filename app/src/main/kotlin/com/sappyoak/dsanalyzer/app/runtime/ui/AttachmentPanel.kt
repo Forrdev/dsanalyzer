@@ -12,11 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+
+import com.sappyoak.dsanalyzer.app.nav.View
 import com.sappyoak.dsanalyzer.app.runtime.RuntimeState
-import com.sappyoak.dsanalyzer.game.world.WorldRef
 
 @Composable
-internal fun AttachmentPanel(state: RuntimeState, onFollow: (WorldRef) -> Unit) {
+internal fun AttachmentPanel(state: RuntimeState, onFollow: (View) -> Unit) {
     val attached = state.attached
 
     Column(
@@ -59,7 +60,7 @@ internal fun AttachmentPanel(state: RuntimeState, onFollow: (WorldRef) -> Unit) 
                 )
                 val map = snapshot.map
                 if (map != null) {
-                    TextButton(onClick = { onFollow(WorldRef.Map(map)) }) {
+                    TextButton(onClick = { onFollow(View.Data.Map(map)) }) {
                         Text(map.name)
                     }
                 } else {

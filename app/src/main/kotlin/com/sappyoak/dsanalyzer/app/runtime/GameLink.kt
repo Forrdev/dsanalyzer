@@ -170,7 +170,8 @@ private fun RuntimeEvent.Attached.describe(): AttachedGame = AttachedGame(
     pid = game.process.pid,
     edition = game.edition,
     build = build,
-    unresolved = pointers.unresolvedNames
+    unresolved = pointers.unresolvedNames,
+    supports = supports
 )
 
 private val ResolvedPointers.unresolvedNames: List<String> get() = unresolved.map { it.signature }

@@ -1,0 +1,31 @@
+package com.sappyoak.dsanalyzer.app.data.scripts
+
+import com.sappyoak.dsanalyzer.game.Installation
+import com.sappyoak.dsanalyzer.game.world.maps.MapId
+import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
+
+public sealed interface ScriptsMessage {
+    /** The workspace opened over this installation */
+    public data class Opened(public val installation: Installation) : ScriptsMessage
+
+    public data class CatalogLoaded(public val scripts: List<ScriptId>) : ScriptsMessage
+
+    public data class ScriptLoaded(public val contents: ScriptContents) : ScriptsMessage
+
+    public data class FlagsIndexed(
+        public val index: FlagIndex,
+        public val unreadable: List<ScriptId>
+    ) : ScriptsMessage
+
+    public data class ScriptSelected(public val script: ScriptId) : ScriptsMessage
+
+    public data class FlagRequested(
+        public val flagId: Int,
+        public val seenIn: MapId? = null
+    ) : ScriptsMessage
+    public data class QueryChanged(public val query: String) : ScriptsMessage
+
+    public data class Failed(public val reason: String) : ScriptsMessage
+
+    public data class IndexFailed(public val reason: String) : ScriptsMessage
+}

@@ -1,0 +1,30 @@
+package com.sappyoak.dsanalyzer.game.ref
+
+import com.sappyoak.dsanalyzer.game.world.maps.EntryKind
+import com.sappyoak.dsanalyzer.game.world.maps.MapId
+import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
+
+/**
+ * Something in the game world that can be pointed at
+ */
+public sealed interface WorldRef {
+    public data class Map(public val map: MapId) : WorldRef
+    public data class Entry(
+        public val map: MapId,
+        public val kind: EntryKind,
+        public val index: Int
+    ) : WorldRef
+
+    public data class Entity(public val entityId: Int) : WorldRef
+
+    public data class EventFlag(
+        public val flagId: Int,
+        public val seenIn: MapId? = null
+    ) : WorldRef
+
+    /** An event in one of the event scripts, name by the id its caller uses */
+    public data class ScriptEvent(
+        public val script: ScriptId,
+        public val eventId: Long
+    ) : WorldRef
+}

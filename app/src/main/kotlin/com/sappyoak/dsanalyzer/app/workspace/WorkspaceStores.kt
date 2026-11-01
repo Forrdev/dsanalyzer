@@ -1,8 +1,8 @@
 package com.sappyoak.dsanalyzer.app.workspace
 
-import com.sappyoak.dsanalyzer.app.maps.MapsStore
+import com.sappyoak.dsanalyzer.app.data.maps.MapsStore
 import com.sappyoak.dsanalyzer.app.runtime.RuntimeStore
-import com.sappyoak.dsanalyzer.app.scripts.ScriptsStore
+import com.sappyoak.dsanalyzer.app.data.scripts.ScriptsStore
 
 /**
  * The stores a workspace's tabs read from

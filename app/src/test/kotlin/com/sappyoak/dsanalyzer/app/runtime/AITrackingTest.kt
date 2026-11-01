@@ -65,9 +65,9 @@ private fun seeing(vararg characters: CharacterSnapshot) = RuntimeState(
 class AiTrackingTest : FunSpec({
     test("enemies targeting you is the default, and each choice asks the sampler for its scope") {
         assertSoftly {
-            Settings().ai.tracking shouldBe AITracking.TargetingPlayer
+            Settings().runtime.ai.tracking shouldBe AITracking.TargetingPlayer
             AITracking.entries.map { it.scope } shouldBe listOf(AIScope.Off, AIScope.TargetingPlayer, AIScope.All)
-            TrackAI(AITracking.All).applyTo(Settings()).ai.tracking shouldBe AITracking.All
+            TrackAI(AITracking.All).applyTo(Settings()).runtime.ai.tracking shouldBe AITracking.All
         }
     }
 

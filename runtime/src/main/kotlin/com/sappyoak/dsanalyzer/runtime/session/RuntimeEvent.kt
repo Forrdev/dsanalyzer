@@ -10,7 +10,8 @@ public sealed interface RuntimeEvent {
     public data class Attached(
         public val game: GameProcess,
         public val build: String?,
-        public val pointers: ResolvedPointers
+        public val pointers: ResolvedPointers,
+        public val supports: Set<RuntimeFeature>
     ) : RuntimeEvent
 
     public data class Sampled(public val snapshot: RuntimeSnapshot) : RuntimeEvent

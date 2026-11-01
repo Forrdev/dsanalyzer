@@ -1,5 +1,6 @@
 package com.sappyoak.dsanalyzer.app.runtime
 
+import com.sappyoak.dsanalyzer.game.GameBuild
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldBeEmpty
@@ -7,18 +8,23 @@ import io.kotest.matchers.shouldBe
 import kotlin.time.Duration.Companion.milliseconds
 
 import com.sappyoak.dsanalyzer.game.GameEdition
+import com.sappyoak.dsanalyzer.game.Installation
+import com.sappyoak.dsanalyzer.game.InstallationId
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.runtime.session.FlagChange
+import com.sappyoak.dsanalyzer.runtime.session.RuntimeFeature
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.SampleCost
 import com.sappyoak.dsanalyzer.runtime.session.WorldPlace
+import java.nio.file.Files
 
 private val GAME = AttachedGame(
     executableName = "DARKSOULS.exe",
     pid = 10,
     edition = GameEdition.PrepareToDie,
     build = "ptde",
-    unresolved = emptyList()
+    unresolved = emptyList(),
+    supports = RuntimeFeature.entries.toSet()
 )
 
 private val FIRELINK = WorldPlace.InWorld(MapId.of(area = 10, block = 2))
@@ -46,9 +52,19 @@ private fun snapshot(
 private fun tick(state: RuntimeState, link: LinkState): RuntimeState =
     reduceRuntime(state, RuntimeMessage.LinkChanged(link)).state
 
+private fun installation(edition: GameEdition = GameEdition.PrepareToDie): Installation {
+    val root = Files.createTempDirectory("testinstall")
+    return Installation(
+        id = InstallationId("testinstall"),
+        root = root,
+        executable = root.resolve(edition.executableName),
+        build = GameBuild(edition)
+    )
+}
+
 class RuntimeReducerTest : FunSpec({
     test("opening the view watches the link rather than the game, and keeps the AI tracking applied") {
-        reduceRuntime(RuntimeState(), RuntimeMessage.Opened).effects shouldBe listOf(RuntimeEffect.Observe, RuntimeEffect.FollowAITracking)
+        reduceRuntime(RuntimeState(), RuntimeMessage.Opened(installation())).effects shouldBe listOf(RuntimeEffect.Observe, RuntimeEffect.FollowAITracking)
     }
 
     test("what the link reports becomes the state") {

@@ -17,6 +17,7 @@ dependencies {
     implementation(project(":native"))
     implementation(project(":runtime"))
     implementation(project(":overlay"))
+    implementation(project(":analysis"))
 
     with(libs) {
         implementation(kotlinx.coroutines.core)

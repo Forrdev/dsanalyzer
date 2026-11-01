@@ -94,7 +94,7 @@ private suspend fun FlowCollector<RuntimeEvent>.sampleWhileConnected(
     val build = edition.buildOf(connection.memory, connection.mainModule)
 
 
-    emit(RuntimeEvent.Attached(game, build, session.pointers))
+    emit(RuntimeEvent.Attached(game, build, session.pointers, session.supports))
 
     val wait = period(game.edition)
     val retry = SignatureRetry()

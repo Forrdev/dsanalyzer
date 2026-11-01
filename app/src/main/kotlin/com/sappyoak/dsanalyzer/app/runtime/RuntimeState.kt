@@ -4,6 +4,7 @@ import com.sappyoak.dsanalyzer.app.runtime.timing.TimingLibrary
 import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.runtime.session.BlockRoster
+import com.sappyoak.dsanalyzer.runtime.session.RuntimeFeature
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.WorldPlace
 import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionSnapshot
@@ -22,6 +23,7 @@ public data class RuntimeState(
     public val timings: TimingLibrary = TimingLibrary()
 ) {
     public val live: Boolean get() = attached != null
+    public val supports: Set<RuntimeFeature> get() = attached?.supports.orEmpty()
 }
 
 /** The game being read */
@@ -30,7 +32,8 @@ public data class AttachedGame(
     public val pid: Int,
     public val edition: GameEdition,
     public val build: String?,
-    public val unresolved: List<String>
+    public val unresolved: List<String>,
+    public val supports: Set<RuntimeFeature>
 )
 
 /** A flag that changed and the frame it changed on */

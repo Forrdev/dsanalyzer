@@ -1,0 +1,27 @@
+package com.sappyoak.dsanalyzer.app.data
+
+import com.sappyoak.dsanalyzer.app.nav.View
+import com.sappyoak.dsanalyzer.game.world.maps.MapId
+import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
+
+public val View.Data.kind: DataKind?
+    get() = when (this) {
+        is View.Data.Map, is View.Data.MapEntry -> DataKind.Maps
+        is View.Data.Script, is View.Data.ScriptEvent -> DataKind.Scripts
+        is View.Data.EventFlag -> DataKind.EventFlags
+        is View.Data.Overview -> null
+    }
+
+public val View.Data.shownMap: MapId?
+    get() = when (this) {
+        is View.Data.Map -> map
+        is View.Data.MapEntry -> map
+        else -> null
+    }
+
+public val View.Data.shownScript: ScriptId?
+    get() = when (this) {
+        is View.Data.Script -> script
+        is View.Data.ScriptEvent -> script
+        else -> null
+    }
