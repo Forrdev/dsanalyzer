@@ -72,16 +72,22 @@ public class ScriptsEffects(
         val read = scripts.associateWith { script -> indexingOf(script) }
         val built = read.values.filterNotNull()
 
+        val calls = EventCallIndex.of(
+            found = built.flatMap { it.calls },
+            needs = built.fold(emptyMap<EventKey, Int>()) { all, one -> all + one.needs },
+            scripts = built.size
+        )
+
+        logger.info {
+            "Script Indexed: scripts=${built.size}, callsites=${calls.sites}, callerArgumentOffset=${calls.base.toString()}"
+        }
+
         return ScriptsMessage.ScriptsIndexed(
             flags = FlagIndex.of(
                 found = built.flatMap { it.flagUses },
                 scripts = built.size
             ),
-            calls = EventCallIndex.of(
-                found = built.flatMap { it.calls },
-                needs = built.fold(emptyMap<EventKey, Int>()) { all, one -> all + one.needs },
-                scripts = built.size
-            ),
+            calls = calls,
             unreadable = read.filterValues { it == null }.keys.toList()
         )
     }

@@ -2,6 +2,7 @@ package com.sappyoak.dsanalyzer.formats.emevd.emedf
 
 import java.nio.ByteOrder
 
+import com.sappyoak.dsanalyzer.formats.emevd.ArgData
 import com.sappyoak.dsanalyzer.formats.emevd.Instruction
 import com.sappyoak.dsanalyzer.formats.emevd.Parameter
 import com.sappyoak.dsanalyzer.formats.emevd.ScriptEvent
@@ -80,6 +81,12 @@ public fun Instruction.decode(
     }
 
     return DecodedInstruction(this, definition, decoded)
+}
+
+public fun ArgData.literalAt(start: Int, type: ArgType): ArgValue.Literal? {
+    if (start < 0 || start + type.size > size) return null
+
+    return reader().also { it.order = ByteOrder.LITTLE_ENDIAN }.at(start) { readLiteral(type) }
 }
 
 private fun BinaryReader.readLiteral(type: ArgType): ArgValue.Literal = when (type) {

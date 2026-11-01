@@ -15,10 +15,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+import com.sappyoak.dsanalyzer.app.data.scripts.CallerArguments
+import com.sappyoak.dsanalyzer.app.data.scripts.EventKey
 import com.sappyoak.dsanalyzer.app.data.scripts.ScriptsState
+import com.sappyoak.dsanalyzer.app.data.scripts.argumentsFor
 import com.sappyoak.dsanalyzer.app.nav.Resolution
 import com.sappyoak.dsanalyzer.app.nav.View
 import com.sappyoak.dsanalyzer.app.ui.theme.AnalyzerTheme
+import com.sappyoak.dsanalyzer.formats.emevd.emedf.ArgValue
+import com.sappyoak.dsanalyzer.formats.emevd.emedf.DecodedInstruction
 import com.sappyoak.dsanalyzer.game.ref.Address
 
 @Composable
@@ -51,6 +56,9 @@ internal fun InstructionPane(
             return@Column
         }
 
+        val instructions = contents.instructions(event.id)
+        val callers = state.callIndex.argumentsFor(EventKey(contents.script, event.id))
+
         Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 12.dp)) {
             Text(
                 text = event.name ?: "Event ${event.id}",
@@ -62,7 +70,17 @@ internal fun InstructionPane(
                 style = AnalyzerTheme.text.label,
                 color = AnalyzerTheme.colors.textLo
             )
+
+            if (callers == CallerArguments.Unknown && instructions.takeCallerArguments()) {
+                Text(
+                    text = state.whyUnfilled(),
+                    style = AnalyzerTheme.text.label,
+                    color = AnalyzerTheme.colors.pending,
+                    modifier = Modifier.padding(top = 6.dp)
+                )
+            }
         }
+
         HorizontalDivider(color = AnalyzerTheme.colors.border)
 
         LazyColumn(
@@ -70,9 +88,25 @@ internal fun InstructionPane(
             verticalArrangement = Arrangement.spacedBy(10.dp),
             contentPadding = PaddingValues(vertical = 14.dp)
         ) {
-            itemsIndexed(contents.instructions(event.id)) { index, instruction ->
-                InstructionCard(index, instruction, contents.definitions, resolve, onFollow)
+            itemsIndexed(instructions) { index, instruction ->
+                InstructionCard(
+                    index = index,
+                    instruction = instruction,
+                    definitions = contents.definitions,
+                    callers = callers,
+                    resolve = resolve,
+                    onFollow = onFollow
+                )
             }
         }
     }
+}
+
+private fun List<DecodedInstruction>.takeCallerArguments(): Boolean =
+    any { instruction -> instruction.args.any { it.value is ArgValue.FromCaller } }
+
+private fun ScriptsState.whyUnfilled(): String = when {
+    indexing -> "Reading every script, so caller arguments are not filled in yet"
+    !callIndex.built -> "Scripts were not indexed, so caller arguments cannot be filled in"
+    else -> "No offset into a caller's arguments could be derived, so they cannot be filled in"
 }

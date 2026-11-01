@@ -22,6 +22,9 @@ import androidx.compose.ui.unit.dp
 import com.sappyoak.dsanalyzer.app.data.FieldRow
 import com.sappyoak.dsanalyzer.app.data.scripts.ArgumentLine
 import com.sappyoak.dsanalyzer.app.data.scripts.ArgumentValue
+import com.sappyoak.dsanalyzer.app.data.scripts.CallerArguments
+import com.sappyoak.dsanalyzer.app.data.scripts.PassedOrigin
+import com.sappyoak.dsanalyzer.app.data.scripts.Unresolved
 import com.sappyoak.dsanalyzer.app.data.scripts.argumentLines
 import com.sappyoak.dsanalyzer.app.data.scripts.displayName
 import com.sappyoak.dsanalyzer.app.data.scripts.opcode
@@ -42,6 +45,7 @@ internal fun InstructionCard(
     index: Int,
     instruction: DecodedInstruction,
     definitions: Emedf,
+    callers: CallerArguments,
     resolve: (Address) -> Resolution,
     onFollow: (View) -> Unit
 ) {
@@ -103,7 +107,7 @@ internal fun InstructionCard(
         HorizontalDivider(color = colors.border)
 
         FieldTable(
-            rows = instruction.argumentLines(definitions).map { it.asField() },
+            rows = instruction.argumentLines(definitions, callers).map { it.asField() },
             resolve = resolve,
             onFollow = onFollow
         )
@@ -133,9 +137,31 @@ internal fun ArgumentLine.asField(): FieldRow = when (val argument = value) {
     is ArgumentValue.Default ->
         FieldRow(label, argument.shown, "definition default", link, stated = false)
 
+    is ArgumentValue.Passed -> FieldRow(
+        name = label,
+        value = argument.shown,
+        note = listOfNotNull(argument.meaning, argument.origin.describe()).joinToString(" · "),
+        link = link,
+        stated = false
+    )
+
     is ArgumentValue.FromCaller ->
-        FieldRow(label, "—", "from the caller, byte ${argument.byte}", null, stated = false)
+        FieldRow(label, "—", argument.why.describe(argument.byte), null, stated = false)
 
     is ArgumentValue.Raw ->
         FieldRow(label, argument.bytes, "no definition to decode it", null, stated = false)
 }
+
+private fun PassedOrigin.describe(): String = when (this) {
+    is PassedOrigin.One -> "from ${script.label} event $eventId"
+    is PassedOrigin.Agreeing -> "from ${callSites(sites)}"
+}
+
+private fun Unresolved.describe(byte: Int): String = when (this) {
+    Unresolved.Unknown -> "from the caller, byte $byte"
+    Unresolved.NoCaller -> "nothing starts this event"
+    is Unresolved.Differs -> "differs across ${callSites(sites)}"
+    is Unresolved.NotPassed -> "not passed by ${callSites(sites)}"
+}
+
+private fun callSites(count: Int): String = if (count == 1) "1 call site" else "$count call sites"
