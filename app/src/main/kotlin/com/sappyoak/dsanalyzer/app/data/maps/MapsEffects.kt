@@ -1,5 +1,6 @@
 package com.sappyoak.dsanalyzer.app.data.maps
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -13,6 +14,9 @@ import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.game.world.maps.availableMaps
 import com.sappyoak.dsanalyzer.game.world.maps.loadCharacterModels
 import com.sappyoak.dsanalyzer.game.world.maps.loadMSB
+import com.sappyoak.dsanalyzer.shared.binary.BinaryFormatException
+
+private val logger = KotlinLogging.logger {  }
 
 public class MapsEffects(private val files: InstallationFiles) : EffectRunner<MapsEffect, MapsMessage> {
     private val characters by lazy { loadCharacterModels() }
@@ -42,12 +46,23 @@ public class MapsEffects(private val files: InstallationFiles) : EffectRunner<Ma
         )
 
         is MapsEffect.IndexEntities -> files.use(effect.installation) { games ->
-            val read = effect.maps.associateWith { games.loadMSB(it)?.summarize(it, characters) }
+            val read = effect.maps.associateWith { games.summarized(it) }
             MapsMessage.EntitiesIndexed(
                 index = EntityIndex.of(read.values.filterNotNull()),
                 skipped = read.filterValues { it == null }.keys.toList()
             )
         }
+    }
+
+    private fun GameFiles.summarized(map: MapId): MapContents? = try {
+        loadMSB(map)?.summarize(map, characters)
+    } catch (err: BinaryFormatException) {
+        logger.atWarn {
+            message = "Map left out of the entity index"
+            cause = err
+            payload = mapOf("map" to map.name)
+        }
+        null
     }
 }
 

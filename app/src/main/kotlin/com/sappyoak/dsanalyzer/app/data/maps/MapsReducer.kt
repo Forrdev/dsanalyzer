@@ -60,4 +60,4 @@ private fun MapsState.accept(contents: MapContents): Transition<MapsState, MapsE
 
 
 private fun describeSkipped(maps: List<MapId>): String =
-    "No layout file for ${maps.joinToString()}, so entity search will not cover " + if (maps.size == 1) "it" else "them"
+    "No usable layout for ${maps.joinToString()}, so entity search will not cover " + if (maps.size == 1) "it" else "them"
