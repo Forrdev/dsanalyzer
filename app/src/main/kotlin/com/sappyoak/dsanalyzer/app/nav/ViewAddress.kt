@@ -2,6 +2,7 @@ package com.sappyoak.dsanalyzer.app.nav
 
 import com.sappyoak.dsanalyzer.game.ref.DataAddress
 import com.sappyoak.dsanalyzer.game.ref.DataSpace
+import com.sappyoak.dsanalyzer.game.world.esd.EsdSource
 import com.sappyoak.dsanalyzer.game.world.maps.EntryKind
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
@@ -26,6 +27,11 @@ public fun View.Data.toDataAddress(): DataAddress? = when (this) {
         DataAddress(DataSpace.Script.token, listOf(script.token, EVENT, eventId.toString()))
     is View.Data.EventFlag ->
         DataAddress(DataSpace.Flag.token, listOf("$flagId" + (seenIn?.let { "$SEEN_IN$it" } ?: "")))
+
+    is View.Data.Esd ->
+        DataAddress(DataSpace.Esd.token, source.segments)
+    is View.Data.EsdState ->
+        DataAddress(DataSpace.Esd.token, source.segments + listOf(group.toString(), state.toString()))
 }
 
 internal const val EVENT: String = "event"
@@ -53,3 +59,12 @@ internal fun scriptIdOf(token: String): ScriptId? =
     if (token == COMMON) ScriptId.Common else MapId.parse(token)?.let(ScriptId::Of)
 
 private const val COMMON = "common"
+
+/** The player's ESD, by the character it belongs to */
+internal const val PLAYER_ESD = "c0000"
+
+internal val EsdSource.segments: List<String>
+    get() = when (this) {
+        EsdSource.Player -> listOf(PLAYER_ESD)
+        is EsdSource.Talk -> listOf(map.toString(), talkId.toString())
+    }

@@ -6,6 +6,7 @@ import com.sappyoak.dsanalyzer.game.ref.DataAddress
 import com.sappyoak.dsanalyzer.game.ref.DataSpace
 import com.sappyoak.dsanalyzer.game.ref.knownSpace
 import com.sappyoak.dsanalyzer.game.ref.parseAddress
+import com.sappyoak.dsanalyzer.game.world.esd.EsdSource
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
 
@@ -13,6 +14,7 @@ public interface ResolveContext {
     public fun hasMap(map: MapId): Boolean
     public fun hasScript(script: ScriptId): Boolean
     public fun hasParam(file: String): Boolean
+    public fun hasEsd(source: EsdSource): Boolean
 
     public fun entryFor(entityId: Int): View.Data.MapEntry?
 
@@ -21,6 +23,7 @@ public interface ResolveContext {
             override fun hasMap(map: MapId): Boolean = false
             override fun hasScript(script: ScriptId): Boolean = false
             override fun hasParam(file: String): Boolean = false
+            override fun hasEsd(source: EsdSource): Boolean = false
             override fun entryFor(entityId: Int): View.Data.MapEntry? = null
         }
     }
@@ -39,6 +42,7 @@ private fun ResolveContext.resolveData(address: DataAddress): Resolution =
         DataSpace.Flag -> flagView(address)
         DataSpace.Script -> scriptView(address)
         DataSpace.Param -> paramView(address)
+        DataSpace.Esd -> esdView(address)
         else -> Resolution.NoView(address)
     }
 
@@ -95,6 +99,31 @@ private fun ResolveContext.paramView(address: DataAddress): Resolution {
     }
 
     return if (hasParam(file)) Resolution.Resolved(view) else Resolution.Absent(address, file)
+}
+
+private fun ResolveContext.esdView(address: DataAddress): Resolution {
+    val segments = address.segments
+    val player = segments.firstOrNull() == PLAYER_ESD
+    val source = if (player) {
+        EsdSource.Player
+    } else {
+        val map = segments.firstOrNull()?.let(MapId::parse) ?: return Resolution.NoView(address)
+        val talk = segments.getOrNull(1)?.toIndexOrNull() ?: return Resolution.NoView(address)
+        EsdSource.Talk(map, talk)
+    }
+
+    val rest = segments.drop(if (player) 1 else 2)
+    val view: View.Data = when (rest.size) {
+        0 -> View.Data.Esd(source)
+        2 -> {
+            val group = rest[0].toLongOrNull() ?: return Resolution.NoView(address)
+            val state = rest[1].toLongOrNull() ?: return Resolution.NoView(address)
+            View.Data.EsdState(source, group, state)
+        }
+        else -> return Resolution.NoView(address)
+    }
+    val missing = segments.take(if (player) 1 else 2).joinToString("/")
+    return if (hasEsd(source)) Resolution.Resolved(view) else Resolution.Absent(address, missing)
 }
 
 private fun flagView(address: DataAddress): Resolution {

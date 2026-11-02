@@ -15,6 +15,8 @@ import androidx.compose.ui.Modifier
 import com.sappyoak.dsanalyzer.app.analysis.AnalysisMessage
 import com.sappyoak.dsanalyzer.app.analysis.ui.AnalysisNavigator
 import com.sappyoak.dsanalyzer.app.analysis.ui.LeadsPane
+import com.sappyoak.dsanalyzer.app.data.esd.EsdsMessage
+import com.sappyoak.dsanalyzer.app.data.esd.ui.EsdDetail
 
 import com.sappyoak.dsanalyzer.app.data.maps.MapsMessage
 import com.sappyoak.dsanalyzer.app.data.maps.ui.MapsDetail
@@ -56,6 +58,7 @@ public fun WorkspaceShell(
 
     val analysisState by stores.analysis.state.collectAsState()
     val paramsState by stores.params.state.collectAsState()
+    val esdsState by stores.esds.state.collectAsState()
     val mapsState by stores.maps.state.collectAsState()
     val scriptsState by stores.scripts.state.collectAsState()
     val runtimeState by stores.runtime.state.collectAsState()
@@ -64,17 +67,19 @@ public fun WorkspaceShell(
         installation?.let {
             stores.analysis.dispatch(AnalysisMessage.Opened(it))
             stores.params.dispatch(ParamsMessage.Opened(it))
+            stores.esds.dispatch(EsdsMessage.Opened(it))
             stores.maps.dispatch(MapsMessage.Opened(it))
             stores.scripts.dispatch(ScriptsMessage.Opened(it))
             stores.runtime.dispatch(RuntimeMessage.Opened(it))
         }
     }
 
-    val context: ResolveContext = remember(mapsState.maps, mapsState.entities, scriptsState.scripts, paramsState.entries) {
+    val context: ResolveContext = remember(mapsState.maps, mapsState.entities, scriptsState.scripts, paramsState.entries, esdsState.talk) {
         WorkspaceResolveContext(
             maps = mapsState.maps.toSet(),
             scripts = scriptsState.scripts.toSet(),
             params = paramsState.entries.keys,
+            esds = esdsState::has,
             entryForEntity = { id -> mapsState.entities[id].firstOrNull() }
         )
     }
@@ -98,6 +103,7 @@ public fun WorkspaceShell(
                 when (view) {
                     is View.Data -> DataNavigator(
                         params = paramsState.catalog,
+                        esds = esdsState.sources,
                         maps = mapsState.maps,
                         scripts = scriptsState.scripts,
                         view = view,
@@ -118,6 +124,9 @@ public fun WorkspaceShell(
 
                     is View.Data.Param,
                     is View.Data.ParamRow -> ParamsDetail(paramsState, stores.params, view, resolve, navigator::go)
+
+                    is View.Data.Esd,
+                    is View.Data.EsdState -> EsdDetail(esdsState, view, resolve, navigator::go)
 
                     is View.Data -> MapsDetail(mapsState, stores.maps,  view, resolve, navigator::go)
                     is View.Live -> RuntimeDetail(
@@ -158,6 +167,8 @@ private fun WorkspaceStores.sync(view: View) {
         is View.Data.ScriptEvent -> scripts.dispatch(ScriptsMessage.ScriptSelected(view.script))
         is View.Data.EventFlag ->
             scripts.dispatch(ScriptsMessage.FlagRequested(view.flagId, view.seenIn))
+        is View.Data.Esd -> esds.dispatch(EsdsMessage.SourceSelected(view.source))
+        is View.Data.EsdState -> esds.dispatch(EsdsMessage.SourceSelected(view.source))
         is View.Data.Overview, is View.Data.ParamSearch, is View.Data.Param, is View.Data.ParamRow, is View.Analysis, is View.Live -> Unit
     }
 }

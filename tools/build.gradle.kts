@@ -109,3 +109,18 @@ tasks.register<JavaExec>("generateParamDefs") {
         )
     }
 }
+
+
+tasks.register<JavaExec>("esdCensus") {
+    group = "tools"
+    description = "Reads every ESD and decodes every expression in it, counting what fails and why"
+    mainClass.set("com.sappyoak.dsanalyzer.tools.esd.EsdCensusKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    useModuleToolchain()
+
+    val root = providers.gradleProperty("ds1")
+    val edition = providers.gradleProperty("edition").orElse("ptde")
+    argumentProviders.add {
+        listOf(root.orNull ?: error("Pass the installation's directory"))
+    }
+}

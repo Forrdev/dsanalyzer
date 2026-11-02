@@ -19,13 +19,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 import com.sappyoak.dsanalyzer.app.data.DataKind
+import com.sappyoak.dsanalyzer.app.data.esd.title
 import com.sappyoak.dsanalyzer.app.data.kind
 import com.sappyoak.dsanalyzer.app.data.params.ParamSummary
+import com.sappyoak.dsanalyzer.app.data.shownEsd
 import com.sappyoak.dsanalyzer.app.data.shownMap
 import com.sappyoak.dsanalyzer.app.data.shownParam
 import com.sappyoak.dsanalyzer.app.data.shownScript
 import com.sappyoak.dsanalyzer.app.nav.View
 import com.sappyoak.dsanalyzer.app.ui.theme.AnalyzerTheme
+import com.sappyoak.dsanalyzer.game.world.esd.EsdSource
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.game.world.maps.label
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
@@ -36,6 +39,7 @@ private val TRACKING = 0.8.sp
 @Composable
 public fun ColumnScope.DataNavigator(
     params: List<ParamSummary>,
+    esds: List<EsdSource>,
     maps: List<MapId>,
     scripts: List<ScriptId>,
     view: View.Data,
@@ -61,13 +65,13 @@ public fun ColumnScope.DataNavigator(
             item(key = kind.name) {
                 KindRow(
                     kind = kind,
-                    count = kind.countIn(params, maps, scripts),
+                    count = kind.countIn(params, esds, maps, scripts),
                     open = open,
                     onClick = { expanded = if (open) null else kind }
                 )
             }
 
-            if (open) children(kind, params, maps, scripts, view, onFollow)
+            if (open) children(kind, params, esds,  maps, scripts, view, onFollow)
         }
     }
 }
@@ -75,6 +79,7 @@ public fun ColumnScope.DataNavigator(
 private fun LazyListScope.children(
     kind: DataKind,
     params: List<ParamSummary>,
+    esds: List<EsdSource>,
     maps: List<MapId>,
     scripts: List<ScriptId>,
     view: View.Data,
@@ -98,6 +103,15 @@ private fun LazyListScope.children(
                     onClick = { onFollow(View.Data.Param(param.file)) }
                 )
             }
+        }
+
+        DataKind.Esd -> items(esds, key = { "esd:$it" }) { source ->
+            ChildRow(
+                label = source.title,
+                detail = null,
+                selected = view.shownEsd == source,
+                onClick = { onFollow(View.Data.Esd(source)) }
+            )
         }
 
         DataKind.Maps -> items(maps, key = { "map:$it" }) { map ->
@@ -130,9 +144,10 @@ private fun LazyListScope.children(
     }
 }
 
-private fun DataKind.countIn(params: List<ParamSummary>, maps: List<MapId>, scripts: List<ScriptId>): Int? = when (this) {
+private fun DataKind.countIn(params: List<ParamSummary>, esds: List<EsdSource>, maps: List<MapId>, scripts: List<ScriptId>): Int? = when (this) {
     DataKind.Params -> params.size
     DataKind.Maps -> maps.size
     DataKind.Scripts -> scripts.size
-    DataKind.Params, DataKind.Esd, DataKind.Animations, DataKind.EventFlags -> null
+    DataKind.Esd -> esds.size
+    DataKind.Params, DataKind.Animations, DataKind.EventFlags -> null
 }

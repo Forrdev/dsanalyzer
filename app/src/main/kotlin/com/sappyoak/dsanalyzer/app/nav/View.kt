@@ -2,6 +2,7 @@ package com.sappyoak.dsanalyzer.app.nav
 
 import com.sappyoak.dsanalyzer.analysis.FindingId
 import com.sappyoak.dsanalyzer.analysis.InvestigationId
+import com.sappyoak.dsanalyzer.game.world.esd.EsdSource
 import com.sappyoak.dsanalyzer.game.world.maps.EntryKind
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
@@ -47,6 +48,12 @@ public sealed interface View {
             public val seenIn: MapId? = null
         ) : Data
 
+        public data class Esd(public val source: EsdSource) : Data
+        public data class EsdState(
+            public val source: EsdSource,
+            public val group: Long,
+            public val state: Long
+        ) : Data
     }
 
     public data class Live(public val panel: RuntimePanel) : View {

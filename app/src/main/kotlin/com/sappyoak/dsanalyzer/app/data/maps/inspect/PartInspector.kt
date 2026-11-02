@@ -3,6 +3,7 @@ package com.sappyoak.dsanalyzer.app.data.maps.inspect
 import com.sappyoak.dsanalyzer.app.data.maps.MapContents
 import com.sappyoak.dsanalyzer.app.data.params.paramAddress
 import com.sappyoak.dsanalyzer.app.nav.View
+import com.sappyoak.dsanalyzer.app.nav.toDataAddress
 import com.sappyoak.dsanalyzer.formats.msb.PartIndex
 import com.sappyoak.dsanalyzer.formats.msb.RegionIndex
 import com.sappyoak.dsanalyzer.formats.msb.part.EnemyData
@@ -13,6 +14,7 @@ import com.sappyoak.dsanalyzer.formats.msb.part.placeNameId
 import com.sappyoak.dsanalyzer.formats.msb.part.playRegionId
 import com.sappyoak.dsanalyzer.formats.msb.part.stableFootingFlag
 import com.sappyoak.dsanalyzer.game.ref.Address
+import com.sappyoak.dsanalyzer.game.world.esd.EsdSource
 import com.sappyoak.dsanalyzer.game.world.maps.EntryKind
 import com.sappyoak.dsanalyzer.game.world.params.GameParam
 
@@ -54,7 +56,7 @@ private fun enemyRows(contents: MapContents, data: EnemyData) = rows {
     reference("Draw parent", contents, contents.part(data.drawParent))
     row("Think param", data.thinkParamId, paramLink(GameParam.NpcThinkParam, data.thinkParamId))
     row("NPC param", data.npcParamId, paramLink(GameParam.NpcParam, data.npcParamId))
-    row("Talk id", data.talkId)
+    row("Talk id", data.talkId, talkLink(contents, data.talkId))
     row("Chara init", data.charaInitId, paramLink(GameParam.CharaInitParam, data.charaInitId))
     row("Platoon", data.platoonId)
     row("Initial animation", data.initialAnimation)
@@ -85,6 +87,9 @@ private fun connectRows(contents: MapContents, part: Part.ConnectCollision) = ro
 }
 
 private fun paramLink(param: GameParam<*>, id: Int): Address? = if (id > 0) paramAddress(param, id) else null
+
+private fun talkLink(contents: MapContents, talkId: Int): Address? =
+    if (talkId > 0) View.Data.Esd(EsdSource.Talk(contents.map, talkId)).toDataAddress() else null
 
 internal fun MapContents.ref(kind: EntryKind, index: Int): View.Data.MapEntry =
     View.Data.MapEntry(map, kind, index)

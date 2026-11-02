@@ -9,6 +9,8 @@ import kotlinx.coroutines.runBlocking
 import com.sappyoak.dsanalyzer.app.connection.ConnectionEffects
 import com.sappyoak.dsanalyzer.app.connection.ConnectionMessage
 import com.sappyoak.dsanalyzer.app.connection.ConnectionStore
+import com.sappyoak.dsanalyzer.app.data.esd.EsdsEffects
+import com.sappyoak.dsanalyzer.app.data.esd.EsdsStore
 import com.sappyoak.dsanalyzer.app.data.maps.MapsEffects
 import com.sappyoak.dsanalyzer.app.data.maps.MapsStore
 import com.sappyoak.dsanalyzer.app.data.params.ParamsEffects
@@ -79,6 +81,7 @@ public fun createAppModel(
         workspace = WorkspaceStores(
             analysis = AnalysisStore(scope, AnalysisEffects(installationFiles)),
             params = ParamsStore(scope, ParamsEffects(installationFiles)),
+            esds = EsdsStore(scope, EsdsEffects(installationFiles)),
             maps = MapsStore(scope, MapsEffects(installationFiles)),
             scripts = ScriptsStore(scope, ScriptsEffects(installationFiles)),
             runtime = RuntimeStore(scope, RuntimeEffects(

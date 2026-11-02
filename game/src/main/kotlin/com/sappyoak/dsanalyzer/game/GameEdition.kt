@@ -8,6 +8,7 @@ import com.sappyoak.dsanalyzer.shared.platform.PointerSize
 public enum class GameEdition(
     public val steamAppId: Int,
     public val executableName: String,
+    public val shortName: String,
     public val pointerSize: PointerSize,
     public val storage: GameStorage,
     /**
@@ -19,6 +20,7 @@ public enum class GameEdition(
     PrepareToDie(
         steamAppId = 211_420,
         executableName = "DARKSOULS.exe",
+        shortName = "ptde",
         pointerSize = PointerSize.IntPointer,
         storage = GameStorage.Archived,
         logicTickHz = 30
@@ -27,6 +29,7 @@ public enum class GameEdition(
     Remastered(
         steamAppId = 570_940,
         executableName = "DarkSoulsRemastered.exe",
+        shortName = "dsr",
         pointerSize = PointerSize.LongPointer,
         storage = GameStorage.Loose,
         logicTickHz = 60

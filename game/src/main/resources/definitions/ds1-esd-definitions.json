@@ -1,0 +1,3984 @@
+{
+  "source": "ESDLang 9fa7fa9 (2025-10-20), dist/ESDScriptingDocumentation_{Chr,Talk}.json, split by its ds1 (PTDE) and ds1r (DSR) tags",
+  "ptde": {
+    "chr": {
+      "commands": [
+        {
+          "bank": 1,
+          "id": 0,
+          "name": "ChangeGeneralAnim",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 1,
+          "name": "ChangeUpperBodyAnim",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 3,
+          "name": "ChangeGeneralAnimCategorized",
+          "args": [
+            "AnimCategory",
+            "AnimID",
+            "AnimLayerIndex",
+            "Blend",
+            "IsLoop"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 4,
+          "name": "ChangeUpperBodyAnimCategorized",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 7,
+          "name": "ChangeGeneralAnimCategorizedMatchPlaybackTime",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 9,
+          "name": "SetAnimIDOffset",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 10,
+          "name": "SetAdditiveBlendAnimation",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 11,
+          "name": "SetAdditiveBlendAnimationSlotted",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 12,
+          "name": "ChangeBlendAnimationCategorized",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 13,
+          "name": "ChangeUpperAndLowerBodySyncedAnimCategorized",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 100,
+          "name": "SwitchActiveActionState",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 101,
+          "name": "SwitchMotion",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 102,
+          "name": "SetThrowAttackTypePossible",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 103,
+          "name": "SetThrowDefenseTypePossible",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 104,
+          "name": "SwitchEquippedWeapon",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 107,
+          "name": "SetUnableToDrop",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 108,
+          "name": "IssueMessageIDToEvents",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 109,
+          "name": "SetAttackType",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 110,
+          "name": "SetNoStaminaRecover",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 111,
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 112,
+          "name": "SetAIBusyDoingAction",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 113,
+          "name": "BowTurn",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 114,
+          "name": "SetIsHoldingBow",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 115,
+          "name": "SwitchSpecificRangeMode",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 116,
+          "name": "SwitchSpecialMotion",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 117,
+          "name": "SetIsWeaponChanging",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 118,
+          "name": "SetIsItemInUse",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 119,
+          "name": "SetIsItemAnimPlaying",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 120,
+          "name": "RemoveBinoculars",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 121,
+          "name": "SetIsMagicInUse",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 122,
+          "name": "IsHeadTurnPossible",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 123,
+          "name": "ChangeHoveringState",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 124,
+          "name": "ChangeToSpecialStay",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 125,
+          "name": "OpenMenuWhenUsingItem",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 126,
+          "name": "OpenMenuWhenUsingMagic",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 129,
+          "name": "CloseMenuWhenUsingItem",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 130,
+          "name": "CloseMenuWhenUsingMagic",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 132,
+          "name": "WhiffPossibility",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 133,
+          "name": "ChangeFlightStatus",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 134,
+          "name": "SetStatsNotMetAnimID",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 135,
+          "name": "ShowFixedYAxisDirectionDisplay",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 136,
+          "name": "SetLadderActionState",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 138,
+          "name": "SetThrowState",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 139,
+          "name": "LadderSlideStart",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 140,
+          "name": "SetIsEventActionPossible",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 141,
+          "name": "RequestThrowAnimInterrupt",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 142,
+          "name": "SetHandStateOfLadder",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 143,
+          "name": "SetDamageAnimType",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 144,
+          "name": "SlideTurn",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 145,
+          "name": "InterruptAttack",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 146,
+          "name": "MidairDeathWarp",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 147,
+          "name": "ClearSlopeInfo",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 1001,
+          "name": "AddStamina",
+          "args": [
+            "StaminaToAdd"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 1100,
+          "name": "SyncAtInit_Active",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 1101,
+          "name": "SyncAtInit_Passive",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 9000,
+          "name": "DebugLogOutput",
+          "args": [
+            "PrintText"
+          ],
+          "used": true
+        }
+      ],
+      "functions": [
+        {
+          "id": 0,
+          "name": "IsGeneralAnimEnd",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 1,
+          "name": "IsAttackAnimEnd",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 100,
+          "name": "IsAtkRequest",
+          "args": [
+            "RequestType"
+          ],
+          "used": true
+        },
+        {
+          "id": 101,
+          "name": "IsAtkReleaseRequest",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 102,
+          "name": "IsChainAtkRequest",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 103,
+          "name": "GetAtkDuration",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 104,
+          "name": "GetWeaponSwitchRequest",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 105,
+          "name": "GetCommandIDFromEvent",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 106,
+          "name": "GetAIActionType",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 107,
+          "name": "GetAIChainActionType",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 108,
+          "name": "GetChainEvadeRequest",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 109,
+          "name": "GetWeaponChangeRequest",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 110,
+          "name": "GetAnimIDFromMoveParam",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 111,
+          "name": "IsThereAnyAtkRequest",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 112,
+          "name": "IsThereAnyChainAtkRequest",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 113,
+          "name": "IsItemUseMenuOpening",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 114,
+          "name": "IsMagicUseMenuOpening",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 115,
+          "name": "IsItemUseMenuOpened",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 116,
+          "name": "IsMagicUseMenuOpened",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 118,
+          "name": "GetAIChainStepType",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 119,
+          "name": "GetTransitionToSpecialStayAnimID",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 120,
+          "name": "GetAIAtkCancelType",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 200,
+          "name": "IsFalling",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 201,
+          "name": "IsLanding",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 202,
+          "name": "GetReceivedDamageType",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 205,
+          "name": "IsNormalDmgPassThroughDuringThrow",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 206,
+          "name": "IsThrowing",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 207,
+          "name": "GetWeaponSwitchState",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 210,
+          "name": "IsAnimCancelPossibleInAtkRelease",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 211,
+          "name": "IsEmergencyStopAnimPlaying",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 212,
+          "name": "GetLockRangeState",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 213,
+          "name": "GetLockAngleState",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 216,
+          "name": "IsChangeToDeflectAtk",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 217,
+          "name": "IsChangeToAfterParrySuccess",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 219,
+          "name": "GetMovementType",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 220,
+          "name": "IsLargeAtkComboPossible",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 222,
+          "name": "GetReceivedDamageDirection",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 224,
+          "name": "GetFallHeight",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 225,
+          "name": "GetEquipWeaponCategory",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 226,
+          "name": "IsHoldingBow",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 227,
+          "name": "GetMagicAnimType",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 228,
+          "name": "WasNotLargeAtk",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 231,
+          "name": "GetItemAnimType",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 232,
+          "name": "IsMagicUseable",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 233,
+          "name": "IsItemUseable",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 236,
+          "name": "GetDamageLevel",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 237,
+          "name": "GetGuardLevelAction",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 238,
+          "name": "IsNewLeftHandAtkFromStay",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 239,
+          "name": "IsParryFromIdle",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 240,
+          "name": "IsGuardFromIdle",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 241,
+          "name": "IsNewLeftHandAtkFromAtkCancel",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 242,
+          "name": "IsParryFromAtkCancel",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 243,
+          "name": "IsGuardFromAtkCancel",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 245,
+          "name": "IsOutOfAmmo",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 246,
+          "name": "IsUseCatLanding",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 247,
+          "name": "GetHoverMoveState",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 248,
+          "name": "IsTruelyLanding",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 249,
+          "name": "IsRightHandMagic",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 250,
+          "name": "IsChangeToSpecialStayAnim",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 251,
+          "name": "GetSpecialStayAnimID",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 252,
+          "name": "AcquireSpecialDamageAnimationID",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 253,
+          "name": "IsRunTurnAnimPlaying",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 254,
+          "name": "IsGenerateAction",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 255,
+          "name": "GetSpecialStayCancelAnimID",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 256,
+          "name": "HasReceivedAnyDamage",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 257,
+          "name": "GetMoveAnimParamID",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 259,
+          "name": "IsRequestTurnAnimStart",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 260,
+          "name": "IsTurningWithAnim",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 261,
+          "name": "IsFlying",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 263,
+          "name": "GetEquipWeightRatioForFalling",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 264,
+          "name": "GetFlightMotionState",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 265,
+          "name": "GetIsWeakPoint",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 267,
+          "name": "GetLadderActionState",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 268,
+          "name": "IsInDisguise",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 271,
+          "name": "IsSpecialTransitionPossible",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 272,
+          "name": "GetLandingAnimBlendRatio",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 273,
+          "name": "GetThrowAnimID",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 274,
+          "name": "DidOpponentDieFromThrow",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 275,
+          "name": "HasThrowEnded",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 276,
+          "name": "IsThrowSelfDeath",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 278,
+          "name": "GetGuardMotionCategory",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 279,
+          "name": "IsBeingThrown",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 280,
+          "name": "IsSelfThrow",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 281,
+          "name": "IsThrowDeathState",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 283,
+          "name": "IsOnLadder",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 284,
+          "name": "GetPhysicalAttribute",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 285,
+          "name": "GetSpecialAttribute",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 286,
+          "name": "GetSpecialStayDeathAnimID",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 287,
+          "name": "HasReceivedAnyDamage_AnimEnd",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 288,
+          "name": "EggGrowth_IsHeadScratch",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 289,
+          "name": "EggGrowth_IsBecomeEggHead",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 290,
+          "name": "IsStop",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 291,
+          "name": "IsSomeoneOnLadder",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 292,
+          "name": "IsSomeoneUnderLadder",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 293,
+          "name": "GetLadderHandState",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 294,
+          "name": "DoesLadderHaveCharacters",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 296,
+          "name": "DescendingToFloor",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 297,
+          "name": "IsInputDirectionMatch",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 298,
+          "name": "IsSpecialTransition2Possible",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 299,
+          "name": "IsVersusDivineDamage",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 300,
+          "name": "IsGeneralAnimCancelPossible",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 301,
+          "name": "GetEventEzStateFlag",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 302,
+          "name": "IsLadderEventEnd",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 303,
+          "name": "IsReachBottomOfLadder",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 304,
+          "name": "IsReachTopOfLadder",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 305,
+          "name": "GetStateChangeType",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 306,
+          "name": "IsOnLastRungOfLadder",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 311,
+          "name": "GetWeaponDurability",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 312,
+          "name": "IsWeaponBroken",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 313,
+          "name": "IsAnimEndBySkillCancel",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 314,
+          "name": "EggGrowth_IsBecomeEgghead_SecondStage",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 315,
+          "name": "IsHamariFallDeath",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 316,
+          "name": "IsClient",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 317,
+          "name": "IsSlope",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 1000,
+          "name": "GetHP",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 1001,
+          "name": "GetStamina",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 1003,
+          "name": "GetRandomInt",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 1007,
+          "name": "IsCOMPlayer",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 1101,
+          "name": "IsInvincibleDebugMode",
+          "args": [],
+          "used": true
+        }
+      ]
+    },
+    "talk": {
+      "commands": [
+        {
+          "bank": 1,
+          "id": 0,
+          "name": "DebugEvent",
+          "args": [
+            "unk"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 1,
+          "name": "TalkToPlayer",
+          "args": [
+            "talkParamRow",
+            "unk",
+            "unk"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 5,
+          "name": "RemoveMyAggro",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 6,
+          "name": "DisplayOneLineHelp",
+          "args": [
+            "actionTextId"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 8,
+          "name": "ForceEndTalk",
+          "args": [
+            "unk"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 9,
+          "name": "ClearTalkProgressData",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 10,
+          "name": "ShowShopMessage",
+          "args": [
+            "optionsType",
+            "unk",
+            "unk"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 11,
+          "name": "SetEventFlag",
+          "formerly": [
+            "SetEventState"
+          ],
+          "args": [
+            "eventFlagId",
+            "newFlagState"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 12,
+          "name": "CloseShopMessage",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 17,
+          "name": "OpenGenericDialog",
+          "args": [
+            "boxType",
+            "textId",
+            "defaultResult",
+            "boxStyle",
+            "unk"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 18,
+          "name": "ForceCloseGenericDialog",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 19,
+          "name": "AddTalkListData",
+          "args": [
+            "slot",
+            "textId",
+            "unk"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 20,
+          "name": "ClearTalkListData",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 22,
+          "name": "OpenRegularShop",
+          "args": [
+            "StartShopLineupParamRow",
+            "EndShopLineupParamRow"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 23,
+          "name": "OpenRepairShop",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 24,
+          "name": "OpenEnhanceShop",
+          "args": [
+            "type"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 28,
+          "name": "OpenMagicEquip",
+          "args": [
+            "startId",
+            "endId"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 30,
+          "name": "OpenRepository",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 31,
+          "name": "OpenSoul",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 32,
+          "name": "CloseMenu",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 35,
+          "name": "ClearTalkActionState",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 36,
+          "name": "ClearTalkDisabledState",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 38,
+          "name": "SetUpdateDistance",
+          "args": [
+            "distance"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 39,
+          "name": "ClearPlayerDamageInfo",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 40,
+          "name": "OfferHumanity",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 41,
+          "name": "StartWarpMenuInit",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 42,
+          "name": "StartBonfireAnimLoop",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 43,
+          "name": "EndBonfireKindleAnimLoop",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 46,
+          "name": "OpenSellShop",
+          "args": [
+            "StartShopLineupParamRow",
+            "EndShopLineupParamRow"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 47,
+          "name": "ChangePlayerStat",
+          "formerly": [
+            "ChangePlayerStats"
+          ],
+          "args": [
+            "stat",
+            "operation",
+            "value"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 48,
+          "name": "OpenEquipmentChangeOfPurposeShop",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 49,
+          "name": "CombineMenuFlagAndEventFlag",
+          "args": [
+            "menuFlagId",
+            "eventFlagId"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 50,
+          "name": "RequestSave",
+          "args": [
+            "unk"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 51,
+          "name": "ChangeMotionOffsetID",
+          "args": [
+            "unk"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 52,
+          "name": "PlayerEquipmentQuantityChange",
+          "args": [
+            "itemCategory",
+            "itemId",
+            "quantityChange"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 53,
+          "name": "RequestUnlockTrophy",
+          "args": [
+            "achievement"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 55,
+          "name": "SetAquittalCostMessageTag",
+          "args": [
+            "baseAcquittalCost",
+            "unk"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 56,
+          "name": "SubtractAcquittalCostFromPlayerSouls",
+          "args": [
+            "baseAcquittalCost",
+            "unk"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 57,
+          "name": "ShuffleRNGSeed",
+          "args": [
+            "maxValue"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 58,
+          "name": "SetRNGSeed",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 59,
+          "name": "ReplaceTool",
+          "args": [
+            "itemIdToReplace",
+            "newItemId",
+            "newItemQuantity"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 60,
+          "name": "BreakCovenantPledge",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 61,
+          "name": "PlayerRespawn",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 62,
+          "name": "GiveSpEffectToPlayer",
+          "args": [
+            "SpEffectParamRow"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 63,
+          "name": "ShowTextEffect",
+          "formerly": [
+            "ShowGrandioseTextPresentation"
+          ],
+          "args": [
+            "textId"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 64,
+          "name": "AddIzalithRankingPoints",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 65,
+          "name": "OpenItemAcquisitionMenu",
+          "args": [
+            "itemCategory",
+            "itemId",
+            "numberAcquired"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 66,
+          "name": "AcquireGesture",
+          "args": [
+            "gestureId"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 67,
+          "name": "ForceCloseMenu",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 68,
+          "name": "SetTalkTime",
+          "args": [
+            "time"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 69,
+          "name": "CollectJustPyromancyFlame",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 70,
+          "name": "OpenArenaRanking",
+          "args": [
+            "unk"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 71,
+          "name": "ReportConversationEndToHavokBehavior",
+          "args": [],
+          "used": false
+        },
+        {
+          "bank": 1,
+          "id": 72,
+          "formerly": [
+            "SetDungeonIndexNumber"
+          ],
+          "args": [],
+          "used": false
+        },
+        {
+          "bank": 1,
+          "id": 76,
+          "name": "OpenConversationChoicesMenu",
+          "args": [],
+          "used": false
+        },
+        {
+          "bank": 1,
+          "id": 81,
+          "name": "OpenCharaMakeMenu",
+          "args": [],
+          "used": false
+        },
+        {
+          "bank": 1,
+          "id": 82,
+          "name": "OpenChooseQuantityDialog",
+          "args": [
+            "itemCategory",
+            "itemId",
+            "textId"
+          ],
+          "used": false
+        },
+        {
+          "bank": 1,
+          "id": 103,
+          "name": "TurnCharacterToFaceEntity",
+          "args": [
+            "animationId",
+            "CharacterEntityId",
+            "unk"
+          ],
+          "used": false
+        },
+        {
+          "bank": 1,
+          "id": 110,
+          "name": "MainBonfireMenuFlag",
+          "args": [],
+          "used": false
+        }
+      ],
+      "functions": [
+        {
+          "id": 0,
+          "name": "GetWhetherEnemiesAreNearby",
+          "args": [
+            "unk"
+          ],
+          "used": false
+        },
+        {
+          "id": 1,
+          "name": "GetDistanceToPlayer",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 2,
+          "name": "HasTalkEnded",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 3,
+          "name": "CheckSelfDeath",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 4,
+          "name": "IsPlayerTalkingToMe",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 5,
+          "name": "IsAttackedBySomeone",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 6,
+          "name": "GetSelfHP",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 8,
+          "name": "GetRelativeAngleBetweenPlayerAndSelf",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 9,
+          "name": "IsPlayerAttacking",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 14,
+          "name": "GetOneLineHelpStatus",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 15,
+          "name": "GetEventFlag",
+          "formerly": [
+            "GetEventStatus"
+          ],
+          "args": [
+            "eventFlagId"
+          ],
+          "used": true
+        },
+        {
+          "id": 16,
+          "name": "DoesPlayerHaveItem",
+          "formerly": [
+            "IsEquipmentIDObtained"
+          ],
+          "args": [
+            "itemCategory",
+            "itemId"
+          ],
+          "used": true
+        },
+        {
+          "id": 17,
+          "name": "DoesPlayerHaveItemEquipped",
+          "formerly": [
+            "IsEquipmentIDEquipped"
+          ],
+          "args": [
+            "itemCategory",
+            "itemId"
+          ],
+          "used": true
+        },
+        {
+          "id": 19,
+          "name": "IsClientPlayer",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 21,
+          "name": "IsGenericDialogOpen",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 22,
+          "name": "GetGenericDialogButtonResult",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 23,
+          "name": "GetTalkListEntryResult",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 25,
+          "name": "IsMenuOpen",
+          "args": [
+            "menu"
+          ],
+          "used": true
+        },
+        {
+          "id": 26,
+          "name": "IsCharacterDisabled",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 27,
+          "name": "IsPlayerDead",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 28,
+          "name": "DidYouDoSomethingInTheMenu",
+          "args": [
+            "menu"
+          ],
+          "used": true
+        },
+        {
+          "id": 29,
+          "name": "GetStatus",
+          "args": [
+            "stat"
+          ],
+          "used": true
+        },
+        {
+          "id": 30,
+          "name": "IsPlayerMovingACertainDistance",
+          "args": [
+            "unk"
+          ],
+          "used": true
+        },
+        {
+          "id": 31,
+          "name": "IsTalkingToSomeoneElse",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 32,
+          "name": "HasDisableTalkPeriodElapsed",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 33,
+          "name": "HasPlayerBeenAttacked",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 34,
+          "name": "GetPlayerYDistance",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 35,
+          "name": "GetPlayerChrType",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 37,
+          "name": "CompareBonfireState",
+          "args": [
+            "unk"
+          ],
+          "used": true
+        },
+        {
+          "id": 38,
+          "name": "CompareBonfireLevel",
+          "args": [
+            "comparison",
+            "level"
+          ],
+          "used": true
+        },
+        {
+          "id": 45,
+          "name": "ComparePlayerStat",
+          "formerly": [
+            "ComparePlayerStatus"
+          ],
+          "args": [
+            "stat",
+            "comparison",
+            "value"
+          ],
+          "used": true
+        },
+        {
+          "id": 46,
+          "name": "RelativeAngleBetweenTwoPlayersWithAxis",
+          "formerly": [
+            "RelativeAngleBetweenTwoPlayers_SpecifyAxis"
+          ],
+          "args": [
+            "unk"
+          ],
+          "used": true
+        },
+        {
+          "id": 47,
+          "name": "ComparePlayerInventoryNumber",
+          "args": [
+            "itemCategory",
+            "itemId",
+            "comparison",
+            "value",
+            "checkStorage"
+          ],
+          "used": true
+        },
+        {
+          "id": 48,
+          "name": "IsPlayerCurrentWeaponDamaged",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 49,
+          "name": "ComparePlayerAcquittalPrice",
+          "args": [
+            "baseAcquittalCost",
+            "unk",
+            "comparison"
+          ],
+          "used": true
+        },
+        {
+          "id": 51,
+          "name": "WasWarpMenuDestinationSelected",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 52,
+          "name": "IsMultiplayerInProgress",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 54,
+          "name": "IsRankingMenuOpen",
+          "args": [
+            "unk"
+          ],
+          "used": true
+        },
+        {
+          "id": 55,
+          "name": "GetPlayerRemainingHP",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 56,
+          "name": "CheckActionButtonArea",
+          "args": [
+            "actionButtonParamRow"
+          ],
+          "used": false
+        },
+        {
+          "id": 58,
+          "name": "CheckSpecificPersonGenericDialogIsOpen",
+          "args": [
+            "unk"
+          ],
+          "used": false
+        },
+        {
+          "id": 59,
+          "name": "CheckSpecificPersonMenuIsOpen",
+          "args": [
+            "unk",
+            "unk"
+          ],
+          "used": false
+        },
+        {
+          "id": 60,
+          "name": "DoesSelfHaveSpEffect",
+          "args": [
+            "SpEffectParamRow"
+          ],
+          "used": false
+        },
+        {
+          "id": 61,
+          "name": "DoesPlayerHaveSpEffect",
+          "args": [
+            "SpEffectParamRow"
+          ],
+          "used": false
+        }
+      ]
+    }
+  },
+  "dsr": {
+    "chr": {
+      "commands": [
+        {
+          "bank": 1,
+          "id": 0,
+          "name": "ChangeGeneralAnim",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 1,
+          "name": "ChangeUpperBodyAnim",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 3,
+          "name": "ChangeGeneralAnimCategorized",
+          "args": [
+            "AnimCategory",
+            "AnimID",
+            "AnimLayerIndex",
+            "Blend",
+            "IsLoop"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 4,
+          "name": "ChangeUpperBodyAnimCategorized",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 7,
+          "name": "ChangeGeneralAnimCategorizedMatchPlaybackTime",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 9,
+          "name": "SetAnimIDOffset",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 10,
+          "name": "SetAdditiveBlendAnimation",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 11,
+          "name": "SetAdditiveBlendAnimationSlotted",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 12,
+          "name": "ChangeBlendAnimationCategorized",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 13,
+          "name": "ChangeUpperAndLowerBodySyncedAnimCategorized",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 100,
+          "name": "SwitchActiveActionState",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 101,
+          "name": "SwitchMotion",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 102,
+          "name": "SetThrowAttackTypePossible",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 103,
+          "name": "SetThrowDefenseTypePossible",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 104,
+          "name": "SwitchEquippedWeapon",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 107,
+          "name": "SetUnableToDrop",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 108,
+          "name": "IssueMessageIDToEvents",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 109,
+          "name": "SetAttackType",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 110,
+          "name": "SetNoStaminaRecover",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 111,
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 112,
+          "name": "SetAIBusyDoingAction",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 113,
+          "name": "BowTurn",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 114,
+          "name": "SetIsHoldingBow",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 115,
+          "name": "SwitchSpecificRangeMode",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 116,
+          "name": "SwitchSpecialMotion",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 117,
+          "name": "SetIsWeaponChanging",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 118,
+          "name": "SetIsItemInUse",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 119,
+          "name": "SetIsItemAnimPlaying",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 120,
+          "name": "RemoveBinoculars",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 121,
+          "name": "SetIsMagicInUse",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 122,
+          "name": "IsHeadTurnPossible",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 123,
+          "name": "ChangeHoveringState",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 124,
+          "name": "ChangeToSpecialStay",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 125,
+          "name": "OpenMenuWhenUsingItem",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 126,
+          "name": "OpenMenuWhenUsingMagic",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 129,
+          "name": "CloseMenuWhenUsingItem",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 130,
+          "name": "CloseMenuWhenUsingMagic",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 132,
+          "name": "WhiffPossibility",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 133,
+          "name": "ChangeFlightStatus",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 134,
+          "name": "SetStatsNotMetAnimID",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 135,
+          "name": "ShowFixedYAxisDirectionDisplay",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 136,
+          "name": "SetLadderActionState",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 138,
+          "name": "SetThrowState",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 139,
+          "name": "LadderSlideStart",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 140,
+          "name": "SetIsEventActionPossible",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 141,
+          "name": "RequestThrowAnimInterrupt",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 142,
+          "name": "SetHandStateOfLadder",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 143,
+          "name": "SetDamageAnimType",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 144,
+          "name": "SlideTurn",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 145,
+          "name": "InterruptAttack",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 146,
+          "name": "MidairDeathWarp",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 147,
+          "name": "ClearSlopeInfo",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 1001,
+          "name": "AddStamina",
+          "args": [
+            "StaminaToAdd"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 1100,
+          "name": "SyncAtInit_Active",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 1101,
+          "name": "SyncAtInit_Passive",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 9000,
+          "name": "DebugLogOutput",
+          "args": [
+            "PrintText"
+          ],
+          "used": true
+        }
+      ],
+      "functions": [
+        {
+          "id": 0,
+          "name": "IsGeneralAnimEnd",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 1,
+          "name": "IsAttackAnimEnd",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 100,
+          "name": "IsAtkRequest",
+          "args": [
+            "RequestType"
+          ],
+          "used": true
+        },
+        {
+          "id": 101,
+          "name": "IsAtkReleaseRequest",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 102,
+          "name": "IsChainAtkRequest",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 103,
+          "name": "GetAtkDuration",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 104,
+          "name": "GetWeaponSwitchRequest",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 105,
+          "name": "GetCommandIDFromEvent",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 106,
+          "name": "GetAIActionType",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 107,
+          "name": "GetAIChainActionType",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 108,
+          "name": "GetChainEvadeRequest",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 109,
+          "name": "GetWeaponChangeRequest",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 110,
+          "name": "GetAnimIDFromMoveParam",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 111,
+          "name": "IsThereAnyAtkRequest",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 112,
+          "name": "IsThereAnyChainAtkRequest",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 113,
+          "name": "IsItemUseMenuOpening",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 114,
+          "name": "IsMagicUseMenuOpening",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 115,
+          "name": "IsItemUseMenuOpened",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 116,
+          "name": "IsMagicUseMenuOpened",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 118,
+          "name": "GetAIChainStepType",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 119,
+          "name": "GetTransitionToSpecialStayAnimID",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 120,
+          "name": "GetAIAtkCancelType",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 200,
+          "name": "IsFalling",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 201,
+          "name": "IsLanding",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 202,
+          "name": "GetReceivedDamageType",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 205,
+          "name": "IsNormalDmgPassThroughDuringThrow",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 206,
+          "name": "IsThrowing",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 207,
+          "name": "GetWeaponSwitchState",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 210,
+          "name": "IsAnimCancelPossibleInAtkRelease",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 211,
+          "name": "IsEmergencyStopAnimPlaying",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 212,
+          "name": "GetLockRangeState",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 213,
+          "name": "GetLockAngleState",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 216,
+          "name": "IsChangeToDeflectAtk",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 217,
+          "name": "IsChangeToAfterParrySuccess",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 219,
+          "name": "GetMovementType",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 220,
+          "name": "IsLargeAtkComboPossible",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 222,
+          "name": "GetReceivedDamageDirection",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 224,
+          "name": "GetFallHeight",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 225,
+          "name": "GetEquipWeaponCategory",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 226,
+          "name": "IsHoldingBow",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 227,
+          "name": "GetMagicAnimType",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 228,
+          "name": "WasNotLargeAtk",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 231,
+          "name": "GetItemAnimType",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 232,
+          "name": "IsMagicUseable",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 233,
+          "name": "IsItemUseable",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 236,
+          "name": "GetDamageLevel",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 237,
+          "name": "GetGuardLevelAction",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 238,
+          "name": "IsNewLeftHandAtkFromStay",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 239,
+          "name": "IsParryFromIdle",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 240,
+          "name": "IsGuardFromIdle",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 241,
+          "name": "IsNewLeftHandAtkFromAtkCancel",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 242,
+          "name": "IsParryFromAtkCancel",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 243,
+          "name": "IsGuardFromAtkCancel",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 245,
+          "name": "IsOutOfAmmo",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 246,
+          "name": "IsUseCatLanding",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 247,
+          "name": "GetHoverMoveState",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 248,
+          "name": "IsTruelyLanding",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 249,
+          "name": "IsRightHandMagic",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 250,
+          "name": "IsChangeToSpecialStayAnim",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 251,
+          "name": "GetSpecialStayAnimID",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 252,
+          "name": "AcquireSpecialDamageAnimationID",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 253,
+          "name": "IsRunTurnAnimPlaying",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 254,
+          "name": "IsGenerateAction",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 255,
+          "name": "GetSpecialStayCancelAnimID",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 256,
+          "name": "HasReceivedAnyDamage",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 257,
+          "name": "GetMoveAnimParamID",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 259,
+          "name": "IsRequestTurnAnimStart",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 260,
+          "name": "IsTurningWithAnim",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 261,
+          "name": "IsFlying",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 263,
+          "name": "GetEquipWeightRatioForFalling",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 264,
+          "name": "GetFlightMotionState",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 265,
+          "name": "GetIsWeakPoint",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 267,
+          "name": "GetLadderActionState",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 268,
+          "name": "IsInDisguise",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 271,
+          "name": "IsSpecialTransitionPossible",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 272,
+          "name": "GetLandingAnimBlendRatio",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 273,
+          "name": "GetThrowAnimID",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 274,
+          "name": "DidOpponentDieFromThrow",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 275,
+          "name": "HasThrowEnded",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 276,
+          "name": "IsThrowSelfDeath",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 278,
+          "name": "GetGuardMotionCategory",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 279,
+          "name": "IsBeingThrown",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 280,
+          "name": "IsSelfThrow",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 281,
+          "name": "IsThrowDeathState",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 283,
+          "name": "IsOnLadder",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 284,
+          "name": "GetPhysicalAttribute",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 285,
+          "name": "GetSpecialAttribute",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 286,
+          "name": "GetSpecialStayDeathAnimID",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 287,
+          "name": "HasReceivedAnyDamage_AnimEnd",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 288,
+          "name": "EggGrowth_IsHeadScratch",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 289,
+          "name": "EggGrowth_IsBecomeEggHead",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 290,
+          "name": "IsStop",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 291,
+          "name": "IsSomeoneOnLadder",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 292,
+          "name": "IsSomeoneUnderLadder",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 293,
+          "name": "GetLadderHandState",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 294,
+          "name": "DoesLadderHaveCharacters",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 296,
+          "name": "DescendingToFloor",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 297,
+          "name": "IsInputDirectionMatch",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 298,
+          "name": "IsSpecialTransition2Possible",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 299,
+          "name": "IsVersusDivineDamage",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 300,
+          "name": "IsGeneralAnimCancelPossible",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 301,
+          "name": "GetEventEzStateFlag",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 302,
+          "name": "IsLadderEventEnd",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 303,
+          "name": "IsReachBottomOfLadder",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 304,
+          "name": "IsReachTopOfLadder",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 305,
+          "name": "GetStateChangeType",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 306,
+          "name": "IsOnLastRungOfLadder",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 311,
+          "name": "GetWeaponDurability",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 312,
+          "name": "IsWeaponBroken",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 313,
+          "name": "IsAnimEndBySkillCancel",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 314,
+          "name": "EggGrowth_IsBecomeEgghead_SecondStage",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 315,
+          "name": "IsHamariFallDeath",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 316,
+          "name": "IsClient",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 317,
+          "name": "IsSlope",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 1000,
+          "name": "GetHP",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 1001,
+          "name": "GetStamina",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 1003,
+          "name": "GetRandomInt",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 1007,
+          "name": "IsCOMPlayer",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 1101,
+          "name": "IsInvincibleDebugMode",
+          "args": [],
+          "used": true
+        }
+      ]
+    },
+    "talk": {
+      "commands": [
+        {
+          "bank": 1,
+          "id": 0,
+          "name": "DebugEvent",
+          "args": [
+            "unk"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 1,
+          "name": "TalkToPlayer",
+          "args": [
+            "talkParamRow",
+            "unk",
+            "unk"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 5,
+          "name": "RemoveMyAggro",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 6,
+          "name": "DisplayOneLineHelp",
+          "args": [
+            "actionTextId"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 8,
+          "name": "ForceEndTalk",
+          "args": [
+            "unk"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 9,
+          "name": "ClearTalkProgressData",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 10,
+          "name": "ShowShopMessage",
+          "args": [
+            "optionsType",
+            "unk",
+            "unk"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 11,
+          "name": "SetEventFlag",
+          "formerly": [
+            "SetEventState"
+          ],
+          "args": [
+            "eventFlagId",
+            "newFlagState"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 12,
+          "name": "CloseShopMessage",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 17,
+          "name": "OpenGenericDialog",
+          "args": [
+            "boxType",
+            "textId",
+            "defaultResult",
+            "boxStyle",
+            "unk"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 18,
+          "name": "ForceCloseGenericDialog",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 19,
+          "name": "AddTalkListData",
+          "args": [
+            "slot",
+            "textId",
+            "unk"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 20,
+          "name": "ClearTalkListData",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 22,
+          "name": "OpenRegularShop",
+          "args": [
+            "StartShopLineupParamRow",
+            "EndShopLineupParamRow"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 23,
+          "name": "OpenRepairShop",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 24,
+          "name": "OpenEnhanceShop",
+          "args": [
+            "type"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 28,
+          "name": "OpenMagicEquip",
+          "args": [
+            "startId",
+            "endId"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 30,
+          "name": "OpenRepository",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 31,
+          "name": "OpenSoul",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 32,
+          "name": "CloseMenu",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 35,
+          "name": "ClearTalkActionState",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 36,
+          "name": "ClearTalkDisabledState",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 38,
+          "name": "SetUpdateDistance",
+          "args": [
+            "distance"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 39,
+          "name": "ClearPlayerDamageInfo",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 40,
+          "name": "OfferHumanity",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 41,
+          "name": "StartWarpMenuInit",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 42,
+          "name": "StartBonfireAnimLoop",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 43,
+          "name": "EndBonfireKindleAnimLoop",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 46,
+          "name": "OpenSellShop",
+          "args": [
+            "StartShopLineupParamRow",
+            "EndShopLineupParamRow"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 47,
+          "name": "ChangePlayerStat",
+          "formerly": [
+            "ChangePlayerStats"
+          ],
+          "args": [
+            "stat",
+            "operation",
+            "value"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 48,
+          "name": "OpenEquipmentChangeOfPurposeShop",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 49,
+          "name": "CombineMenuFlagAndEventFlag",
+          "args": [
+            "menuFlagId",
+            "eventFlagId"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 50,
+          "name": "RequestSave",
+          "args": [
+            "unk"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 51,
+          "name": "ChangeMotionOffsetID",
+          "args": [
+            "unk"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 52,
+          "name": "PlayerEquipmentQuantityChange",
+          "args": [
+            "itemCategory",
+            "itemId",
+            "quantityChange"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 53,
+          "name": "RequestUnlockTrophy",
+          "args": [
+            "achievement"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 55,
+          "name": "SetAquittalCostMessageTag",
+          "args": [
+            "baseAcquittalCost",
+            "unk"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 56,
+          "name": "SubtractAcquittalCostFromPlayerSouls",
+          "args": [
+            "baseAcquittalCost",
+            "unk"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 57,
+          "name": "ShuffleRNGSeed",
+          "args": [
+            "maxValue"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 58,
+          "name": "SetRNGSeed",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 59,
+          "name": "ReplaceTool",
+          "args": [
+            "itemIdToReplace",
+            "newItemId",
+            "newItemQuantity"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 60,
+          "name": "BreakCovenantPledge",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 61,
+          "name": "PlayerRespawn",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 62,
+          "name": "GiveSpEffectToPlayer",
+          "args": [
+            "SpEffectParamRow"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 63,
+          "name": "ShowTextEffect",
+          "formerly": [
+            "ShowGrandioseTextPresentation"
+          ],
+          "args": [
+            "textId"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 64,
+          "name": "AddIzalithRankingPoints",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 65,
+          "name": "OpenItemAcquisitionMenu",
+          "args": [
+            "itemCategory",
+            "itemId",
+            "numberAcquired"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 66,
+          "name": "AcquireGesture",
+          "args": [
+            "gestureId"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 67,
+          "name": "ForceCloseMenu",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 68,
+          "name": "SetTalkTime",
+          "args": [
+            "time"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 69,
+          "name": "CollectJustPyromancyFlame",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 70,
+          "name": "OpenArenaRanking",
+          "args": [
+            "unk"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 71,
+          "formerly": [
+            "ReportConversationEndToHavokBehavior"
+          ],
+          "args": [
+            "unk"
+          ],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 72,
+          "formerly": [
+            "SetDungeonIndexNumber"
+          ],
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 75,
+          "name": "OpenCovenantMenu",
+          "formerly": [
+            "OpenCaryllRuneEquipMenu"
+          ],
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 76,
+          "name": "OpenConversationChoicesMenu",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 77,
+          "name": "UnusedChaliceAltarPrompt",
+          "args": [],
+          "used": true
+        },
+        {
+          "bank": 1,
+          "id": 81,
+          "name": "OpenCharaMakeMenu",
+          "args": [],
+          "used": false
+        },
+        {
+          "bank": 1,
+          "id": 82,
+          "name": "OpenChooseQuantityDialog",
+          "args": [
+            "itemCategory",
+            "itemId",
+            "textId"
+          ],
+          "used": false
+        },
+        {
+          "bank": 1,
+          "id": 103,
+          "name": "TurnCharacterToFaceEntity",
+          "args": [
+            "animationId",
+            "CharacterEntityId",
+            "unk"
+          ],
+          "used": false
+        },
+        {
+          "bank": 1,
+          "id": 110,
+          "name": "MainBonfireMenuFlag",
+          "args": [],
+          "used": false
+        }
+      ],
+      "functions": [
+        {
+          "id": 0,
+          "formerly": [
+            "GetWhetherEnemiesAreNearby"
+          ],
+          "args": [
+            "unk",
+            "unk"
+          ],
+          "used": true
+        },
+        {
+          "id": 1,
+          "name": "GetDistanceToPlayer",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 2,
+          "name": "HasTalkEnded",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 3,
+          "name": "CheckSelfDeath",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 4,
+          "name": "IsPlayerTalkingToMe",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 5,
+          "name": "IsAttackedBySomeone",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 6,
+          "name": "GetSelfHP",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 8,
+          "name": "GetRelativeAngleBetweenPlayerAndSelf",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 9,
+          "name": "IsPlayerAttacking",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 14,
+          "name": "GetOneLineHelpStatus",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 15,
+          "name": "GetEventFlag",
+          "formerly": [
+            "GetEventStatus"
+          ],
+          "args": [
+            "eventFlagId"
+          ],
+          "used": true
+        },
+        {
+          "id": 16,
+          "name": "DoesPlayerHaveItem",
+          "formerly": [
+            "IsEquipmentIDObtained"
+          ],
+          "args": [
+            "itemCategory",
+            "itemId"
+          ],
+          "used": true
+        },
+        {
+          "id": 17,
+          "name": "DoesPlayerHaveItemEquipped",
+          "formerly": [
+            "IsEquipmentIDEquipped"
+          ],
+          "args": [
+            "itemCategory",
+            "itemId"
+          ],
+          "used": true
+        },
+        {
+          "id": 19,
+          "name": "IsClientPlayer",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 21,
+          "name": "IsGenericDialogOpen",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 22,
+          "name": "GetGenericDialogButtonResult",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 23,
+          "name": "GetTalkListEntryResult",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 25,
+          "name": "IsMenuOpen",
+          "args": [
+            "menu"
+          ],
+          "used": true
+        },
+        {
+          "id": 26,
+          "name": "IsCharacterDisabled",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 27,
+          "name": "IsPlayerDead",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 28,
+          "name": "DidYouDoSomethingInTheMenu",
+          "args": [
+            "menu"
+          ],
+          "used": true
+        },
+        {
+          "id": 29,
+          "name": "GetStatus",
+          "args": [
+            "stat"
+          ],
+          "used": true
+        },
+        {
+          "id": 30,
+          "name": "IsPlayerMovingACertainDistance",
+          "args": [
+            "unk"
+          ],
+          "used": true
+        },
+        {
+          "id": 31,
+          "name": "IsTalkingToSomeoneElse",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 32,
+          "name": "HasDisableTalkPeriodElapsed",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 33,
+          "name": "HasPlayerBeenAttacked",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 34,
+          "name": "GetPlayerYDistance",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 35,
+          "name": "GetPlayerChrType",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 37,
+          "name": "CompareBonfireState",
+          "args": [
+            "unk"
+          ],
+          "used": true
+        },
+        {
+          "id": 38,
+          "name": "CompareBonfireLevel",
+          "args": [
+            "comparison",
+            "level"
+          ],
+          "used": true
+        },
+        {
+          "id": 45,
+          "name": "ComparePlayerStat",
+          "formerly": [
+            "ComparePlayerStatus"
+          ],
+          "args": [
+            "stat",
+            "comparison",
+            "value"
+          ],
+          "used": true
+        },
+        {
+          "id": 46,
+          "name": "RelativeAngleBetweenTwoPlayersWithAxis",
+          "formerly": [
+            "RelativeAngleBetweenTwoPlayers_SpecifyAxis"
+          ],
+          "args": [
+            "unk"
+          ],
+          "used": true
+        },
+        {
+          "id": 47,
+          "name": "ComparePlayerInventoryNumber",
+          "args": [
+            "itemCategory",
+            "itemId",
+            "comparison",
+            "value",
+            "checkStorage"
+          ],
+          "used": true
+        },
+        {
+          "id": 48,
+          "name": "IsPlayerCurrentWeaponDamaged",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 49,
+          "name": "ComparePlayerAcquittalPrice",
+          "args": [
+            "baseAcquittalCost",
+            "unk",
+            "comparison"
+          ],
+          "used": true
+        },
+        {
+          "id": 51,
+          "name": "WasWarpMenuDestinationSelected",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 52,
+          "name": "IsMultiplayerInProgress",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 54,
+          "name": "IsRankingMenuOpen",
+          "args": [
+            "unk"
+          ],
+          "used": true
+        },
+        {
+          "id": 55,
+          "name": "GetPlayerRemainingHP",
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 56,
+          "formerly": [
+            "CheckActionButtonArea"
+          ],
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 58,
+          "formerly": [
+            "CheckSpecificPersonGenericDialogIsOpen"
+          ],
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 59,
+          "name": "CheckCovenantMenuIsOpen",
+          "formerly": [
+            "CheckSpecificPersonMenuIsOpen"
+          ],
+          "args": [],
+          "used": true
+        },
+        {
+          "id": 60,
+          "formerly": [
+            "DoesSelfHaveSpEffect"
+          ],
+          "args": [
+            "unk",
+            "unk"
+          ],
+          "used": true
+        },
+        {
+          "id": 61,
+          "formerly": [
+            "DoesPlayerHaveSpEffect"
+          ],
+          "args": [],
+          "used": true
+        }
+      ]
+    }
+  }
+}

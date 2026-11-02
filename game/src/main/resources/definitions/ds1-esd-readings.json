@@ -1,0 +1,21 @@
+{
+  "source": "dsanalyzer's own Ghidra and live reading of PTDE's two EzStateActionEnv dispatchers",
+  "ptde": {
+    "chr": {
+      "commands": [
+        {"bank": 1, "id": 132, "reading": "Sets ActionCtrl+0x1BC bit 13", "verdict": "unjudged"},
+        {"bank": 1, "id": 143, "reading": "Makes the AI interrupt its current action if goal 2200 is queued (AiThink+0x164)", "verdict": "conflicts"},
+        {"bank": 1, "id": 146, "reading": "Sets ActionCtrl+0x1BC bit 19, which keeps two queued request blocks through a soft reset", "verdict": "unjudged"},
+        {"bank": 1, "id": 147, "reading": "Sets ActionCtrl+0x1BC bit 20 when ChrIns vtable[41] answers true", "verdict": "unjudged"},
+        {"bank": 1, "id": 9000, "reading": "Takes a string; gated on a debug byte at +0x51C", "verdict": "agrees"}
+      ],
+      "functions": [
+        {"id": 202, "reading": "Reads ActionCtrl+0x1C4, the requested animation id (99999 = none)", "verdict": "conflicts"},
+        {"id": 261, "reading": "Reads ChrIns Flags1 bit 13 (+0x1FD & 0x20)", "verdict": "unjudged"},
+        {"id": 1000, "reading": "Reads ChrIns+0x2D4, HP", "verdict": "agrees"},
+        {"id": 1001, "reading": "Reads ChrIns+0x2E4, stamina", "verdict": "agrees"},
+        {"id": 1007, "reading": "ChrIns_GetAnimCtrlState() == 6", "verdict": "unjudged"}
+      ]
+    }
+  }
+}
