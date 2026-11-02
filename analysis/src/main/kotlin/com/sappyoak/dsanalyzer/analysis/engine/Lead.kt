@@ -18,7 +18,7 @@ public data class Lead(
     public val citations: List<Citation>,
     /** Things to check in-game, cheapest first */
     public val reproduction: List<String> = emptyList(),
-    public val pattern: Set<BugPattern> = emptySet(),
+    public val patterns: Set<BugPattern> = emptySet(),
     /** A known trick this resembles, a strong prior that the shape is real */
     public val precedent: String? = null
 )

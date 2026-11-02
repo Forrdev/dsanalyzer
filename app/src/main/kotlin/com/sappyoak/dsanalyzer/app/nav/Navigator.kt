@@ -31,7 +31,7 @@ public class Navigator(start: View = Section.Data.landing) {
 
 public val Section.landing: View
     get() = when (this) {
-        Section.Analysis -> View.Analysis.Investigations
+        Section.Analysis -> View.Analysis.Leads
         Section.Data -> View.Data.Overview
         Section.Runtime -> View.Live(RuntimePanel.Attachment)
     }

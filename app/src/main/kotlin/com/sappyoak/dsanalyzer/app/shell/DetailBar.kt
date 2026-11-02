@@ -118,6 +118,7 @@ private fun View.describe(): String = when (this) {
     is View.Data.Overview -> "no selection"
     is View.Data -> "no address"
     is View.Live -> "runtime · ${panel.label.lowercase()}"
+    is View.Analysis.Leads -> "analysis run"
     is View.Analysis.Investigations -> "investigations"
     is View.Analysis.Investigation -> "investigation ${id.value}"
     is View.Analysis.Finding -> "finding ${id.value}"

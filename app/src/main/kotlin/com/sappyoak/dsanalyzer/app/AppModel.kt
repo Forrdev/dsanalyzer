@@ -1,5 +1,7 @@
 package com.sappyoak.dsanalyzer.app
 
+import com.sappyoak.dsanalyzer.app.analysis.AnalysisEffects
+import com.sappyoak.dsanalyzer.app.analysis.AnalysisStore
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
@@ -75,6 +77,7 @@ public fun createAppModel(
     return AppModel(
         settings = settings,
         workspace = WorkspaceStores(
+            analysis = AnalysisStore(scope, AnalysisEffects(installationFiles)),
             params = ParamsStore(scope, ParamsEffects(installationFiles)),
             maps = MapsStore(scope, MapsEffects(installationFiles)),
             scripts = ScriptsStore(scope, ScriptsEffects(installationFiles)),

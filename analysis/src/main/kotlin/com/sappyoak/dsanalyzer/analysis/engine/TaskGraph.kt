@@ -61,7 +61,7 @@ public class TaskGraph private constructor(
 
                 levels.add(ready.sortedBy { it.descriptor.id.value })
                 ready.forEach { done.add(it.descriptor.id) }
-                remaining.minus(ready.toSet())
+                remaining -= ready.toSet()
             }
 
             return levels

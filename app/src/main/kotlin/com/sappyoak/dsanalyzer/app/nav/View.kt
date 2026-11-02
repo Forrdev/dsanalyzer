@@ -12,6 +12,7 @@ public sealed interface View {
     public sealed interface Analysis : View {
         override val section: Section get() = Section.Analysis
 
+        public data object Leads : Analysis
         public data object Investigations : Analysis
 
         public data class Investigation(public val id: InvestigationId) : Analysis

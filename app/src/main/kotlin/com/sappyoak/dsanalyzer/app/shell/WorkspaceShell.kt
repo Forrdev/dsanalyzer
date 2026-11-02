@@ -12,6 +12,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.sappyoak.dsanalyzer.app.analysis.AnalysisMessage
+import com.sappyoak.dsanalyzer.app.analysis.ui.AnalysisNavigator
+import com.sappyoak.dsanalyzer.app.analysis.ui.LeadsPane
 
 import com.sappyoak.dsanalyzer.app.data.maps.MapsMessage
 import com.sappyoak.dsanalyzer.app.data.maps.ui.MapsDetail
@@ -51,6 +54,7 @@ public fun WorkspaceShell(
     val navigator = remember { Navigator() }
     var settingsOpen by remember { mutableStateOf(false) }
 
+    val analysisState by stores.analysis.state.collectAsState()
     val paramsState by stores.params.state.collectAsState()
     val mapsState by stores.maps.state.collectAsState()
     val scriptsState by stores.scripts.state.collectAsState()
@@ -58,6 +62,7 @@ public fun WorkspaceShell(
 
     LaunchedEffect(installation?.id) {
         installation?.let {
+            stores.analysis.dispatch(AnalysisMessage.Opened(it))
             stores.params.dispatch(ParamsMessage.Opened(it))
             stores.maps.dispatch(MapsMessage.Opened(it))
             stores.scripts.dispatch(ScriptsMessage.Opened(it))
@@ -99,6 +104,7 @@ public fun WorkspaceShell(
                         onFollow = navigator::go
                     )
                     is View.Live -> RuntimeNavigator(runtimeState, view, navigator::go)
+                    is View.Analysis.Leads -> AnalysisNavigator(analysisState, stores.analysis)
                     is View.Analysis -> Unbuilt("Analysis not yet built")
                 }
             },
@@ -127,6 +133,7 @@ public fun WorkspaceShell(
                         }
                     )
 
+                    is View.Analysis.Leads -> LeadsPane(analysisState, resolve, navigator::go)
                     is View.Analysis -> Unbuilt("Analysis not yet built")
                 }
             }
