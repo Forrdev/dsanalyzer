@@ -27,4 +27,7 @@ public sealed interface WorldRef {
         public val script: ScriptId,
         public val eventId: Long
     ) : WorldRef
+
+    /** One row of a GameParam file, by the file's name without extension and the row's own id */
+    public data class ParamRow(public val file: String, public val rowId: Int) : WorldRef
 }

@@ -18,6 +18,8 @@ public fun WorldRef.toDataAddress(): DataAddress = when (this) {
         DataAddress(DataSpace.Flag.token, listOf("$flagId" + (seenIn?.let { "$SEEN_IN$it" } ?: "")))
     is WorldRef.ScriptEvent ->
         DataAddress(DataSpace.Script.token, listOf(script.token, EVENT, eventId.toString()))
+    is WorldRef.ParamRow ->
+        DataAddress(DataSpace.Param.token, listOf(file, rowId.toString()))
 }
 
 public fun WorldRef.toAddress(): String = toDataAddress().toAddress()
@@ -27,10 +29,9 @@ public fun DataAddress.toWorldRef(): WorldRef? = when (knownSpace) {
     DataSpace.Entity -> onlySegment()?.toIdOrNull()?.let { WorldRef.Entity(it) }
     DataSpace.Flag -> onlySegment()?.let(::flagRef)
     DataSpace.Script -> scriptEventRef()
+    DataSpace.Param -> paramRowRef()
     else -> null
 }
-
-public fun parseWorldRef(text: String): WorldRef? = parseDataAddress(text)?.toWorldRef()
 
 private fun DataAddress.mapRef(): WorldRef? {
     val map = MapId.parse(segments.firstOrNull() ?: return null) ?: return null
@@ -46,6 +47,20 @@ private fun DataAddress.mapRef(): WorldRef? {
     }
 }
 
+private fun DataAddress.scriptEventRef(): WorldRef? {
+    if (segments.size != 3 || segments[1] != EVENT) return null
+    val script = scriptIdOf(segments[0]) ?: return null
+    val eventId = segments[2].toLongOrNull()?.takeIf { it >= 0 } ?: return null
+    return WorldRef.ScriptEvent(script, eventId)
+}
+
+private fun DataAddress.paramRowRef(): WorldRef? {
+    val (file, row) = segments.takeIf { it.size == 2 } ?: return null
+    return row.toIntOrNull()?.let { WorldRef.ParamRow(file, it) }
+}
+
+private fun DataAddress.onlySegment(): String? = segments.singleOrNull()
+
 private fun flagRef(token: String): WorldRef? {
     val at = token.indexOf(SEEN_IN)
     if (at < 0) return token.toIdOrNull()?.let { WorldRef.EventFlag(it) }
@@ -55,14 +70,6 @@ private fun flagRef(token: String): WorldRef? {
     return WorldRef.EventFlag(flagId, seenIn)
 }
 
-private fun DataAddress.scriptEventRef(): WorldRef? {
-    if (segments.size != 3 || segments[1] != EVENT) return null
-    val script = scriptIdOf(segments[0]) ?: return null
-    val eventId = segments[2].toLongOrNull()?.takeIf { it >= 0 } ?: return null
-    return WorldRef.ScriptEvent(script, eventId)
-}
-
-private fun DataAddress.onlySegment(): String? = segments.singleOrNull()
 
 private val EntryKind.token: String get() = name.lowercase()
 

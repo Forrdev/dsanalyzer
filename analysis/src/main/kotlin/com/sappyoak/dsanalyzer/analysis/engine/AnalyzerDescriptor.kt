@@ -60,5 +60,5 @@ public enum class Requirement(
     public val label: String,
     public val consequence: String
 ) {
-    GameParam("Game parameters", "GameParam.parambnd is missing, so no row can be read")
+    GameParams("Game parameters", "GameParam.parambnd is missing, so no row can be read")
 }
