@@ -23,6 +23,8 @@ public data class RuntimeState(
     public val timings: TimingLibrary = TimingLibrary()
 ) {
     public val live: Boolean get() = attached != null
+    public val isCorrectGame: Boolean get() = installation != null && attached != null && installation.build.edition == attached.edition
+
     public val supports: Set<RuntimeFeature> get() = attached?.supports.orEmpty()
 }
 

@@ -17,6 +17,10 @@ public data class ParamsState(
     public val names: ParamNames = ParamNames.None,
     public val loading: Boolean = false,
     public val query: String = "",
+    /** The cross-param search being edited, and the last one run */
+    public val search: ParamQuery = ParamQuery(),
+    public val searching: Boolean = false,
+    public val searchOutcome: SearchOutcome? = null,
     public val problem: String? = null
 ) {
     /** Every loaded param by file name, in registry order */

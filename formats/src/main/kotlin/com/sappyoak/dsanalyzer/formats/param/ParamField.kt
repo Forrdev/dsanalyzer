@@ -25,3 +25,10 @@ public class FieldValue(
     public val field: ParamField<*>,
     public val value: Any
 )
+
+/** A field of the row at [index], in file order whose value a search accepted */
+public class FieldMatch(
+    public val index: Int,
+    public val field: ParamField<*>,
+    public val value: Any
+)

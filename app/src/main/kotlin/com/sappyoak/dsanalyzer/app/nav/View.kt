@@ -23,6 +23,8 @@ public sealed interface View {
 
         public data object Overview : Data
 
+        public data object ParamSearch : Data
+
         public data class Param(public val file: String) : Data
         public data class ParamRow(public val file: String, public val rowId: Int) : Data
 

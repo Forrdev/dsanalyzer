@@ -9,6 +9,7 @@ import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
 public fun View.Data.toDataAddress(): DataAddress? = when (this) {
     is View.Data.Overview -> null
 
+    is View.Data.ParamSearch -> DataAddress(DataSpace.Param.token)
     is View.Data.Param ->
         DataAddress(DataSpace.Param.token, listOf(file))
     is View.Data.ParamRow ->

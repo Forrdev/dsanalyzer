@@ -86,7 +86,7 @@ private fun ResolveContext.scriptView(address: DataAddress): Resolution {
 
 private fun ResolveContext.paramView(address: DataAddress): Resolution {
     val segments = address.segments
-    val file = segments.firstOrNull() ?: return Resolution.NoView(address)
+    val file = segments.firstOrNull() ?: return Resolution.Resolved(View.Data.ParamSearch)
 
     val view: View.Data = when (segments.size) {
         1 -> View.Data.Param(file)

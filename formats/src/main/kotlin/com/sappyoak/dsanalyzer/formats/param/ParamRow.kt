@@ -39,6 +39,24 @@ public class TypedParam<R : ParamRow>(public val type: ParamRowType<R>, public v
             FieldValue(it, it.valueOf(row))
         }
     }
+
+    public fun search(
+        fields: (ParamField<*>) -> Boolean,
+        value: (Any) -> Boolean,
+        limit: Int
+    ): List<FieldMatch> {
+        val wanted = type.fields.filter(fields)
+        val found = ArrayList<FieldMatch>()
+        for ((index, row) in rows.withIndex()) {
+            for (field in wanted) {
+                val read = field.valueOf(row)
+                if (value(read)) found.add(FieldMatch(index, field, read))
+                if (found.size == limit) return found
+            }
+        }
+
+        return found
+    }
 }
 
 /**

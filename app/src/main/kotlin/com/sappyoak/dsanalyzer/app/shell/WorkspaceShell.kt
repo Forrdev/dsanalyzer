@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import com.sappyoak.dsanalyzer.app.data.maps.MapsMessage
 import com.sappyoak.dsanalyzer.app.data.maps.ui.MapsDetail
 import com.sappyoak.dsanalyzer.app.data.params.ParamsMessage
+import com.sappyoak.dsanalyzer.app.data.params.ui.ParamSearchPane
 import com.sappyoak.dsanalyzer.app.data.params.ui.ParamsDetail
 import com.sappyoak.dsanalyzer.app.data.scripts.ScriptsMessage
 import com.sappyoak.dsanalyzer.app.data.scripts.ui.ScriptsDetail
@@ -107,6 +108,8 @@ public fun WorkspaceShell(
                     is View.Data.ScriptEvent,
                     is View.Data.EventFlag -> ScriptsDetail(scriptsState, stores.scripts, view, resolve, navigator::go)
 
+                    is View.Data.ParamSearch -> ParamSearchPane(paramsState, stores.params, navigator::go)
+
                     is View.Data.Param,
                     is View.Data.ParamRow -> ParamsDetail(paramsState, stores.params, view, resolve, navigator::go)
 
@@ -148,7 +151,7 @@ private fun WorkspaceStores.sync(view: View) {
         is View.Data.ScriptEvent -> scripts.dispatch(ScriptsMessage.ScriptSelected(view.script))
         is View.Data.EventFlag ->
             scripts.dispatch(ScriptsMessage.FlagRequested(view.flagId, view.seenIn))
-        is View.Data.Overview, is View.Data.Param, is View.Data.ParamRow, is View.Analysis, is View.Live -> Unit
+        is View.Data.Overview, is View.Data.ParamSearch, is View.Data.Param, is View.Data.ParamRow, is View.Analysis, is View.Live -> Unit
     }
 }
 

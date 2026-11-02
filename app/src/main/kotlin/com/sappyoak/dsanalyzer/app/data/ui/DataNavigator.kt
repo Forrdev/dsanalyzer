@@ -81,13 +81,23 @@ private fun LazyListScope.children(
     onFollow: (View) -> Unit
 ) {
     when (kind) {
-        DataKind.Params -> items(params, key = { "param:${it.file}" }) { param ->
-            ChildRow(
-                label = param.file,
-                detail = param.rows.toString(),
-                selected = view.shownParam == param.file,
-                onClick = { onFollow(View.Data.Param(param.file)) }
-            )
+        DataKind.Params -> {
+            item(key = "param:search") {
+                ChildRow(
+                    label = "Search all params",
+                    detail = null,
+                    selected = view == View.Data.ParamSearch,
+                    onClick = { onFollow(View.Data.ParamSearch) }
+                )
+            }
+            items(params, key = { "param:${it.file}" }) { param ->
+                ChildRow(
+                    label = param.file,
+                    detail = param.rows.toString(),
+                    selected = view.shownParam == param.file,
+                    onClick = { onFollow(View.Data.Param(param.file)) }
+                )
+            }
         }
 
         DataKind.Maps -> items(maps, key = { "map:$it" }) { map ->
