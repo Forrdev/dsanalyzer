@@ -1,31 +1,34 @@
 package com.sappyoak.dsanalyzer.runtime.read
 
+import com.sappyoak.dsanalyzer.runtime.params.ChrInsFlags1
+import com.sappyoak.dsanalyzer.runtime.params.ChrInsFlags2
 import com.sappyoak.dsanalyzer.runtime.ptde.ChrCtrlFlags
-import com.sappyoak.dsanalyzer.runtime.ptde.ChrInsFlags1
-import com.sappyoak.dsanalyzer.runtime.ptde.ChrInsFlags2
 import com.sappyoak.dsanalyzer.runtime.session.CheatFlag
 
-private val IN_FLAGS_1 = mapOf(
-    CheatFlag.Invincible to ChrInsFlags1.EnableInvincible,
-    CheatFlag.DamageDisabled to ChrInsFlags1.DisableDamage,
-    CheatFlag.DeadModeSet to ChrInsFlags1.SetDeadMode,
-    CheatFlag.GravityDisabled to ChrInsFlags1.SetDisableGravity
-)
+internal enum class CheatWord { Flags1, Flags2, MapFlags; }
 
-private val IN_FLAGS_2 = mapOf(
-    CheatFlag.NoDead to ChrInsFlags2.NoDead,
-    CheatFlag.NoDamage to ChrInsFlags2.NoDamage,
-    CheatFlag.NoHit to ChrInsFlags2.NoHit,
-    CheatFlag.NoMove to ChrInsFlags2.NoMove,
-    CheatFlag.NoAttack to ChrInsFlags2.NoAttack,
-    CheatFlag.NoUpdate to ChrInsFlags2.NoUpdate,
-    CheatFlag.NoStaminaConsume to ChrInsFlags2.NoStaminaConsume,
-    CheatFlag.NoMPConsume to ChrInsFlags2.NoMPConsume,
-    CheatFlag.NoGoodsConsume to ChrInsFlags2.NoGoodsConsume
+internal class CheatBit(val word: CheatWord, val mask: Int)
+
+internal val CHEAT_BITS: Map<CheatFlag, CheatBit> = mapOf(
+    CheatFlag.Invincible to CheatBit(CheatWord.Flags1, ChrInsFlags1.EnableInvincible),
+    CheatFlag.DamageDisabled to CheatBit(CheatWord.Flags1, ChrInsFlags1.DisableDamage),
+    CheatFlag.DeadModeSet to CheatBit(CheatWord.Flags1, ChrInsFlags1.SetDeadMode),
+    CheatFlag.GravityDisabled to CheatBit(CheatWord.Flags1, ChrInsFlags1.SetDisableGravity),
+    CheatFlag.NoDead to CheatBit(CheatWord.Flags2, ChrInsFlags2.NoDead),
+    CheatFlag.NoDamage to CheatBit(CheatWord.Flags2, ChrInsFlags2.NoDamage),
+    CheatFlag.NoHit to CheatBit(CheatWord.Flags2, ChrInsFlags2.NoHit),
+    CheatFlag.NoMove to CheatBit(CheatWord.Flags2, ChrInsFlags2.NoMove),
+    CheatFlag.NoAttack to CheatBit(CheatWord.Flags2, ChrInsFlags2.NoAttack),
+    CheatFlag.NoUpdate to CheatBit(CheatWord.Flags2, ChrInsFlags2.NoUpdate),
+    CheatFlag.NoStaminaConsume to CheatBit(CheatWord.Flags2, ChrInsFlags2.NoStaminaConsume),
+    CheatFlag.NoMPConsume to CheatBit(CheatWord.Flags2, ChrInsFlags2.NoMPConsume),
+    CheatFlag.NoGoodsConsume to CheatBit(CheatWord.Flags2, ChrInsFlags2.NoGoodsConsume),
+    CheatFlag.MapCollisionDisabled to CheatBit(CheatWord.MapFlags, ChrCtrlFlags.DisableMapHit)
 )
 
 internal fun cheatsIn(flags1: Int, flags2: Int, mapFlags: Int): Set<CheatFlag> = buildSet {
-    IN_FLAGS_1.forEach { (flag, mask) -> if (flags1 and mask != 0) add(flag) }
-    IN_FLAGS_2.forEach { (flag, mask) -> if (flags2 and mask != 0) add(flag) }
-    if (mapFlags and ChrCtrlFlags.DisableMapHit != 0) add(CheatFlag.MapCollisionDisabled)
+    val words = mapOf(CheatWord.Flags1 to flags1, CheatWord.Flags2 to flags2, CheatWord.MapFlags to mapFlags)
+    return CHEAT_BITS.filterTo(LinkedHashMap()) {
+        (_, bit) -> words.getValue(bit.word) and bit.mask != 0
+    }.keys
 }

@@ -15,6 +15,17 @@ public object ChrIns {
     public const val PlayerGameDataPointer: Int = 0x578
 }
 
+public object ChrInsFlags1 {
+    public const val ForceSetOmission = 0x00000001
+    public const val DisableHPGauge = 0x00000008
+    public const val SetEventGenerate = 0x00000010
+    public const val ForceUpdateNextFrame = 0x00000200
+    public const val SetDisableGravity = 0x00004000
+    public const val SetSuperArmor = 0x00010000
+    public const val FirstPerson = 0x00100000
+    public const val SetDrawEnable = 0x00800000
+    public const val SetDeadMode = 0x02000000
+}
 
 public object ChrCtrl {
     public const val AnimDataPointer: Int = 0x18
@@ -27,3 +38,4 @@ public object ChrCtrl {
 public object ChrPosData {
     public const val Position: Int = 0x10
 }
+
