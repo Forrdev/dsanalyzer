@@ -29,7 +29,6 @@ public fun reduceScripts(
     is ScriptsMessage.ScriptLoaded -> state.accept(message.contents)
     is ScriptsMessage.ScriptsIndexed -> state.copy(
         flagIndex = message.flags,
-        callIndex = message.calls,
         indexing = false,
         unreadable = message.unreadable,
         problem = null

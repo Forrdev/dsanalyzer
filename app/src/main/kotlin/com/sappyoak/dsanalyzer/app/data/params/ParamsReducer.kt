@@ -10,7 +10,7 @@ public fun reduceParams(
     is ParamsMessage.Opened -> ParamsState(installation = message.installation, loading = true)
         .with(ParamsEffect.Load(message.installation))
 
-    is ParamsMessage.Loaded -> state.copy(params = message.params, names = message.names, loading = false).with()
+    is ParamsMessage.Loaded -> state.loaded(message.params, message.names).with()
     is ParamsMessage.QueryChanged -> state.copy(query = message.query).with()
 
     is ParamsMessage.SearchEdited -> state.copy(search = message.search).with()

@@ -1,7 +1,7 @@
 package com.sappyoak.dsanalyzer.analysis.engine
 
 import com.sappyoak.dsanalyzer.game.GameBuild
-import com.sappyoak.dsanalyzer.game.files.GameFiles
+import com.sappyoak.dsanalyzer.game.data.GameData
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
 import com.sappyoak.dsanalyzer.game.world.scripts.title
 
@@ -24,7 +24,7 @@ public interface GameSource {
     public val scripts: List<ScriptId>
 
     public fun lacks(requirement: Requirement): Boolean
-    public suspend fun <T> read(block: suspend (GameFiles) -> T): T
+    public suspend fun <T> data(block: suspend (GameData) -> T): T
 }
 
 public abstract class ContextKey<C : Any>(

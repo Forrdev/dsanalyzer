@@ -15,5 +15,6 @@ public val EsdSource.kind: EsdKind
         is EsdSource.Talk -> EsdKind.Talk
     }
 
+
 public fun loadEsdDefinitions(edition: GameEdition, kind: EsdKind): EsdDefinitions =
     readEsdDefinitions(bundledText(NAMES_RESOURCE), bundledText(READINGS_RESOURCE), edition.shortName, kind)

@@ -1,25 +1,22 @@
 package com.sappyoak.dsanalyzer.app.data.maps
 
+import com.sappyoak.dsanalyzer.app.data.IndexQueue
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 import com.sappyoak.dsanalyzer.app.store.EffectRunner
 import com.sappyoak.dsanalyzer.game.Installation
-import com.sappyoak.dsanalyzer.game.files.GameFiles
-import com.sappyoak.dsanalyzer.game.files.InstallationFiles
-import com.sappyoak.dsanalyzer.game.verification.loadFileManifest
-import com.sappyoak.dsanalyzer.game.world.maps.CharacterModels
+import com.sappyoak.dsanalyzer.game.data.InstallationData
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
-import com.sappyoak.dsanalyzer.game.world.maps.availableMaps
 import com.sappyoak.dsanalyzer.game.world.maps.loadCharacterModels
-import com.sappyoak.dsanalyzer.game.world.maps.loadMSB
-import com.sappyoak.dsanalyzer.shared.binary.BinaryFormatException
 
 private val logger = KotlinLogging.logger {  }
 
-public class MapsEffects(private val files: InstallationFiles) : EffectRunner<MapsEffect, MapsMessage> {
-    private val characters by lazy { loadCharacterModels() }
+public class MapsEffects(
+    private val data: InstallationData,
+    private val queue: IndexQueue
+) : EffectRunner<MapsEffect, MapsMessage> {
 
     /** One load of each sort at a time, so switching maps quickly cancels the load being replaced */
     override fun keyOf(effect: MapsEffect): Any? = effect::class
@@ -32,49 +29,34 @@ public class MapsEffects(private val files: InstallationFiles) : EffectRunner<Ma
         else MapsMessage.Failed(reason)
     }
 
-    private suspend fun perform(effect: MapsEffect): MapsMessage = when (effect) {
-        is MapsEffect.LoadCatalog -> MapsMessage.CatalogLoaded(
-            files.use(effect.installation) { games ->
-                games.availableMaps(loadFileManifest(effect.installation.build.edition))
+    private suspend fun perform(effect: MapsEffect): MapsMessage {
+        val game = data.of(effect.installation)
+        return when (effect) {
+            is MapsEffect.LoadCatalog -> MapsMessage.CatalogLoaded(game.catalog().maps)
+            is MapsEffect.LoadMap -> {
+                val msb = checkNotNull(game.msb(effect.map)) { "${effect.map} has no layout file" }
+                MapsMessage.MapLoaded(msb.summarize(effect.map, loadCharacterModels()))
             }
-        )
 
-        is MapsEffect.LoadMap -> MapsMessage.MapLoaded(
-            files.use(effect.installation) { games ->
-                games.contents(effect.map, characters)
+            is MapsEffect.IndexEntities -> queue.run {
+                val read = effect.maps.associateWith { game.msb(it)?.summarize(it, loadCharacterModels()) }
+                MapsMessage.EntitiesIndexed(
+                    index = EntityIndex.of(read.values.filterNotNull()),
+                    skipped = read.filterValues { it == null }.keys.toList()
+                )
             }
-        )
-
-        is MapsEffect.IndexEntities -> files.use(effect.installation) { games ->
-            val read = effect.maps.associateWith { games.summarized(it) }
-            MapsMessage.EntitiesIndexed(
-                index = EntityIndex.of(read.values.filterNotNull()),
-                skipped = read.filterValues { it == null }.keys.toList()
-            )
         }
-    }
-
-    private fun GameFiles.summarized(map: MapId): MapContents? = try {
-        loadMSB(map)?.summarize(map, characters)
-    } catch (err: BinaryFormatException) {
-        logger.atWarn {
-            message = "Map left out of the entity index"
-            cause = err
-            payload = mapOf("map" to map.name)
-        }
-        null
     }
 }
 
-private fun GameFiles.contents(map: MapId, characters: CharacterModels): MapContents =
-    checkNotNull(loadMSB(map)) { "$map has no layout file" }.summarize(map, characters)
-
 public sealed interface MapsEffect {
-    public data class LoadCatalog(public val installation: Installation) : MapsEffect
-    public data class LoadMap(public val installation: Installation, public val map: MapId) : MapsEffect
+    public val installation: Installation
+
+    public data class LoadCatalog(override val installation: Installation) : MapsEffect
+    public data class LoadMap(override val installation: Installation, public val map: MapId) : MapsEffect
 
     public data class IndexEntities(
-        public val installation: Installation,
+        override val installation: Installation,
         public val maps: List<MapId>
     ) : MapsEffect
 }

@@ -14,7 +14,6 @@ public sealed interface ScriptsMessage {
 
     public data class ScriptsIndexed(
         public val flags: FlagIndex,
-        public val calls: EventCallIndex,
         public val unreadable: List<ScriptId>
     ) : ScriptsMessage
 

@@ -9,6 +9,7 @@ import kotlinx.coroutines.runBlocking
 import com.sappyoak.dsanalyzer.app.connection.ConnectionEffects
 import com.sappyoak.dsanalyzer.app.connection.ConnectionMessage
 import com.sappyoak.dsanalyzer.app.connection.ConnectionStore
+import com.sappyoak.dsanalyzer.app.data.IndexQueue
 import com.sappyoak.dsanalyzer.app.data.esd.EsdsEffects
 import com.sappyoak.dsanalyzer.app.data.esd.EsdsStore
 import com.sappyoak.dsanalyzer.app.data.maps.MapsEffects
@@ -37,6 +38,7 @@ import com.sappyoak.dsanalyzer.app.verification.VerificationMessage
 import com.sappyoak.dsanalyzer.app.verification.VerificationStore
 import com.sappyoak.dsanalyzer.app.workspace.WorkspaceDirectory
 import com.sappyoak.dsanalyzer.app.workspace.WorkspaceStores
+import com.sappyoak.dsanalyzer.game.data.InstallationData
 import com.sappyoak.dsanalyzer.game.files.InstallationFiles
 import com.sappyoak.dsanalyzer.native.process.Processes
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -74,21 +76,23 @@ public fun createAppModel(
     val settings = SettingsStore(scope, SettingsEffects(SettingsFile(paths.settings, jsonSerializer)))
     val workspaces = WorkspaceDirectory(paths.workspaces, jsonSerializer)
     val installationFiles = InstallationFiles(scope)
+    val data = InstallationData(installationFiles, scope)
+    val indexes = IndexQueue()
     val link = GameLink(scope, processes = { Processes.Current })
 
     return AppModel(
         settings = settings,
         workspace = WorkspaceStores(
-            analysis = AnalysisStore(scope, AnalysisEffects(installationFiles)),
-            params = ParamsStore(scope, ParamsEffects(installationFiles)),
-            esds = EsdsStore(scope, EsdsEffects(installationFiles)),
-            maps = MapsStore(scope, MapsEffects(installationFiles)),
-            scripts = ScriptsStore(scope, ScriptsEffects(installationFiles)),
+            analysis = AnalysisStore(scope, AnalysisEffects(data)),
+            params = ParamsStore(scope, ParamsEffects(data)),
+            esds = EsdsStore(scope, EsdsEffects(data, indexes)),
+            maps = MapsStore(scope, MapsEffects(data, indexes)),
+            scripts = ScriptsStore(scope, ScriptsEffects(data, indexes)),
             runtime = RuntimeStore(scope, RuntimeEffects(
                 link = link,
                 aiTracking = settings.state.map { it.settings.runtime.ai.tracking }.distinctUntilChanged(),
                 timingsWanted = settings.state.map { it.settings.drawsHitWindows }.distinctUntilChanged(),
-                timings = TimingLoader(installationFiles)
+                timings = TimingLoader(data)
             ))
         ),
         startup = StartupStore(
@@ -99,7 +103,7 @@ public fun createAppModel(
             scope,
             VerificationEffects(
                 cache = VerificationCache(paths.verificationFile, jsonSerializer),
-                files = installationFiles
+                data = data
             )
         ),
         connection = ConnectionStore(

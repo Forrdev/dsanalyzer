@@ -76,8 +76,7 @@ public fun EsdDetail(state: EsdsState, view: View.Data, resolve: (Address) -> Re
             state.problem?.let { Text(it, color = AnalyzerTheme.colors.failed, modifier = Modifier.padding(12.dp)) }
 
             val shown = focused?.let { esd?.groups?.get(it.group)?.states?.get(it.state) }
-
-            if (shown == null) {
+            if (shown == null || focused == null) {
                 Text(
                     text = when {
                         state.loading -> "Reading ${source.title}"
@@ -96,12 +95,17 @@ public fun EsdDetail(state: EsdsState, view: View.Data, resolve: (Address) -> Re
                 modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(18.dp),
                 verticalArrangement = Arrangement.spacedBy(14.dp)
             ) {
+                // Decoding every program is the cost; done once per state shown, not per recomposition
                 val names = state.definitions
-
-                Section("Exits", shown.conditions.toRows(source, focused.group, names), resolve, onFollow)
-                Section("On entry", shown.entryCommands.toRows(names), resolve, onFollow)
-                Section("Every frame", shown.whileCommands.toRows(names), resolve, onFollow)
-                Section("On exit", shown.exitCommands.toRows(names), resolve, onFollow)
+                val sections = remember(shown, source, focused.group, names) {
+                    listOf(
+                        "Exits" to shown.conditions.toRows(source, focused.group, names),
+                        "On entry" to shown.entryCommands.toRows(names),
+                        "Every frame" to shown.whileCommands.toRows(names),
+                        "On exit" to shown.exitCommands.toRows(names)
+                    )
+                }
+                sections.forEach { (title, rows) -> Section(title, rows, resolve, onFollow) }
             }
         }
     }

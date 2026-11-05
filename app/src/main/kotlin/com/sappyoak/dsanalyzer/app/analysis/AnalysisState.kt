@@ -15,13 +15,8 @@ public data class AnalysisState(
     public val running: Boolean = false,
     public val units: Int = 0,
     public val results: Map<AnalyzerId, Map<RunUnit, AnalysisResult>> = emptyMap(),
+    public val leads: List<Lead> = emptyList(),
     public val problem: String? = null
 ) {
     public val concluded: Int get() = results.values.sumOf { it.size }
-    public val leads: List<Lead> by lazy {
-        results.values.flatMap { it.values }
-            .filterIsInstance<AnalysisResult.Leads>()
-            .flatMap { it.leads }
-            .sortedBy { it.key.value }
-    }
 }

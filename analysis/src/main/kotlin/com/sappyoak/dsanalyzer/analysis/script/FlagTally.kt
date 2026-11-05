@@ -5,6 +5,7 @@ import com.sappyoak.dsanalyzer.formats.emevd.emedf.DecodedInstruction
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.FlagAccess
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.FlagTarget
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.flagUses
+import com.sappyoak.dsanalyzer.game.data.DecodedScript
 
 private const val FLAG_STATE = "ON/OFF/CHANGE"
 private const val CHANGE = 2L

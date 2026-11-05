@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.flow
 
 import com.sappyoak.dsanalyzer.app.store.EffectRunner
 import com.sappyoak.dsanalyzer.game.Installation
+import com.sappyoak.dsanalyzer.game.data.InstallationData
 import com.sappyoak.dsanalyzer.game.files.InstallationFiles
 import com.sappyoak.dsanalyzer.game.world.params.ParamNames
 import com.sappyoak.dsanalyzer.game.world.params.loadGameParams
@@ -17,7 +18,7 @@ import kotlinx.coroutines.withContext
 private val NAME_LANGUAGE = TextLanguage.English
 
 public class ParamsEffects(
-    private val files: InstallationFiles
+    private val data: InstallationData
 ) : EffectRunner<ParamsEffect, ParamsMessage> {
     override fun keyOf(effect: ParamsEffect): Any? = effect::class
 
@@ -27,12 +28,10 @@ public class ParamsEffects(
         ParamsMessage.Failed(failure.message ?: failure.toString())
 
     private suspend fun perform(effect: ParamsEffect): ParamsMessage = when (effect) {
-        is ParamsEffect.Load -> files.use(effect.installation) { games ->
+        is ParamsEffect.Load -> data.of(effect.installation).let { game ->
             ParamsMessage.Loaded(
-                params = checkNotNull(games.loadGameParams(effect.installation.build.edition)) {
-                    "This installation has no GameParam.parambnd"
-                },
-                names = games.loadParamNames(NAME_LANGUAGE)
+                params = checkNotNull(game.params()) { "This installation has no GameParam.parambnd" },
+                names = game.paramNames(NAME_LANGUAGE)
             )
         }
 

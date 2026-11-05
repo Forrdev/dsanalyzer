@@ -7,6 +7,7 @@ import com.sappyoak.dsanalyzer.formats.emevd.ScriptEvent
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.DecodedInstruction
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.Emedf
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.decode
+import com.sappyoak.dsanalyzer.game.data.DecodedScript
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
 
 /** One row in a script's event list */
@@ -45,16 +46,12 @@ public class ScriptContents(
 }
 
 
-public fun Emevd.summarize(
-    script: ScriptId,
-    names: EventNames,
-    emedf: Emedf
-): ScriptContents = ScriptContents(
+public fun DecodedScript.summarize(names: EventNames): ScriptContents = ScriptContents(
     script = script,
-    events = events.map { it.summarize(script, names) },
-    linkedFiles = linkedFiles,
-    definitions = emedf,
-    decoded = events.associate { it.id to it.decode(emedf) }
+    events = emevd.events.map { it.summarize(script, names) },
+    linkedFiles = emevd.linkedFiles,
+    definitions = definitions,
+    decoded = events
 )
 
 public fun ScriptEvent.summarize(script: ScriptId, names: EventNames): EventSummary = EventSummary(

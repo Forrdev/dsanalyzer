@@ -14,6 +14,8 @@ public data class ParamEntry(
 public data class ParamsState(
     public val installation: Installation? = null,
     public val params: GameParams? = null,
+    public val entries: Map<String, ParamEntry> = emptyMap(),
+    public val catalog: List<ParamSummary> = emptyList(),
     public val names: ParamNames = ParamNames.None,
     public val loading: Boolean = false,
     public val query: String = "",
@@ -22,13 +24,15 @@ public data class ParamsState(
     public val searching: Boolean = false,
     public val searchOutcome: SearchOutcome? = null,
     public val problem: String? = null
-) {
-    /** Every loaded param by file name, in registry order */
-    public val entries: Map<String, ParamEntry> by lazy {
-        params?.tables.orEmpty().entries.associate { (param, table) -> param.fileName to ParamEntry(param, table) }
-    }
+)
 
-    public val catalog: List<ParamSummary> by lazy {
-        entries.map { (file, entry) -> ParamSummary(file, entry.table.rows.size) }
-    }
+internal fun ParamsState.loaded(params: GameParams, names: ParamNames): ParamsState {
+    val entries = params.tables.entries.associate { (param, table) -> param.fileName to ParamEntry(param, table) }
+    return copy(
+        params = params,
+        entries = entries,
+        catalog = entries.map { (file, entry) -> ParamSummary(file, entry.table.rows.size) },
+        names = names,
+        loading = false
+    )
 }

@@ -9,15 +9,13 @@ import com.sappyoak.dsanalyzer.game.world.maps.MapId
 public data class EsdsState(
     public val installation: Installation? = null,
     public val talk: Map<MapId, List<Int>> = emptyMap(),
+    public val sources: List<EsdSource> = listOf(EsdSource.Player),
     public val shown: EsdSource? = null,
     public val esd: Esd? = null,
     public val definitions: EsdDefinitions = EsdDefinitions.None,
     public val loading: Boolean = false,
     public val problem: String? = null
 ) {
-    public val sources: List<EsdSource> by lazy {
-        listOf(EsdSource.Player) + talk.flatMap { (map, ids) -> ids.map { EsdSource.Talk(map, it) } }
-    }
 
     public fun has(source: EsdSource): Boolean = when (source) {
         EsdSource.Player -> installation != null

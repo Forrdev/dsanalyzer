@@ -7,9 +7,11 @@ import com.sappyoak.dsanalyzer.game.bundledText
 
 private const val RESOURCE = "/definitions/ds1-event-names-en.json"
 
-
-public fun loadEventNameTranslations(): EventNameTranslations =
+private val TRANSLATIONS: EventNameTranslations by lazy {
     EventNameTranslations(Json.decodeFromString<Map<String, String>>(bundledText(RESOURCE)))
+}
+
+public fun loadEventNameTranslations(): EventNameTranslations = TRANSLATIONS
 
 /**
  * English for the names the scripts ship, which are Japanese and are developer names rather than

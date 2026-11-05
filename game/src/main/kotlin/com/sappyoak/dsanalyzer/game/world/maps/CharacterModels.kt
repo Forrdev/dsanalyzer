@@ -10,6 +10,16 @@ private const val MODELS_RESOURCE = "/definitions/ds1-character-models.json"
 private const val MODEL_PREFIX = 'c'
 private const val MAX_DIGITS = 9
 
+
+private val MODELS: CharacterModels by lazy {
+    val map = Json.decodeFromString<Map<String, String>>(bundledText(MODELS_RESOURCE))
+        .mapNotNull { (id, name) -> id.toIntOrNull()?.let { it to name } }
+        .toMap()
+    CharacterModels(map)
+}
+
+public fun loadCharacterModels(): CharacterModels = MODELS
+
 public class CharacterModels(private val byId: Map<Int, String>) {
     public val size: Int get() = byId.size
 
@@ -34,8 +44,3 @@ public class CharacterModels(private val byId: Map<Int, String>) {
     }
 }
 
-public fun loadCharacterModels(): CharacterModels = CharacterModels(
-    Json.decodeFromString<Map<String, String>>(bundledText(MODELS_RESOURCE))
-        .mapNotNull { (id, name) -> id.toIntOrNull()?.let { it to name } }
-        .toMap()
-)

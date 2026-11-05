@@ -2,12 +2,16 @@ package com.sappyoak.dsanalyzer.app.data.esd
 
 import com.sappyoak.dsanalyzer.app.store.Transition
 import com.sappyoak.dsanalyzer.app.store.with
+import com.sappyoak.dsanalyzer.game.world.esd.EsdSource
 
 public fun reduceEsds(state: EsdsState, message: EsdsMessage): Transition<EsdsState, EsdsEffect> = when (message) {
     is EsdsMessage.Opened -> EsdsState(installation = message.installation)
         .with(EsdsEffect.LoadCatalog(message.installation))
 
-    is EsdsMessage.CatalogLoaded -> state.copy(talk = message.talk).with()
+    is EsdsMessage.CatalogLoaded -> state.copy(
+        talk = message.talk,
+        sources = listOf(EsdSource.Player) + message.talk.flatMap { (map, ids) -> ids.map { EsdSource.Talk(map, it) } }
+    ).with()
 
     is EsdsMessage.SourceSelected -> {
         val installation = state.installation

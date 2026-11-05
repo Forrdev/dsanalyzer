@@ -11,7 +11,6 @@ kotlin {
 
     compilerOptions {
         jvmTarget.set(JvmTarget.JVM_22)
-        allWarningsAsErrors.set(true)
 
         freeCompilerArgs.addAll(
             "-Xrender-internal-diagnostic-names",

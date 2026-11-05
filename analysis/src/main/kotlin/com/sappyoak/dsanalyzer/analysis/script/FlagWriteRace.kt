@@ -18,6 +18,7 @@ import com.sappyoak.dsanalyzer.analysis.engine.LeadKey
 import com.sappyoak.dsanalyzer.analysis.engine.LeadKind
 import com.sappyoak.dsanalyzer.analysis.engine.ParameterKind
 import com.sappyoak.dsanalyzer.analysis.engine.resultOf
+import com.sappyoak.dsanalyzer.game.data.DecodedScript
 import com.sappyoak.dsanalyzer.game.ref.WorldRef
 import com.sappyoak.dsanalyzer.game.ref.toDataAddress
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId

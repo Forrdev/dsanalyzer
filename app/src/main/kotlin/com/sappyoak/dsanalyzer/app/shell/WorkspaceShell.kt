@@ -2,7 +2,6 @@ package com.sappyoak.dsanalyzer.app.shell
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -10,24 +9,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.sappyoak.dsanalyzer.app.analysis.AnalysisMessage
-import com.sappyoak.dsanalyzer.app.analysis.ui.AnalysisNavigator
-import com.sappyoak.dsanalyzer.app.analysis.ui.LeadsPane
-import com.sappyoak.dsanalyzer.app.data.esd.EsdsMessage
-import com.sappyoak.dsanalyzer.app.data.esd.ui.EsdDetail
 
+import com.sappyoak.dsanalyzer.app.analysis.AnalysisMessage
+import com.sappyoak.dsanalyzer.app.data.esd.EsdsMessage
 import com.sappyoak.dsanalyzer.app.data.maps.MapsMessage
-import com.sappyoak.dsanalyzer.app.data.maps.ui.MapsDetail
 import com.sappyoak.dsanalyzer.app.data.params.ParamsMessage
-import com.sappyoak.dsanalyzer.app.data.params.ui.ParamSearchPane
-import com.sappyoak.dsanalyzer.app.data.params.ui.ParamsDetail
 import com.sappyoak.dsanalyzer.app.data.scripts.ScriptsMessage
-import com.sappyoak.dsanalyzer.app.data.scripts.ui.ScriptsDetail
-import com.sappyoak.dsanalyzer.app.data.ui.DataNavigator
 import com.sappyoak.dsanalyzer.app.nav.Navigator
-import com.sappyoak.dsanalyzer.app.nav.Resolution
 import com.sappyoak.dsanalyzer.app.nav.ResolveContext
 import com.sappyoak.dsanalyzer.app.nav.View
 import com.sappyoak.dsanalyzer.app.nav.WorkspaceResolveContext
@@ -35,10 +24,7 @@ import com.sappyoak.dsanalyzer.app.nav.resolve
 import com.sappyoak.dsanalyzer.app.runtime.OverlaySettings
 import com.sappyoak.dsanalyzer.app.runtime.RuntimeMessage
 import com.sappyoak.dsanalyzer.app.runtime.RuntimeSettings
-import com.sappyoak.dsanalyzer.app.runtime.ui.RuntimeDetail
-import com.sappyoak.dsanalyzer.app.runtime.ui.RuntimeNavigator
 import com.sappyoak.dsanalyzer.app.settings.SettingsEdit
-import com.sappyoak.dsanalyzer.app.ui.theme.AnalyzerTheme
 import com.sappyoak.dsanalyzer.app.workspace.Workspace
 import com.sappyoak.dsanalyzer.app.workspace.WorkspaceStores
 import com.sappyoak.dsanalyzer.game.Installation
@@ -56,13 +42,6 @@ public fun WorkspaceShell(
     val navigator = remember { Navigator() }
     var settingsOpen by remember { mutableStateOf(false) }
 
-    val analysisState by stores.analysis.state.collectAsState()
-    val paramsState by stores.params.state.collectAsState()
-    val esdsState by stores.esds.state.collectAsState()
-    val mapsState by stores.maps.state.collectAsState()
-    val scriptsState by stores.scripts.state.collectAsState()
-    val runtimeState by stores.runtime.state.collectAsState()
-
     LaunchedEffect(installation?.id) {
         installation?.let {
             stores.analysis.dispatch(AnalysisMessage.Opened(it))
@@ -74,78 +53,27 @@ public fun WorkspaceShell(
         }
     }
 
-    val context: ResolveContext = remember(mapsState.maps, mapsState.entities, scriptsState.scripts, paramsState.entries, esdsState.talk) {
-        WorkspaceResolveContext(
-            maps = mapsState.maps.toSet(),
-            scripts = scriptsState.scripts.toSet(),
-            params = paramsState.entries.keys,
-            esds = esdsState::has,
-            entryForEntity = { id -> mapsState.entities[id].firstOrNull() }
-        )
-    }
+    val context: ResolveContext by remember(stores) { stores.resolveContext() }
+        .collectAsState(WorkspaceResolveContext.empty())
+    val current = context
+    val resolve = remember(current) { { address: Address -> current.resolve(address) } }
 
-    val resolve: (Address) -> Resolution = { address -> context.resolve(address) }
+    val flagsBuilt by remember(stores) { stores.flagIndexBuilt() }
+        .collectAsState(stores.scripts.state.value.flagIndex.built)
 
-    LaunchedEffect(navigator.current, scriptsState.flagIndex.built) {
+    LaunchedEffect(navigator.current, flagsBuilt) {
         stores.sync(navigator.current)
     }
-
 
     Box(modifier = Modifier.fillMaxSize()) {
         Shell(
             workspace = workspace.name,
-            installation = installation?.let { "${it.build.edition.name} - ${it.root}"},
+            installation = installation?.let { "${it.build.edition.name} - ${it.root}" },
             navigator = navigator,
-            runtimeState = runtimeState,
-            attached = runtimeState.live,
+            runtimeState = stores.runtime.state,
             onSettings = { settingsOpen = true },
-            navigatorPane = { view ->
-                when (view) {
-                    is View.Data -> DataNavigator(
-                        params = paramsState.catalog,
-                        esds = esdsState.sources,
-                        maps = mapsState.maps,
-                        scripts = scriptsState.scripts,
-                        view = view,
-                        onFollow = navigator::go
-                    )
-                    is View.Live -> RuntimeNavigator(runtimeState, view, navigator::go)
-                    is View.Analysis.Leads -> AnalysisNavigator(analysisState, stores.analysis)
-                    is View.Analysis -> Unbuilt("Analysis not yet built")
-                }
-            },
-            detailPane = { view ->
-                when (view) {
-                    is View.Data.Script,
-                    is View.Data.ScriptEvent,
-                    is View.Data.EventFlag -> ScriptsDetail(scriptsState, stores.scripts, view, resolve, navigator::go)
-
-                    is View.Data.ParamSearch -> ParamSearchPane(paramsState, stores.params, navigator::go)
-
-                    is View.Data.Param,
-                    is View.Data.ParamRow -> ParamsDetail(paramsState, stores.params, view, resolve, navigator::go)
-
-                    is View.Data.Esd,
-                    is View.Data.EsdState -> EsdDetail(esdsState, view, resolve, navigator::go)
-
-                    is View.Data -> MapsDetail(mapsState, stores.maps,  view, resolve, navigator::go)
-                    is View.Live -> RuntimeDetail(
-                        state = runtimeState,
-                        settings = runtime,
-                        panel = view.panel,
-                        onFollow = navigator::go,
-                        onReadPlacedEnemies = {
-                            stores.runtime.dispatch(RuntimeMessage.PlacedEnemiesRequested)
-                        },
-                        onReadCollision = {
-                            stores.runtime.dispatch(RuntimeMessage.CollisionRequested)
-                        }
-                    )
-
-                    is View.Analysis.Leads -> LeadsPane(analysisState, resolve, navigator::go)
-                    is View.Analysis -> Unbuilt("Analysis not yet built")
-                }
-            }
+            navigatorPane = { view -> NavigatorPane(view, stores, navigator::go) },
+            detailPane = { view -> DetailPane(view, stores, runtime, resolve, navigator::go) }
         )
 
         if (settingsOpen) {
@@ -169,13 +97,7 @@ private fun WorkspaceStores.sync(view: View) {
             scripts.dispatch(ScriptsMessage.FlagRequested(view.flagId, view.seenIn))
         is View.Data.Esd -> esds.dispatch(EsdsMessage.SourceSelected(view.source))
         is View.Data.EsdState -> esds.dispatch(EsdsMessage.SourceSelected(view.source))
-        is View.Data.Overview, is View.Data.ParamSearch, is View.Data.Param, is View.Data.ParamRow, is View.Analysis, is View.Live -> Unit
-    }
-}
-
-@Composable
-private fun Unbuilt(what: String) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text(what, style = AnalyzerTheme.text.label, color = AnalyzerTheme.colors.textLo)
+        is View.Data.Overview, is View.Data.ParamSearch, is View.Data.Param, is View.Data.ParamRow,
+        is View.Analysis, is View.Live -> Unit
     }
 }

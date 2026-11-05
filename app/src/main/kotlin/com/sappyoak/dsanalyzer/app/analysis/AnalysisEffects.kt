@@ -11,15 +11,16 @@ import com.sappyoak.dsanalyzer.analysis.engine.AnalyzerId
 import com.sappyoak.dsanalyzer.analysis.engine.RunEvent
 import com.sappyoak.dsanalyzer.app.store.EffectRunner
 import com.sappyoak.dsanalyzer.game.Installation
-import com.sappyoak.dsanalyzer.game.files.InstallationFiles
+import com.sappyoak.dsanalyzer.game.data.InstallationData
 
-public class AnalysisEffects(private val files: InstallationFiles) : EffectRunner<AnalysisEffect, AnalysisMessage> {
+
+public class AnalysisEffects(private val data: InstallationData) : EffectRunner<AnalysisEffect, AnalysisMessage> {
     /** One run at a time; opening another installation's run replaces it */
     override fun keyOf(effect: AnalysisEffect): Any? = effect::class
 
     override fun execute(effect: AnalysisEffect): Flow<AnalysisMessage> = when (effect) {
         is AnalysisEffect.Run -> flow {
-            val source = InstallationSource.open(effect.installation, files)
+            val source = InstallationSource.open(data.of(effect.installation))
             val analyzers = BUILT_IN_ANALYZERS.filter { it.descriptor.id in effect.analyzers }
             emitAll(AnalysisRun(analyzers, source).execute().mapNotNull(::messageOf))
         }

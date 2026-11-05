@@ -14,6 +14,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
@@ -56,9 +57,9 @@ internal fun InspectorPane(
         if (contents == null || focused == null) {
             Text(
                 text = when {
-                  state.loading -> "Reading the map"
-                  state.shown == null -> "Select a map from the tree"
-                  else -> "Select an entry"
+                    state.loading -> "Reading the map"
+                    state.shown == null -> "Select a map from the tree"
+                    else -> "Select an entry"
                 },
                 style = MaterialTheme.typography.bodyMedium,
                 color = colors.textLo,
@@ -71,12 +72,13 @@ internal fun InspectorPane(
             modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(18.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
-            contents.inspect(focused).forEach { section ->
+            remember(contents, focused) { contents.inspect(focused) }.forEach { section ->
                 SectionCard(section, resolve, onFollow)
             }
         }
     }
 }
+
 
 @Composable
 private fun Breadcrumb(state: MapsState, focused: View.Data.MapEntry?) {

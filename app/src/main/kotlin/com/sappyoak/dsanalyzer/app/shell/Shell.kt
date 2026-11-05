@@ -10,8 +10,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.flow.StateFlow
 
 import com.sappyoak.dsanalyzer.app.nav.Navigator
 import com.sappyoak.dsanalyzer.app.nav.View
@@ -25,8 +28,7 @@ internal fun Shell(
     workspace: String,
     installation: String?,
     navigator: Navigator,
-    runtimeState: RuntimeState,
-    attached: Boolean,
+    runtimeState: StateFlow<RuntimeState>,
     onSettings: () -> Unit,
     navigatorPane: @Composable ColumnScope.(View) -> Unit,
     detailPane: @Composable (View) -> Unit
@@ -34,7 +36,7 @@ internal fun Shell(
     Column(
         modifier = Modifier.fillMaxSize().background(AnalyzerTheme.colors.window)
     ) {
-        RuntimeStrip(runtimeState)
+        LiveStrip(runtimeState)
 
         SectionBar(
             workspace = workspace,
@@ -68,4 +70,11 @@ internal fun Shell(
             }
         }
     }
+}
+
+/** Collects the runtime state itself, so a tick recomposes the strip and not the shell */
+@Composable
+private fun LiveStrip(runtime: StateFlow<RuntimeState>) {
+    val state by runtime.collectAsState()
+    RuntimeStrip(state)
 }
