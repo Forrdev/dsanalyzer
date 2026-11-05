@@ -4,6 +4,7 @@ import kotlin.time.Duration
 
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.runtime.session.attack.HitSnapshot
+import com.sappyoak.dsanalyzer.runtime.write.WriteKey
 
 private const val UNSTABLE_DISTANCE = 1f
 
@@ -21,7 +22,8 @@ public data class RuntimeSnapshot(
     public val flagChanges: List<FlagChange>,
     public val menu: MenuSnapshot?,
     public val hits: List<HitSnapshot> = emptyList(),
-    public val cost: SampleCost
+    public val cost: SampleCost,
+    public val writes: Set<WriteKey> = emptySet()
 ) {
     public val divergence: Float?
         get() {

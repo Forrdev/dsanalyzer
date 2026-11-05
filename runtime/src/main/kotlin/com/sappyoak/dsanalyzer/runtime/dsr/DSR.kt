@@ -26,6 +26,7 @@ public val DSRPointers: List<GamePointer> = listOf(
     WorldInfoOwner.Pointer,
     WorldChrMan.Pointer,
     Player.Pointer,
+    ChrCtrl.Pointer,
     AnimData.Pointer,
     AnimRequestMgr.Pointer,
     PlayerGameData.Pointer,

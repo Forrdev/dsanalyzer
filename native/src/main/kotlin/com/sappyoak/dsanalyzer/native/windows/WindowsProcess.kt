@@ -9,6 +9,7 @@ import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.native.memory.AddressRange
 import com.sappyoak.dsanalyzer.native.memory.MemoryRegion
 import com.sappyoak.dsanalyzer.native.process.AttachedProcess
+import com.sappyoak.dsanalyzer.native.process.CodeMemory
 import com.sappyoak.dsanalyzer.native.process.ModuleInfo
 import com.sappyoak.dsanalyzer.native.process.ProcessInfo
 import com.sappyoak.dsanalyzer.shared.platform.PointerSize
@@ -36,6 +37,8 @@ internal class WindowsProcess(
     private val closed = AtomicBoolean(false)
 
     override val isRunning: Boolean get() = !closed.get() && Kernel32.exitCode(handle) == STILL_ACTIVE
+
+    override val code: CodeMemory = WindowsCodeMemory(handle) { !closed.get() }
 
     override fun read(address: Address, length: Int): ByteArray? {
         if (closed.get() || length <= 0) return null

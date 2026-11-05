@@ -29,6 +29,7 @@ public class GameWriter internal constructor(
     }
 
     /** Replaces code at [address], journaled so the original bytes go back on [revert] */
+    @GameMutation
     internal fun patchCode(key: WriteKey, address: Address, bytes: ByteArray): Boolean {
         val placer = code ?: return false
         val original = memory.read(address, bytes.size) ?: return false
@@ -38,19 +39,24 @@ public class GameWriter internal constructor(
     }
 
     /** Memory of the tool's own in the game, written with [fill] */
+    @GameMutation
     internal fun allocate(size: Int): Address? = code?.allocate(size)
 
     /** Writes memory the tool allocated; never journaled */
+    @GameMutation
     internal fun fill(address: Address, bytes: ByteArray): Boolean = memory.write(address, bytes)
 
+    @GameMutation
     internal fun fillDword(address: Address, value: Int): Boolean = fill(address, dword(value))
 
+    @GameMutation
     internal fun free(address: Address): Boolean = code?.free(address) ?: false
 
     /**
      * A one-shot action on the game, such as a warp: never journaled, because there is no state to
      * put back. Undoing a warp is another warp
      */
+    @GameMutation
     internal fun perform(address: Address, bytes: ByteArray): Boolean = memory.write(address, bytes)
 
     public fun revert(key: WriteKey): Boolean = journal.take(key)?.let(::restore) ?: false

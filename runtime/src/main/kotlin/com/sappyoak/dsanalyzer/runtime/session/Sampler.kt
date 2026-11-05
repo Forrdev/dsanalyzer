@@ -31,6 +31,8 @@ public class SampleRequests {
     private val characterEffects = AtomicBoolean(false)
     private val ai = AtomicReference(AIScope.TargetingPlayer)
 
+    public val writes: WriteRequests = WriteRequests()
+
     internal val aiScope: AIScope get() = ai.get()
 
     public fun requestPlacedEnemies() {
@@ -99,14 +101,30 @@ private suspend fun FlowCollector<RuntimeEvent>.sampleWhileConnected(
     val wait = period(game.edition)
     val retry = SignatureRetry()
 
+    try {
+        sampleUntilCancelled(connection, session, edition, requests, wait, retry)
+    } finally {
+        if (connection.isRunning) session.revertAll()
+    }
+}
+
+private suspend fun FlowCollector<RuntimeEvent>.sampleUntilCancelled(
+    connection: GameConnection,
+    session: GameSession,
+    edition: EditionTables,
+    requests: SampleRequests,
+    wait: Duration,
+    retry: SignatureRetry
+) {
     while (true) {
         emit(RuntimeEvent.Sampled(session.sample()))
+        requests.writes.applyTo(session)
+        session.afterSample()
+
         if (!session.pointers.complete && retry.due()) {
             session.resolveMissing(edition.pointers, connection.mainModule)?.let { emit(RuntimeEvent.Resolved(it)) }
         }
 
-        // After the tick rather than before it so an expensive read never delays the sample it shares
-        // an instant with
         if (requests.takePlacedEnemies()) {
             logger.debug { "Reading the enemies the loaded blocks place" }
             emit(RuntimeEvent.PlacedEnemies(session.readPlacedEnemies()))
@@ -120,6 +138,6 @@ private suspend fun FlowCollector<RuntimeEvent>.sampleWhileConnected(
             emit(RuntimeEvent.CharacterEffects(session.readCharacterEffects()))
         }
 
-         delay(wait)
+        delay(wait)
     }
 }

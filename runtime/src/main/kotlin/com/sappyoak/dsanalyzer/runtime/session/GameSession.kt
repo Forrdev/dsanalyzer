@@ -24,12 +24,17 @@ import com.sappyoak.dsanalyzer.runtime.session.ai.AIScope
 import com.sappyoak.dsanalyzer.runtime.session.ai.AITracker
 import com.sappyoak.dsanalyzer.runtime.session.attack.HitTracker
 import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionSnapshot
+import com.sappyoak.dsanalyzer.runtime.write.CheatWriter
+import com.sappyoak.dsanalyzer.runtime.write.GameWriter
 
 public class GameSession internal constructor(
     public val game: GameProcess,
     pointers: ResolvedPointers,
     private val memory: GameMemory,
-    layout: GameLayout
+    layout: GameLayout,
+    module: AddressRange,
+    public val writer: GameWriter,
+    private val extensions: List<SessionExtension>
 ) {
     public var pointers: ResolvedPointers = pointers
         private set
@@ -43,6 +48,7 @@ public class GameSession internal constructor(
     private val aiTracker = AITracker(AI_GRACE_PERIOD)
     private val attackReader = AttackReader()
     private val hitTracker = HitTracker(HIT_LINGER_TICKS, HIT_SWEEP_LIMIT)
+    private val cheats = CheatWriter.create(game.edition)
 
     private var lastPlace: WorldPlace? = null
     private var wasLoaded: Boolean = false
@@ -51,7 +57,12 @@ public class GameSession internal constructor(
     private var sinceWorld = 0
 
     public val supports: Set<RuntimeFeature> get() = readers.supported
-    
+
+    init {
+        val context = SessionContext(game.edition, memory, writer, module) { lastPlace }
+        extensions.forEach { it.attached(context) }
+    }
+
     public fun isFlagSet(flagId: Int): Boolean? = flags.isSet(flagId)
 
     public fun sample(aiScope: AIScope = AIScope.TargetingPlayer): RuntimeSnapshot {
@@ -99,8 +110,13 @@ public class GameSession internal constructor(
             characters = aiTracker.read(memory.memory, world.ai, world.characters),
             flagChanges = changes,
             hits = hitTracker.update(attackReader.read(memory, world.tracked)),
-            cost = SampleCost(started.elapsedNow(), present, (readers.player?.structures ?: 0) + AROUND_PLAYER)
+            cost = SampleCost(started.elapsedNow(), present, (readers.player?.structures ?: 0) + AROUND_PLAYER),
+            writes = writer.active
         )
+    }
+
+    internal fun afterSample() {
+        extensions.forEach(SessionExtension::afterSample)
     }
 
     public fun readPlacedEnemies(): List<BlockRoster> = readers.placedParts?.read(memory) ?: emptyList()
@@ -115,6 +131,13 @@ public class GameSession internal constructor(
         pointers = found
         memory.adopt(found)
         return found
+    }
+
+    public fun setCheat(flag: CheatFlag, on: Boolean): Boolean = cheats.set(flag, on, memory, writer)
+
+    public fun revertAll(): Int {
+        extensions.forEach(SessionExtension::release)
+        return writer.revertAll()
     }
 
     private fun forgetWorld() {
@@ -164,7 +187,11 @@ private data class WorldTier(
     val tracked: Set<Int> = ai.mapTo(HashSet()) { it.handle }
 }
 
-public fun GameConnection.openSession(edition: EditionTables): GameSession {
+public fun GameConnection.openSession(
+    edition: EditionTables,
+    extensions: List<SessionExtension> = emptyList()
+): GameSession {
     val resolved = memory.resolvePointers(edition.pointers, mainModule)
-    return GameSession(game, resolved, GameMemory(memory, resolved), edition.layout)
+    val writer = GameWriter(memory, code)
+    return GameSession(game, resolved, GameMemory(memory, resolved), edition.layout, mainModule, writer, extensions)
 }

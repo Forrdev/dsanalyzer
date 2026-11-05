@@ -2,6 +2,7 @@ package com.sappyoak.dsanalyzer.runtime
 
 import com.sappyoak.dsanalyzer.native.memory.AddressRange
 import com.sappyoak.dsanalyzer.native.process.AttachedProcess
+import com.sappyoak.dsanalyzer.native.process.CodeMemory
 import com.sappyoak.dsanalyzer.native.process.ProcessAccessException
 import com.sappyoak.dsanalyzer.native.process.ProcessMemory
 import com.sappyoak.dsanalyzer.native.process.Processes
@@ -17,6 +18,7 @@ public class GameConnection internal constructor(
     public val isRunning: Boolean get() = process.isRunning
 
     public val memory: ProcessMemory get() = process
+    public val code: CodeMemory? get() = process.code
 
     override fun close() {
         process.close()

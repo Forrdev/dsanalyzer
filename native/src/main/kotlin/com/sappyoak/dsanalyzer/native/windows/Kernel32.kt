@@ -67,6 +67,26 @@ internal object Kernel32 {
         FunctionDescriptor.of(JAVA_LONG, ADDRESS, ADDRESS, ADDRESS, JAVA_LONG)
     )
 
+    private val virtualAllocExCall = library.downcall(
+        "VirtualAllocEx",
+        FunctionDescriptor.of(ADDRESS, ADDRESS, ADDRESS, JAVA_LONG, JAVA_INT, JAVA_INT)
+    )
+
+    private val virtualFreeExCall = library.downcall(
+        "VirtualFreeEx",
+        FunctionDescriptor.of(JAVA_INT, ADDRESS, ADDRESS, JAVA_LONG, JAVA_INT)
+    )
+
+    private val virtualProtectExCall = library.downcall(
+        "VirtualProtectEx",
+        FunctionDescriptor.of(JAVA_INT, ADDRESS, ADDRESS, JAVA_LONG, JAVA_INT, ADDRESS)
+    )
+
+    private val flushInstructionCacheCall = library.downcall(
+        "FlushInstructionCache",
+        FunctionDescriptor.of(JAVA_INT, ADDRESS, ADDRESS, JAVA_LONG)
+    )
+
     private val getExitCodeProcessCall = library.downcall(
         "GetExitCodeProcess",
         FunctionDescriptor.of(JAVA_INT, ADDRESS, ADDRESS)
@@ -119,6 +139,25 @@ internal object Kernel32 {
             info,
             info.byteSize()
         ) as Long
+
+    /** The base of the new region, or 0 */
+    public fun virtualAllocEx(process: MemorySegment, size: Long, allocationType: Int, protect: Int): Long =
+        (virtualAllocExCall.invokeExact(process, MemorySegment.NULL, size, allocationType, protect) as MemorySegment)
+            .address()
+
+    public fun virtualFreeEx(process: MemorySegment, address: Long, freeType: Int): Boolean =
+        virtualFreeExCall.invokeExact(process, MemorySegment.ofAddress(address), 0L, freeType) as Int != 0
+
+    /** The protection the range had before, or null if it could not be changed */
+    public fun virtualProtectEx(process: MemorySegment, address: Long, size: Long, protect: Int): Int? =
+        Arena.ofConfined().use { arena ->
+            val old = arena.allocate(JAVA_INT)
+            val result = virtualProtectExCall.invokeExact(process, MemorySegment.ofAddress(address), size, protect, old) as Int
+            if (result != 0) old.get(JAVA_INT, 0) else null
+        }
+
+    public fun flushInstructionCache(process: MemorySegment, address: Long, size: Long): Boolean =
+        flushInstructionCacheCall.invokeExact(process, MemorySegment.ofAddress(address), size) as Int != 0
 
     public fun exitCode(process: MemorySegment): Int? = Arena.ofConfined().use { arena ->
         val code = arena.allocate(JAVA_INT)
