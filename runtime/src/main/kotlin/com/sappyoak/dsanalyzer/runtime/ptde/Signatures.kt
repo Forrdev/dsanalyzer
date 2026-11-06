@@ -84,4 +84,52 @@ object PTDESignatures {
         pattern = "8B 57 04 83 FA FF 74 ?? A1 ?? ?? ?? ?? 56 E8",
         target = SignatureTarget.Embedded(9)
     )
+
+    /** Entry of GameLoop_StepFrame */
+    public val GameLoopStep: Signature = Signature.parse(
+        name = "GameLoopStep",
+        pattern = "51 A1 ?? ?? ?? ?? 56 57 85 C0 74 17 80 78 18 00 74 05 8B 40 14 EB 03 8B 40 10"
+    )
+
+    public val PadPolled: Signature = Signature.parse(
+        name = "PadPolled",
+        pattern = "8B 07 8B 50 54 8B CF FF D2 84 C0 75 0B 8B 07 8B 50 2C 8B CF FF D2 EB 05 C6 44 24 13 01 83 C3 04"
+    )
+
+    public val InputMan: Signature = Signature.parse(
+        name = "InputMan",
+        pattern = "8B 4E 20 88 46 14 A1 ?? ?? ?? ?? F3 0F 10 40 34 57 8B 7E 04",
+        target = SignatureTarget.Embedded(7)
+    )
+
+    private const val FILE_MAN_UPDATE = "8B 3D ?? ?? ?? ?? 6A 00 57 89 7C 24 28 E8 ?? ?? ?? ?? FF 47 58"
+    public val FileMan: Signature = Signature.parse(
+        name = "FileMan",
+        pattern = FILE_MAN_UPDATE,
+        target = SignatureTarget.Embedded(2)
+    )
+
+    public val FileManPoll: Signature = Signature.parse(
+        name = "FileManPoll",
+        pattern = FILE_MAN_UPDATE,
+        target = SignatureTarget.Relative(
+            at = 0x0E,
+            instructionEnd = 0x12
+        )
+    )
+
+    /**
+     * 'ProcessMoveManStepFrame's. It turns on FileMan_UpdateFrame's wall-time
+     * budget every in-game frame
+     */
+    public val LoadBudgetWrite: Signature = Signature.parse(
+        name = "LoadBudgetWrite",
+        pattern = "8B 15 ?? ?? ?? ?? 8B 0D ?? ?? ?? ?? F3 0F 10 15 ?? ?? ?? ?? 89 42 24 A1 ?? ?? ?? ?? C6 40 14 01 C6 41 68 01"
+    )
+
+    public val SleepImport: Signature = Signature.parse(
+        name = "SleepImport",
+        pattern = "6A 00 FF 15 ?? ?? ?? ?? C3 CC CC",
+        target = SignatureTarget.Embedded(4)
+    )
 }
