@@ -36,8 +36,7 @@ internal val Settings.drawsHitWindows: Boolean
 
 
 internal fun List<CharacterSnapshot>.listed(hideDead: Boolean): List<CharacterSnapshot> {
-    val others = filterNot { it.isPlayer }
-    return if (hideDead) others.filter { it.alive } else others.sortedBy { !it.alive }
+    return if (hideDead) filter { it.alive } else sortedBy { !it.alive }
 }
 
 public data class HideDeadCharacters(public val enabled: Boolean) : SettingsEdit {

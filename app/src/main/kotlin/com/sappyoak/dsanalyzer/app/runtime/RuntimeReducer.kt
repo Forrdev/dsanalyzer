@@ -16,12 +16,15 @@ public fun reduceRuntime(
         .with(RuntimeEffect.Observe, RuntimeEffect.FollowAITracking, RuntimeEffect.FollowTimingsWanted)
     RuntimeMessage.PlacedEnemiesRequested -> state.with(RuntimeEffect.RequestPlacedEnemies)
     RuntimeMessage.CollisionRequested -> state.with(RuntimeEffect.RequestCollision)
+    RuntimeMessage.CharacterEffectsRequested -> state.with(RuntimeEffect.RequestCharacterEffects)
+
     is RuntimeMessage.LinkChanged -> state.copy(
         attached = message.link.attached,
         snapshot = message.link.snapshot,
         flagLog = state.logAfter(message.link),
         placedEnemies = message.link.placedEnemies,
         collision = message.link.collision,
+        characterEffects = message.link.characterEffects,
         problem = message.link.note,
     ).withTimingRequests()
 

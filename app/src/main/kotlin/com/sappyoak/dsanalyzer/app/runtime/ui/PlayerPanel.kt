@@ -34,7 +34,9 @@ internal fun PlayerPanel(snapshot: RuntimeSnapshot) {
             )
         }
 
+        Section("Position")
         Field("Position", player.position.describe())
+        Field("Angle", "%.3f".format(player.angle))
         snapshot.world?.let { world ->
             Field("Stable Position", world.stablePosition.describe())
             snapshot.divergence?.let { away ->
@@ -43,16 +45,25 @@ internal fun PlayerPanel(snapshot: RuntimeSnapshot) {
             Field("Last bonfire", world.lastBonfire.toString())
             if (world.deathCam) Field("Death Cam", "running")
         }
-        Field("Health", player.describeHealth())
-        Field("Stamina", player.stamina.toString())
+
         player.animationSpeed?.let { Field("Animation speed", it.toString()) }
         Field("Play region", player.playRegion.toString())
-        player.attributes?.let { Field("Soul level", "${it.soulLevel} (${it.souls} souls)")}
         snapshot.menu?.let { menu ->
             Field("Default Quantity", menu.defaultQuantity.toString())
         }
+
+        Section("Vitals")
+        Vitals(player)
+
+        player.attributes?.let { CharacterAttributes(it) }
+        player.character.action?.let {
+            Section("Action state")
+            ActionFields(it, Modifier)
+        }
+
+        player.character.effects?.let {
+            Section("Effects (${it.effects.size})")
+            EffectList(it, Modifier)
+        }
     }
 }
-
-private fun PlayerSnapshot.describeHealth(): String =
-    attributes?.let { "$health/${it.healthMax}" } ?: health.toString()

@@ -1,0 +1,171 @@
+# id	name	source
+4	White Sign Soapstone	item:White Sign Soapstone
+7	Black Separation Crystal	item:Black Separation Crystal
+10	Red Sign Soapstone	item:Red Sign Soapstone
+11	Red Eye Orb	item:Red Eye Orb (+1 more)
+15	Black Eye Orb	item:Black Eye Orb
+16	Eye of Death	item:Eye of Death
+17	Purple Coward's Crystal	item:Purple Coward's Crystal
+26	Blue Eye Orb	item:Blue Eye Orb
+27	Dragon Eye	item:Dragon Eye
+28	Dried Finger	item:Dried Finger
+36	Hornet Ring	ring:Hornet Ring
+530	Hidden Body	spell:Hidden Body (+1 more)
+540	Hush	spell:Hush (+1 more)
+550	Seek Guidance	spell:Seek Guidance (+1 more)
+560	Escape Death	spell:Escape Death (+1 more)
+570	Replenishment	spell:Replenishment (+1 more)
+580	Homeward	spell:Homeward (+1 more)
+620	Cast Light	spell:Cast Light (+1 more)
+640	Fall Control	spell:Fall Control (+1 more)
+1000	Magic Weapon	spell:Magic Weapon (+1 more)
+1010	Great Magic Weapon	spell:Great Magic Weapon (+1 more)
+1020	Crystal Magic Weapon	spell:Crystal Magic Weapon (+1 more)
+1040	Magic Shield	spell:Magic Shield (+1 more)
+1050	Strong Magic Shield	spell:Strong Magic Shield (+1 more)
+1060	Hidden Weapon	spell:Hidden Weapon (+1 more)
+1070	Sunlight Blade	spell:Sunlight Blade (+1 more)
+1080	Darkmoon Blade	spell:Darkmoon Blade (+1 more)
+1090	Power Within	spell:Power Within (+1 more)
+1120	Flash Sweat	spell:Flash Sweat (+1 more)
+1160	Magic Barrier	spell:Magic Barrier (+1 more)
+1170	Great Magic Barrier	spell:Great Magic Barrier (+1 more)
+1330	Repair	spell:Repair (+1 more)
+1340	Resist Curse	spell:Resist Curse (+1 more)
+1400	Heal	spell:Heal (+1 more)
+1410	Great Heal Excerpt	spell:Great Heal Excerpt (+1 more)
+1420	Great Heal	spell:Great Heal (+1 more)
+1800	Karmic Justice	spell:Karmic Justice (+1 more)
+2000	Havel's Ring	ring:Havel's Ring
+2010	Red Tearstone Ring	ring:Red Tearstone Ring
+2013	Cloranthy Ring	ring:Cloranthy Ring
+2020	Flame Stoneplate Ring	ring:Flame Stoneplate Ring
+2021	Thunder Stoneplate Ring	ring:Thunder Stoneplate Ring
+2022	Spell Stoneplate Ring	ring:Spell Stoneplate Ring
+2023	Ring of Steel Protection	ring:Ring of Steel Protection
+2024	Speckled Stoneplate Ring	ring:Speckled Stoneplate Ring
+2030	Bloodbite Ring	ring:Bloodbite Ring
+2031	Poisonbite Ring	ring:Poisonbite Ring
+2034	Cursebite Ring	ring:Cursebite Ring
+2040	White Seance Ring	ring:White Seance Ring
+2050	Bellowing Dragoncrest Ring	ring:Bellowing Dragoncrest Ring
+2060	Dusk Crown Ring	ring:Dusk Crown Ring
+2080	Hawk Ring	ring:Hawk Ring
+2090	Wolf Ring	ring:Wolf Ring
+2100	Covetous Gold Serpent Ring	ring:Covetous Gold Serpent Ring
+2101	Covetous Silver Serpent Ring	ring:Covetous Silver Serpent Ring
+2110	Slumbering Dragoncrest Ring	ring:Slumbering Dragoncrest Ring
+2111	Ring of Fog	ring:Ring of Fog
+2120	Rusted Iron Ring	ring:Rusted Iron Ring
+2121	Dark Wood Grain Ring	ring:Dark Wood Grain Ring
+2130	Ring of Sacrifice	ring:Ring of Sacrifice
+2131	Rare Ring of Sacrifice	ring:Rare Ring of Sacrifice
+2140	Ring of the Sun Princess	ring:Ring of the Sun Princess
+2190	Old Witch's Ring	ring:Old Witch's Ring
+2200	Covenant of Artorias	ring:Covenant of Artorias
+2210	Orange Charred Ring	ring:Orange Charred Ring
+2230	Lingering Dragoncrest Ring	ring:Lingering Dragoncrest Ring
+2240	Ring of the Evil Eye	ring:Ring of the Evil Eye
+2250	Ring of Favor and Protection	ring:Ring of Favor and Protection
+2260	Leo Ring	ring:Leo Ring
+2270	East Wood Grain Ring	ring:East Wood Grain Ring
+2290	Blue Tearstone Ring	ring:Blue Tearstone Ring
+2300	Ring of the Sun's Firstborn	ring:Ring of the Sun's Firstborn
+2310	Darkmoon Seance Ring	ring:Darkmoon Seance Ring
+2320	Darkmoon Blade Covenant Ring	ring:Darkmoon Blade Covenant Ring
+2330	Cat Covenant Ring	ring:Cat Covenant Ring
+2340	Tiny Being's Ring	ring:Tiny Being's Ring
+2350	Calamity Ring	ring:Calamity Ring
+3020	Estus Flask	item:Estus Flask
+3021	Estus Flask+1	item:Estus Flask+1
+3022	Estus Flask+2	item:Estus Flask+2
+3023	Estus Flask+3	item:Estus Flask+3
+3024	Estus Flask+4	item:Estus Flask+4
+3025	Estus Flask+5	item:Estus Flask+5
+3026	Estus Flask+6	item:Estus Flask+6
+3027	Estus Flask+7	item:Estus Flask+7
+3040	Green Blossom	item:Green Blossom
+3041	Elizabeth's Mushroom	item:Elizabeth's Mushroom
+3090	Purging Stone	item:Purging Stone
+3091	Egg Vermifuge	item:Egg Vermifuge
+3100	Repair Powder	item:Repair Powder
+3160	Charcoal Pine Resin	item:Charcoal Pine Resin
+3170	Gold Pine Resin	item:Gold Pine Resin
+3180	Transient Curse	item:Transient Curse
+3190	Rotten Pine Resin	item:Rotten Pine Resin
+3220	Homeward Bone	item:Homeward Bone
+3226	Darksign	item:Darksign
+3231	Humanity	item:Humanity
+3240	Binoculars	item:Binoculars
+3270	Soul of a Lost Undead	item:Soul of a Lost Undead
+3271	Large Soul of a Lost Undead	item:Large Soul of a Lost Undead
+3272	Soul of a Nameless Soldier	item:Soul of a Nameless Soldier
+3273	Large Soul of a Nameless Soldier	item:Large Soul of a Nameless Soldier
+3274	Soul of a Proud Knight	item:Soul of a Proud Knight
+3275	Large Soul of a Proud Knight	item:Large Soul of a Proud Knight
+3276	Soul of a Brave Warrior	item:Soul of a Brave Warrior
+3277	Large Soul of a Brave Warrior	item:Large Soul of a Brave Warrior
+3278	Soul of a Hero	item:Soul of a Hero
+3279	Soul of a Great Hero	item:Soul of a Great Hero
+3290	Humanity	item:Humanity
+3291	Twin Humanities	item:Twin Humanities
+3310	Soul of Quelaag	item:Soul of Quelaag
+3311	Soul of Sif	item:Soul of Sif
+3312	Soul of Gwyn, Lord of Cinder	item:Soul of Gwyn, Lord of Cinder
+3313	Core of an Iron Golem	item:Core of an Iron Golem
+3314	Soul of Ornstein	item:Soul of Ornstein
+3315	Soul of the Moonlight Butterfly	item:Soul of the Moonlight Butterfly
+3316	Soul of Smough	item:Soul of Smough
+3317	Soul of Priscilla	item:Soul of Priscilla
+3318	Soul of Gwyndolin	item:Soul of Gwyndolin
+3319	Guardian Soul	item:Guardian Soul
+3320	Soul of Artorias	item:Soul of Artorias
+3321	Soul of Manus	item:Soul of Manus
+3330	Fire Keeper Soul	item:Fire Keeper Soul
+6200	Catarina Helm (worn)	armor:Catarina Helm (+8 more)
+6201	Black Iron Helm (worn)	armor:Black Iron Helm (+8 more)
+6210	Catarina Armor (worn)	armor:Catarina Armor (+10 more)
+6211	Black Iron Armor (worn)	armor:Black Iron Armor (+6 more)
+6220	Catarina Gauntlets (worn)	armor:Catarina Gauntlets (+7 more)
+6221	Black Iron Gauntlets (worn)	armor:Black Iron Gauntlets (+6 more)
+6230	Catarina Leggings (worn)	armor:Catarina Leggings (+8 more)
+6231	Black Iron Leggings (worn)	armor:Black Iron Leggings (+6 more)
+6300	Catarina Helm (worn)	armor:Catarina Helm (+270 more)
+6310	Helm of Thorns (worn)	armor:Helm of Thorns
+6320	Armor of Thorns (worn)	armor:Armor of Thorns
+6330	Gauntlets of Thorns (worn)	armor:Gauntlets of Thorns
+6340	Leggings of Thorns (worn)	armor:Leggings of Thorns
+6400	Bandit's Knife (on hit)	weapon:Bandit's Knife (+40 more)
+6401	Barbed Straight Sword (on hit)	weapon:Barbed Straight Sword (+55 more)
+6402	Flamberge (on hit)	weapon:Flamberge (+30 more)
+6410	Priscilla's Dagger (on hit)	weapon:Priscilla's Dagger
+6420	Lifehunt Scythe (on hit)	weapon:Lifehunt Scythe
+6500	Large Club (on hit)	weapon:Large Club (+10 more)
+6600	Gravelord Sword (on hit)	weapon:Gravelord Sword
+6610	Gold Tracer (on hit)	weapon:Gold Tracer
+6630	Guardian Tail (on hit)	weapon:Guardian Tail (+9 more)
+6720	Server (on hit)	weapon:Server (+9 more)
+6730	Smough's Hammer (on hit)	weapon:Smough's Hammer
+6740	Sanctus (held)	weapon:Sanctus (+5 more)
+6750	Bloodshield (held)	weapon:Bloodshield (+5 more)
+6760	Poison Arrow (on hit)	weapon:Poison Arrow
+6800	Tin Crystallization Ctlyst. (held)	weapon:Tin Crystallization Ctlyst. (+1 more)
+6810	Drake Sword (held)	weapon:Drake Sword
+6820	Moonlight Greatsword (held)	weapon:Moonlight Greatsword
+6830	Dragon Greatsword (held)	weapon:Dragon Greatsword
+6840	Gargoyle Tail Axe (held)	weapon:Gargoyle Tail Axe (+9 more)
+6850	Dragon King Greataxe (held)	weapon:Dragon King Greataxe
+6860	Dragon Tooth (held)	weapon:Dragon Tooth
+6870	Dragon Bone Fist (held)	weapon:Dragon Bone Fist
+6880	Gargoyle's Halberd (held)	weapon:Gargoyle's Halberd (+9 more)
+6890	Grass Crest Shield (held)	weapon:Grass Crest Shield (+5 more)
+6900	Mask of the Father (worn)	armor:Mask of the Father
+6910	Mask of the Mother (worn)	armor:Mask of the Mother
+6920	Mask of the Child (worn)	armor:Mask of the Child
+6930	Crown of Dusk (worn)	armor:Crown of Dusk
+6940	Crown of the Dark Sun (worn)	armor:Crown of the Dark Sun
+6950	Sunlight Maggot (worn)	armor:Sunlight Maggot
+6960	Symbol of Avarice (worn)	armor:Symbol of Avarice
+6970	Chaos Blade (on hit)	weapon:Chaos Blade
+6980	Lifehunt Scythe (on hit)	weapon:Lifehunt Scythe
+6990	Butcher Knife (on hit)	weapon:Butcher Knife (+9 more)

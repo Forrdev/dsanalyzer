@@ -111,6 +111,7 @@ public fun RuntimeDetail(
     onFollow: (View) -> Unit,
     onReadPlacedEnemies: () -> Unit,
     onReadCollision: () -> Unit,
+    onReadCharacterEffects: () -> Unit,
     onAnimate: (AnimationTarget) -> Unit
 ) {
     val unsupported = panel.feature?.takeIf { state.live && it !in state.supports }
@@ -134,11 +135,11 @@ public fun RuntimeDetail(
                     RuntimePanel.LoadQueue ->
                         item(key = "load-queue") { LoadQueuePanel(snapshot.loadQueue) }
                     RuntimePanel.Characters -> characterItems(
-                        snapshot.characters,
+                        CharacterList(snapshot.characters, state.characterEffects, settings.hideDeadCharacters),
                         state.timings,
                         state.placedEnemies,
-                        settings.hideDeadCharacters,
-                        onReadPlacedEnemies
+                        onReadPlacedEnemies,
+                        onReadCharacterEffects
                     )
                     RuntimePanel.Animation -> animationItems(
                         snapshot,

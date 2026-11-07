@@ -20,6 +20,7 @@ import com.sappyoak.dsanalyzer.runtime.read.readersFor
 import com.sappyoak.dsanalyzer.runtime.read.ai.AISource
 import com.sappyoak.dsanalyzer.runtime.read.attack.AttackReader
 import com.sappyoak.dsanalyzer.runtime.read.character.CharacterReading
+import com.sappyoak.dsanalyzer.runtime.read.character.PlayerReading
 import com.sappyoak.dsanalyzer.runtime.session.ai.AIScope
 import com.sappyoak.dsanalyzer.runtime.session.ai.AITracker
 import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
@@ -91,25 +92,21 @@ public class GameSession internal constructor(
         lastPlace = place
         wasLoaded = loaded
 
-        var present = if (loaded) 1 else 0
-        present += if (areaPresent) 1 else 0
-        present += readers.player?.refresh(memory) ?: 0
-
+        val player = readers.characters?.player(memory) ?: PlayerReading.Empty
         val changes = flags.refresh(memory)
-        if (flags.isPresent) {
-            present++
-        }
+        val present = listOf(loaded, areaPresent, readers.clock.refresh(memory), flags.isPresent)
+            .count { it } + player.present
 
         refreshWorldTier(aiScope)
 
         return RuntimeSnapshot(
-            inGameTimeMillis = readers.player?.timeMillis() ?: 0,
-            frame = readers.player?.frame() ?: 0L,
+            inGameTimeMillis = readers.clock.timeMillis(),
+            frame = readers.clock.frame(),
             place = place,
             loaded = loaded,
             reloaded = reloaded,
-            player = if (loaded) readers.player?.player(memory) else null,
-            world = readers.player?.world(),
+            player = if (loaded) player.player else null,
+            world = player.world,
             camera = if (loaded) cameraReader.camera() else null,
             menu = menu,
             loadQueue = world.loadQueue,
@@ -117,7 +114,7 @@ public class GameSession internal constructor(
             flagChanges = changes,
             animation = if (loaded) animationTracker.read(memory, animation, world.others) else null,
             hits = hitTracker.update(attackReader.read(memory, world.tracked)),
-            cost = SampleCost(started.elapsedNow(), present, (readers.player?.structures ?: 0) + AROUND_PLAYER),
+            cost = SampleCost(started.elapsedNow(), present, (readers.characters?.playerStructures ?: 0) + AROUND_PLAYER),
             writes = writer.active
         )
     }

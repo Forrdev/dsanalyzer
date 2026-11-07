@@ -37,13 +37,6 @@ public object AIThink {
     public const val ChosenAction: Int = 0x9C
 }
 
-/** 'NS_FRPG::ActionCtrl' */
-public object ActionCtrl {
-    public const val PlayingAction: Int = 0x60
-    public const val PlayingTime: Int = 0x48C
-    public const val RequestedAction: Int = 0x518
-}
-
 public object TargetingSystem {
     public const val Known: Int = 0x0C
 }

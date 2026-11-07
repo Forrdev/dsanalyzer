@@ -21,6 +21,7 @@ public class RuntimeEffects(
         RuntimeEffect.Observe -> link.state.map(RuntimeMessage::LinkChanged)
         RuntimeEffect.RequestPlacedEnemies -> flow { link.requestPlacedEnemies() }
         RuntimeEffect.RequestCollision -> flow { link.requestCollision() }
+        RuntimeEffect.RequestCharacterEffects -> flow { link.requestCharacterEffects() }
         RuntimeEffect.FollowAITracking -> flow { aiTracking.collect { link.setAIScope(it.scope) } }
         is RuntimeEffect.Animate -> flow { link.setAnimationTarget(effect.target) }
         RuntimeEffect.FollowTimingsWanted -> timingsWanted.map(RuntimeMessage::TimingsWanted)
@@ -41,6 +42,7 @@ public sealed interface RuntimeEffect {
     public data object Observe : RuntimeEffect
     public data object RequestPlacedEnemies : RuntimeEffect
     public data object RequestCollision : RuntimeEffect
+    public data object RequestCharacterEffects : RuntimeEffect
     public data object FollowAITracking : RuntimeEffect
     public data class Animate(public val target: AnimationTarget) : RuntimeEffect
     public data object FollowTimingsWanted : RuntimeEffect

@@ -38,7 +38,7 @@ internal fun TimingLibrary.requestsFor(snapshot: RuntimeSnapshot?): Pair<TimingL
 
     if (next.loadingMaps.isNotEmpty()) return next to requests
 
-    val missing = snapshot.others
+    val missing = snapshot.characters
         .filter { it.ai != null && it.modelId != HUMAN_MODEL }
         .map { it.modelId }
         .filterNot { it in models || it in requestedModels }

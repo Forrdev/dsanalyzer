@@ -12,6 +12,7 @@ public sealed interface RuntimeMessage {
 
     public data object PlacedEnemiesRequested : RuntimeMessage
     public data object CollisionRequested : RuntimeMessage
+    public data object CharacterEffectsRequested : RuntimeMessage
     public data class AnimationTargetChosen(public val target: AnimationTarget) : RuntimeMessage
 
     public data class TimingsWanted(public val wanted: Boolean) : RuntimeMessage

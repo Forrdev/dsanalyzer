@@ -4,6 +4,7 @@ import com.sappyoak.dsanalyzer.app.runtime.timing.TimingLibrary
 import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.runtime.session.BlockRoster
+import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeFeature
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.WorldPlace
@@ -18,6 +19,7 @@ public data class RuntimeState(
      * Every enemy the loaded blocks place, once something asks for them
      */
     public val placedEnemies: List<BlockRoster>? = null,
+    public val characterEffects: List<CharacterSnapshot>? = null,
     public val collision: CollisionSnapshot? = null,
     public val problem: String? = null,
     public val installation: Installation? = null,

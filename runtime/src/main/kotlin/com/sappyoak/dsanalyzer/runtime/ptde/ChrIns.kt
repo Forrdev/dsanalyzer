@@ -95,6 +95,8 @@ public object ChrIns {
      */
     public const val ForcePlayAnimation: Int = 0xFC
 
+    /** [ChrEventAction] */
+    public const val EventActionPointer: Int = 0x148
     public const val SpecialEffectPointer: Int = 0x1E0
 
     /**
@@ -139,6 +141,10 @@ public object ChrIns {
     public const val ResistMax: Int = 0x310
 
     public const val Flags2: Int = 0x3C4
+
+    public const val EventCommands: Int = 0x3EC
+    public const val EventCommandCount: Int = 4
+    public const val EventMessage: Int = 0x3FC
 
     /** Past the '0x410' seam, so a 'PlayerIns' field rather than one an enemy also has' */
     public const val StoredItem: Int = 0x628

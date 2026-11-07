@@ -8,22 +8,24 @@ import com.sappyoak.dsanalyzer.runtime.read.collision.CollisionReader
 import com.sappyoak.dsanalyzer.runtime.read.place.DSRPlaceReader
 import com.sappyoak.dsanalyzer.runtime.read.place.PlaceSource
 import com.sappyoak.dsanalyzer.runtime.read.place.PTDEPlaceReader
-import com.sappyoak.dsanalyzer.runtime.read.player.DSRPlayerReader
-import com.sappyoak.dsanalyzer.runtime.read.player.PTDEPlayerReader
-import com.sappyoak.dsanalyzer.runtime.read.player.PlayerSource
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeFeature
 
 internal class EditionReaders(
     val place: PlaceSource?,
-    val player: PlayerSource?,
+    val clock: ClockSource,
     val characters: CharacterSource?,
     val placedParts: PlacedPartsReader?,
     val collision: CollisionReader?
 ) {
     val supported: Set<RuntimeFeature> = buildSet {
+        add(RuntimeFeature.Clock)
+        add(RuntimeFeature.Animation)
+
         if (place != null) add(RuntimeFeature.Place)
-        if (player != null) add(RuntimeFeature.Clock)
-        if (player?.providesSnapshot == true) add(RuntimeFeature.PlayerState)
+        if (characters != null) {
+            add(RuntimeFeature.PlayerState)
+            add(RuntimeFeature.Characters)
+        }
         if (characters != null) add(RuntimeFeature.Characters)
         if (placedParts != null) add(RuntimeFeature.PlacedParts)
         if (collision != null) add(RuntimeFeature.Collision)
@@ -33,15 +35,15 @@ internal class EditionReaders(
 internal fun readersFor(edition: GameEdition, layout: GameLayout): EditionReaders = when (edition) {
     GameEdition.PrepareToDie -> EditionReaders(
         place = PTDEPlaceReader(),
-        player = PTDEPlayerReader(layout.specialEffect),
-        characters = PTDECharacterReader(layout.specialEffect),
+        clock = ClockSource.of(edition),
+        characters = PTDECharacterReader(layout),
         placedParts = PlacedPartsReader(),
         collision = CollisionReader()
     )
 
     GameEdition.Remastered -> EditionReaders(
         place = DSRPlaceReader(),
-        player = DSRPlayerReader(),
+        clock = ClockSource.of(edition),
         characters = null,
         placedParts = null,
         collision = null
