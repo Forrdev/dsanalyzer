@@ -49,7 +49,7 @@ internal fun LazyListScope.animationItems(
 
     header("animation-slots", "Slots (${animation.occupied.size} of ${animation.slots.size} in use)")
     items(animation.occupied, key = { "slot-${it.index}" }) { slot ->
-        val orphan = slot in animation.unreferenced
+        val orphan = slot in animation.orphans
         Mono(slot.line(), if (orphan) AnalyzerTheme.colors.failed else AnalyzerTheme.colors.textHi)
     }
 
@@ -98,16 +98,15 @@ private fun TargetPicker(
 private fun Summary(animation: AnimationSnapshot) {
     Field("Play speed", "%.2f".format(animation.playSpeed), ROW_PADDING)
     Field("Weight sum", "%.3f".format(animation.weightSum), ROW_PADDING)
-    if (animation.stacks > 0) {
+    val orphans = animation.orphans
+    if (orphans.isNotEmpty()) {
         Text(
-            text = "Poopwalk: ${animation.stacks} stuck slot(s), walking at 1/${animation.stacks + 1} speed",
+            text = "${orphans.size} stuck slot(s) " +
+                    "(${orphans.joinToString { "#${it.index}" }}), possibly walking at 1/${orphans.size + 1} speed",
             style = MaterialTheme.typography.bodySmall,
             color = AnalyzerTheme.colors.failed,
             modifier = ROW_PADDING
         )
-    }
-    animation.unreferenced.takeIf { it.isNotEmpty() }?.let { slots ->
-        Field("Held by nothing", slots.joinToString { "#${it.index}" }, ROW_PADDING)
     }
 }
 

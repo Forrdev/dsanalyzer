@@ -12,15 +12,21 @@ public data class AnimationSnapshot(
     public val occupied: List<AnimSlotSnapshot> get() = slots.filter { it.state != SlotState.Free }
     public val weightSum: Float get() = slots.sumOf { (it.control?.masterWeight ?: 0f).toDouble() }.toFloat()
 
-    public val stacks: Int get() = if (occupied.isEmpty()) 0 else (weightSum - 1f).roundToInt().coerceAtLeast(0)
-
-    public val unreferenced: List<AnimSlotSnapshot>
+    public val orphans: List<AnimSlotSnapshot>
         get() {
             if (channels.isEmpty()) return emptyList()
             val fadedFrom = occupied.mapNotNullTo(HashSet()) { slot -> slot.fadeFrom.takeUnless { it.isNone } }
-            return slots.filter { it.state == SlotState.Playing && it.channel == null && it.handle !in fadedFrom }
+            return slots.filter { it.isStuck && it.channel == null && it.handle !in fadedFrom }
         }
 }
+
+private val AnimSlotSnapshot.isStuck: Boolean
+    get() {
+        val played = control ?: return false
+        return state == SlotState.Playing && !played.looping &&
+                (played.playbackSpeed == 0f || played.cycles >= played.maxCycles)
+    }
+
 
 public data class AnimSlotSnapshot(
     public val index: Int,
