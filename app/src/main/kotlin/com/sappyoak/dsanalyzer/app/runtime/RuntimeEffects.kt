@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.map
 import com.sappyoak.dsanalyzer.app.store.EffectRunner
 import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
+import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
 
 public class RuntimeEffects(
     private val link: GameLink,
@@ -21,6 +22,7 @@ public class RuntimeEffects(
         RuntimeEffect.RequestPlacedEnemies -> flow { link.requestPlacedEnemies() }
         RuntimeEffect.RequestCollision -> flow { link.requestCollision() }
         RuntimeEffect.FollowAITracking -> flow { aiTracking.collect { link.setAIScope(it.scope) } }
+        is RuntimeEffect.Animate -> flow { link.setAnimationTarget(effect.target) }
         RuntimeEffect.FollowTimingsWanted -> timingsWanted.map(RuntimeMessage::TimingsWanted)
         is RuntimeEffect.LoadMapTimings -> flow {
             emit(RuntimeMessage.TimingsLoaded(timings.forMap(effect.installation, effect.map, effect.known), effect.map))
@@ -40,6 +42,7 @@ public sealed interface RuntimeEffect {
     public data object RequestPlacedEnemies : RuntimeEffect
     public data object RequestCollision : RuntimeEffect
     public data object FollowAITracking : RuntimeEffect
+    public data class Animate(public val target: AnimationTarget) : RuntimeEffect
     public data object FollowTimingsWanted : RuntimeEffect
 
     public data class LoadMapTimings(

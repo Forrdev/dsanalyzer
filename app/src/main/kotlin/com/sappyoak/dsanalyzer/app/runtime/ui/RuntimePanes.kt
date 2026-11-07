@@ -26,6 +26,7 @@ import com.sappyoak.dsanalyzer.app.runtime.RuntimeState
 import com.sappyoak.dsanalyzer.app.ui.theme.AnalyzerTheme
 import com.sappyoak.dsanalyzer.app.ui.theme.Indicator
 import com.sappyoak.dsanalyzer.app.ui.theme.of
+import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
 
 @Composable
 public fun ColumnScope.RuntimeNavigator(
@@ -109,7 +110,8 @@ public fun RuntimeDetail(
     panel: RuntimePanel,
     onFollow: (View) -> Unit,
     onReadPlacedEnemies: () -> Unit,
-    onReadCollision: () -> Unit
+    onReadCollision: () -> Unit,
+    onAnimate: (AnimationTarget) -> Unit
 ) {
     val unsupported = panel.feature?.takeIf { state.live && it !in state.supports }
     val edition = state.attached?.edition?.name
@@ -137,6 +139,12 @@ public fun RuntimeDetail(
                         state.placedEnemies,
                         settings.hideDeadCharacters,
                         onReadPlacedEnemies
+                    )
+                    RuntimePanel.Animation -> animationItems(
+                        snapshot,
+                        state.animationTarget,
+                        settings.hideDeadCharacters,
+                        onAnimate
                     )
                     RuntimePanel.Collision ->
                         item(key = "collision") { CollisionPanel(state.collision, onReadCollision) }

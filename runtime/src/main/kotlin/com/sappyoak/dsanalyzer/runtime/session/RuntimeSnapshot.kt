@@ -3,6 +3,7 @@ package com.sappyoak.dsanalyzer.runtime.session
 import kotlin.time.Duration
 
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
+import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.attack.HitSnapshot
 import com.sappyoak.dsanalyzer.runtime.write.WriteKey
 
@@ -21,6 +22,7 @@ public data class RuntimeSnapshot(
     public val characters: List<CharacterSnapshot>,
     public val flagChanges: List<FlagChange>,
     public val menu: MenuSnapshot?,
+    public val animation: AnimationSnapshot? = null,
     public val hits: List<HitSnapshot> = emptyList(),
     public val cost: SampleCost,
     public val writes: Set<WriteKey> = emptySet()

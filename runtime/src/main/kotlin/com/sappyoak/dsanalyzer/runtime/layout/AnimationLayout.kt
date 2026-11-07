@@ -5,6 +5,9 @@ import com.sappyoak.dsanalyzer.runtime.pointers.GamePointer
 public data class AnimationLayout(
     public val pointer: GamePointer,
 
+    /** Where a character's controller holds its pool */
+    public val fromController: Int,
+
     /** Slots in the pool, and so the cap on simultaneous blended animations */
     public val slotCapacity: Int,
 
@@ -41,7 +44,7 @@ public data class AnimSlotLayout(
     public val control: Int,
 
     /** Back to the owning pool. Remastered only; `null` in PTDE, which has no such field */
-    public val manager: Int?,
+    public val manager: Int,
 
     /** Seconds since the slot was started, never reset while it stays occupied */
     public val elapsed: Int,

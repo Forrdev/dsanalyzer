@@ -65,6 +65,7 @@ internal val DSRLayout: GameLayout = GameLayout(
     ),
     animation = AnimationLayout(
         pointer = AnimData.Pointer,
+        fromController = ChrCtrl.AnimDataPointer,
         slotCapacity = ANIM_SLOT_COUNT,
         slotStride = ANIM_SLOT_SIZE,
         slotCountField = AnimData.SlotCount,
@@ -101,6 +102,7 @@ internal val DSRLayout: GameLayout = GameLayout(
     ),
     animRequest = AnimRequestLayout(
         pointer = AnimRequestMgr.Pointer,
+        fromController = ChrCtrl.AnimRequestMgrPointer,
         entryCount = ANIM_REQUEST_COUNT,
         entryStride = ANIM_REQUEST_STRIDE,
         entry = AnimRequestEntryLayout(

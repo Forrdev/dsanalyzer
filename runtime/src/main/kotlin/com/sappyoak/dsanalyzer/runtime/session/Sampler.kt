@@ -17,6 +17,7 @@ import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.runtime.ConnectionEvent
 import com.sappyoak.dsanalyzer.runtime.GameConnection
 import com.sappyoak.dsanalyzer.runtime.session.ai.AIScope
+import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
 import com.sappyoak.dsanalyzer.runtime.tablesFor
 
 
@@ -30,10 +31,12 @@ public class SampleRequests {
     private val collision = AtomicBoolean(false)
     private val characterEffects = AtomicBoolean(false)
     private val ai = AtomicReference(AIScope.TargetingPlayer)
+    private val animated = AtomicReference<AnimationTarget>(AnimationTarget.Player)
 
     public val writes: WriteRequests = WriteRequests()
 
     internal val aiScope: AIScope get() = ai.get()
+    internal val animationTarget: AnimationTarget get() = animated.get()
 
     public fun requestPlacedEnemies() {
         placedEnemies.set(true)
@@ -55,6 +58,10 @@ public class SampleRequests {
 
     public fun setAIScope(scope: AIScope) {
         ai.set(scope)
+    }
+
+    public fun setAnimationTarget(target: AnimationTarget) {
+        animated.set(target)
     }
 }
 
@@ -117,7 +124,7 @@ private suspend fun FlowCollector<RuntimeEvent>.sampleUntilCancelled(
     retry: SignatureRetry
 ) {
     while (true) {
-        emit(RuntimeEvent.Sampled(session.sample()))
+        emit(RuntimeEvent.Sampled(session.sample(requests.aiScope, requests.animationTarget)))
         requests.writes.applyTo(session)
         session.afterSample()
 

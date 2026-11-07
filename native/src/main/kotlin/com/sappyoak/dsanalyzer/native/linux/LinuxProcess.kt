@@ -11,6 +11,7 @@ import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.native.memory.AddressRange
 import com.sappyoak.dsanalyzer.native.memory.MemoryRegion
 import com.sappyoak.dsanalyzer.native.process.AttachedProcess
+import com.sappyoak.dsanalyzer.native.process.CodeMemory
 import com.sappyoak.dsanalyzer.native.process.ModuleInfo
 import com.sappyoak.dsanalyzer.native.process.ProcessInfo
 import com.sappyoak.dsanalyzer.shared.platform.PointerSize
@@ -29,6 +30,8 @@ internal class LinuxProcess(
     private val entry = Path.of("/proc/${info.pid}")
 
     override val isRunning: Boolean get() = !closed.get() && Files.exists(entry)
+    override val code: CodeMemory?
+        get() = null
 
     override fun modules(): List<ModuleInfo> = mappedModules(info.pid)
 

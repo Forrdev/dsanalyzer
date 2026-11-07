@@ -23,6 +23,7 @@ import com.sappyoak.dsanalyzer.runtime.session.RuntimeEvent
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.SampleRequests
 import com.sappyoak.dsanalyzer.runtime.session.ai.AIScope
+import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
 import com.sappyoak.dsanalyzer.runtime.session.sampling
 import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionSnapshot
 import com.sappyoak.dsanalyzer.runtime.watchForGame
@@ -104,6 +105,10 @@ public class GameLink(
 
     public fun setAIScope(scope: AIScope) {
         requests.setAIScope(scope)
+    }
+
+    public fun setAnimationTarget(target: AnimationTarget) {
+        requests.setAnimationTarget(target)
     }
 
     private suspend fun record(event: RuntimeEvent) {

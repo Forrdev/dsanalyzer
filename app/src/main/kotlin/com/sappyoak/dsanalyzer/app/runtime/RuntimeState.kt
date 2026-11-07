@@ -7,6 +7,7 @@ import com.sappyoak.dsanalyzer.runtime.session.BlockRoster
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeFeature
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.WorldPlace
+import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
 import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionSnapshot
 
 public data class RuntimeState(
@@ -20,7 +21,8 @@ public data class RuntimeState(
     public val collision: CollisionSnapshot? = null,
     public val problem: String? = null,
     public val installation: Installation? = null,
-    public val timings: TimingLibrary = TimingLibrary()
+    public val timings: TimingLibrary = TimingLibrary(),
+    public val animationTarget: AnimationTarget = AnimationTarget.Player
 ) {
     public val live: Boolean get() = attached != null
     public val isCorrectGame: Boolean get() = installation != null && attached != null && installation.build.edition == attached.edition

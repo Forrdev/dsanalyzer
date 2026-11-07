@@ -22,6 +22,8 @@ import com.sappyoak.dsanalyzer.runtime.read.attack.AttackReader
 import com.sappyoak.dsanalyzer.runtime.read.character.CharacterReading
 import com.sappyoak.dsanalyzer.runtime.session.ai.AIScope
 import com.sappyoak.dsanalyzer.runtime.session.ai.AITracker
+import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
+import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTracker
 import com.sappyoak.dsanalyzer.runtime.session.attack.HitTracker
 import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionSnapshot
 import com.sappyoak.dsanalyzer.runtime.write.CheatWriter
@@ -47,6 +49,7 @@ public class GameSession internal constructor(
     private val loadQueueReader = LoadQueueReader(layout.loadQueue)
     private val aiTracker = AITracker(AI_GRACE_PERIOD)
     private val attackReader = AttackReader()
+    private val animationTracker = AnimationTracker(layout)
     private val hitTracker = HitTracker(HIT_LINGER_TICKS, HIT_SWEEP_LIMIT)
     private val cheats = CheatWriter.create(game.edition)
 
@@ -56,7 +59,7 @@ public class GameSession internal constructor(
     private var world = WorldTier()
     private var sinceWorld = 0
 
-    public val supports: Set<RuntimeFeature> get() = readers.supported
+    public val supports: Set<RuntimeFeature> get() = readers.supported + RuntimeFeature.Animation
 
     init {
         val context = SessionContext(game.edition, memory, writer, module) { lastPlace }
@@ -65,7 +68,10 @@ public class GameSession internal constructor(
 
     public fun isFlagSet(flagId: Int): Boolean? = flags.isSet(flagId)
 
-    public fun sample(aiScope: AIScope = AIScope.TargetingPlayer): RuntimeSnapshot {
+    public fun sample(
+        aiScope: AIScope = AIScope.TargetingPlayer,
+        animation: AnimationTarget = AnimationTarget.Player
+    ): RuntimeSnapshot {
         val started = TimeSource.Monotonic.markNow()
 
         val loaded = cameraReader.refresh(memory)
@@ -109,6 +115,7 @@ public class GameSession internal constructor(
             loadQueue = world.loadQueue,
             characters = aiTracker.read(memory.memory, world.ai, world.characters),
             flagChanges = changes,
+            animation = if (loaded) animationTracker.read(memory, animation, world.others) else null,
             hits = hitTracker.update(attackReader.read(memory, world.tracked)),
             cost = SampleCost(started.elapsedNow(), present, (readers.player?.structures ?: 0) + AROUND_PLAYER),
             writes = writer.active
@@ -157,6 +164,7 @@ public class GameSession internal constructor(
         world = WorldTier(
             loadQueue = loadQueueReader.read(memory),
             characters = reading.characters,
+            others = reading.others,
             ai = aiTracker.select(memory.memory, scope, reading)
         )
     }
@@ -176,15 +184,6 @@ public class GameSession internal constructor(
         const val HIT_LINGER_TICKS = 15
         const val HIT_SWEEP_LIMIT = 32
     }
-}
-
-/** The slow tier's last reading, held between the ticks that do not refresh it */
-private data class WorldTier(
-    val loadQueue: LoadQueueSnapshot? = null,
-    val characters: List<CharacterSnapshot> = emptyList(),
-    val ai: List<AISource> = emptyList()
-) {
-    val tracked: Set<Int> = ai.mapTo(HashSet()) { it.handle }
 }
 
 public fun GameConnection.openSession(

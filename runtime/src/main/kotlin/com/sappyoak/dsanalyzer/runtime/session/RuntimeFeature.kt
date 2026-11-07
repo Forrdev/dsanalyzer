@@ -7,5 +7,6 @@ public enum class RuntimeFeature {
     LoadQueue,
     Characters,
     PlacedParts,
-    Collision;
+    Collision,
+    Animation;
 }

@@ -96,7 +96,8 @@ internal fun DetailPane(
                 panel = view.panel,
                 onFollow = onFollow,
                 onReadPlacedEnemies = { stores.runtime.dispatch(RuntimeMessage.PlacedEnemiesRequested) },
-                onReadCollision = { stores.runtime.dispatch(RuntimeMessage.CollisionRequested) }
+                onReadCollision = { stores.runtime.dispatch(RuntimeMessage.CollisionRequested) },
+                onAnimate = { stores.runtime.dispatch(RuntimeMessage.AnimationTargetChosen(it)) }
             )
         }
 

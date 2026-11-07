@@ -51,6 +51,8 @@ public object AnimSlot {
     /** → the control this slot owns for its whole life */
     public const val ControlPointer: Int = 0x04
 
+    public const val ManagerPointer: Int = 0x0C
+
     /** Seconds since the slot was started, never reset while it stays occupied */
     public const val Elapsed: Int = 0x14
 

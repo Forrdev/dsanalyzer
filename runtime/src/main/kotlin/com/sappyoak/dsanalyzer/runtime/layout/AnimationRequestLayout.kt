@@ -4,6 +4,7 @@ import com.sappyoak.dsanalyzer.runtime.pointers.GamePointer
 
 public data class AnimRequestLayout(
     public val pointer: GamePointer,
+    public val fromController: Int,
     public val entryCount: Int,
     public val entryStride: Int,
     public val entry: AnimRequestEntryLayout,

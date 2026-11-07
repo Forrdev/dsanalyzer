@@ -9,6 +9,7 @@ public enum class RuntimePanel(
     Attachment("Attachment"),
     Player("Player", RuntimeFeature.PlayerState),
     Characters("Characters", RuntimeFeature.Characters),
+    Animation("Animation", RuntimeFeature.Animation),
     LoadQueue("Load queue", RuntimeFeature.LoadQueue),
     Collision("Collision", RuntimeFeature.Collision),
     Camera("Camera"),

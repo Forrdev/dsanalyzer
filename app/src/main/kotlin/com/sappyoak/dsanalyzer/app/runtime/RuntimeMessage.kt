@@ -4,6 +4,7 @@ import com.sappyoak.dsanalyzer.app.runtime.timing.ModelTimings
 import com.sappyoak.dsanalyzer.app.store.FrequentMessage
 import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
+import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
 
 public sealed interface RuntimeMessage {
     public data class Opened(public val installation: Installation) : RuntimeMessage
@@ -11,6 +12,7 @@ public sealed interface RuntimeMessage {
 
     public data object PlacedEnemiesRequested : RuntimeMessage
     public data object CollisionRequested : RuntimeMessage
+    public data class AnimationTargetChosen(public val target: AnimationTarget) : RuntimeMessage
 
     public data class TimingsWanted(public val wanted: Boolean) : RuntimeMessage
     public data class TimingsLoaded(
