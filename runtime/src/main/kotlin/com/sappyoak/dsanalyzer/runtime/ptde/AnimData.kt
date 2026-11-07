@@ -9,7 +9,7 @@ internal const val ANIM_SLOT_COUNT: Int = 16
 internal const val ANIM_SLOT_SIZE: Int = 0x60
 
 /** The slot array is embedded here rather than allocated separately */
-private const val ANIM_SLOTS_AT: Int = 0x160
+private const val ANIM_SLOTS_AT: Int = 0x140
 
 /**
  * Enough to cover the embedded slot array, which runs well past the last field named below.

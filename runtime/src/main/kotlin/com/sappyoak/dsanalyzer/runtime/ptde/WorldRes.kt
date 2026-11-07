@@ -63,7 +63,7 @@ public object WorldRes {
     public const val BlockInfoCount: Int = 0x0C
     public const val BlockInfosPointer: Int = 0x10
 
-    public const val AreaCount: Int = 0x700
+    public const val AreaCount: Int = 0x7D0
 
     /** Points at the area array, stride '0x70' */
     public const val AreasPointer: Int = 0x7D4
@@ -111,6 +111,8 @@ public object WorldBlockRes {
     /** The owning 'WorldAreaRes' whose own state gates [WantLoaded] */
     public const val AreaPointer: Int = 0x0C
 
+    public const val GroupMasks: Int = 0x10
+
     /** Forces the request off regardless of everything below it */
     public const val Suppress: Int = 0x60
 
@@ -132,7 +134,7 @@ public object WorldBlockRes {
     public const val PinOther: Int = 0x16C
 
     /** Held while something is waiting on this block, which keeps it from unloading underneath */
-    public const val PinLoaded: Int = 0x160
+    public const val PinLoaded: Int = 0x16D
 }
 
 public object WorldBlockInfo {

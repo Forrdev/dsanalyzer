@@ -9,6 +9,7 @@ public object ChrInsFlags1 {
     public const val SetSuperArmor: Int = 0x00010000
     public const val FirstPerson: Int = 0x00100000
     public const val SetDrawEnable: Int = 0x00800000
+    public const val EnableGetItem: Int = 0x01000000
     public const val SetDeadMode: Int = 0x02000000
     public const val DisableDamage: Int = 0x04000000
     public const val EnableInvincible: Int = 0x08000000

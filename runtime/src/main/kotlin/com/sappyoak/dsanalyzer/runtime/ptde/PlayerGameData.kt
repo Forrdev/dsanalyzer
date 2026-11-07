@@ -23,7 +23,7 @@ public object PlayerGameData {
     public const val BaseMaxMp: Int = 0x1C
     public const val MpMax: Int = 0x20
     public const val Stamina: Int = 0x28
-    public const val MaxStamina: Int = 0x2
+    public const val MaxStamina: Int = 0x2C
     public const val BaseMaxStamina: Int = 0x30
 
     public const val Stats: Int = 0x038
@@ -61,7 +61,7 @@ public object PlayerGameData {
     public const val ClearItem: Int = 0x108
     public const val Covenant: Int = 0x10B
     public const val FaceType: Int = 0x10C
-    public const val HairType: Int = 0x10E
+    public const val HairType: Int = 0x10D
     public const val HairColor: Int = 0x10E
     public const val CurseLevel: Int = 0x10F
     public const val InvadeType: Int = 0x110

@@ -55,12 +55,6 @@ object PTDESignatures {
         target = SignatureTarget.Embedded(0x15)
     )
 
-    public val DeathCam: Signature = Signature.parse(
-        name = "DeathCam",
-        pattern = "88 5D 15 88 5D 16 88 5D 17 A1 ?? ?? ?? ?? 3B C3",
-        target = SignatureTarget.Embedded(0xA)
-    )
-
     public val WorldChrMan: Signature = Signature.parse(
         name = "WorldChrMan",
         pattern = "A1 ?? ?? ?? ?? 8B 40 3C 3B C8 75 02 33 C9 56",
@@ -118,6 +112,11 @@ object PTDESignatures {
         )
     )
 
+    public val FileRings: Signature = Signature.parse(
+        name = "FileRings",
+        pattern = "A1 ?? ?? ?? ?? 6A 01 50 C6 44 24 1B 01 E8 ?? ?? ?? ?? BD ?? ?? ?? ??",
+        target = SignatureTarget.Embedded(0x13)
+    )
     /**
      * 'ProcessMoveManStepFrame's. It turns on FileMan_UpdateFrame's wall-time
      * budget every in-game frame

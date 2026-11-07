@@ -10,8 +10,31 @@ public enum class HeldBy {
     WarpTarget,
     Forced,
     Pinned,
+    ActiveGroups,
+    Connected,
     Referenced,
     Nothing;
+}
+
+public data class GroupMask(public val low: Long, public val high: Long) {
+    public val isEmpty: Boolean get() = low == 0L && high == 0L
+    public val groups: List<Int>
+        get() = (0 until Long.SIZE_BITS * 2).filter { bit ->
+            val word = if (bit < Long.SIZE_BITS) low else high
+            (word ushr (bit % Long.SIZE_BITS)) and 1L != 0L
+        }
+}
+
+public data class BlockMasks(
+    public val anchorConnects: GroupMask,
+    public val connectsFromA: GroupMask,
+    public val activeA: GroupMask,
+    public val connectsFromB: GroupMask,
+    public val activeB: GroupMask
+) {
+    public val inActiveSet: Boolean get() = !activeA.isEmpty || !activeB.isEmpty
+    public val connected: Boolean
+        get() = !anchorConnects.isEmpty || !connectsFromA.isEmpty || !connectsFromB.isEmpty
 }
 
 public data class BlockLoad(
@@ -24,7 +47,8 @@ public data class BlockLoad(
     public val latched: Boolean,
     public val wanted: Boolean,
     public val pinned: Boolean,
-    public val suppressed: Boolean
+    public val suppressed: Boolean,
+    public val masks: BlockMasks?
 ) {
     public val queued: Boolean get() = wanted && state == BlockState.Absent
     public val releasing: Boolean get() = !wanted && state == BlockState.Resident

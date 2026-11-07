@@ -1,5 +1,6 @@
 package com.sappyoak.dsanalyzer.runtime.read.player
 
+import com.sappyoak.dsanalyzer.runtime.layout.SpecialEffectLayout
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.pointers.StructView
 import com.sappyoak.dsanalyzer.runtime.ptde.AnimData
@@ -11,11 +12,12 @@ import com.sappyoak.dsanalyzer.runtime.ptde.GameMan
 import com.sappyoak.dsanalyzer.runtime.ptde.PlayerGameData
 import com.sappyoak.dsanalyzer.runtime.ptde.WorldChrMan
 import com.sappyoak.dsanalyzer.runtime.read.cheatsIn
+import com.sappyoak.dsanalyzer.runtime.read.effects.SpecialEffectReader
 import com.sappyoak.dsanalyzer.runtime.session.AttributeSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.PlayerSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.WorldSnapshot
 
-internal class PTDEPlayerReader : PlayerSource {
+internal class PTDEPlayerReader(effectsLayout: SpecialEffectLayout) : PlayerSource {
     private val manager = StructView(WorldChrMan.Pointer)
     private val character = StructView(ChrIns.Pointer)
     private val position = StructView(ChrPosData.Pointer)
@@ -24,6 +26,7 @@ internal class PTDEPlayerReader : PlayerSource {
     private val attributes = StructView(PlayerGameData.Pointer)
     private val worldState = StructView(GameMan.Pointer)
     private val gameData = StructView(GameDataMan.Pointer)
+    private val effects = SpecialEffectReader(effectsLayout)
 
     private val all = listOf(
         character, position, placement, animation, attributes, worldState, gameData, manager
@@ -39,7 +42,7 @@ internal class PTDEPlayerReader : PlayerSource {
 
     override fun frame(): Long = GameDataMan.frameOf(timeMillis())
 
-    override fun player(): PlayerSnapshot? {
+    override fun player(memory: GameMemory): PlayerSnapshot? {
         if (!character.isPresent || !position.isPresent) return null
 
         return PlayerSnapshot(
@@ -56,7 +59,8 @@ internal class PTDEPlayerReader : PlayerSource {
                 flags2 = character.int(ChrIns.Flags2),
                 mapFlags = if (placement.isPresent) placement.int(ChrCtrl.Flags) else 0
             ),
-            attributes = attributes()
+            attributes = attributes(),
+            effects = effects.read(memory, character.pointer(ChrIns.SpecialEffectPointer))
         )
     }
 

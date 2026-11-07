@@ -11,7 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 import com.sappyoak.dsanalyzer.runtime.session.BlockLoad
+import com.sappyoak.dsanalyzer.runtime.session.BlockMasks
 import com.sappyoak.dsanalyzer.runtime.session.BlockState
+import com.sappyoak.dsanalyzer.runtime.session.GroupMask
 import com.sappyoak.dsanalyzer.runtime.session.HeldBy
 import com.sappyoak.dsanalyzer.runtime.session.LoadQueueSnapshot
 
@@ -60,7 +62,10 @@ internal fun LoadQueuePanel(queue: LoadQueueSnapshot?) {
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
-        active.forEach { Field(it.label(), it.describe()) }
+        active.forEach { block ->
+            Field(block.label(), block.describe())
+            block.masks?.describe()?.let { Field("", it) }
+        }
     }
 }
 
@@ -96,6 +101,24 @@ private fun BlockLoad.reason(): String? = when (heldBy) {
     HeldBy.WarpTarget -> "warp target"
     HeldBy.Forced -> "a force-load"
     HeldBy.Pinned -> "a pin"
+    HeldBy.ActiveGroups -> "an active group"
+    HeldBy.Connected -> "a connect collision"
     HeldBy.Referenced -> "a reference"
     HeldBy.Nothing -> null
 }
+
+private fun BlockMasks.describe(): String? = listOf(
+    "anchor connects" to anchorConnects,
+    "connects from" to connectsFromA,
+    "active A" to activeA,
+    "connects from B" to connectsFromB,
+    "active B" to activeB
+).filterNot { (_, mask) -> mask.isEmpty }
+    .joinToString("; ") { (name, mask) -> "$name ${mask.ranges()}" }
+    .ifEmpty { null }
+
+private fun GroupMask.ranges(): String = groups.fold(mutableListOf<IntRange>()) { runs, group ->
+    val last = runs.lastOrNull()
+    if (last != null && last.last == group - 1) runs[runs.lastIndex] = last.first..group else runs.add(group..group)
+    runs
+}.joinToString { if (it.first == it.last) "${it.first}" else "${it.first}-${it.last}" }

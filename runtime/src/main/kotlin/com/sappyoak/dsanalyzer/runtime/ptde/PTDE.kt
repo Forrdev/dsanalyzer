@@ -211,7 +211,8 @@ internal val PTDELayout: GameLayout = GameLayout(
         wantLoaded = WorldBlockRes.WantLoaded,
         stage = WorldBlockRes.Stage,
         pinLoaded = WorldBlockRes.PinLoaded,
-        pinOther = WorldBlockRes.PinOther
+        pinOther = WorldBlockRes.PinOther,
+        groupMasks = WorldBlockRes.GroupMasks
     )
 )
 

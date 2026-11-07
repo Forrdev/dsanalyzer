@@ -59,7 +59,7 @@ public class GameSession internal constructor(
     private var world = WorldTier()
     private var sinceWorld = 0
 
-    public val supports: Set<RuntimeFeature> get() = readers.supported + RuntimeFeature.Animation
+    public val supports: Set<RuntimeFeature> get() = readers.supported + RuntimeFeature.Animation + RuntimeFeature.LoadQueue
 
     init {
         val context = SessionContext(game.edition, memory, writer, module) { lastPlace }
@@ -108,7 +108,7 @@ public class GameSession internal constructor(
             place = place,
             loaded = loaded,
             reloaded = reloaded,
-            player = if (loaded) readers.player?.player() else null,
+            player = if (loaded) readers.player?.player(memory) else null,
             world = readers.player?.world(),
             camera = if (loaded) cameraReader.camera() else null,
             menu = menu,

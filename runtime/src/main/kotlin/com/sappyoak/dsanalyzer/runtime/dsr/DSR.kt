@@ -190,7 +190,8 @@ internal val DSRLayout: GameLayout = GameLayout(
         stage = WorldBlockRes.Stage,
         // Remastered's WorldBlockRes has not been walked as far as its pins
         pinLoaded = null,
-        pinOther = null
+        pinOther = null,
+        groupMasks = null
     )
 )
 

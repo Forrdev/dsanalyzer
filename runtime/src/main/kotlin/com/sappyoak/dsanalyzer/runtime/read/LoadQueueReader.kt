@@ -9,11 +9,15 @@ import com.sappyoak.dsanalyzer.runtime.pointers.TableView
 import com.sappyoak.dsanalyzer.runtime.ptde.LoadStage
 import com.sappyoak.dsanalyzer.runtime.ptde.NO_MAP
 import com.sappyoak.dsanalyzer.runtime.session.BlockLoad
+import com.sappyoak.dsanalyzer.runtime.session.BlockMasks
 import com.sappyoak.dsanalyzer.runtime.session.BlockState
+import com.sappyoak.dsanalyzer.runtime.session.GroupMask
 import com.sappyoak.dsanalyzer.runtime.session.HeldBy
 import com.sappyoak.dsanalyzer.runtime.session.LoadQueueSnapshot
 
 private const val NO_MAP: Int = -1
+
+private const val GROUP_MASK_SIZE: Int = 0x10
 
 internal class LoadQueueReader(private val layout: LoadQueueLayout) {
     private val owner = StructView(layout.pointer)
@@ -69,6 +73,7 @@ internal class LoadQueueReader(private val layout: LoadQueueLayout) {
         val forced = block.unsigned(layout.forceLoad) != 0
         val latched = block.unsigned(layout.latched) != 0
         val pinned = pinnedIn(block)
+        val masks = masksIn(block)
 
         return BlockLoad(
             index = index,
@@ -85,9 +90,23 @@ internal class LoadQueueReader(private val layout: LoadQueueLayout) {
             latched = latched,
             wanted = block.unsigned(layout.wantLoaded) != 0,
             pinned = pinned,
-            suppressed = block.unsigned(layout.suppress) != 0
+            suppressed = block.unsigned(layout.suppress) != 0,
+            masks = masks
         )
     }
+
+    private fun masksIn(view: StructView): BlockMasks? {
+        val first = layout.groupMasks ?: return null
+        val mask = { slot: Int -> maskAt(view, first + slot * GROUP_MASK_SIZE) }
+        return BlockMasks(mask(0), mask(1), mask(2), mask(3), mask(4))
+    }
+
+    private fun maskAt(view: StructView, at: Int): GroupMask = GroupMask(
+        low = dwords(view.int(at), view.int(at + 4)),
+        high = dwords(view.int(at + 8), view.int(at + 12))
+    )
+
+    private fun dwords(low: Int, high: Int): Long = (low.toLong() and 0xFFFFFFFFL) or (high.toLong() shl 32)
 
     /** False where the edition's pin offsets are unmeasured, which understates rather than invents */
     private fun pinnedIn(view: StructView): Boolean {
@@ -112,6 +131,20 @@ internal fun blockStateOf(stage: Int): BlockState = when {
     LoadStage.isResident(stage) -> BlockState.Resident
     LoadStage.isUnloading(stage) -> BlockState.Unloading
     else -> BlockState.Unknown
+}
+internal fun holderOf(
+    slot: HeldBy?,
+    forced: Boolean,
+    pinned: Boolean,
+    masks: BlockMasks?,
+    latched: Boolean
+): HeldBy = slot ?: when {
+    forced -> HeldBy.Forced
+    pinned -> HeldBy.Pinned
+    masks?.inActiveSet == true -> HeldBy.ActiveGroups
+    masks?.connected == true -> HeldBy.Connected
+    latched -> HeldBy.Referenced
+    else -> HeldBy.Nothing
 }
 
 internal data class MapRequests(val current: Int, val previous: Int, val warpTarget: Int) {

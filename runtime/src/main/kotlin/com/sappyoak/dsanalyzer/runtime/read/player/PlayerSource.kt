@@ -11,6 +11,6 @@ internal interface PlayerSource {
     fun refresh(memory: GameMemory): Int
     fun timeMillis(): Int
     fun frame(): Long
-    fun player(): PlayerSnapshot?
+    fun player(memory: GameMemory): PlayerSnapshot?
     fun world(): WorldSnapshot?
 }

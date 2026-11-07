@@ -134,6 +134,7 @@ public class GameLink(
                 "pid" to attached.pid,
                 "executable" to attached.executableName,
                 "build" to attached.build.orEmpty(),
+                "supports" to attached.supports,
                 "unresolved" to attached.unresolved.size
             )
         }

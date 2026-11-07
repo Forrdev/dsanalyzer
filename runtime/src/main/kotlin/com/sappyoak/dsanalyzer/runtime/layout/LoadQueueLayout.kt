@@ -22,5 +22,6 @@ public data class LoadQueueLayout(
     public val wantLoaded: Int,
     public val stage: Int,
     public val pinLoaded: Int?,
-    public val pinOther: Int?
+    public val pinOther: Int?,
+    public val groupMasks: Int?
 )

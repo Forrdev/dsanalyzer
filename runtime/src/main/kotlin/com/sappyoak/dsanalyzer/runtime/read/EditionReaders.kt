@@ -33,12 +33,12 @@ internal class EditionReaders(
 internal fun readersFor(edition: GameEdition, layout: GameLayout): EditionReaders = when (edition) {
     GameEdition.PrepareToDie -> EditionReaders(
         place = PTDEPlaceReader(),
-        player = PTDEPlayerReader(),
+        player = PTDEPlayerReader(layout.specialEffect),
         characters = PTDECharacterReader(layout.specialEffect),
         placedParts = PlacedPartsReader(),
         collision = CollisionReader()
-
     )
+
     GameEdition.Remastered -> EditionReaders(
         place = DSRPlaceReader(),
         player = DSRPlayerReader(),

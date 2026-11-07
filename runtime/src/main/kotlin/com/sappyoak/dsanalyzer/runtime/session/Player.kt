@@ -1,5 +1,6 @@
 package com.sappyoak.dsanalyzer.runtime.session
 
+import com.sappyoak.dsanalyzer.runtime.session.effects.SpecialEffectSnapshot
 import com.sappyoak.dsanalyzer.shared.math.Vec3
 
 public data class PlayerSnapshot(
@@ -12,7 +13,8 @@ public data class PlayerSnapshot(
     public val playRegion: Int,
     public val animationSpeed: Float?,
     public val cheats: Set<CheatFlag>,
-    public val attributes: AttributeSnapshot?
+    public val attributes: AttributeSnapshot?,
+    public val effects: SpecialEffectSnapshot?
 )
 
 public data class AttributeSnapshot(
