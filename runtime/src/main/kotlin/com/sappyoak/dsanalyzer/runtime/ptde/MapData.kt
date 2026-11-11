@@ -72,6 +72,7 @@ public object MapPart {
     public const val NamePointer: Int = 0x00
     public const val Type: Int = 0x04
 
+    public const val IndexInType: Int = 0x08
     public const val SourcePathPointer: Int = 0x10
 
     /** X, Y, and Z consecutively from here, in the block's own space */
@@ -95,10 +96,16 @@ public object MapPart {
 
     public const val ThinkParamId: Int = 0xA0
 }
+
 public object MapPartType {
     public const val MapPiece: Int = 0
     public const val Enemy: Int = 2
     public const val Collision: Int = 5
 
     public const val ConnectCollision: Int = 11
+}
+
+internal object HitPartsParam {
+    const val HitFilterId: Int = 0x00
+    const val ReflectPlaneHeight: Int = 0x04
 }

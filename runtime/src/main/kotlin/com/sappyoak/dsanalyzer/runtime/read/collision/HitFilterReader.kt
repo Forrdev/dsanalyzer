@@ -4,8 +4,8 @@ import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.pointers.StructView
 import com.sappyoak.dsanalyzer.runtime.pointers.TableView
-import com.sappyoak.dsanalyzer.runtime.ptde.HitPartsParam
 import com.sappyoak.dsanalyzer.runtime.ptde.MAP_PART_SIZE
+import com.sappyoak.dsanalyzer.runtime.ptde.HitPartsParam
 import com.sappyoak.dsanalyzer.runtime.ptde.MapPart
 import com.sappyoak.dsanalyzer.runtime.ptde.MapPartType
 import com.sappyoak.dsanalyzer.runtime.ptde.MapParts

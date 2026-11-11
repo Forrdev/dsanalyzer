@@ -149,3 +149,14 @@ public object ChrIns {
     /** Past the '0x410' seam, so a 'PlayerIns' field rather than one an enemy also has' */
     public const val StoredItem: Int = 0x628
 }
+
+public object ChrState {
+    public const val Kind: Int = 0x08
+
+    public const val Flags: Int = 0x14
+    public const val ParentPointer: Int = 0x1C
+}
+
+public object ChrStateFlags {
+    public const val Dead: Int = 0x01
+}

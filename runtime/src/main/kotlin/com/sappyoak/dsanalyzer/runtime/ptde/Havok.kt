@@ -65,3 +65,83 @@ internal object RigidBody {
      */
     const val Transform: Int = 0xF0
 }
+
+internal object Shape {
+    const val Type: Int = 0x0C
+}
+
+internal object MoppShape {
+    const val ChildShape: Int = 0x34
+}
+
+internal const val SHAPE_SIZE: Int = 0x10
+internal const val MOPP_SIZE: Int = 0x38
+
+internal object MeshShape {
+    const val AabbHalfExtents: Int = 0x90
+    const val AabbCenter: Int = 0xA0
+
+    val Subparts: GameTable = GameTable(
+        name = "MeshTriangleSubparts",
+        shape = TableShape.Counted(lengthAt = 0xBC, firstAt = 0xB8, indirect = true),
+        elements = TableElements.Inline(SUBPART_SIZE),
+        limit = 1024
+    )
+}
+
+internal const val MESH_SIZE: Int = 0xC4
+internal const val SUBPART_SIZE: Int = 0x70
+
+internal object Subpart {
+    const val TriangleCount: Int = 0x14
+    const val VertexBase: Int = 0x18
+    const val VertexCount: Int = 0x1C
+    const val IndexBase: Int = 0x20
+
+    const val VertexStriding: Int = 0x24
+    const val IndexStriding: Int = 0x2C
+    const val StridingType: Int = 0x2E
+}
+
+internal object ConvexShape {
+    const val Radius: Int = 0x10
+}
+
+internal object BoxShape {
+    const val HalfExtents: Int = 0x20
+}
+
+internal const val BOX_SIZE: Int = 0x30
+
+internal object TranslateShape {
+    const val ChildShape: Int = 0x18
+    const val Translation: Int = 0x20
+}
+
+internal const val TRANSLATE_SIZE: Int = 0x30
+
+internal object CylinderShape {
+    const val CylRadius: Int = 0x14
+    const val VertexA: Int = 0x20
+    const val VertexB: Int = 0x30
+}
+
+internal const val CYLINDER_SIZE: Int = 0x40
+
+internal object HullShape {
+    const val RotatedVertices: Int = 0x40
+    const val VertexCount: Int = 0x4C
+    const val Connectivity: Int = 0x64
+}
+
+internal const val HULL_SIZE: Int = 0x68
+
+internal const val FOUR_VECTORS_SIZE: Int = 0x30
+internal const val POINTS_PER_BLOCK: Int = 4
+
+internal object HullConnectivity {
+    const val VertexIndices: Int = 0x08
+    const val FaceSizes: Int = 0x14
+}
+
+internal const val CONNECTIVITY_SIZE: Int = 0x20

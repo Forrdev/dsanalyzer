@@ -14,6 +14,8 @@ public object AttackMan {
 
     /** The first live [AttackHit], linked through [AttackHit.NextPointer] */
     public const val HeadPointer: Int = 0x00
+
+    public const val HitboxDraw: Int = 0x1C
 }
 
 public object AttackHit {
@@ -40,4 +42,30 @@ public object PhysShapePhantom {
 public object HkpShapeType {
     public const val SPHERE: Int = 1
     public const val CAPSULE: Int = 5
+}
+
+/**
+ * The Bullet Manager. Every arrow, spell, and thrown item in flight is one [BulletIns] in a fixed pool.
+ */
+public object BulletMan {
+    public val Pointer: GamePointer = GamePointer(
+        name = "BulletMan",
+        base = PTDESignatures.BulletMan,
+        offsets = listOf(0L),
+        lifetime = Lifetime.Session,
+        size = 0x64
+    )
+
+    public const val PoolPointer: Int = 0x00
+    public const val COUNT: Int = 0x80
+}
+
+/** 'NS_FRPG::BulletIns' */
+public object BulletIns {
+    public const val Handle: Int = 0x04
+    public const val Owner: Int = 0x1EC
+
+    public const val SIZE: Int = 0x2C0
+    public const val HANDLE_TAG: Int = 0x3
+    public const val INDEX_MASK: Int = 0xFF
 }
