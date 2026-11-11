@@ -1,13 +1,11 @@
 package com.sappyoak.dsanalyzer.formats.havok
 
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-
 import com.sappyoak.dsanalyzer.shared.math.Mat4
 import com.sappyoak.dsanalyzer.shared.math.Vec3
 import com.sappyoak.dsanalyzer.shared.math.Vec4
 import com.sappyoak.dsanalyzer.shared.math.asDirection
 import com.sappyoak.dsanalyzer.shared.math.asPoint
+import com.sappyoak.dsanalyzer.shared.binary.littleEndian
 
 /** Longer than any name a Dark Souls Havok file stores */
 private const val STRING_LIMIT = 256
@@ -18,7 +16,7 @@ private const val STRING_LIMIT = 256
  * names reads as null
  */
 public abstract class HavokData(private val bytes: ByteArray, public val pointerSize: Int) {
-    private val buffer = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN)
+    private val buffer = bytes.littleEndian()
 
     public val size: Int get() = bytes.size
 

@@ -2,13 +2,12 @@ package com.sappyoak.dsanalyzer.native.linux
 
 import java.lang.foreign.Arena
 import java.lang.foreign.ValueLayout.JAVA_BYTE
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
 import java.nio.file.Files
 import java.nio.file.Path
 
 import com.sappyoak.dsanalyzer.native.process.ProcessInfo
 import com.sappyoak.dsanalyzer.shared.platform.PointerSize
+import com.sappyoak.dsanalyzer.shared.binary.littleEndian
 
 private const val DOS_MAGIC = 0x5A4D
 private const val PE_MAGIC = 0x00004550
@@ -74,5 +73,3 @@ internal fun elfWidth(pid: Int): PointerSize? {
         else -> null
     }
 }
-
-private fun ByteArray.littleEndian(): ByteBuffer = ByteBuffer.wrap(this).order(ByteOrder.LITTLE_ENDIAN)

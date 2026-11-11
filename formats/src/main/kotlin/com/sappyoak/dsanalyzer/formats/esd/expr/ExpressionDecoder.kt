@@ -1,9 +1,7 @@
 package com.sappyoak.dsanalyzer.formats.esd.expr
 
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-
 import com.sappyoak.dsanalyzer.formats.esd.Bytecode
+import com.sappyoak.dsanalyzer.shared.binary.littleEndian
 
 public fun Bytecode.decode(): Decoded = Decoder(bytes).run()
 
@@ -27,7 +25,7 @@ private val UNARY = mapOf(0x8D to Op.Negate, 0x9A to Op.Not)
 
 private class Decoder(private val bytes: ByteArray) {
     private val stack = ArrayDeque<EsdExpression>()
-    private val buffer = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN)
+    private val buffer = bytes.littleEndian()
     private var at = 0
 
     fun run(): Decoded {
