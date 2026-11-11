@@ -18,8 +18,6 @@ import com.sappyoak.dsanalyzer.runtime.read.EventFlagBlock
 import com.sappyoak.dsanalyzer.runtime.read.LoadQueueReader
 import com.sappyoak.dsanalyzer.runtime.read.MenuReader
 import com.sappyoak.dsanalyzer.runtime.read.readersFor
-import com.sappyoak.dsanalyzer.runtime.read.character.CharacterReading
-import com.sappyoak.dsanalyzer.runtime.read.character.PlayerReading
 import com.sappyoak.dsanalyzer.runtime.session.ai.AIScope
 import com.sappyoak.dsanalyzer.runtime.read.ai.AITracker
 import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
@@ -53,7 +51,7 @@ public class GameSession internal constructor(
     private val cameraReader = CameraReader(layout.camera)
     private val menuReader = MenuReader()
     private val loadQueueReader = LoadQueueReader(layout.loadQueue)
-    private val aiTracker = AITracker(AI_GRACE_PERIOD)
+    private val aiTracker = AITracker(AI_GRACE_PERIOD, layout)
     private val animationTracker = AnimationTracker(layout)
     private val cheats = CheatWriter(layout.writes)
 
@@ -95,7 +93,7 @@ public class GameSession internal constructor(
         lastPlace = place
         wasLoaded = loaded
 
-        val player = readers.characters?.player(memory) ?: PlayerReading.Empty
+        val player = readers.characters.player(memory)
         val changes = flags.refresh(memory)
         val present = listOf(loaded, areaPresent, readers.clock.refresh(memory), flags.isPresent)
             .count { it } + player.present
@@ -119,7 +117,7 @@ public class GameSession internal constructor(
             cost = SampleCost(
                 started.elapsedNow(),
                 present,
-                (readers.characters?.playerStructures ?: 0) + AROUND_PLAYER
+                readers.characters.playerStructures + AROUND_PLAYER
             ),
             writes = writer.active
         )
@@ -132,7 +130,7 @@ public class GameSession internal constructor(
     public fun readPlacedEnemies(): List<BlockRoster> = readers.placedParts?.read(memory) ?: emptyList()
 
     public fun readCharacterEffects(): List<CharacterSnapshot> =
-        readers.characters?.read(memory, allEffects = true)?.characters ?: emptyList()
+        readers.characters.read(memory, allEffects = true).characters
 
     public fun resolveMissing(declared: List<GamePointer>, module: AddressRange): ResolvedPointers? {
         val found = memory.memory.resolveMissing(pointers, declared, module) ?: return null
@@ -161,12 +159,12 @@ public class GameSession internal constructor(
         }
         sinceWorld = WORLD_TIER_PERIOD - 1
 
-        val reading = readers.characters?.read(memory) ?: CharacterReading.Empty
+        val reading = readers.characters.read(memory)
         world = WorldTier(
             loadQueue = loadQueueReader.read(memory),
             characters = reading.characters,
             others = reading.others,
-            ai = if (readers.tracksAI) aiTracker.select(memory.memory, scope, reading) else emptyList()
+            ai = aiTracker.select(memory.memory, scope, reading)
         )
     }
 

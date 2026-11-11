@@ -2,7 +2,7 @@ package com.sappyoak.dsanalyzer.runtime.read
 
 import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.runtime.layout.GameLayout
-import com.sappyoak.dsanalyzer.runtime.read.action.PTDEActionReader
+import com.sappyoak.dsanalyzer.runtime.read.action.ActionReader
 import com.sappyoak.dsanalyzer.runtime.read.character.CharacterSource
 import com.sappyoak.dsanalyzer.runtime.read.character.CharacterReader
 import com.sappyoak.dsanalyzer.runtime.read.place.DSRPlaceReader
@@ -13,19 +13,16 @@ import com.sappyoak.dsanalyzer.runtime.session.RuntimeFeature
 internal class EditionReaders(
     val place: PlaceSource?,
     val clock: ClockSource,
-    val characters: CharacterSource?,
+    val characters: CharacterSource,
     val placedParts: PlacedPartsReader?,
-    val tracksAI: Boolean
 ) {
     val supported: Set<RuntimeFeature> = buildSet {
         add(RuntimeFeature.Clock)
         add(RuntimeFeature.Animation)
+        add(RuntimeFeature.PlayerState)
+        add(RuntimeFeature.Characters)
 
         if (place != null) add(RuntimeFeature.Place)
-        if (characters != null) {
-            add(RuntimeFeature.PlayerState)
-            add(RuntimeFeature.Characters)
-        }
         if (placedParts != null) add(RuntimeFeature.PlacedParts)
     }
 }
@@ -34,16 +31,14 @@ internal fun readersFor(edition: GameEdition, layout: GameLayout): EditionReader
     GameEdition.PrepareToDie -> EditionReaders(
         place = PTDEPlaceReader(),
         clock = ClockSource.of(edition),
-        characters = CharacterReader(layout, PTDEActionReader()),
-        placedParts = PlacedPartsReader(),
-        tracksAI = true
+        characters = CharacterReader(layout, ActionReader(layout)),
+        placedParts = PlacedPartsReader()
     )
 
     GameEdition.Remastered -> EditionReaders(
         place = DSRPlaceReader(),
         clock = ClockSource.of(edition),
-        characters = CharacterReader(layout, actions = null),
-        placedParts = null,
-        tracksAI = false
+        characters = CharacterReader(layout, ActionReader(layout)),
+        placedParts = null
     )
 }

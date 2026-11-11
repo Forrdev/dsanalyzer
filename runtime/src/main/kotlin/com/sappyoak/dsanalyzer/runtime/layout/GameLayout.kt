@@ -6,6 +6,8 @@ public data class GameLayout(
     public val camera: CameraLayout,
     public val specialEffect: SpecialEffectLayout,
     public val characters: CharacterLayout,
+    public val ai: AILayout,
+    public val action: ActionLayout,
     public val animation: AnimationLayout,
     public val animRequest: AnimRequestLayout,
     public val playerGameData: PlayerGameDataLayout,

@@ -29,6 +29,10 @@ public enum class CollisionHitFilter(public val id: Int) {
     Slide(21),
     FallProtection(22),
     LevelExitB(23);
+
+    public companion object {
+        val All: Set<CollisionHitFilter> = entries.toSet()
+    }
 }
 
 private val BY_ID: Map<Int, CollisionHitFilter> = CollisionHitFilter.entries.associateBy { it.id }

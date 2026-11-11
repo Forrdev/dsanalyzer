@@ -20,8 +20,10 @@ internal fun ActionFields(action: ActionSnapshot, modifier: Modifier = ROW_PADDI
         Field("ESD flags", "%08X".format(action.esdFlags))
         Field("Ladder state", action.ladderState?.toString() ?: "off a ladder")
         action.damageAnimation?.let { Field("Last hit", "anim $it, level ${action.damageLevel}") }
-        Field("Event commands", action.eventCommands.joinToString { if (it == EMPTY_SLOT) "-" else it.toString() })
-        Field("Event message", if (action.eventMessage == EMPTY_SLOT) "-" else action.eventMessage.toString())
-        Field("Event action", action.eventAction?.let { "$it" } ?: "no record")
+        action.eventMessage?.let { message ->
+            Field("Event commands", action.eventCommands.joinToString { if (it == EMPTY_SLOT) "-" else it.toString() })
+            Field("Event message", if (message == EMPTY_SLOT) "-" else message.toString())
+            Field("Event action", action.eventAction?.let { "$it" } ?: "no record")
+        }
     }
 }

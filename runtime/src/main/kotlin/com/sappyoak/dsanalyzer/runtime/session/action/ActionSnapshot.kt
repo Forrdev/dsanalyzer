@@ -9,7 +9,8 @@ public data class ActionSnapshot(
     public val damageAnimation: Int?,
     public val damageLevel: Int,
     public val eventCommands: List<Int>,
-    public val eventMessage: Int,
+    /** 'null' where the edition's event fields are not measured, as with [eventCommands] left empty */
+    public val eventMessage: Int?,
     public val eventAction: EventActionSnapshot?
 )
 

@@ -2,9 +2,8 @@ package com.sappyoak.dsanalyzer.runtime.read.ai
 
 import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.native.process.ProcessMemory
+import com.sappyoak.dsanalyzer.runtime.layout.AILayout
 import com.sappyoak.dsanalyzer.runtime.pointers.StructView
-import com.sappyoak.dsanalyzer.runtime.ptde.Goal
-import com.sappyoak.dsanalyzer.runtime.ptde.GoalType
 import com.sappyoak.dsanalyzer.runtime.session.ai.GoalSnapshot
 
 private const val DEPTH_LIMIT = 8
@@ -14,11 +13,15 @@ private const val NAME_LIMIT = 64
 
 private data class Kind(val id: Int, val name: String)
 
-internal class GoalReader {
-    private val goal = StructView(Goal.SIZE)
-    private val type = StructView(GoalType.SIZE)
+internal class GoalReader(layout: AILayout) {
+    private val layout = layout.goal
+    private val types = layout.goalType
+    private val width = layout.pointerWidth
+
+    private val goal = StructView(this.layout.size)
+    private val type = StructView(types.size)
     private val name = StructView(NAME_LIMIT)
-    private val pointer = StructView(Int.SIZE_BYTES)
+    private val pointer = StructView(POINTER_ROOM)
     private val param = StructView(Float.SIZE_BYTES)
 
     /** Goal types never change while a world is loaded, so each is read once */
@@ -41,10 +44,10 @@ internal class GoalReader {
         depth: Int
     ): GoalSnapshot? {
         if (depth >= DEPTH_LIMIT || !goal.refresh(memory, at)) return null
-        if (goal.pointer(Goal.ThinkPointer) != think || goal.pointer(Goal.SelfPointer) != at) return null
+        if (goal.pointer(layout.think) != think || goal.pointer(layout.self) != at) return null
 
-        val kind = kindOf(memory, goal.pointer(Goal.TypePointer)) ?: return null
-        val life = goal.float(Goal.Life).takeIf { it >= 0f }
+        val kind = kindOf(memory, goal.pointer(layout.type)) ?: return null
+        val life = goal.float(layout.life).takeIf { it >= 0f }
         val params = paramsOf(memory)
         val children = subgoalsOf(memory)
 
@@ -58,9 +61,9 @@ internal class GoalReader {
     }
 
     private fun paramsOf(memory: ProcessMemory): List<Float> {
-        val inline = List(Goal.PARAM_COUNT) { goal.float(Goal.Params + it * Float.SIZE_BYTES) }
-        val begin = goal.pointer(Goal.ExtraParamsBegin)
-        val count = ((goal.pointer(Goal.ExtraParamsEnd).value - begin.value) / Float.SIZE_BYTES).toInt()
+        val inline = List(layout.paramCount) { goal.float(layout.params + it * Float.SIZE_BYTES) }
+        val begin = goal.pointer(layout.extraParamsBegin)
+        val count = ((goal.pointer(layout.extraParamsEnd).value - begin.value) / Float.SIZE_BYTES).toInt()
         if (begin.isNull || count <= 0) return inline
 
         val extra = (0 until minOf(count, EXTRA_PARAM_LIMIT)).mapNotNull { i ->
@@ -71,17 +74,17 @@ internal class GoalReader {
     }
 
     private fun subgoalsOf(memory: ProcessMemory): List<Address> {
-        val map = goal.pointer(Goal.SubgoalMap)
-        val mapSize = goal.int(Goal.SubgoalMapSize)
-        val offset = goal.int(Goal.SubgoalOffset)
-        val count = goal.int(Goal.SubgoalCount)
+        val map = goal.pointer(layout.subgoalMap)
+        val mapSize = goal.int(layout.subgoalMapSize)
+        val offset = goal.int(layout.subgoalOffset)
+        val count = goal.int(layout.subgoalCount)
         if (map.isNull || mapSize <= 0 || count <= 0 || offset < 0) return emptyList()
 
         return (0 until minOf(count, SUBGOAL_LIMIT)).mapNotNull { k ->
             val index = offset + k
-            val block = pointer.pointerAt(memory, map + ((index / Goal.DEQUE_BLOCK) % mapSize * Int.SIZE_BYTES).toLong())
+            val block = pointer.pointerAt(memory, map + ((index / layout.dequeBlock) % mapSize * width).toLong())
             if (block.isNull) null
-            else pointer.pointerAt(memory, block + (index % Goal.DEQUE_BLOCK * Int.SIZE_BYTES).toLong()).takeIf { !it.isNull }
+            else pointer.pointerAt(memory, block + (index % layout.dequeBlock * width).toLong()).takeIf { !it.isNull }
         }
     }
 
@@ -90,14 +93,15 @@ internal class GoalReader {
         kinds[at]?.let { return it }
         if (!type.refresh(memory, at)) return null
 
-        val length = type.int(GoalType.NameLength).coerceIn(0, NAME_LIMIT)
-        val text = if (type.int(GoalType.NameCapacity) < GoalType.INLINE_CAPACITY) {
-            type.ascii(GoalType.Name, minOf(length, GoalType.INLINE_CAPACITY))
+        val length = type.int(types.nameLength).coerceIn(0, NAME_LIMIT)
+        val text = if (type.int(types.nameCapacity) < types.inlineCapacity) {
+            type.ascii(types.name, minOf(length, types.inlineCapacity))
         } else {
-            if (name.refresh(memory, type.pointer(GoalType.Name))) return null
+            if (!name.refresh(memory, type.pointer(types.name))) return null
             name.ascii(0, length)
         }
 
-        return Kind(type.int(GoalType.Id), text).also { kinds[at] = it }
+        return Kind(type.int(types.id), text).also { kinds[at] = it }
     }
 }
+

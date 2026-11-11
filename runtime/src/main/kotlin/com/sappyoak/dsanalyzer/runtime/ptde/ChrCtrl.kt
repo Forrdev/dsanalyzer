@@ -99,6 +99,7 @@ public object ActionCtrl {
     public const val MachineState: Int = 0x10
 
     public const val PlayingAction: Int = 0x60
+    public const val MACHINE_SLOT_COUNT: Int = 2
 
     public const val EsdFlags: Int = 0x1BC
     public const val LadderState: Int = 0x1C0

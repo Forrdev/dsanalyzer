@@ -59,6 +59,9 @@ public object ChrIns {
 
 public object ComManipulator {
     public const val TargetHandle: Int = 0x220
+    public const val AIThinkPointer: Int = 0x230
+    /** The embedded think owner which the think object points back at */
+    public const val ThinkOwner: Int = 0x238
 }
 
 /** For the DSR flag bits that are different from PTDE */
@@ -81,6 +84,8 @@ public object ChrCtrl {
     public const val AnimDataPointer: Int = 0x18
     public const val AnimRequestMgrPointer: Int = 0x20
     public const val PositionPointer: Int = 0x28
+
+    public const val ActionCtrlPointer: Int = 0x48
     public const val Flags: Int = 0x104
 }
 

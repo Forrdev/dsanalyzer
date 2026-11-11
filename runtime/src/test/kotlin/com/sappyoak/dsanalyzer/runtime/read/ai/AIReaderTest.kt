@@ -12,6 +12,7 @@ import com.sappyoak.dsanalyzer.runtime.ptde.ChrCtrl
 import com.sappyoak.dsanalyzer.runtime.ptde.ComManipulator
 import com.sappyoak.dsanalyzer.runtime.ptde.TargetNode
 import com.sappyoak.dsanalyzer.runtime.ptde.TargetingSystem
+import com.sappyoak.dsanalyzer.runtime.ptde.ptdeLayout
 import com.sappyoak.dsanalyzer.runtime.read.character.CharacterRef
 import com.sappyoak.dsanalyzer.runtime.session.ai.AISnapshot
 import com.sappyoak.dsanalyzer.runtime.session.ai.AITarget
@@ -44,6 +45,8 @@ private data class Entry(val kind: Int, val weight: Float, val handle: Int)
 
 private const val SOUND = 0
 
+private val PTDELayout = ptdeLayout()
+
 /** The known list, built from [entries] in order */
 private fun FakeGame.known(vararg entries: Entry) {
     if (entries.isEmpty()) return nullPointer(TARGETING + TargetingSystem.Known)
@@ -63,13 +66,13 @@ private fun FakeGame.known(vararg entries: Entry) {
 private fun FakeGame.ref() = CharacterRef(KNIGHT, address(MANIPULATOR), address(CONTROLLER))
 
 private fun FakeGame.readOnce(): AISnapshot? {
-    val reader = AIReader()
+    val reader = AIReader(PTDELayout)
     val source = reader.locate(this, ref()) ?: return null
     return reader.read(this, source)
 }
 
 private fun FakeGame.target(): AITarget? {
-    val reader = AIReader()
+    val reader = AIReader(PTDELayout)
     return reader.locate(this, ref())?.let { reader.targetOf(this, it) }
 }
 
@@ -107,7 +110,7 @@ class AIReaderTest : FunSpec({
 
     test("an AI that no longer points back at its owner is refused, found or already in hand") {
         val game = knight()
-        val reader = AIReader()
+        val reader = AIReader(PTDELayout)
         val source = checkNotNull(reader.locate(game, game.ref()))
 
         // What a freed and reused allocation looks like: the same address, someone else's contents
@@ -167,7 +170,7 @@ class AIReaderTest : FunSpec({
     test("a character no AI drives is not located") {
         val game = knight().apply { nullPointer(MANIPULATOR + ComManipulator.AIThinkPointer) }
 
-        AIReader().locate(game, game.ref()) shouldBe null
+        AIReader(PTDELayout).locate(game, game.ref()) shouldBe null
         knight().readOnce() shouldNotBe null
     }
 })

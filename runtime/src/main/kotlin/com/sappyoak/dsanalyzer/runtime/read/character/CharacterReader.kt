@@ -7,7 +7,7 @@ import com.sappyoak.dsanalyzer.runtime.layout.TargetLayout
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.pointers.StructView
 import com.sappyoak.dsanalyzer.runtime.pointers.TableView
-import com.sappyoak.dsanalyzer.runtime.read.action.PTDEActionReader
+import com.sappyoak.dsanalyzer.runtime.read.action.ActionReader
 import com.sappyoak.dsanalyzer.runtime.read.effects.SpecialEffectReader
 import com.sappyoak.dsanalyzer.runtime.session.BONFIRE_MODEL
 import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
@@ -22,7 +22,7 @@ private const val VEC3_BYTES = 3 * Float.SIZE_BYTES
 
 internal class CharacterReader(
     layout: GameLayout,
-    private val actions: PTDEActionReader?
+    private val actions: ActionReader
 ) : CharacterSource {
     private val chars: CharacterLayout = layout.characters
     private val chr = chars.chr
@@ -90,7 +90,7 @@ internal class CharacterReader(
             teamType = one.int(chr.teamType),
             targetHandle = targetOf(game)?.takeIf { it != NO_TARGET },
             effects = if (withEffects) effects.read(game, one.pointer(chr.specialEffect)) else null,
-            action = actions?.read(game.memory, one)
+            action = actions.read(game.memory, one)
         )
 
     private fun targetOf(game: GameMemory): Int? = when (val target = chr.target) {

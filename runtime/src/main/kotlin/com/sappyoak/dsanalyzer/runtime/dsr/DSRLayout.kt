@@ -1,5 +1,7 @@
 package com.sappyoak.dsanalyzer.runtime.dsr
 
+import com.sappyoak.dsanalyzer.runtime.layout.AILayout
+import com.sappyoak.dsanalyzer.runtime.layout.ActionLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimChannelLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimControlLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimRequestBand
@@ -13,9 +15,12 @@ import com.sappyoak.dsanalyzer.runtime.layout.CharacterSlotLayout
 import com.sappyoak.dsanalyzer.runtime.layout.ChrCtrlLayout
 import com.sappyoak.dsanalyzer.runtime.layout.ChrInsLayout
 import com.sappyoak.dsanalyzer.runtime.layout.DebugDrawLayout
+import com.sappyoak.dsanalyzer.runtime.layout.EsdStateLayout
 import com.sappyoak.dsanalyzer.runtime.layout.FieldLayout
 import com.sappyoak.dsanalyzer.runtime.layout.GameLayout
 import com.sappyoak.dsanalyzer.runtime.layout.GameManLayout
+import com.sappyoak.dsanalyzer.runtime.layout.GoalLayout
+import com.sappyoak.dsanalyzer.runtime.layout.GoalTypeLayout
 import com.sappyoak.dsanalyzer.runtime.layout.HitInsLayout
 import com.sappyoak.dsanalyzer.runtime.layout.IdentityLayout
 import com.sappyoak.dsanalyzer.runtime.layout.LoadQueueLayout
@@ -28,6 +33,8 @@ import com.sappyoak.dsanalyzer.runtime.layout.ResistBlockLayout
 import com.sappyoak.dsanalyzer.runtime.layout.SpecialEffectLayout
 import com.sappyoak.dsanalyzer.runtime.layout.StatBlockLayout
 import com.sappyoak.dsanalyzer.runtime.layout.TargetLayout
+import com.sappyoak.dsanalyzer.runtime.layout.TargetingLayout
+import com.sappyoak.dsanalyzer.runtime.layout.ThinkLayout
 import com.sappyoak.dsanalyzer.runtime.layout.VitalsLayout
 import com.sappyoak.dsanalyzer.runtime.layout.WriteLayout
 
@@ -84,6 +91,72 @@ internal fun dsrLayout(version: DSRVersion): GameLayout = GameLayout(
             stableAngle = GameMan.StableAngle - version.gameManShift,
             lastBonfire = GameMan.LastBonfire - version.gameManShift
         )
+    ),
+    ai = AILayout(
+        think = ThinkLayout(
+            fromManipulator = ComManipulator.AIThinkPointer,
+            manipulatorOwner = ComManipulator.ThinkOwner,
+            owner = AIThink.OwnerPointer,
+            targeting = AIThink.TargetingSystemPointer,
+            topGoal = AIThink.TopGoalPointer,
+            timers = AIThink.Timers,
+            timerCount = AIThink.TIMER_COUNT,
+            numbers = AIThink.Numbers,
+            numberCount = AIThink.NUMBER_COUNT,
+            thinkId = AIThink.ThinkId,
+            size = AIThink.SIZE
+        ),
+        targeting = TargetingLayout(
+            known = TargetingSystem.Known,
+            nodeKind = TargetNode.Kind,
+            nodeNext = TargetNode.Next,
+            nodeShape = TargetNode.Shape,
+            nodeWeight = TargetNode.Weight,
+            nodeHandle = TargetNode.Handle,
+            nodeSize = TargetNode.SIZE
+        ),
+        goal = GoalLayout(
+            think = Goal.ThinkPointer,
+            self = Goal.SelfPointer,
+            life = Goal.Life,
+            subgoalMap = Goal.SubgoalMap,
+            subgoalMapSize = Goal.SubgoalMapSize,
+            subgoalOffset = Goal.SubgoalOffset,
+            subgoalCount = Goal.SubgoalCount,
+            dequeBlock = Goal.DEQUE_BLOCK,
+            params = Goal.Params,
+            paramCount = Goal.PARAM_COUNT,
+            extraParamsBegin = Goal.ExtraParamsBegin,
+            extraParamsEnd = Goal.ExtraParamsEnd,
+            type = Goal.TypePointer,
+            size = Goal.SIZE
+        ),
+        goalType = GoalTypeLayout(
+            name = GoalType.Name,
+            nameLength = GoalType.NameLength,
+            nameCapacity = GoalType.NameCapacity,
+            inlineCapacity = GoalType.INLINE_CAPACITY,
+            id = GoalType.Id,
+            size = GoalType.SIZE
+        ),
+        pointerWidth = Long.SIZE_BYTES
+    ),
+    action = ActionLayout(
+        fromControl = ChrCtrl.ActionCtrlPointer,
+        slots = ActionCtrl.MachineSlots,
+        slotStride = ActionCtrl.MachineSlotStride,
+        slotCount = ActionCtrl.MACHINE_SLOT_COUNT,
+        slotEnabled = ActionCtrl.MachineSlotEnabled,
+        state = EsdStateLayout.Inline(ActionCtrl.MachineSlotState),
+        playingAction = ActionCtrl.PlayingAction,
+        playingTime = ActionCtrl.PlayingTime,
+        requestedAction = ActionCtrl.RequestedAction,
+        esdFlags = ActionCtrl.EsdFlags,
+        ladderState = ActionCtrl.LadderState,
+        damageAnimation = ActionCtrl.DamageAnimation,
+        damageLevel = ActionCtrl.DamageLevel,
+        size = ActionCtrl.RequestedAction + Int.SIZE_BYTES,
+        events = null
     ),
     specialEffect = SpecialEffectLayout(
         holderSize = SPECIAL_EFFECT_SIZE,

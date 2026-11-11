@@ -1,14 +1,15 @@
 package com.sappyoak.dsanalyzer.runtime.read.ai
 
 import com.sappyoak.dsanalyzer.native.process.ProcessMemory
+import com.sappyoak.dsanalyzer.runtime.layout.GameLayout
 import com.sappyoak.dsanalyzer.runtime.read.character.CharacterReading
 import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.ai.AIScope
 import com.sappyoak.dsanalyzer.runtime.session.ai.AITarget
 
 
-internal class AITracker(gracePeriod: Int) {
-    private val reader = AIReader()
+internal class AITracker(gracePeriod: Int, layout: GameLayout) {
+    private val reader = AIReader(layout)
     private val selection = AISelection(gracePeriod)
 
     fun read(

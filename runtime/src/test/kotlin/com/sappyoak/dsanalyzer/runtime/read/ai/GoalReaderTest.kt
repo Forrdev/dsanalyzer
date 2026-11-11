@@ -7,6 +7,7 @@ import io.kotest.matchers.shouldBe
 import com.sappyoak.dsanalyzer.runtime.pointers.FakeGame
 import com.sappyoak.dsanalyzer.runtime.ptde.Goal
 import com.sappyoak.dsanalyzer.runtime.ptde.GoalType
+import com.sappyoak.dsanalyzer.runtime.ptde.ptdeLayout
 import com.sappyoak.dsanalyzer.runtime.session.ai.GoalSnapshot
 
 private const val THINK = 0x1000
@@ -91,7 +92,9 @@ private val COMBAT = Planned(
     )
 )
 
-private fun FakeGame.read(reader: GoalReader = GoalReader()): GoalSnapshot? =
+private val PTDELayout = ptdeLayout()
+
+private fun FakeGame.read(reader: GoalReader = GoalReader(PTDELayout.ai)): GoalSnapshot? =
     reader.read(this, address(goalAt(0)), address(THINK))
 
 class GoalReaderTest : FunSpec({
@@ -120,7 +123,7 @@ class GoalReaderTest : FunSpec({
 
     test("a goal type is read once, and read again after a load") {
         val game = FakeGame().apply { plan(COMBAT) }
-        val reader = GoalReader()
+        val reader = GoalReader(PTDELayout.ai)
         game.read(reader)
         val reads = game.reads
 
