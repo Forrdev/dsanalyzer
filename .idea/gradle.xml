@@ -29,6 +29,7 @@
             <option value="$PROJECT_DIR$/overlay" />
             <option value="$PROJECT_DIR$/runtime" />
             <option value="$PROJECT_DIR$/shared" />
+            <option value="$PROJECT_DIR$/tas" />
             <option value="$PROJECT_DIR$/tools" />
           </set>
         </option>

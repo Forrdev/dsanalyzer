@@ -7,6 +7,8 @@ dependencies {
     implementation(project(":game"))
     implementation(project(":native"))
     implementation(project(":runtime"))
+
+    implementation(libs.kotlinx.coroutines.core)
 }
 
 kotlin {
