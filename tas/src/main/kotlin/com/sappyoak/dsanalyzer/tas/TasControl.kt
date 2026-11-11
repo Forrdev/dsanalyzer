@@ -1,12 +1,11 @@
 package com.sappyoak.dsanalyzer.tas
 
-
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-import com.sappyoak.dsanalyzer.runtime.session.SessionContext
-import com.sappyoak.dsanalyzer.runtime.session.SessionExtension
+import com.sappyoak.dsanalyzer.runtime.sampling.SessionContext
+import com.sappyoak.dsanalyzer.runtime.sampling.SessionExtension
 
 /** Where the TAS tools stand, published after every sample */
 public sealed interface TasState {

@@ -1,8 +1,9 @@
-package com.sappyoak.dsanalyzer.runtime.session
+package com.sappyoak.dsanalyzer.runtime.sampling
 
-import com.sappyoak.dsanalyzer.native.memory.AddressRange
 import kotlin.time.TimeSource
 
+import com.sappyoak.dsanalyzer.native.memory.AddressRange
+import com.sappyoak.dsanalyzer.runtime.EditionTables
 import com.sappyoak.dsanalyzer.runtime.GameConnection
 import com.sappyoak.dsanalyzer.runtime.GameProcess
 import com.sappyoak.dsanalyzer.runtime.layout.GameLayout
@@ -17,15 +18,21 @@ import com.sappyoak.dsanalyzer.runtime.read.EventFlagBlock
 import com.sappyoak.dsanalyzer.runtime.read.LoadQueueReader
 import com.sappyoak.dsanalyzer.runtime.read.MenuReader
 import com.sappyoak.dsanalyzer.runtime.read.readersFor
-import com.sappyoak.dsanalyzer.runtime.read.ai.AISource
 import com.sappyoak.dsanalyzer.runtime.read.attack.AttackReader
 import com.sappyoak.dsanalyzer.runtime.read.character.CharacterReading
 import com.sappyoak.dsanalyzer.runtime.read.character.PlayerReading
 import com.sappyoak.dsanalyzer.runtime.session.ai.AIScope
-import com.sappyoak.dsanalyzer.runtime.session.ai.AITracker
+import com.sappyoak.dsanalyzer.runtime.read.ai.AITracker
 import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
-import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTracker
-import com.sappyoak.dsanalyzer.runtime.session.attack.HitTracker
+import com.sappyoak.dsanalyzer.runtime.read.animation.AnimationTracker
+import com.sappyoak.dsanalyzer.runtime.read.attack.HitTracker
+import com.sappyoak.dsanalyzer.runtime.session.BlockRoster
+import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
+import com.sappyoak.dsanalyzer.runtime.session.CheatFlag
+import com.sappyoak.dsanalyzer.runtime.session.RuntimeFeature
+import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
+import com.sappyoak.dsanalyzer.runtime.session.SampleCost
+import com.sappyoak.dsanalyzer.runtime.session.WorldPlace
 import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionSnapshot
 import com.sappyoak.dsanalyzer.runtime.write.CheatWriter
 import com.sappyoak.dsanalyzer.runtime.write.GameWriter
@@ -63,7 +70,7 @@ public class GameSession internal constructor(
     public val supports: Set<RuntimeFeature> get() = readers.supported + RuntimeFeature.Animation + RuntimeFeature.LoadQueue
 
     init {
-        val context = SessionContext(game.edition, memory, writer, module) { lastPlace }
+        val context = SessionContext(game.edition, memory, writer, module, layout) { lastPlace }
         extensions.forEach { it.attached(context) }
     }
 
@@ -114,7 +121,11 @@ public class GameSession internal constructor(
             flagChanges = changes,
             animation = if (loaded) animationTracker.read(memory, animation, world.others) else null,
             hits = hitTracker.update(attackReader.read(memory, world.tracked)),
-            cost = SampleCost(started.elapsedNow(), present, (readers.characters?.playerStructures ?: 0) + AROUND_PLAYER),
+            cost = SampleCost(
+                started.elapsedNow(),
+                present,
+                (readers.characters?.playerStructures ?: 0) + AROUND_PLAYER
+            ),
             writes = writer.active
         )
     }

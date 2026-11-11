@@ -15,15 +15,13 @@ import com.sappyoak.dsanalyzer.runtime.ptde.CharacterSlot
 import com.sappyoak.dsanalyzer.runtime.ptde.ChrCtrl
 import com.sappyoak.dsanalyzer.runtime.ptde.ChrIns
 import com.sappyoak.dsanalyzer.runtime.ptde.EventFlags
-import com.sappyoak.dsanalyzer.runtime.ptde.FollowCam
 import com.sappyoak.dsanalyzer.runtime.ptde.GameDataMan
-import com.sappyoak.dsanalyzer.runtime.ptde.GameMan
 import com.sappyoak.dsanalyzer.runtime.ptde.PlayerGameData
 import com.sappyoak.dsanalyzer.runtime.ptde.PTDEEdition
 import com.sappyoak.dsanalyzer.runtime.ptde.PTDEPointers
 import com.sappyoak.dsanalyzer.runtime.ptde.PTDESignatures
-import com.sappyoak.dsanalyzer.runtime.ptde.WorldArea
 import com.sappyoak.dsanalyzer.runtime.ptde.WorldChrMan
+import com.sappyoak.dsanalyzer.runtime.sampling.GameSession
 
 
 internal val PTDE_PROCESS = GameProcess(ProcessInfo(4242, "DARKSOULS.exe"), GameEdition.PrepareToDie)

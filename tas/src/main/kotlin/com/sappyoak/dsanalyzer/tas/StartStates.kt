@@ -1,14 +1,14 @@
 package com.sappyoak.dsanalyzer.tas
 
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.ptde.ChrCtrl
 import com.sappyoak.dsanalyzer.runtime.ptde.ChrPosData
 import com.sappyoak.dsanalyzer.runtime.session.WorldPlace
 import com.sappyoak.dsanalyzer.runtime.write.GameWriter
 import com.sappyoak.dsanalyzer.shared.math.Vec3
+import com.sappyoak.dsanalyzer.shared.binary.littleEndian
+import com.sappyoak.dsanalyzer.shared.binary.putVec3
+import com.sappyoak.dsanalyzer.shared.binary.toLittleEndian
 
 private const val VEC3_BYTES = 3 * Float.SIZE_BYTES
 
@@ -22,7 +22,7 @@ internal class StartStates(private val memory: GameMemory, private val writer: G
     fun capture(place: WorldPlace): StartState? {
         val at = memory.addressOf(ChrPosData.Pointer).takeUnless { it.isNull } ?: return null
         val bytes = memory.memory.read(at, ChrPosData.Position + VEC3_BYTES) ?: return null
-        val buffer = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN)
+        val buffer = bytes.littleEndian()
         val position = Vec3(
             buffer.getFloat(ChrPosData.Position),
             buffer.getFloat(ChrPosData.Position + Float.SIZE_BYTES),
@@ -35,9 +35,8 @@ internal class StartStates(private val memory: GameMemory, private val writer: G
     fun restore(start: StartState, place: WorldPlace): Boolean {
         if (start.place != place) return false
         val ctrl = memory.addressOf(ChrCtrl.Pointer).takeUnless { it.isNull } ?: return false
-        val target = ByteBuffer.allocate(VEC3_BYTES).order(ByteOrder.LITTLE_ENDIAN)
-            .putFloat(start.position.x).putFloat(start.position.y).putFloat(start.position.z).array()
-        val angle = ByteBuffer.allocate(Float.SIZE_BYTES).order(ByteOrder.LITTLE_ENDIAN).putFloat(start.angle).array()
+        val target = littleEndian(VEC3_BYTES).putVec3(start.position).array()
+        val angle = start.angle.toLittleEndian()
         // The flag last, so the warp never fires on a half-written target
         return writer.perform(ctrl + ChrCtrl.WarpPosition.toLong(), target) &&
                 writer.perform(ctrl + ChrCtrl.WarpAngle.toLong(), angle) &&

@@ -1,8 +1,10 @@
-package com.sappyoak.dsanalyzer.runtime.session
+package com.sappyoak.dsanalyzer.runtime.sampling
 
 import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.native.memory.AddressRange
+import com.sappyoak.dsanalyzer.runtime.layout.GameLayout
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
+import com.sappyoak.dsanalyzer.runtime.session.WorldPlace
 import com.sappyoak.dsanalyzer.runtime.write.GameWriter
 
 /**
@@ -20,6 +22,7 @@ public class SessionContext(
     public val memory: GameMemory,
     public val writer: GameWriter,
     public val module: AddressRange,
+    public val layout: GameLayout,
     private val currentPlace: () -> WorldPlace?
 ) {
     public val place: WorldPlace? get() = currentPlace()

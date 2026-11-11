@@ -7,6 +7,9 @@ import com.sappyoak.dsanalyzer.native.memory.Address
 /** Bytes of `JMP rel32` */
 internal const val JMP_SIZE = 5
 
+/** SIB byte for a bare `[ESP]` base: no index, scale 1 */
+private const val SIB_ESP = 0x24
+
 /** A 32 bit general register, numbered as ModRM encodes it */
 public enum class Reg(internal val code: Int) {
     EAX(0),
@@ -22,12 +25,7 @@ public enum class Reg(internal val code: Int) {
 public sealed interface Mem {
     public data class Absolute(public val address: Address) : Mem
 
-    /** '[base + disp] */
-    public data class Based(public val base: Reg, public val disp: Int) : Mem {
-        init {
-            require(base != Reg.ESP) { "ESP-based operands are not encoded" }
-        }
-    }
+    public data class Based(public val base: Reg, public val disp: Int) : Mem
 }
 
 public class Label internal constructor()
@@ -148,6 +146,7 @@ public class X86(private val origin: Address) {
             }
             is Mem.Based -> {
                 bytes(0b10_000_000 or (reg shl 3) or mem.base.code)
+                if (mem.base == Reg.ESP) bytes(SIB_ESP)
                 int(mem.disp)
             }
         }
@@ -177,7 +176,7 @@ public class X86(private val origin: Address) {
         int(0)
     }
 
-    private fun int(value: Int) {
+    internal fun int(value: Int) {
         for (i in 0 until Int.SIZE_BYTES) out.write(value ushr (8 * i))
     }
 
@@ -192,3 +191,4 @@ public class X86(private val origin: Address) {
         }
     }
 }
+

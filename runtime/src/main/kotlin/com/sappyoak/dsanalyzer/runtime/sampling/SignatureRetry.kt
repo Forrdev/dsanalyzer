@@ -1,4 +1,4 @@
-package com.sappyoak.dsanalyzer.runtime.session
+package com.sappyoak.dsanalyzer.runtime.sampling
 
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds

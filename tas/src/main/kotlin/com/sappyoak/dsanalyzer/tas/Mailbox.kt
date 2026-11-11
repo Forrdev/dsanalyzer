@@ -1,12 +1,10 @@
 package com.sappyoak.dsanalyzer.tas
 
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-
 import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.native.process.ProcessMemory
 import com.sappyoak.dsanalyzer.runtime.inject.Mem
 import com.sappyoak.dsanalyzer.runtime.write.GameWriter
+import com.sappyoak.dsanalyzer.native.memory.intAt
 
 /**
  * The block of game memory the subs and the tool share
@@ -28,8 +26,7 @@ public class Mailbox private constructor(
     internal fun operand(field: Field): Mem = Mem.Absolute(base + field.offset.toLong())
 
     internal fun read(field: Field): Int? =
-        memory.read(base + field.offset.toLong(), Int.SIZE_BYTES)
-            ?.let { ByteBuffer.wrap(it).order(ByteOrder.LITTLE_ENDIAN).int }
+        memory.intAt(base + field.offset.toLong())
 
     internal fun write(field: Field, value: Int): Boolean {
         check(field.writer == Writer.Tool) { "$field belongs to the stubs" }

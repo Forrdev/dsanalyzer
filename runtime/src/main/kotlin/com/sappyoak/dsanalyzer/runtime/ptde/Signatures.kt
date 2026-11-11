@@ -131,4 +131,49 @@ object PTDESignatures {
         pattern = "6A 00 FF 15 ?? ?? ?? ?? C3 CC CC",
         target = SignatureTarget.Embedded(4)
     )
+
+    private const val HIT_INS_DEBUG_DRAW =
+        "55 8B EC 83 E4 F0 0F 57 C0 F3 0F 10 0D ?? ?? ?? ?? 83 EC 28 80 7E 50 06 53 8B 1D"
+
+    /** Entry of 'HitIns_DebugDraw' */
+    public val HitInsDebugDraw: Signature = Signature.parse(name = "HitInsDebugDraw", pattern = HIT_INS_DEBUG_DRAW)
+
+    /** The renderer global: the EzDraw layers and the draw registry hang off it */
+    public val GraphicsMan: Signature = Signature.parse(
+        name = "GraphicsMan",
+        pattern = HIT_INS_DEBUG_DRAW,
+        target = SignatureTarget.Embedded(0x1B)
+    )
+
+    public val WorldHitMan: Signature = Signature.parse(
+        name = "WorldHitMan",
+        pattern = "8B 15 ?? ?? ?? ?? E8 ?? ?? ?? ?? 84 C0 0F 84 ?? ?? ?? ?? 8A 86 FD 01 00 00",
+        target = SignatureTarget.Embedded(2)
+    )
+
+    /** In 'HGDrawPlanWalker_Next', the registry lookup ahead of its push */
+    public val PlanWalkerPush: Signature = Signature.parse(
+        name = "PlanWalkerPush",
+        pattern = "8B 43 04 8B 50 18 8B 42 04 8B 0C 88 8D 54 24 0C 52 8D 43 0C 89 4C 24 14 C7 44 24 18 00 00 00 00 E8"
+    )
+
+    /** In 'EzDraw_FlushTrianglesUP', the layer test before the draw, and the state reset after it */
+    public val FlushBegin: Signature = Signature.parse(
+        name = "FlushBegin",
+        pattern = "85 82 84 00 00 00 0F 84 ?? ?? ?? ?? 8B 75 18 8B 4E 18 85 C9 74 09"
+    )
+    public val FlushEnd: Signature = Signature.parse(
+        name = "FlushEnd",
+        pattern = "8D 50 30 83 C0 20 52 50 8B 45 20 8B 40 20 E8 ?? ?? ?? ?? 5F 5E 5D 5B C2 10 00"
+    )
+
+    /** 'HitRes_DrawLoRigid' and 'HitRes_DrawHiRigid' building their constant colours */
+    public val LoColor: Signature = Signature.parse(name = "LoColor", pattern = "F3 0F 10 0D 2C 50 1E 01 F3 0F 10 05 A8 4D 1E 01")
+    public val HiColor: Signature = Signature.parse(name = "HiColor", pattern = "F3 0F 10 0D 2C 50 1E 01 F3 0F 10 05 34 53 1E 01")
+
+    /** Entry of 'EzDrawShapeVisitor_AddTriangle' */
+    public val AddTriangle: Signature = Signature.parse(
+        name = "AddTriangle",
+        pattern = "53 8B 59 0C 85 DB 0F 84 ?? ?? ?? ?? 8B 54 24 08 81 E2 FF 03 00 80"
+    )
 }

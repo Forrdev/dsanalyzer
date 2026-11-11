@@ -1,14 +1,13 @@
 package com.sappyoak.dsanalyzer.tas.rng
 
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-
 import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.native.process.ProcessMemory
 import com.sappyoak.dsanalyzer.runtime.ptde.GameMan
 import com.sappyoak.dsanalyzer.runtime.write.GameWriter
 import com.sappyoak.dsanalyzer.tas.FrameGate
 import com.sappyoak.dsanalyzer.tas.Mailbox
+import com.sappyoak.dsanalyzer.shared.binary.littleEndian
+import com.sappyoak.dsanalyzer.shared.binary.toInts
 
 /** Upcoming AI-generator floats a view carries */
 private const val LOOKAHEAD = 16
@@ -29,7 +28,7 @@ public class RngTools internal constructor(
 ) {
     public fun current(): RngState? {
         val gameMan = gameMan() ?: return null
-        val words = memory.read(gameMan + GameMan.RngState.toLong(), 2 * Int.SIZE_BYTES)?.let(::ints) ?: return null
+        val words = memory.read(gameMan + GameMan.RngState.toLong(), 2 * Int.SIZE_BYTES)?.toInts() ?: return null
         val instance = gameMan + GameMan.Twister.toLong()
         val twister = memory.read(instance, GameMan.TwisterSize)?.let { TwisterState.decode(it, instance) } ?: return null
         return RngState(GameRngState(words[0], words[1]), twister)
@@ -39,7 +38,7 @@ public class RngTools internal constructor(
     public fun pin(state: RngState): Boolean {
         if (!gate.isPaused && !gate.isTriggered) return false
         val gameMan = gameMan() ?: return false
-        val words = ByteBuffer.allocate(2 * Int.SIZE_BYTES).order(ByteOrder.LITTLE_ENDIAN)
+        val words = littleEndian(2 * Int.SIZE_BYTES)
             .putInt(state.game.s1).putInt(state.game.s2).array()
         val instance = gameMan + GameMan.Twister.toLong()
         return writer.perform(gameMan + GameMan.RngState.toLong(), words) &&
@@ -62,18 +61,13 @@ public class RngTools internal constructor(
     }
 
     private fun logged(frame: Int): LogEntry? {
-        val words = mailbox.readLog(frame)?.let(::ints) ?: return null
+        val words = mailbox.readLog(frame)?.toInts() ?: return null
         return if (words[0] == frame) LogEntry(GameRngState(words[1], words[2]), words[3]) else null
     }
 
     private fun gameMan(): Address? =
-        memory.read(gameManGlobal, Int.SIZE_BYTES)?.let(::ints)?.single()
+        memory.read(gameManGlobal, Int.SIZE_BYTES)?.toInts()?.single()
             ?.let { Address(it.toLong() and 0xFFFFFFFFL) }?.takeUnless { it.isNull }
 
     private class LogEntry(val game: GameRngState, val twisterLeft: Int)
-}
-
-private fun ints(bytes: ByteArray): IntArray {
-    val buffer = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN)
-    return IntArray(bytes.size / Int.SIZE_BYTES) { buffer.int }
 }

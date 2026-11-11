@@ -19,10 +19,10 @@ public sealed interface RuntimeEvent {
     /** Signatures the attach scan missed and a later one found */
     public data class Resolved(public val pointers: ResolvedPointers) : RuntimeEvent
 
-    /** The answer to a [SampleRequests.requestPlacedEnemies] */
+    /** The answer to a [com.sappyoak.dsanalyzer.runtime.sampling.SampleRequests.requestPlacedEnemies] */
     public data class PlacedEnemies(public val rosters: List<BlockRoster>) : RuntimeEvent
 
-    /** The answer to a [SampleRequests.requestCollision] */
+    /** The answer to a [com.sappyoak.dsanalyzer.runtime.sampling.SampleRequests.requestCollision] */
     public data class Collision(val snapshot: CollisionSnapshot) : RuntimeEvent
 
     public data class CharacterEffects(public val characters: List<CharacterSnapshot>) : RuntimeEvent

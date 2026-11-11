@@ -47,7 +47,7 @@ private fun census(files: GameFiles, sources: List<EsdSource>): String = buildSt
 
         esd.programs().forEach { program ->
             when (val result = program.decode()) {
-                is Decoded.Expr -> decoded++
+                is Decoded.Expression -> decoded++
                 is Decoded.Undecodable ->
                     undecodable.getOrPut(result.reason) { mutableListOf() } += "$source @${result.at}: ${program.hex()}"
             }

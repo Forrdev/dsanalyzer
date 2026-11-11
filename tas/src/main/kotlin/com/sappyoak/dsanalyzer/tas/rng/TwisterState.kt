@@ -1,10 +1,8 @@
 package com.sappyoak.dsanalyzer.tas.rng
 
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-
 import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.runtime.ptde.GameMan
+import com.sappyoak.dsanalyzer.shared.binary.littleEndian
 
 /** Words of state an MT19937 keeps */
 public const val TWISTER_WORDS: Int = 624
@@ -30,7 +28,7 @@ public class TwisterState(
 
     /** The instance's bytes as they go at [instance], the cursor rebased onto it */
     public fun encode(instance: Address): ByteArray {
-        val buffer = ByteBuffer.allocate(GameMan.TwisterSize).order(ByteOrder.LITTLE_ENDIAN)
+        val buffer = littleEndian(GameMan.TwisterSize)
         val cursorAt = instance + (GameMan.TwisterState + cursor * Int.SIZE_BYTES).toLong()
         buffer.putInt(seed).putInt(left).putInt(cursorAt.value.toInt())
         words.forEach(buffer::putInt)
@@ -45,7 +43,7 @@ public class TwisterState(
     public companion object {
         /** The instance read from [instance]; null if its cursor points outside it */
         public fun decode(bytes: ByteArray, instance: Address): TwisterState? {
-            val buffer = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN)
+            val buffer = bytes.littleEndian()
             val seed = buffer.int
             val left = buffer.int
             val cursorAt = buffer.int.toLong() and 0xFFFFFFFFL

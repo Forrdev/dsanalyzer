@@ -1,10 +1,10 @@
-package com.sappyoak.dsanalyzer.runtime.session.ai
+package com.sappyoak.dsanalyzer.runtime.read.ai
 
 import com.sappyoak.dsanalyzer.native.process.ProcessMemory
 import com.sappyoak.dsanalyzer.runtime.read.character.CharacterReading
-import com.sappyoak.dsanalyzer.runtime.read.ai.AIReader
-import com.sappyoak.dsanalyzer.runtime.read.ai.AISource
 import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
+import com.sappyoak.dsanalyzer.runtime.session.ai.AIScope
+import com.sappyoak.dsanalyzer.runtime.session.ai.AITarget
 
 
 internal class AITracker(gracePeriod: Int) {

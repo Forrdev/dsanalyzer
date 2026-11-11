@@ -1,14 +1,13 @@
 package com.sappyoak.dsanalyzer.runtime.write
 
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-
 import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.native.process.CodeMemory
 import com.sappyoak.dsanalyzer.native.process.CodePatch
 import com.sappyoak.dsanalyzer.native.process.ProcessMemory
 import com.sappyoak.dsanalyzer.native.process.patch
 import com.sappyoak.dsanalyzer.runtime.pointers.Lifetime
+import com.sappyoak.dsanalyzer.shared.binary.toLittleEndian
+import com.sappyoak.dsanalyzer.native.memory.intAt
 
 public class GameWriter internal constructor(
     private val memory: ProcessMemory,
@@ -20,10 +19,10 @@ public class GameWriter internal constructor(
     public val canPlaceCode: Boolean get() = code != null
 
     internal fun writeBits(key: WriteKey, address: Address, lifetime: Lifetime, mask: Int, on: Boolean): Boolean {
-        val word = dwordAt(address) ?: return false
+        val word = memory.intAt(address) ?: return false
         val original = (journal[key]?.original as? Original.Bits)?.bits ?: (word and mask)
         val next = if (on) word or mask else word and mask.inv()
-        if (next != word && !memory.write(address, dword(next))) return false
+        if (next != word && !memory.write(address, next.toLittleEndian())) return false
 
         if (next and mask == original) journal.take(key)
         else journal.record(JournalEntry(key, address, lifetime, Original.Bits(mask, original)))
@@ -76,7 +75,7 @@ public class GameWriter internal constructor(
     public fun fill(address: Address, bytes: ByteArray): Boolean = memory.write(address, bytes)
 
     @GameMutation
-    public fun fillDword(address: Address, value: Int): Boolean = fill(address, dword(value))
+    public fun fillDword(address: Address, value: Int): Boolean = fill(address, value.toLittleEndian())
 
     @GameMutation
     public fun free(address: Address): Boolean = code?.free(address) ?: false
@@ -98,16 +97,11 @@ public class GameWriter internal constructor(
 
     private fun restore(entry: JournalEntry): Boolean = when (val original = entry.original) {
         is Original.Bits -> {
-            val word = dwordAt(entry.address)
-            word != null && memory.write(entry.address, dword((word and original.mask.inv()) or original.bits))
+            val word = memory.intAt(entry.address)
+            word != null && memory.write(entry.address, ((word and original.mask.inv()) or original.bits).toLittleEndian())
         }
         is Original.Bytes -> memory.write(entry.address, original.bytes)
         is Original.Code -> code?.patch(entry.address, original.bytes) ?: false
     }
 
-    private fun dwordAt(address: Address): Int? =
-        memory.read(address, Int.SIZE_BYTES)?.let { ByteBuffer.wrap(it).order(ByteOrder.LITTLE_ENDIAN).int }
-
-    private fun dword(value: Int): ByteArray =
-        ByteBuffer.allocate(Int.SIZE_BYTES).order(ByteOrder.LITTLE_ENDIAN).putInt(value).array()
 }

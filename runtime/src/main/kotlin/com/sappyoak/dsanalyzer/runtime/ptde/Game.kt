@@ -69,14 +69,17 @@ public object WorldArea {
     public fun mapId(world: Int, area: Int): MapId = MapId.of(area = world, block = area)
 }
 
-/** Where the DOS stub records the PE header's offset */
-private const val E_LFANEW_AT = 0x3CL
+/** Where a module image identifies its build, from the image base */
+internal object ImageHeader {
+    /** Where the DOS stub records the PE header's offset */
+    const val PeOffset: Long = 0x3C
 
-/** `TimeDateStamp`, measured from the start of the PE signature */
-private const val TIME_DATE_STAMP_AT = 8L
+    /** `TimeDateStamp`, measured from the start of the PE signature */
+    const val TimeDateStamp: Long = 8
 
-/** The MSVC Rich header's encrypted `DanS` marker */
-private const val RICH_MARKER_AT = 0x80L
+    /** The MSVC Rich header's encrypted `DanS` marker */
+    const val RichMarker: Long = 0x80
+}
 
 public enum class PTDEVersion(
     private val timestamp: UInt?,
@@ -93,12 +96,15 @@ public enum class PTDEVersion(
     }
 }
 
-public fun ProcessMemory.ptdeVersion(module: AddressRange): PTDEVersion? {
-    val lfanew = dwordAt(module.start + E_LFANEW_AT) ?: return null
-    val timestamp = dwordAt(module.start + lfanew.toLong() + TIME_DATE_STAMP_AT) ?: return null
-    val richMarker = dwordAt(module.start + RICH_MARKER_AT) ?: return null
-    return PTDEVersion.of(timestamp, richMarker)
-}
+/** A 'FileMan' capsule ring and the capsule state that means "read requested" or not yet completed */
+public object FileRing {
+    public const val Count: Int = 5
+    public const val Head: Int = 0x20
+    public const val Tail: Int = 0x24
+    public const val Capacity: Int = 0x28
+    public const val Slots: Int = 0x2C
 
-private fun ProcessMemory.dwordAt(at: Address): UInt? = read(at, Int.SIZE_BYTES)
-    ?.let { ByteBuffer.wrap(it).order(ByteOrder.LITTLE_ENDIAN).int.toUInt() }
+    /** A capsule's state byte: 0 none, 1 requested, 2 read done, 3 finishing, 4 loaded */
+    public const val CapsuleState: Int = 0x20
+    public const val Requested: Int = 1
+}

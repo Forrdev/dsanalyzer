@@ -31,6 +31,9 @@ public class GameMemory(
         return address
     }
 
+    /** The address [pointer]'s signature names, before any offset is followed */
+    public fun baseOf(pointer: GamePointer): Address = pointers[pointer] ?: Address.Null
+
     /**
      * Forgets where [pointer] was, so the next [addressOf] walks again
      *

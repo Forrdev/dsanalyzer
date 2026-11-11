@@ -1,4 +1,4 @@
-package com.sappyoak.dsanalyzer.runtime.session
+package com.sappyoak.dsanalyzer.runtime.sampling
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +15,10 @@ import java.util.concurrent.atomic.AtomicReference
 
 import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.runtime.ConnectionEvent
+import com.sappyoak.dsanalyzer.runtime.EditionTables
 import com.sappyoak.dsanalyzer.runtime.GameConnection
+import com.sappyoak.dsanalyzer.runtime.read.readBuild
+import com.sappyoak.dsanalyzer.runtime.session.RuntimeEvent
 import com.sappyoak.dsanalyzer.runtime.session.ai.AIScope
 import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
 import com.sappyoak.dsanalyzer.runtime.tablesFor
@@ -100,7 +103,7 @@ private suspend fun FlowCollector<RuntimeEvent>.sampleWhileConnected(
     }
 
     val session = connection.openSession(edition)
-    val build = edition.buildOf(connection.memory, connection.mainModule)
+    val build = readBuild(game.edition, connection.memory, connection.mainModule)
 
 
     emit(RuntimeEvent.Attached(game, build, session.pointers, session.supports))

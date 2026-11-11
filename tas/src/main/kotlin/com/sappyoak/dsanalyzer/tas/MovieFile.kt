@@ -2,9 +2,9 @@ package com.sappyoak.dsanalyzer.tas
 
 import java.nio.BufferUnderflowException
 import java.nio.ByteBuffer
-import java.nio.ByteOrder
 
 import com.sappyoak.dsanalyzer.tas.rng.RngCodec
+import com.sappyoak.dsanalyzer.shared.binary.littleEndian
 
 public object MovieFile {
     private val MAGIC = "DSTM".toByteArray(Charsets.US_ASCII)
@@ -19,7 +19,7 @@ public object MovieFile {
         val size = MAGIC.size + Short.SIZE_BYTES + Int.SIZE_BYTES + run.segments.sumOf {
             2 + (if (it.rng != null) RngCodec.SIZE else 0) + Int.SIZE_BYTES + it.movie.size * FRAME
         }
-        val buffer = ByteBuffer.allocate(size).order(ByteOrder.LITTLE_ENDIAN)
+        val buffer = littleEndian(size)
         buffer.put(MAGIC).putShort(VERSION).putInt(run.segments.size)
         for (segment in run.segments) {
             buffer.put(segment.waitFor?.code?.toByte() ?: NONE)
@@ -34,7 +34,7 @@ public object MovieFile {
 
     /** Null when [bytes] is not a run any known version reads */
     public fun decode(bytes: ByteArray): Run? {
-        val buffer = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN)
+        val buffer = bytes.littleEndian()
         return try {
             val magic = ByteArray(MAGIC.size).also(buffer::get)
             if (!magic.contentEquals(MAGIC)) return null

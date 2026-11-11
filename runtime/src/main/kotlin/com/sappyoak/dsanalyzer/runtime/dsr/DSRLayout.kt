@@ -176,5 +176,6 @@ internal val DSRLayout: GameLayout = GameLayout(
         pinLoaded = null,
         pinOther = null,
         groupMasks = null
-    )
+    ),
+    debugDraw = null
 )

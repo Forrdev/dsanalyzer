@@ -9,9 +9,12 @@ import com.sappyoak.dsanalyzer.runtime.layout.AnimRequestLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimSlotLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimationLayout
 import com.sappyoak.dsanalyzer.runtime.layout.CameraLayout
+import com.sappyoak.dsanalyzer.runtime.layout.DebugDrawLayout
 import com.sappyoak.dsanalyzer.runtime.layout.GameLayout
+import com.sappyoak.dsanalyzer.runtime.layout.HitInsLayout
 import com.sappyoak.dsanalyzer.runtime.layout.IdentityLayout
 import com.sappyoak.dsanalyzer.runtime.layout.LoadQueueLayout
+import com.sappyoak.dsanalyzer.runtime.layout.PartFilterLayout
 import com.sappyoak.dsanalyzer.runtime.layout.PlayerGameDataLayout
 import com.sappyoak.dsanalyzer.runtime.layout.ProgressLayout
 import com.sappyoak.dsanalyzer.runtime.layout.ResistBlockLayout
@@ -176,5 +179,23 @@ internal val PTDELayout: GameLayout = GameLayout(
         pinLoaded = WorldBlockRes.PinLoaded,
         pinOther = WorldBlockRes.PinOther,
         groupMasks = WorldBlockRes.GroupMasks
+    ),
+    debugDraw = DebugDrawLayout(
+        hitIns = HitInsLayout(
+            areas = WorldHitMan.Areas,
+            groups = WorldHitMan.Groups,
+            instances = WorldHitMan.Instances,
+            partIndex = HitIns.PartIndex,
+            msb = HitIns.Msb,
+            tag = HitIns.Tag
+        ),
+        partFilters = PartFilterLayout(
+            partsList = MsbResCap.PartsList,
+            parts = MapParts.All,
+            type = MapPart.Type,
+            indexInType = MapPart.IndexInType,
+            typeParams = MapPart.TypeParams,
+            collisionType = MapPartType.Collision
+        )
     )
 )

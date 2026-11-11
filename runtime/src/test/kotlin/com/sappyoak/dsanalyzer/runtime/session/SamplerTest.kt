@@ -21,6 +21,7 @@ import com.sappyoak.dsanalyzer.native.process.ProcessInfo
 import com.sappyoak.dsanalyzer.runtime.ConnectionEvent
 import com.sappyoak.dsanalyzer.runtime.GameProcess
 import com.sappyoak.dsanalyzer.runtime.ptde.PTDEBuild
+import com.sappyoak.dsanalyzer.runtime.sampling.sampling
 
 private val TICK = 100.milliseconds
 

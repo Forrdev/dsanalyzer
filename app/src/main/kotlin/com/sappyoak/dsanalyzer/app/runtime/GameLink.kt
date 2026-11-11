@@ -21,10 +21,10 @@ import com.sappyoak.dsanalyzer.runtime.session.BlockRoster
 import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeEvent
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.SampleRequests
+import com.sappyoak.dsanalyzer.runtime.sampling.SampleRequests
 import com.sappyoak.dsanalyzer.runtime.session.ai.AIScope
 import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
-import com.sappyoak.dsanalyzer.runtime.session.sampling
+import com.sappyoak.dsanalyzer.runtime.sampling.sampling
 import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionSnapshot
 import com.sappyoak.dsanalyzer.runtime.watchForGame
 import kotlinx.coroutines.flow.getAndUpdate

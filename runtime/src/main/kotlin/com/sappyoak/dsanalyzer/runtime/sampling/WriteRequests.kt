@@ -1,5 +1,6 @@
-package com.sappyoak.dsanalyzer.runtime.session
+package com.sappyoak.dsanalyzer.runtime.sampling
 
+import com.sappyoak.dsanalyzer.runtime.session.CheatFlag
 import java.util.concurrent.ConcurrentLinkedQueue
 
 public sealed interface WriteRequest {

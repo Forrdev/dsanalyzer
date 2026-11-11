@@ -1,8 +1,7 @@
-package com.sappyoak.dsanalyzer.runtime.session.attack
+package com.sappyoak.dsanalyzer.runtime.read.attack
 
-import com.sappyoak.dsanalyzer.runtime.read.attack.HitKey
-import com.sappyoak.dsanalyzer.runtime.read.attack.HitRead
-
+import com.sappyoak.dsanalyzer.runtime.session.attack.HitShape
+import com.sappyoak.dsanalyzer.runtime.session.attack.HitSnapshot
 
 internal class HitTracker(
     private val lingerTicks: Int,

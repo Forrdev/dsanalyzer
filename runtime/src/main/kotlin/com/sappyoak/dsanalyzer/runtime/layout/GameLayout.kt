@@ -6,5 +6,6 @@ public data class GameLayout(
     public val animation: AnimationLayout,
     public val animRequest: AnimRequestLayout,
     public val playerGameData: PlayerGameDataLayout,
-    public val loadQueue: LoadQueueLayout
+    public val loadQueue: LoadQueueLayout,
+    public val debugDraw: DebugDrawLayout?
 )

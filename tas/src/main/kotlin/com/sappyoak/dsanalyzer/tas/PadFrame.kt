@@ -1,8 +1,7 @@
 package com.sappyoak.dsanalyzer.tas
 
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
 import kotlin.math.abs
+import com.sappyoak.dsanalyzer.shared.binary.littleEndian
 
 /**
  * One frame of pad input, as `PadDevice_Poll` leaves it for an XInput pad
@@ -29,7 +28,7 @@ public data class PadFrame(
 
     /** The ring's record: the button word zero-extended, then the axes in [axes] order, then padding */
     internal fun encode(): ByteArray {
-        val buffer = ByteBuffer.allocate(Mailbox.RECORD_SIZE).order(ByteOrder.LITTLE_ENDIAN)
+        val buffer = littleEndian(Mailbox.RECORD_SIZE)
         buffer.putInt(buttons)
         axes.forEach(buffer::putFloat)
         return buffer.array()
@@ -43,7 +42,7 @@ public data class PadFrame(
         const val AXIS_COUNT = 6
 
         fun decode(record: ByteArray): PadFrame {
-            val buffer = ByteBuffer.wrap(record).order(ByteOrder.LITTLE_ENDIAN)
+            val buffer = record.littleEndian()
             val buttons = buffer.int and 0xFFFF
             return of(buttons, FloatArray(AXIS_COUNT) { buffer.float })
         }

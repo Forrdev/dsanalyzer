@@ -2,7 +2,7 @@ package com.sappyoak.dsanalyzer.runtime.ptde
 
 import com.sappyoak.dsanalyzer.runtime.pointers.GamePointer
 import com.sappyoak.dsanalyzer.runtime.pointers.GameTable
-import com.sappyoak.dsanalyzer.runtime.session.EditionTables
+import com.sappyoak.dsanalyzer.runtime.EditionTables
 
 public val PTDEPointers: List<GamePointer> = listOf(
     FollowCam.Pointer,
@@ -12,7 +12,6 @@ public val PTDEPointers: List<GamePointer> = listOf(
     AnimData.Pointer,
     AnimRequestMgr.Pointer,
     SpecialEffects.Pointer,
-    HitIns.Pointer,
     WorldChrMan.Pointer,
     WorldRes.Pointer,
     EmevdMan.Pointer,
@@ -25,7 +24,9 @@ public val PTDEPointers: List<GamePointer> = listOf(
     MenuMan.Pointer,
     Havok.Manager,
     AttackMan.Pointer,
-    BulletMan.Pointer
+    BulletMan.Pointer,
+    WorldHitMan.Pointer,
+    Graphics.Pointer
 )
 
 /**
@@ -41,6 +42,5 @@ public val PTDETables: List<Pair<GamePointer, GameTable>> = listOf(
 
 public val PTDEEdition: EditionTables = EditionTables(
     pointers = PTDEPointers,
-    layout = PTDELayout,
-    buildOf = { memory, module -> memory.ptdeVersion(module)?.name }
+    layout = PTDELayout
 )
