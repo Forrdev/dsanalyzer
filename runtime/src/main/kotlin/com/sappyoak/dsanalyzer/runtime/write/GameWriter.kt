@@ -5,7 +5,9 @@ import java.nio.ByteOrder
 
 import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.native.process.CodeMemory
+import com.sappyoak.dsanalyzer.native.process.CodePatch
 import com.sappyoak.dsanalyzer.native.process.ProcessMemory
+import com.sappyoak.dsanalyzer.native.process.patch
 import com.sappyoak.dsanalyzer.runtime.pointers.Lifetime
 
 public class GameWriter internal constructor(
@@ -14,7 +16,7 @@ public class GameWriter internal constructor(
 ) {
     private val journal = WriteJournal()
 
-    public val active: Set<WriteKey> get() = journal.keys
+    public val active: Set<WriteKey> get() = journal.keys.toSet()
     public val canPlaceCode: Boolean get() = code != null
 
     internal fun writeBits(key: WriteKey, address: Address, lifetime: Lifetime, mask: Int, on: Boolean): Boolean {
@@ -28,36 +30,63 @@ public class GameWriter internal constructor(
         return true
     }
 
-    /** Replaces code at [address], journaled so the original bytes go back on [revert] */
-    @GameMutation
-    internal fun patchCode(key: WriteKey, address: Address, bytes: ByteArray): Boolean {
-        val placer = code ?: return false
-        val original = memory.read(address, bytes.size) ?: return false
-        if (!placer.patch(address, bytes)) return false
-        journal.record(JournalEntry(key, address, Lifetime.Process, Original.Code(original)))
+    /** Replaces data at [address], journaled so the bytes first found there go back on [revert] */
+    public fun writeBytes(key: WriteKey, address: Address, lifetime: Lifetime, bytes: ByteArray): Boolean {
+        val original = journal[key]?.let { (it.original as? Original.Bytes)?.bytes }
+            ?: memory.read(address, bytes.size)
+            ?: return false
+        if (!memory.write(address, bytes)) return false
+        journal.record(JournalEntry(key, address, lifetime, Original.Bytes(original)))
         return true
+    }
+
+    /**
+     * Applies every edit with the game's threads suspended, journaled so each goes back on [revert].
+     * Refuses, changing nothing, if any site does not hold its expected bytes
+     */
+    @GameMutation
+    public fun patchCode(edits: List<CodeEdit>): Boolean {
+        val placer = code ?: return false
+        if (edits.any { memory.read(it.address, it.expected.size)?.contentEquals(it.expected) != true }) return false
+        if (!placer.patch(edits.map { CodePatch(it.address, it.bytes) })) return false
+        edits.forEach { journal.record(JournalEntry(it.key, it.address, Lifetime.Process, Original.Code(it.expected))) }
+        return true
+    }
+
+    @GameMutation
+    public fun patchCode(edit: CodeEdit): Boolean = patchCode(listOf(edit))
+
+    /**
+     * Runs [steps]; if they report failure, every change they journaled is put back, newest first.
+     * Memory they allocated is not journaled and stays the caller's to free
+     */
+    public fun allOrNothing(steps: GameWriter.() -> Boolean): Boolean {
+        val before = journal.keys.toSet()
+        if (steps()) return true
+        journal.keys.filterNot { it in before }.asReversed().forEach(::revert)
+        return false
     }
 
     /** Memory of the tool's own in the game, written with [fill] */
     @GameMutation
-    internal fun allocate(size: Int): Address? = code?.allocate(size)
+    public fun allocate(size: Int): Address? = code?.allocate(size)
 
     /** Writes memory the tool allocated; never journaled */
     @GameMutation
-    internal fun fill(address: Address, bytes: ByteArray): Boolean = memory.write(address, bytes)
+    public fun fill(address: Address, bytes: ByteArray): Boolean = memory.write(address, bytes)
 
     @GameMutation
-    internal fun fillDword(address: Address, value: Int): Boolean = fill(address, dword(value))
+    public fun fillDword(address: Address, value: Int): Boolean = fill(address, dword(value))
 
     @GameMutation
-    internal fun free(address: Address): Boolean = code?.free(address) ?: false
+    public fun free(address: Address): Boolean = code?.free(address) ?: false
 
     /**
      * A one-shot action on the game, such as a warp: never journaled, because there is no state to
      * put back. Undoing a warp is another warp
      */
     @GameMutation
-    internal fun perform(address: Address, bytes: ByteArray): Boolean = memory.write(address, bytes)
+    public fun perform(address: Address, bytes: ByteArray): Boolean = memory.write(address, bytes)
 
     public fun revert(key: WriteKey): Boolean = journal.take(key)?.let(::restore) ?: false
 
@@ -72,6 +101,7 @@ public class GameWriter internal constructor(
             val word = dwordAt(entry.address)
             word != null && memory.write(entry.address, dword((word and original.mask.inv()) or original.bits))
         }
+        is Original.Bytes -> memory.write(entry.address, original.bytes)
         is Original.Code -> code?.patch(entry.address, original.bytes) ?: false
     }
 
