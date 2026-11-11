@@ -14,7 +14,10 @@ public val DSRPointers: List<GamePointer> = listOf(
     AnimRequestMgr.Pointer,
     PlayerGameData.Pointer,
     GameDataMan.Pointer,
-    MenuMan.Pointer
+    MenuMan.Pointer,
+    WorldHitMan.Pointer,
+    AttackMan.Pointer,
+    Graphics.Pointer
 )
 
 public val DSREdition: EditionTables = EditionTables(

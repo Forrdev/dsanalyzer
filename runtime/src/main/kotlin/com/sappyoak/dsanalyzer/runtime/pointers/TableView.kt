@@ -98,6 +98,7 @@ public class TableView(public val table: GameTable) {
                 }
                 true
             }
+            is TableElements.Offsets -> readOffsets(memory, owner, first, taken)
         }
     }
 
@@ -110,6 +111,18 @@ public class TableView(public val table: GameTable) {
             val element = slots.pointer(i * width)
             // a null slot is an absent element rather than a failure
             if (!element.isNull) found.add(element)
+        }
+        return true
+    }
+
+    /** Every offset slot in one read. A zero offset is an absent element */
+    private fun readOffsets(memory: ProcessMemory, owner: Address, first: Address, taken: Int): Boolean {
+        if (taken == 0) return true
+        if (!slots.refresh(memory, first, taken * Int.SIZE_BYTES)) return false
+
+        for (i in 0 until taken) {
+            val offset = slots.int(i * Int.SIZE_BYTES)
+            if (offset != 0) found.add(owner + offset.toLong())
         }
         return true
     }

@@ -26,9 +26,11 @@ internal class MsbHitFilter(private val layout: PartFilterLayout) {
         val found = HashMap<Int, Int>()
         for (at in parts.elements) {
             if (!part.refresh(memory, at) || part.int(layout.type) != layout.collisionType) continue
-            val filter = memory.read(part.pointer(layout.typeParams), 1) ?: continue
+            val params = if (layout.relative) at + part.int(layout.typeParams).toLong() else part.pointer(layout.typeParams)
+            val filter = memory.read(params, 1) ?: continue
             found[part.int(layout.indexInType)] = filter[0].toInt() and 0xFF
         }
         return found
     }
 }
+

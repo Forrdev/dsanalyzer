@@ -61,6 +61,9 @@ public sealed interface TableElements {
 
     /** The element *is* the slot, [stride] bytes of it */
     public data class Inline(public val stride: Int) : TableElements
+
+    /** The slot holds a 32-bit offset of the element from the address the table was resolved against */
+    public data object Offsets : TableElements
 }
 
 
@@ -100,6 +103,7 @@ public class GameTable(
     public fun slotWidth(pointerSize: Int): Int = when (elements) {
         is TableElements.Pointers -> pointerSize
         is TableElements.Inline -> elements.stride
+        is TableElements.Offsets -> Int.SIZE_BYTES
     }
 
     override fun toString(): String = name

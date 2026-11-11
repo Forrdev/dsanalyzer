@@ -43,8 +43,8 @@ public object PlayerGameData {
     public const val Physique: Int = 0xC7
     public const val Gift: Int = 0xC8
 
-    public const val MultiplayCount: Int = 0xCC
-    public const val CoopPlaySuccessCount: Int = 0xD0
+    public const val MultiplayerCount: Int = 0xCC
+    public const val CoopSuccessCount: Int = 0xD0
     public const val WarriorsOfSunlightPoints: Int = 0xE5
     public const val DarkwraithPoints: Int = 0xE6
     public const val PathOfTheDragonPoints: Int = 0xE7
@@ -52,6 +52,7 @@ public object PlayerGameData {
     public const val ForestHunterPoints: Int = 0xE9
     public const val DarkmoonBladePoints: Int = 0xEA
     public const val ChaosServantPoints: Int = 0xEB
+    public const val Indictments: Int = 0xEC
     public const val EggLevel: Int = 0xF4
     public const val PoisonResist: Int = 0xF8
     public const val BleedResist: Int = 0xFC

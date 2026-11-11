@@ -7,11 +7,16 @@ import java.lang.foreign.ValueLayout.JAVA_BYTE
 import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.native.process.CodeMemory
 import com.sappyoak.dsanalyzer.native.process.CodePatch
+import com.sappyoak.dsanalyzer.native.process.NEAR_SPAN
+import com.sappyoak.dsanalyzer.native.process.ALLOCATION_STEP
+import com.sappyoak.dsanalyzer.native.process.placeIn
 import com.sappyoak.dsanalyzer.native.process.ProcessAccessException
 
 private const val MEM_COMMIT_RESERVE = 0x1000 or 0x2000
 private const val MEM_RELEASE = 0x8000
+private const val MEM_FREE = 0x10000
 private const val PAGE_EXECUTE_READWRITE = 0x40
+private const val PAGE_READWRITE = 0x04
 
 /** Times a batch waits for threads to leave the patched ranges before it gives up */
 private const val BUSY_ATTEMPTS = 50
@@ -29,8 +34,23 @@ internal class WindowsCodeMemory(
         return if (base != 0L) Address(base) else null
     }
 
+    override fun allocate(size: Int, near: Address): Address? {
+        if (wow64) return allocate(size)
+        if (!isOpen() || size <= 0) return null
+        val low = maxOf(near.value - NEAR_SPAN, ALLOCATION_STEP)
+        val high = near.value + NEAR_SPAN
+        return Arena.ofConfined().use { arena ->
+            val info = arena.allocate(MEMORY_BASIC_INFORMATION)
+            claim(info, size.toLong(), near.value, low, high, upward = true)
+                ?: claim(info, size.toLong(), near.value, low, high, upward = false)
+        }
+    }
+
     override fun free(address: Address): Boolean =
         isOpen() && Kernel32.virtualFreeEx(handle, address.value, MEM_RELEASE)
+
+    override fun makeWritable(address: Address, size: Long): Boolean =
+        isOpen() && Kernel32.virtualProtectEx(handle, address.value, size, PAGE_READWRITE) != null
 
     override fun patch(patches: List<CodePatch>): Boolean {
         if (!isOpen() || patches.isEmpty()) return false
@@ -47,6 +67,30 @@ internal class WindowsCodeMemory(
             Thread.sleep(BUSY_WAIT_MS)
         }
         return false
+    }
+
+    /** Walks regions away from [from] and commits the first free one a block fits in */
+    private fun claim(
+        info: MemorySegment,
+        size: Long,
+        from: Long,
+        low: Long,
+        high: Long,
+        upward: Boolean
+    ): Address? {
+        var cursor = if (upward) from else from - 1
+        while (cursor in low until high) {
+            if (Kernel32.virtualQueryEx(handle, cursor, info) == 0L) return null
+            val base = info.addressField(MEMORY_BASIC_INFORMATION, "BaseAddress")
+            val end = base + info.longField(MEMORY_BASIC_INFORMATION, "RegionSize")
+            if (info.intField(MEMORY_BASIC_INFORMATION, "State") == MEM_FREE) {
+                val block = placeIn(base, end, size, low, high, fromTop = !upward)
+                    ?.let { Kernel32.virtualAllocEx(handle, it, size, MEM_COMMIT_RESERVE, PAGE_EXECUTE_READWRITE) }
+                if (block != null && block != 0L) return Address(block)
+            }
+            cursor = if (upward) end else base - 1
+        }
+        return null
     }
 
     private fun writeAll(patches: List<CodePatch>): Boolean {

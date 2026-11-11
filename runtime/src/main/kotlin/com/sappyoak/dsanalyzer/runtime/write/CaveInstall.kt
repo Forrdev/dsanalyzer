@@ -1,0 +1,52 @@
+package com.sappyoak.dsanalyzer.runtime.write
+
+import com.sappyoak.dsanalyzer.native.memory.AddressRange
+import com.sappyoak.dsanalyzer.native.process.ProcessMemory
+import com.sappyoak.dsanalyzer.runtime.inject.SiteLookup
+import com.sappyoak.dsanalyzer.runtime.inject.X86
+import com.sappyoak.dsanalyzer.runtime.inject.cave.CodeCave
+import com.sappyoak.dsanalyzer.runtime.inject.locate
+
+/** One page holds every cave of a set */
+public const val CAVE_BLOCK_SIZE: Int = 0x1000
+
+public sealed interface CaveResult {
+    /** Each cave's jump is journaled on the writer under the cave's own key */
+    public data object Installed : CaveResult
+    public data class Failed(public val reason: String) : CaveResult
+}
+
+
+/**
+ * Installs [caves] as one unit: every site is located and checked first, every cave is assembled
+ * into one fresh block, and every jump goes in under a single suspension. Nothing is patched unless
+ * all of it can be.
+ *
+ * The block is never freed. Once its jumps are reverted a game thread may still be inside it, or
+ * on its way back to it from a call it made, and nothing can tell when the last one has left
+ */
+@GameMutation
+public fun GameWriter.installCaves(memory: ProcessMemory, module: AddressRange, caves: List<CodeCave>): CaveResult {
+    val sites = caves.map { cave ->
+        when (val lookup = memory.locate(cave.site, module)) {
+            is SiteLookup.Found -> lookup.address
+            is SiteLookup.Missing -> return CaveResult.Failed("${cave.key}: ${lookup.reason}")
+        }
+    }
+
+    val block = allocate(CAVE_BLOCK_SIZE, module.start) ?: return CaveResult.Failed("No memory could be allocated in the game")
+    val code = ArrayList<Byte>(CAVE_BLOCK_SIZE)
+    val edits = caves.mapIndexed { i, cave ->
+        val origin = block + code.size.toLong()
+        code += cave.assemble(origin, sites[i]).asList()
+        CodeEdit(cave.key, sites[i], cave.site.expected, X86.jumpPatch(sites[i], origin, cave.site.displaced))
+    }
+    check(code.size <= CAVE_BLOCK_SIZE) { "${caves.size} caves outgrew their block (${code.size} bytes)" }
+
+    return when {
+        !fill(block, code.toByteArray()) -> CaveResult.Failed("The caves could not be written")
+        !patchCode(edits) -> CaveResult.Failed("The cave sites could not be patched")
+        else -> CaveResult.Installed
+    }
+}
+

@@ -10,6 +10,7 @@ import com.sappyoak.dsanalyzer.runtime.layout.AnimSlotLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimationLayout
 import com.sappyoak.dsanalyzer.runtime.layout.CameraLayout
 import com.sappyoak.dsanalyzer.runtime.layout.DebugDrawLayout
+import com.sappyoak.dsanalyzer.runtime.layout.FieldLayout
 import com.sappyoak.dsanalyzer.runtime.layout.GameLayout
 import com.sappyoak.dsanalyzer.runtime.layout.HitInsLayout
 import com.sappyoak.dsanalyzer.runtime.layout.IdentityLayout
@@ -21,6 +22,7 @@ import com.sappyoak.dsanalyzer.runtime.layout.ResistBlockLayout
 import com.sappyoak.dsanalyzer.runtime.layout.SpecialEffectLayout
 import com.sappyoak.dsanalyzer.runtime.layout.StatBlockLayout
 import com.sappyoak.dsanalyzer.runtime.layout.VitalsLayout
+import com.sappyoak.dsanalyzer.runtime.layout.WriteLayout
 
 internal val PTDELayout: GameLayout = GameLayout(
     camera = CameraLayout(
@@ -182,6 +184,7 @@ internal val PTDELayout: GameLayout = GameLayout(
     ),
     debugDraw = DebugDrawLayout(
         hitIns = HitInsLayout(
+            manager = WorldHitMan.Pointer,
             areas = WorldHitMan.Areas,
             groups = WorldHitMan.Groups,
             instances = WorldHitMan.Instances,
@@ -197,5 +200,11 @@ internal val PTDELayout: GameLayout = GameLayout(
             typeParams = MapPart.TypeParams,
             collisionType = MapPartType.Collision
         )
+    ),
+    writes = WriteLayout(
+        chrFlags1 = FieldLayout(ChrIns.Pointer, ChrIns.Flags1),
+        chrFlags2 = FieldLayout(ChrIns.Pointer, ChrIns.Flags2),
+        mapFlags = FieldLayout(ChrCtrl.Pointer, ChrCtrl.Flags),
+        hitboxDraw = FieldLayout(AttackMan.Pointer, AttackMan.HitboxDraw)
     )
 )

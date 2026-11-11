@@ -168,7 +168,13 @@ public class X86(private val origin: Address) {
 
     /** A rel32 to [target], counted from the end of the displacement */
     private fun relative(target: Address) {
-        int((target.value - (origin.value + out.size() + Int.SIZE_BYTES)).toInt())
+        val next = origin.value + out.size() + Int.SIZE_BYTES
+        val distance = target.value - next
+        // In a 32-bit address space the displacement wraps, so every address reaches every other
+        require(distance == distance.toInt().toLong() || (target.value or next) ushr Int.SIZE_BITS == 0L) {
+            "$target is out of a rel32's reach from ${Address(next)}"
+        }
+        int(distance.toInt())
     }
 
     private fun relative(label: Label) {

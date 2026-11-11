@@ -1,8 +1,5 @@
 package com.sappyoak.dsanalyzer.tas
 
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-
 import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.native.memory.AddressRange
@@ -15,10 +12,12 @@ import com.sappyoak.dsanalyzer.runtime.inject.Mem
 import com.sappyoak.dsanalyzer.runtime.inject.installHook
 import com.sappyoak.dsanalyzer.runtime.pointers.GamePointer
 import com.sappyoak.dsanalyzer.runtime.ptde.FollowCam
+import com.sappyoak.dsanalyzer.runtime.ptde.InputMan
 import com.sappyoak.dsanalyzer.runtime.ptde.PTDEHookSites
 import com.sappyoak.dsanalyzer.runtime.ptde.PTDESignatures
 import com.sappyoak.dsanalyzer.runtime.write.GameWriter
 import com.sappyoak.dsanalyzer.tas.rng.RngTools
+import com.sappyoak.dsanalyzer.native.memory.intAt
 
 /** Each sync point as a chain the gate can watch: the follow cam resolving is "a world is loaded" */
 private val SYNC_CHAINS: Map<SyncPoint, GamePointer> = mapOf(SyncPoint.LoadFinished to FollowCam.Pointer)
@@ -94,7 +93,7 @@ public class Tas private constructor(
             return when (val hooked = installHook(writer, memory, module, PTDEHookSites.PadPolled) { padOverride(mailbox) }) {
                 is HookResult.Installed -> {
                     val gate = FrameGate(mailbox, gateHook)
-                    val pad = PadOverride(mailbox, hooked.hook) { memory.walk(inputMan, PTDEHookSites.PlayerPad) }
+                    val pad = PadOverride(mailbox, hooked.hook) { memory.walk(inputMan, InputMan.PlayerPad) }
                     val loads = if (loadSites != null && budget != null) LoadSync(mailbox, writer, budget) else null
                     Result.Installed(Tas(gate, pad, RngTools(memory, writer, gate, mailbox, gameMan), loads, syncPoints))
                 }
@@ -122,10 +121,7 @@ private fun ProcessMemory.find(signature: Signature, module: AddressRange): Addr
 
 /** Reads the pointer at [from], then follows each of [offsets] from it; null on any unreadable step */
 private fun ProcessMemory.walk(from: Address, offsets: List<Int>): Int? {
-    var value = dword(from) ?: return null
-    for (offset in offsets) value = dword(Address(value.toLong() and 0xFFFFFFFFL) + offset.toLong()) ?: return null
+    var value = intAt(from) ?: return null
+    for (offset in offsets) value = intAt(Address(value.toLong() and 0xFFFFFFFFL) + offset.toLong()) ?: return null
     return value
 }
-
-private fun ProcessMemory.dword(at: Address): Int? =
-    read(at, Int.SIZE_BYTES)?.let { ByteBuffer.wrap(it).order(ByteOrder.LITTLE_ENDIAN).int }

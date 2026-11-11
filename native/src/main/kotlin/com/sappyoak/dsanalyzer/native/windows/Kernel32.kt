@@ -178,8 +178,17 @@ internal object Kernel32 {
 
     /** The base of the new region, or 0 */
     public fun virtualAllocEx(process: MemorySegment, size: Long, allocationType: Int, protect: Int): Long =
-        (virtualAllocExCall.invokeExact(process, MemorySegment.NULL, size, allocationType, protect) as MemorySegment)
-            .address()
+        virtualAllocEx(process, 0L, size, allocationType, protect)
+
+    /** As above, at exactly [address]; 0 if that range is not free */
+    public fun virtualAllocEx(process: MemorySegment, address: Long, size: Long, allocationType: Int, protect: Int): Long =
+        (virtualAllocExCall.invokeExact(
+            process,
+            MemorySegment.ofAddress(address),
+            size,
+            allocationType,
+            protect
+        ) as MemorySegment).address()
 
     public fun virtualFreeEx(process: MemorySegment, address: Long, freeType: Int): Boolean =
         virtualFreeExCall.invokeExact(process, MemorySegment.ofAddress(address), 0L, freeType) as Int != 0

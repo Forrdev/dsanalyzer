@@ -59,7 +59,7 @@ public class GameSession internal constructor(
     private val attackReader = AttackReader()
     private val animationTracker = AnimationTracker(layout)
     private val hitTracker = HitTracker(HIT_LINGER_TICKS, HIT_SWEEP_LIMIT)
-    private val cheats = CheatWriter.create(game.edition)
+    private val cheats = CheatWriter(layout.writes)
 
     private var lastPlace: WorldPlace? = null
     private var wasLoaded: Boolean = false

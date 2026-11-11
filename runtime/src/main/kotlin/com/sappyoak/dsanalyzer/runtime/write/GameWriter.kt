@@ -70,6 +70,14 @@ public class GameWriter internal constructor(
     @GameMutation
     public fun allocate(size: Int): Address? = code?.allocate(size)
 
+    /** As above, where a `rel32` in the module at [near] can reach it and it the module */
+    @GameMutation
+    public fun allocate(size: Int, near: Address): Address? = code?.allocate(size, near)
+
+    /** Makes game memory writable to the game, for data a cave changes; never restored */
+    @GameMutation
+    public fun makeWritable(address: Address, size: Long): Boolean = code?.makeWritable(address, size) ?: false
+
     /** Writes memory the tool allocated; never journaled */
     @GameMutation
     public fun fill(address: Address, bytes: ByteArray): Boolean = memory.write(address, bytes)

@@ -8,15 +8,20 @@ import com.sappyoak.dsanalyzer.runtime.layout.AnimRequestLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimSlotLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimationLayout
 import com.sappyoak.dsanalyzer.runtime.layout.CameraLayout
+import com.sappyoak.dsanalyzer.runtime.layout.DebugDrawLayout
+import com.sappyoak.dsanalyzer.runtime.layout.FieldLayout
 import com.sappyoak.dsanalyzer.runtime.layout.GameLayout
+import com.sappyoak.dsanalyzer.runtime.layout.HitInsLayout
 import com.sappyoak.dsanalyzer.runtime.layout.IdentityLayout
 import com.sappyoak.dsanalyzer.runtime.layout.LoadQueueLayout
+import com.sappyoak.dsanalyzer.runtime.layout.PartFilterLayout
 import com.sappyoak.dsanalyzer.runtime.layout.PlayerGameDataLayout
 import com.sappyoak.dsanalyzer.runtime.layout.ProgressLayout
 import com.sappyoak.dsanalyzer.runtime.layout.ResistBlockLayout
 import com.sappyoak.dsanalyzer.runtime.layout.SpecialEffectLayout
 import com.sappyoak.dsanalyzer.runtime.layout.StatBlockLayout
 import com.sappyoak.dsanalyzer.runtime.layout.VitalsLayout
+import com.sappyoak.dsanalyzer.runtime.layout.WriteLayout
 
 internal val DSRLayout: GameLayout = GameLayout(
     camera = CameraLayout(
@@ -177,5 +182,31 @@ internal val DSRLayout: GameLayout = GameLayout(
         pinOther = null,
         groupMasks = null
     ),
-    debugDraw = null
+    debugDraw = DebugDrawLayout(
+        hitIns = HitInsLayout(
+            manager = WorldHitMan.Pointer,
+            areas = WorldHitMan.Areas,
+            groups = WorldHitMan.Groups,
+            instances = WorldHitMan.Instances,
+            partIndex = HitIns.PartIndex,
+            msb = HitIns.Msb,
+            tag = HitIns.Tag
+        ),
+        partFilters = PartFilterLayout(
+            partsList = MsbResCap.PartsList,
+            parts = MapParts.All,
+            type = MapPart.Type,
+            indexInType = MapPart.IndexInType,
+            typeParams = MapPart.TypeParams,
+            collisionType = MapPartType.Collision,
+            relative = true
+        )
+    ),
+    writes = WriteLayout(
+        chrFlags1 = FieldLayout(Player.Pointer, ChrIns.Flags1),
+        chrFlags2 = FieldLayout(Player.Pointer, ChrIns.Flags2),
+        mapFlags = FieldLayout(ChrCtrl.Pointer, ChrCtrl.Flags),
+        hitboxDraw = FieldLayout(AttackMan.Pointer, AttackMan.HitboxDraw)
+    )
 )
+

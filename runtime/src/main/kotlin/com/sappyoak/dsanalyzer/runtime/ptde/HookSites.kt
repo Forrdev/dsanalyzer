@@ -1,8 +1,12 @@
 package com.sappyoak.dsanalyzer.runtime.ptde
 
-import com.sappyoak.dsanalyzer.native.memory.Signature
-import com.sappyoak.dsanalyzer.native.memory.SignatureTarget
 import com.sappyoak.dsanalyzer.runtime.inject.HookSite
+import com.sappyoak.dsanalyzer.runtime.inject.code
+
+public class DisplayTest(public val site: HookSite, public val bits: Int) {
+    public val draw: Int get() = site.displaced
+    public val skip: Int get() = site.displaced + site.expected.last().toInt()
+}
 
 public object PTDEHookSites {
     public val GameLoopStep: HookSite = HookSite(
@@ -17,30 +21,57 @@ public object PTDEHookSites {
         expected = code(0xC6, 0x44, 0x24, 0x13, 0x01)
     )
 
-    /** The pointer walk from [InputMan]'s value to the player's pad device */
-    public val PlayerPad: List<Int> = listOf(0x08, 0x04, 0xFC)
     public val LoadBudgetImmediate: Int = 35
+
+    /** The walker's `CALL push(entry)`: stdcall, the entry's address on the stack, the walker's stack in EAX */
+    public val PlanWalkerPush: HookSite = HookSite(
+        PTDESignatures.PlanWalkerPush,
+        offset = 0x20,
+        expected = code(0xE8, 0x57, 0x0C, 0x52, 0xFF)
+    )
+
+    /** `MOV ESI,[EBP+0x18]; MOV ECX,[ESI+0x18]`, just before the flush draws */
+    public val FlushBegin: HookSite = HookSite(
+        PTDESignatures.FlushBegin,
+        offset = 0x0C,
+        expected = code(0x8B, 0x75, 0x18, 0x8B, 0x4E, 0x18)
+    )
+
+    /** The `CALL` that resets EzDraw's state after the flush has drawn */
+    public val FlushEnd: HookSite = HookSite(
+        PTDESignatures.FlushEnd,
+        offset = 0x0E,
+        expected = code(0xE8, 0x7E, 0x2F, 0x4C, 0xFF)
+    )
+
+    public val LoDisplay: DisplayTest = displayTest(offset = 0xBE, bits = 0x12, skip = 0x16)
+    public val HiDisplay: DisplayTest = displayTest(offset = 0x174, bits = 0x24, skip = 0x0B)
+
+    /** The first color load of each rigid draw; the build ends at the wire color's `CALL` [ColorRejoin] bytes on */
+    public val LoColor: HookSite = HookSite(
+        PTDESignatures.LoColor,
+        offset = 0,
+        expected = COLOR_LOAD
+    )
+    public val HiColor: HookSite = HookSite(
+        PTDESignatures.HiColor,
+        offset = 0,
+        expected = COLOR_LOAD
+    )
+    public const val ColorRejoin: Int = 0x73
+
+    /** `PUSH EBX; MOV EBX,[ECX+0xC]; TEST EBX,EBX` */
+    public val AddTriangle: HookSite = HookSite(
+        PTDESignatures.AddTriangle,
+        offset = 0,
+        expected = code(0x53, 0x8B, 0x59, 0x0C, 0x85, 0xDB)
+    )
+
+    private fun displayTest(offset: Int, bits: Int, skip: Int): DisplayTest = DisplayTest(
+        HookSite(PTDESignatures.HitInsDebugDraw, offset, code(0xF6, 0x86, HitIns.Display, 0x00, 0x00, 0x00, bits, 0x74, skip)),
+        bits
+    )
 }
 
-private fun code(vararg values: Int): ByteArray = ByteArray(values.size) { values[it].toByte() }
 
-/** A 'FileMan' capsule ring and the capsule state that means "read requested" or not yet completed */
-public object FileRing {
-    public const val Count: Int = 5
-    public const val Head: Int = 0x20
-    public const val Tail: Int = 0x24
-    public const val Capacity: Int = 0x28
-    public const val Slots: Int = 0x2C
-
-    /** A capsule's state byte: 0 none, 1 requested, 2 read done, 3 finishing, 4 loaded */
-    public const val CapsuleState: Int = 0x20
-    public const val Requested: Int = 1
-}
-public object PadDevice {
-    /** The XInput user index, -1 for a DirectInput device; the stub drives user 0 only */
-    public const val XInputUser: Int = 0x164
-    public const val Buttons: Int = 0x160
-
-    /** Sticks then triggers: LX, LY, RX, RY, LT, RT */
-    public val Axes: List<Int> = listOf(0x16C, 0x170, 0x178, 0x17C, 0x18C, 0x190)
-}
+private val COLOR_LOAD = code(0xF3, 0x0F, 0x10, 0x0D, 0x2C, 0x50, 0x1E, 0x01)

@@ -10,12 +10,12 @@ import com.sappyoak.dsanalyzer.runtime.ptde.ChrCtrl
 import com.sappyoak.dsanalyzer.runtime.ptde.ChrIns
 import com.sappyoak.dsanalyzer.runtime.ptde.ChrPosData
 import com.sappyoak.dsanalyzer.runtime.ptde.GameMan
-import com.sappyoak.dsanalyzer.runtime.read.cheatsIn
 import com.sappyoak.dsanalyzer.runtime.session.AttributeSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.PlayerSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.ResistSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.WorldSnapshot
+import com.sappyoak.dsanalyzer.runtime.session.cheatsIn
 
 internal class PTDEPlayerDetailsReader(private val layout: PlayerGameDataLayout) {
     private val attributes = StructView(layout.pointer)

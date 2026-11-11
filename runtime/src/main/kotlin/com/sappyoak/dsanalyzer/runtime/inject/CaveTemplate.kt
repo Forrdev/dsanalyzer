@@ -1,9 +1,7 @@
 package com.sappyoak.dsanalyzer.runtime.inject
 
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-
 import com.sappyoak.dsanalyzer.native.memory.Address
+import com.sappyoak.dsanalyzer.shared.binary.littleEndian
 
 /**
  * Machine code written by hand with named holes the installer fills: the x64 caves, which [X86]
@@ -27,6 +25,11 @@ public class CaveTemplate(private val code: ByteArray, private val holes: Map<St
         public data class Imm32(override val at: Int) : Hole {
             override val width: Int get() = Int.SIZE_BYTES
         }
+
+        /** A signed byte displacement */
+        public data class Disp8(override val at: Int) : Hole {
+            override val width: Int get() = Byte.SIZE_BYTES
+        }
     }
 
     init {
@@ -36,17 +39,22 @@ public class CaveTemplate(private val code: ByteArray, private val holes: Map<St
     }
 
     public val size: Int get() = code.size
+    public val names: Set<String> get() = holes.keys
 
     /** The cave as it must read at [origin], every hole filled from [values] */
     public fun build(origin: Address, values: Map<String, Long>): ByteArray {
         require(values.keys == holes.keys) { "Holes ${holes.keys} need values; got ${values.keys}" }
-        val out = ByteBuffer.wrap(code.copyOf()).order(ByteOrder.LITTLE_ENDIAN)
+        val out = code.copyOf().littleEndian()
         holes.forEach { (name, hole) ->
             val value = values.getValue(name)
             when (hole) {
                 is Hole.Rel32 -> out.putInt(hole.at, int32(name, value - (origin.value + hole.at + Int.SIZE_BYTES)))
                 is Hole.Abs64 -> out.putLong(hole.at, value)
                 is Hole.Imm32 -> out.putInt(hole.at, int32(name, value))
+                is Hole.Disp8 -> {
+                    require(value in Byte.MIN_VALUE..Byte.MAX_VALUE) { "$name does not fit in a signed byte: $value" }
+                    out.put(hole.at, value.toByte())
+                }
             }
         }
         return out.array()

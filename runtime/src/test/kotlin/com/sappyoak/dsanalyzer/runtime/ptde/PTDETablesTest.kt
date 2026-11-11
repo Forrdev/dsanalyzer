@@ -24,7 +24,7 @@ private val LAST_FIELDS = listOf(
     Triple("PlayerGameData", PlayerGameData.Pointer, PlayerGameData.Stance),
     Triple("GameMan", GameMan.Pointer, GameMan.StableAngle),
     Triple("WorldArea", WorldArea.Pointer, WorldArea.World),
-    Triple("HitIns", HitIns.Pointer, HitIns.BlockIndex),
+    Triple("Graphics", Graphics.Pointer, Graphics.EzDrawOne),
     Triple("GameDataMan", GameDataMan.Pointer, GameDataMan.InGameTimeMillis)
 )
 
@@ -44,7 +44,7 @@ class PTDETablesTest : FunSpec({
 
         assertSoftly {
             throughManager.map { it.name } shouldBe
-                    listOf("ChrIns", "ChrCtrl", "ChrPosData", "AnimData", "AnimRequestMgr", "SpecialEffect", "HitIns", "WorldChrMan", "WorldRes")
+                    listOf("ChrIns", "ChrCtrl", "ChrPosData", "AnimData", "AnimRequestMgr", "SpecialEffect", "WorldChrMan", "WorldRes")
 
             throughManager
                 .filterNot { it.name == "WorldChrMan" || it.name == "WorldRes" }
