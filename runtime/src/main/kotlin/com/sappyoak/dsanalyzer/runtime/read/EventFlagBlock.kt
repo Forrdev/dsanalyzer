@@ -1,16 +1,16 @@
 package com.sappyoak.dsanalyzer.runtime.read
 
+import com.sappyoak.dsanalyzer.runtime.layout.EventFlagLayout
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.pointers.StructView
-import com.sappyoak.dsanalyzer.runtime.ptde.EventFlags
 import com.sappyoak.dsanalyzer.runtime.session.FlagChange
 
 /** The high bit of a word, which is where a flag's bit zero sits */
 private const val HIGH_BIT: Int = Int.MIN_VALUE
 
-public class EventFlagBlock {
-    private val view = StructView(EventFlags.Pointer)
-    private val words = IntArray(EventFlags.Pointer.size / Int.SIZE_BYTES)
+public class EventFlagBlock(layout: EventFlagLayout) {
+    private val view = StructView(layout.pointer)
+    private val words = IntArray(layout.pointer.size / Int.SIZE_BYTES)
     private var seeded = false
 
     public val isPresent: Boolean get() = view.isPresent
@@ -26,7 +26,7 @@ public class EventFlagBlock {
 
     public fun isSet(flagId: Int): Boolean? {
         if (!view.isPresent) return null
-        val at = EventFlags.locate(flagId) ?: return null
+        val at = EventFlagIds.locate(flagId) ?: return null
         return view.int(at.byteOffset).toUInt() and at.mask != 0u
     }
 
@@ -56,7 +56,7 @@ public class EventFlagBlock {
             while (differing != 0) {
                 val bit = Integer.numberOfLeadingZeros(differing)
                 val mask = HIGH_BIT ushr bit
-                EventFlags.flagAt(offset, bit)?.let { changes += FlagChange(it, now and mask != 0) }
+                EventFlagIds.flagAt(offset, bit)?.let { changes += FlagChange(it, now and mask != 0) }
                 differing = differing and mask.inv()
             }
         }

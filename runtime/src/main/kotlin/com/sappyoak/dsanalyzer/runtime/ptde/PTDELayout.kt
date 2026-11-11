@@ -18,6 +18,7 @@ import com.sappyoak.dsanalyzer.runtime.layout.ChrInsLayout
 import com.sappyoak.dsanalyzer.runtime.layout.DebugDrawLayout
 import com.sappyoak.dsanalyzer.runtime.layout.EsdStateLayout
 import com.sappyoak.dsanalyzer.runtime.layout.EventFieldsLayout
+import com.sappyoak.dsanalyzer.runtime.layout.EventFlagLayout
 import com.sappyoak.dsanalyzer.runtime.layout.FieldLayout
 import com.sappyoak.dsanalyzer.runtime.layout.GameLayout
 import com.sappyoak.dsanalyzer.runtime.layout.GameManLayout
@@ -28,6 +29,7 @@ import com.sappyoak.dsanalyzer.runtime.layout.IdentityLayout
 import com.sappyoak.dsanalyzer.runtime.layout.LoadQueueLayout
 import com.sappyoak.dsanalyzer.runtime.layout.MenuLayout
 import com.sappyoak.dsanalyzer.runtime.layout.PartFilterLayout
+import com.sappyoak.dsanalyzer.runtime.layout.PlacedPartsLayout
 import com.sappyoak.dsanalyzer.runtime.layout.PlayerGameDataLayout
 import com.sappyoak.dsanalyzer.runtime.layout.PoseLayout
 import com.sappyoak.dsanalyzer.runtime.layout.PositionLayout
@@ -259,7 +261,24 @@ internal fun ptdeLayout(): GameLayout = GameLayout(
             fadeWeight = AnimChannel.FadeWeight
         )
     ),
+    eventFlags = EventFlagLayout(pointer = EventFlags.Pointer),
     menu = MenuLayout(pointer = MenuMan.Pointer, arrayBase = MenuMan.ARRAY_BASE),
+    placedParts = PlacedPartsLayout(
+        manager = WorldChrMan.Pointer,
+        blocks = WorldChrMan.Blocks,
+        blockSize = WORLD_BLOCK_SIZE,
+        mapData = WorldBlock.MapDataPointer,
+        partsList = MsbResCap.PartsList,
+        parts = MapParts.All,
+        partSize = MAP_PART_SIZE,
+        type = MapPart.Type,
+        enemyType = MapPartType.Enemy,
+        name = MapPart.Name,
+        entityId = MapPart.EntityId,
+        position = MapPart.Position,
+        npcParamId = MapPart.NpcParamId,
+        thinkParamId = MapPart.ThinkParamId
+    ),
     playerGameData = PlayerGameDataLayout(
         pointer = PlayerGameData.Pointer,
         vitals = VitalsLayout(

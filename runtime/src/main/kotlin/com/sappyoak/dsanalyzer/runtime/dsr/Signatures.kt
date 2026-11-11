@@ -28,6 +28,12 @@ public object DSRSignatures {
         target = SignatureTarget.Relative(at = 3, instructionEnd = 7)
     )
 
+    public val EventFlagMan: Signature = Signature.parse(
+        name = "EventFlagMan",
+        pattern = "8B 13 85 D2 7E 15 48 8B 0D ?? ?? ?? ??",
+        target = SignatureTarget.Relative(at = 9, instructionEnd = 13)
+    )
+
     public val MenuMan: Signature = Signature.parse(
         name = "MenuMan",
         pattern = "48 8B 05 ?? ?? ?? ?? 48 63 D1 8B 44 90 30 C3",

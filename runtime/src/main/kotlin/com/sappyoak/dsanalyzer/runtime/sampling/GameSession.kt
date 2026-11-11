@@ -17,6 +17,7 @@ import com.sappyoak.dsanalyzer.runtime.read.CameraReader
 import com.sappyoak.dsanalyzer.runtime.read.EventFlagBlock
 import com.sappyoak.dsanalyzer.runtime.read.LoadQueueReader
 import com.sappyoak.dsanalyzer.runtime.read.MenuReader
+import com.sappyoak.dsanalyzer.runtime.read.PlacedPartsReader
 import com.sappyoak.dsanalyzer.runtime.read.readersFor
 import com.sappyoak.dsanalyzer.runtime.session.ai.AIScope
 import com.sappyoak.dsanalyzer.runtime.read.ai.AITracker
@@ -45,12 +46,13 @@ public class GameSession internal constructor(
     public var pointers: ResolvedPointers = pointers
         private set
 
-    private val flags = EventFlagBlock()
+    private val flags = EventFlagBlock(layout.eventFlags)
 
     private val readers = readersFor(game.edition, layout)
     private val cameraReader = CameraReader(layout.camera)
     private val menuReader = MenuReader(layout.menu)
     private val loadQueueReader = LoadQueueReader(layout.loadQueue)
+    private val placedPartsReader = PlacedPartsReader(layout.placedParts)
     private val aiTracker = AITracker(AI_GRACE_PERIOD, layout)
     private val animationTracker = AnimationTracker(layout)
     private val cheats = CheatWriter(layout.writes)
@@ -78,9 +80,9 @@ public class GameSession internal constructor(
 
         val loaded = cameraReader.refresh(memory)
 
-        val areaPresent = readers.place?.refresh(memory) ?: false
+        val areaPresent = readers.place.refresh(memory)
         val menu = menuReader.read(memory)
-        val place = readers.place?.place() ?: WorldPlace.Unreadable
+        val place = readers.place.place()
 
 
         val reloaded = lastPlace != null && place != lastPlace
@@ -127,7 +129,7 @@ public class GameSession internal constructor(
         extensions.forEach(SessionExtension::afterSample)
     }
 
-    public fun readPlacedEnemies(): List<BlockRoster> = readers.placedParts?.read(memory) ?: emptyList()
+    public fun readPlacedEnemies(): List<BlockRoster> = placedPartsReader.read(memory)
 
     public fun readCharacterEffects(): List<CharacterSnapshot> =
         readers.characters.read(memory, allEffects = true).characters

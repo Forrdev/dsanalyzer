@@ -11,19 +11,16 @@ import com.sappyoak.dsanalyzer.runtime.read.place.PTDEPlaceReader
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeFeature
 
 internal class EditionReaders(
-    val place: PlaceSource?,
+    val place: PlaceSource,
     val clock: ClockSource,
     val characters: CharacterSource,
-    val placedParts: PlacedPartsReader?,
 ) {
     val supported: Set<RuntimeFeature> = buildSet {
         add(RuntimeFeature.Clock)
         add(RuntimeFeature.Animation)
         add(RuntimeFeature.PlayerState)
         add(RuntimeFeature.Characters)
-
-        if (place != null) add(RuntimeFeature.Place)
-        if (placedParts != null) add(RuntimeFeature.PlacedParts)
+        add(RuntimeFeature.Place)
     }
 }
 
@@ -31,14 +28,12 @@ internal fun readersFor(edition: GameEdition, layout: GameLayout): EditionReader
     GameEdition.PrepareToDie -> EditionReaders(
         place = PTDEPlaceReader(),
         clock = ClockSource.of(edition),
-        characters = CharacterReader(layout, ActionReader(layout)),
-        placedParts = PlacedPartsReader()
+        characters = CharacterReader(layout, ActionReader(layout))
     )
 
     GameEdition.Remastered -> EditionReaders(
         place = DSRPlaceReader(),
         clock = ClockSource.of(edition),
-        characters = CharacterReader(layout, ActionReader(layout)),
-        placedParts = null
+        characters = CharacterReader(layout, ActionReader(layout))
     )
 }

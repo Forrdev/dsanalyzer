@@ -79,31 +79,6 @@ public object Graphics {
     public const val EzDrawScene: Int = 0x08
 }
 
-public object MsbResCap {
-    public const val PartsList: Int = 0x48
-}
-
-public object MapParts {
-    public val All: GameTable = GameTable(
-        name = "MapParts",
-        shape = TableShape.ParamList(lengthAt = 0x08, firstAt = 0x0C),
-        elements = TableElements.Offsets,
-        limit = 4096
-    )
-}
-
-public object MapPart {
-    public const val Type: Int = 0x04
-    public const val IndexInType: Int = 0x08
-
-    /** An offset from the part */
-    public const val TypeParams: Int = 0x5C
-}
-
-public object MapPartType {
-    public const val Collision: Int = 5
-}
-
 public object HitColors {
     public const val HiFill: Int = -0x20
     public const val LoFill: Int = -0x10

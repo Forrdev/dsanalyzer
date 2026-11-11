@@ -31,6 +31,9 @@ public object WorldBlockRes {
 
     public const val OwnerPointer: Int = 0x10
     public const val AreaResPointer: Int = 0x18
+
+    public const val GroupMasks: Int = 0x20
+
     public const val Suppress: Int = 0x70
     public const val ForceLoad: Int = 0x71
 
@@ -45,6 +48,10 @@ public object WorldBlockRes {
     public const val Teardown: Int = 0x7C
     public const val JobSlots: Int = 0x238
     public const val JobSlotCount: Int = 4
+
+    public const val PinOther: Int = 0x26C
+
+    public const val PinLoaded: Int = 0x26D
 }
 
 /**
