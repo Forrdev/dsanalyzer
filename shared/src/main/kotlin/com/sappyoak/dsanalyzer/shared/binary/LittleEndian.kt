@@ -7,8 +7,7 @@ import com.sappyoak.dsanalyzer.shared.math.Vec3
 import com.sappyoak.dsanalyzer.shared.math.Vec4
 
 public fun littleEndian(size: Int): ByteBuffer = ByteBuffer.allocate(size).order(ByteOrder.LITTLE_ENDIAN)
-public fun ByteArray.littleEndian(): ByteBuffer = ByteBuffer.wrap(this).order(ByteOrder.LITTLE_ENDIAN)
-
+public fun ByteArray.littleEndian(offset: Int = 0, length: Int = size): ByteBuffer = ByteBuffer.wrap(this, offset, size).order(ByteOrder.LITTLE_ENDIAN)
 public fun Int.toLittleEndian(): ByteArray = littleEndian(Int.SIZE_BYTES).putInt(this).array()
 
 public fun Float.toLittleEndian(): ByteArray = littleEndian(Float.SIZE_BYTES).putFloat(this).array()

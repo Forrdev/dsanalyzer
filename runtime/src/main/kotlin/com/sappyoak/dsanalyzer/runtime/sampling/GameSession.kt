@@ -39,7 +39,7 @@ public class GameSession internal constructor(
     pointers: ResolvedPointers,
     private val memory: GameMemory,
     private val layout: GameLayout,
-    module: AddressRange,
+    private val module: AddressRange,
     public val writer: GameWriter,
     private val extensions: List<SessionExtension>
 ) {
@@ -63,6 +63,7 @@ public class GameSession internal constructor(
     private var world = WorldTier()
     private var sinceWorld = 0
 
+    public val writes: SessionWrites = SessionWrites(layout.writes.mailbox, writer)
     public val supports: Set<RuntimeFeature> get() = readers.supported + layout.supported
 
     init {
@@ -121,12 +122,14 @@ public class GameSession internal constructor(
                 present,
                 readers.characters.playerStructures + AROUND_PLAYER
             ),
-            writes = writer.active
+            writes = writer.active,
+            history = writer.records
         )
     }
 
     internal fun afterSample() {
         extensions.forEach(SessionExtension::afterSample)
+        writes.afterSample(memory, module, wasLoaded)
     }
 
     public fun readPlacedEnemies(): List<BlockRoster> = placedPartsReader.read(memory)
@@ -142,9 +145,9 @@ public class GameSession internal constructor(
     }
 
     public fun setCheat(flag: CheatFlag, on: Boolean): Boolean = cheats.set(flag, on, memory, writer)
-
     public fun revertAll(): Int {
         extensions.forEach(SessionExtension::release)
+        writes.cancelAll(memory.memory)
         return writer.revertAll()
     }
 

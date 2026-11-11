@@ -34,6 +34,12 @@ public object DSRSignatures {
         target = SignatureTarget.Relative(at = 9, instructionEnd = 13)
     )
 
+    /** In the IGT update: `mulss`, `cvttss2si`, then `add [rcx+0xA4],eax` just ahead of the mailbox site */
+    public val MailboxStep: Signature = Signature.parse(
+        name = "MailboxStep",
+        pattern = "F3 0F 59 05 ?? ?? ?? ?? F3 48 0F 2C C0 01 81 A4 00 00 00"
+    )
+
     public val MenuMan: Signature = Signature.parse(
         name = "MenuMan",
         pattern = "48 8B 05 ?? ?? ?? ?? 48 63 D1 8B 44 90 30 C3",

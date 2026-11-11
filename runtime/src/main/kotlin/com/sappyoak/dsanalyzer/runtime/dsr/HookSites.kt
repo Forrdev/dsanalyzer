@@ -11,6 +11,16 @@ public class DisplayTest(public val site: HookSite, public val bits: Int) {
 
 public object DSRHookSites {
     /**
+     * `mov rax,[GameDataMan]` (RIP-relative) after the IGT add, once per logic frame
+     * Plain code, the bytes on disk equal the bytes in memory. 1.0.3.1 only until others are tested, because the
+     * displacement is part of the expected bytes
+     */
+    public val Mailbox: HookSite = HookSite(
+        DSRSignatures.MailboxStep,
+        offset = 0x13,
+        expected = code(0x48, 0x8B, 0x05, 0xC5, 0x18, 0x53, 0x01)
+    )
+    /**
      * `MOV R8D,ESI; MOV EDX,0x16` ahead of the first pass's `EndTargetCamera`. RDI is the plan
      * stream and ESI the plan's handle. The builder runs on every load screen
      */

@@ -23,7 +23,8 @@ public data class RuntimeSnapshot(
     public val menu: MenuSnapshot?,
     public val animation: AnimationSnapshot? = null,
     public val cost: SampleCost,
-    public val writes: Set<WriteKey> = emptySet()
+    public val writes: Set<WriteKey> = emptySet(),
+    public val history: List<WriteEntry> = emptyList()
 ) {
     public val divergence: Float?
         get() {

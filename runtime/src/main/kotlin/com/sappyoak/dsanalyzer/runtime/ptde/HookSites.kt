@@ -15,6 +15,16 @@ public object PTDEHookSites {
         expected = code(0x51, 0xA1, 0x64, 0x55, 0x37, 0x01)
     )
 
+    /**
+     * `mov eax,[0137A280]` after the IGT update, on the main thread, once per logic
+     * frame. It does not run during loads or on the main menu. Absolute, so it moves unchanged
+     */
+    public val Mailbox: HookSite = HookSite(
+        signature = PTDESignatures.MailboxStep,
+        offset = 0x14,
+        expected = code(0xA1, 0x80, 0xA2, 0x37, 0x01)
+    )
+
     public val PadPolled: HookSite = HookSite(
         signature = PTDESignatures.PadPolled,
         offset = 24,

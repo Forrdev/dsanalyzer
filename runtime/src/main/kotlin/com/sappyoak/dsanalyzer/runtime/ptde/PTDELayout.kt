@@ -10,12 +10,14 @@ import com.sappyoak.dsanalyzer.runtime.layout.AnimRequestEntryLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimRequestLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimSlotLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimationLayout
+import com.sappyoak.dsanalyzer.runtime.layout.CallArch
 import com.sappyoak.dsanalyzer.runtime.layout.CameraLayout
 import com.sappyoak.dsanalyzer.runtime.layout.CharacterLayout
 import com.sappyoak.dsanalyzer.runtime.layout.CharacterSlotLayout
 import com.sappyoak.dsanalyzer.runtime.layout.ChrCtrlLayout
 import com.sappyoak.dsanalyzer.runtime.layout.ChrInsLayout
 import com.sappyoak.dsanalyzer.runtime.layout.DebugDrawLayout
+import com.sappyoak.dsanalyzer.runtime.layout.Displaced
 import com.sappyoak.dsanalyzer.runtime.layout.EsdStateLayout
 import com.sappyoak.dsanalyzer.runtime.layout.EventFieldsLayout
 import com.sappyoak.dsanalyzer.runtime.layout.EventFlagLayout
@@ -27,6 +29,7 @@ import com.sappyoak.dsanalyzer.runtime.layout.GoalTypeLayout
 import com.sappyoak.dsanalyzer.runtime.layout.HitInsLayout
 import com.sappyoak.dsanalyzer.runtime.layout.IdentityLayout
 import com.sappyoak.dsanalyzer.runtime.layout.LoadQueueLayout
+import com.sappyoak.dsanalyzer.runtime.layout.MailboxLayout
 import com.sappyoak.dsanalyzer.runtime.layout.MenuLayout
 import com.sappyoak.dsanalyzer.runtime.layout.PartFilterLayout
 import com.sappyoak.dsanalyzer.runtime.layout.PlacedPartsLayout
@@ -363,6 +366,7 @@ internal fun ptdeLayout(): GameLayout = GameLayout(
         chrFlags2 = FieldLayout(ChrIns.Pointer, ChrIns.Flags2),
         mapFlags = FieldLayout(ChrCtrl.Pointer, ChrCtrl.Flags),
         hitboxDraw = FieldLayout(AttackMan.Pointer, AttackMan.HitboxDraw),
-        cheatBits = CHEAT_BITS
+        cheatBits = CHEAT_BITS,
+        mailbox = MailboxLayout(PTDEHookSites.Mailbox, Displaced.Verbatim, CallArch.X86)
     )
 )

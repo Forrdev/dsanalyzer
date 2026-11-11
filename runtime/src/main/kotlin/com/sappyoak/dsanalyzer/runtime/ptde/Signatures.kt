@@ -85,6 +85,12 @@ object PTDESignatures {
         pattern = "51 A1 ?? ?? ?? ?? 56 57 85 C0 74 17 80 78 18 00 74 05 8B 40 14 EB 03 8B 40 10"
     )
 
+    /** In the per-frame step, the call to the IGT update just ahead of the mailbox site */
+    public val MailboxStep: Signature = Signature.parse(
+        name = "MailboxStep",
+        pattern = "51 8B FB E8 ?? ?? ?? ?? 51 D9 45 08 D9 1C 24 E8"
+    )
+
     public val PadPolled: Signature = Signature.parse(
         name = "PadPolled",
         pattern = "8B 07 8B 50 54 8B CF FF D2 84 C0 75 0B 8B 07 8B 50 2C 8B CF FF D2 EB 05 C6 44 24 13 01 83 C3 04"
