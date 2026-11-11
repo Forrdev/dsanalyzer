@@ -49,7 +49,7 @@ public class GameSession internal constructor(
 
     private val readers = readersFor(game.edition, layout)
     private val cameraReader = CameraReader(layout.camera)
-    private val menuReader = MenuReader()
+    private val menuReader = MenuReader(layout.menu)
     private val loadQueueReader = LoadQueueReader(layout.loadQueue)
     private val aiTracker = AITracker(AI_GRACE_PERIOD, layout)
     private val animationTracker = AnimationTracker(layout)

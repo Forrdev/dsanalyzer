@@ -1,28 +1,31 @@
 package com.sappyoak.dsanalyzer.runtime.read
 
+import com.sappyoak.dsanalyzer.runtime.layout.MenuLayout
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.pointers.StructView
-import com.sappyoak.dsanalyzer.runtime.ptde.MenuMan
-import com.sappyoak.dsanalyzer.runtime.ptde.MenuOpenMask
+import com.sappyoak.dsanalyzer.runtime.session.MenuOpenMask
+import com.sappyoak.dsanalyzer.runtime.session.MenuScript
 import com.sappyoak.dsanalyzer.runtime.session.MenuSnapshot
 
-internal class MenuReader {
-    private val view = StructView(MenuMan.Pointer)
+internal class MenuReader(private val layout: MenuLayout) {
+    private val view = StructView(layout.pointer)
 
     fun read(memory: GameMemory): MenuSnapshot? {
         if (!view.refresh(memory)) return null
 
-        val mask = MenuOpenMask.of(view::int)
-        val boxKind = view.int(MenuMan.BoxKind)
-
+        val mask = MenuOpenMask.of(::entry)
+        val boxKind = entry(MenuScript.BoxKind)
         return MenuSnapshot(
             mask = mask,
             boxKind = boxKind,
-            screen = view.int(MenuMan.Screen),
-            // Applied here rather than on the snapshot: which masks cover the world is this
-            // edition's rule, and the snapshot has to mean the same thing for one that differs
-            defaultQuantity = view.int(MenuMan.DefaultQuantity),
-            isBlocking = MenuOpenMask.blocks(mask, boxKind)
+            screen = entry(MenuScript.Screen),
+            defaultQuantity = entry(MenuScript.DefaultQuantity),
+            isBlocking = MenuOpenMask.blocks(mask, boxKind),
+            fading = entry(MenuScript.Fading) != 0,
+            resting = entry(MenuScript.Resting) != 0
         )
     }
+
+    private fun entry(index: Int): Int = view.int(layout.offsetOf(index))
 }
+

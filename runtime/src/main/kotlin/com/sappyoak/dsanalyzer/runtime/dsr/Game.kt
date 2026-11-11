@@ -10,7 +10,7 @@ private const val GAME_MAN_SIZE: Int = 0xBC0
 private const val GAME_DATA_MAN_SIZE: Int = 0xA8
 
 /** Enough to cover [MenuMan.ArrayBase] and a reasonable run of  entries */
-private const val MENU_MAN_SIZE: Int = 0x80
+private const val MENU_MAN_SIZE: Int = 0x300
 
 public object GameMan {
     public val Pointer: GamePointer = GamePointer(

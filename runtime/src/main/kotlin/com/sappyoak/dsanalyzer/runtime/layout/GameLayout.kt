@@ -10,6 +10,7 @@ public data class GameLayout(
     public val action: ActionLayout,
     public val animation: AnimationLayout,
     public val animRequest: AnimRequestLayout,
+    public val menu: MenuLayout,
     public val playerGameData: PlayerGameDataLayout,
     public val loadQueue: LoadQueueLayout,
     public val debugDraw: DebugDrawLayout?,

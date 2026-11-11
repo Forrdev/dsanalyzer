@@ -26,6 +26,7 @@ import com.sappyoak.dsanalyzer.runtime.layout.GoalTypeLayout
 import com.sappyoak.dsanalyzer.runtime.layout.HitInsLayout
 import com.sappyoak.dsanalyzer.runtime.layout.IdentityLayout
 import com.sappyoak.dsanalyzer.runtime.layout.LoadQueueLayout
+import com.sappyoak.dsanalyzer.runtime.layout.MenuLayout
 import com.sappyoak.dsanalyzer.runtime.layout.PartFilterLayout
 import com.sappyoak.dsanalyzer.runtime.layout.PlayerGameDataLayout
 import com.sappyoak.dsanalyzer.runtime.layout.PoseLayout
@@ -258,6 +259,7 @@ internal fun ptdeLayout(): GameLayout = GameLayout(
             fadeWeight = AnimChannel.FadeWeight
         )
     ),
+    menu = MenuLayout(pointer = MenuMan.Pointer, arrayBase = MenuMan.ARRAY_BASE),
     playerGameData = PlayerGameDataLayout(
         pointer = PlayerGameData.Pointer,
         vitals = VitalsLayout(

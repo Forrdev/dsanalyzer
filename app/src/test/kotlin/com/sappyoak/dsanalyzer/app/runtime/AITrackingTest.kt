@@ -39,7 +39,6 @@ private fun knight(ai: AISnapshot?) = CharacterSnapshot(
     characterType = 0,
     teamType = 0,
     targetHandle = null,
-    isPlayer = false,
     effects = null,
     ai = ai
 )
