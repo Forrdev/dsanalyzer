@@ -44,6 +44,16 @@ internal val MODULE_ENTRY: StructLayout = MemoryLayout.structLayout(
     MemoryLayout.sequenceLayout(MAX_PATH.toLong(), JAVA_SHORT).withName("szExePath"),
 )
 
+internal val THREAD_ENTRY: StructLayout = MemoryLayout.structLayout(
+    JAVA_INT.withName("dwSize"),
+    JAVA_INT.withName("cntUsage"),
+    JAVA_INT.withName("th32ThreadID"),
+    JAVA_INT.withName("th32OwnerProcessID"),
+    JAVA_INT.withName("tpBasePri"),
+    JAVA_INT.withName("tpDeltaPri"),
+    JAVA_INT.withName("dwFlags")
+)
+
 internal val MEMORY_BASIC_INFORMATION: StructLayout = MemoryLayout.structLayout(
     ADDRESS.withName("BaseAddress"),
     ADDRESS.withName("AllocationBase"),

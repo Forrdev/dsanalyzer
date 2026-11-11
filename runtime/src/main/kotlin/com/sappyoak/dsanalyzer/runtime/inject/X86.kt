@@ -139,7 +139,7 @@ public class X86(private val origin: Address) {
         return code
     }
 
-    private fun modRm(opcode: Int, reg: Int, mem: Mem) {
+    internal fun modRm(opcode: Int, reg: Int, mem: Mem) {
         bytes(opcode)
         when (mem) {
             is Mem.Absolute -> {
@@ -162,7 +162,7 @@ public class X86(private val origin: Address) {
         int(imm)
     }
 
-    private fun jcc(condition: Int, label: Label) {
+    internal fun jcc(condition: Int, label: Label) {
         bytes(0x0F, condition)
         relative(label)
     }
@@ -181,7 +181,7 @@ public class X86(private val origin: Address) {
         for (i in 0 until Int.SIZE_BYTES) out.write(value ushr (8 * i))
     }
 
-    private fun bytes(vararg values: Int) = values.forEach(out::write)
+    internal fun bytes(vararg values: Int) = values.forEach(out::write)
 
     public companion object {
         /** `JMP rel32` from [from] to [to], padded with NOPs to [length] bytes */

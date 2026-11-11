@@ -8,19 +8,21 @@ public object PTDEHookSites {
     public val GameLoopStep: HookSite = HookSite(
         signature = PTDESignatures.GameLoopStep,
         offset = 0,
-        displaced = 6
+        expected = code(0x51, 0xA1, 0x64, 0x55, 0x37, 0x01)
     )
 
     public val PadPolled: HookSite = HookSite(
         signature = PTDESignatures.PadPolled,
         offset = 24,
-        displaced = 5
+        expected = code(0xC6, 0x44, 0x24, 0x13, 0x01)
     )
 
     /** The pointer walk from [InputMan]'s value to the player's pad device */
     public val PlayerPad: List<Int> = listOf(0x08, 0x04, 0xFC)
     public val LoadBudgetImmediate: Int = 35
 }
+
+private fun code(vararg values: Int): ByteArray = ByteArray(values.size) { values[it].toByte() }
 
 /** A 'FileMan' capsule ring and the capsule state that means "read requested" or not yet completed */
 public object FileRing {

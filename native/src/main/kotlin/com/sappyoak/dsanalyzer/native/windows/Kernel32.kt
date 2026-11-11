@@ -12,6 +12,7 @@ import com.sappyoak.dsanalyzer.native.ffi.NativeLibrary
 import com.sappyoak.dsanalyzer.native.ffi.capturingLastError
 import com.sappyoak.dsanalyzer.native.process.ProcessAccessException
 
+private const val THREAD_CALL_FAILED = -1
 private const val INVALID_HANDLE = -1L
 
 internal object Kernel32 {
@@ -97,6 +98,41 @@ internal object Kernel32 {
         FunctionDescriptor.of(JAVA_INT, ADDRESS, ADDRESS)
     )
 
+    private val thread32FirstCall = library.downcall(
+        "Thread32First",
+        FunctionDescriptor.of(JAVA_INT, ADDRESS, ADDRESS)
+    )
+
+    private val thread32NextCall = library.downcall(
+        "Thread32Next",
+        FunctionDescriptor.of(JAVA_INT, ADDRESS, ADDRESS)
+    )
+
+    private val openThreadCall = library.downcall(
+        "OpenThread",
+        FunctionDescriptor.of(ADDRESS, JAVA_INT, JAVA_INT, JAVA_INT)
+    )
+
+    private val suspendThreadCall = library.downcall(
+        "SuspendThread",
+        FunctionDescriptor.of(JAVA_INT, ADDRESS)
+    )
+
+    private val resumeThreadCall = library.downcall(
+        "ResumeThread",
+        FunctionDescriptor.of(JAVA_INT, ADDRESS)
+    )
+
+    private val getThreadContextCall = library.downcall(
+        "GetThreadContext",
+        FunctionDescriptor.of(JAVA_INT, ADDRESS, ADDRESS)
+    )
+
+    private val wow64GetThreadContextCall = library.downcall(
+        "Wow64GetThreadContext",
+        FunctionDescriptor.of(JAVA_INT, ADDRESS, ADDRESS)
+    )
+
     public fun openProcess(access: Int, pid: Int): MemorySegment = capturing { state ->
         val handle = openProcessCall.invokeExact(state, access, 0, pid) as MemorySegment
         if (handle.address() == 0L) throw failure("OpenProcess", state)
@@ -171,6 +207,29 @@ internal object Kernel32 {
         val completed = isWow64ProcessCall.invokeExact(process, result) as Int
         completed != 0 && result.get(JAVA_INT, 0) != 0
     }
+
+    fun thread32(snapshot: MemorySegment, entry: MemorySegment, first: Boolean): Boolean {
+        val function = if (first) thread32FirstCall else thread32NextCall
+        return function.invokeExact(snapshot, entry) as Int != 0
+    }
+
+    /** The thread's handle, or null if it could not be opened */
+    fun openThread(access: Int, threadId: Int): MemorySegment? {
+        val handle = openThreadCall.invokeExact(access, 0, threadId) as MemorySegment
+        return handle.takeIf { it.address() != 0L }
+    }
+
+    fun suspendThread(thread: MemorySegment): Boolean = suspendThreadCall.invokeExact(thread) as Int != THREAD_CALL_FAILED
+
+    fun resumeThread(thread: MemorySegment): Boolean = resumeThreadCall.invokeExact(thread) as Int != THREAD_CALL_FAILED
+
+    /** Fills [context] for a thread of the same width as this process */
+    fun getThreadContext(thread: MemorySegment, context: MemorySegment): Boolean =
+        getThreadContextCall.invokeExact(thread, context) as Int != 0
+
+    /** Fills [context] for a 32-bit thread running under WoW64 */
+    fun wow64GetThreadContext(thread: MemorySegment, context: MemorySegment): Boolean =
+        wow64GetThreadContextCall.invokeExact(thread, context) as Int != 0
 
     private fun transfer(
         function: MethodHandle,

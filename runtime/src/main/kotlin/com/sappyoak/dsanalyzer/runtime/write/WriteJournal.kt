@@ -10,6 +10,7 @@ public data class WriteKey(public val name: String) {
 internal sealed interface Original {
     /** The [mask] bits of a dword as they were */
     public data class Bits(val mask: Int, val bits: Int) : Original
+    class Bytes(val bytes: ByteArray) : Original
     class Code(val bytes: ByteArray) : Original
 }
 

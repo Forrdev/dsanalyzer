@@ -38,7 +38,7 @@ internal class WindowsProcess(
 
     override val isRunning: Boolean get() = !closed.get() && Kernel32.exitCode(handle) == STILL_ACTIVE
 
-    override val code: CodeMemory = WindowsCodeMemory(handle) { !closed.get() }
+    override val code: CodeMemory = WindowsCodeMemory(handle, info.pid, wow64 = pointerSize.intPointer) { !closed.get() }
 
     override fun read(address: Address, length: Int): ByteArray? {
         if (closed.get() || length <= 0) return null
