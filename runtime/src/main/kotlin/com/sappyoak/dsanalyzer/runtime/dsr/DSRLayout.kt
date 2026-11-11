@@ -137,7 +137,7 @@ internal val DSRLayout: GameLayout = GameLayout(
         stats = StatBlockLayout(
             first = PlayerGameData.Stats,
             stride = PlayerGameData.StatStride,
-            count = 0
+            count = 8
         ),
         progress = ProgressLayout(
             humanity = PlayerGameData.Humanity,

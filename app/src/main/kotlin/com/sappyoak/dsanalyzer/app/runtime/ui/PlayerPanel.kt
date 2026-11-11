@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-import com.sappyoak.dsanalyzer.runtime.session.PlayerSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
 
 @Composable

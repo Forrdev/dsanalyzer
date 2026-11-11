@@ -2,7 +2,6 @@ package com.sappyoak.dsanalyzer.runtime.session
 
 import com.sappyoak.dsanalyzer.runtime.GameProcess
 import com.sappyoak.dsanalyzer.runtime.pointers.ResolvedPointers
-import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionSnapshot
 
 public sealed interface RuntimeEvent {
     public data object Searching : RuntimeEvent
@@ -21,9 +20,6 @@ public sealed interface RuntimeEvent {
 
     /** The answer to a [com.sappyoak.dsanalyzer.runtime.sampling.SampleRequests.requestPlacedEnemies] */
     public data class PlacedEnemies(public val rosters: List<BlockRoster>) : RuntimeEvent
-
-    /** The answer to a [com.sappyoak.dsanalyzer.runtime.sampling.SampleRequests.requestCollision] */
-    public data class Collision(val snapshot: CollisionSnapshot) : RuntimeEvent
 
     public data class CharacterEffects(public val characters: List<CharacterSnapshot>) : RuntimeEvent
 

@@ -11,7 +11,7 @@ public sealed interface RuntimeMessage {
     public data class LinkChanged(public val link: LinkState) : RuntimeMessage, FrequentMessage
 
     public data object PlacedEnemiesRequested : RuntimeMessage
-    public data object CollisionRequested : RuntimeMessage
+    public data class EngineDrawInstallRequested(public val install: Boolean) : RuntimeMessage
     public data object CharacterEffectsRequested : RuntimeMessage
     public data class AnimationTargetChosen(public val target: AnimationTarget) : RuntimeMessage
 

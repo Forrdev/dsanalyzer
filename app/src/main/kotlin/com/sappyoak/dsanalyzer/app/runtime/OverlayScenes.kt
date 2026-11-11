@@ -1,9 +1,10 @@
 package com.sappyoak.dsanalyzer.app.runtime
 
+import kotlin.math.abs
+
 import com.sappyoak.dsanalyzer.app.runtime.timing.countdownOf
 import com.sappyoak.dsanalyzer.app.runtime.timing.describe
 import com.sappyoak.dsanalyzer.app.runtime.timing.ring
-import com.sappyoak.dsanalyzer.overlay.CollisionView
 import com.sappyoak.dsanalyzer.overlay.MarkerKind
 import com.sappyoak.dsanalyzer.overlay.MarkerView
 import com.sappyoak.dsanalyzer.overlay.OverlayScene
@@ -12,7 +13,6 @@ import com.sappyoak.dsanalyzer.runtime.session.BlockRoster
 import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.PlacedEnemy
 import com.sappyoak.dsanalyzer.shared.math.Vec3
-import kotlin.math.abs
 
 /**
  * How close a placed position has to be to a live one to be the same enemy.
@@ -44,12 +44,9 @@ internal fun RuntimeState.overlayScene(settings: OverlaySettings): OverlayScene 
     return OverlayScene(
         camera = camera,
         markers = MarkerView(
-            markers = markersFor(settings.characters, windows = settings.attackHitboxes),
-            drawDistance = settings.characters.drawDistance,
-            occludeByCollision = settings.characters.occludeByCollision
-        ),
-        collision = collisionFor(settings.collision, settings.characters),
-        hits = if (settings.attackHitboxes) snapshot.hits else emptyList()
+            markers = markersFor(settings.characters, windows = settings.characters.hitWindows),
+            drawDistance = settings.characters.drawDistance
+        )
     )
 }
 
@@ -74,27 +71,6 @@ private fun RuntimeState.markersFor(settings: CharacterOverlaySettings, windows:
 
     return player + live + unbuilt
 }
-
-private fun RuntimeState.collisionFor(
-    settings: CollisionOverlaySettings,
-    markers: CharacterOverlaySettings
-): CollisionView? {
-    if (!settings.enabled && !markers.occludeByCollision) return null
-    val read = collision ?: return null
-
-    return CollisionView(
-        bodies = read.bodies,
-        radius = settings.radius.coerceAtLeast(0f),
-        triangleBudget = settings.triangleBudget.coerceAtLeast(0),
-        occlusionRadius = markers.drawDistance.coerceAtLeast(0f),
-        kinds = settings.kinds,
-        draw = settings.enabled,
-        cull = settings.cull,
-        opacity = settings.opacity.coerceIn(0f, 1f),
-        depthCue = settings.depthCue
-    )
-}
-
 
 private fun List<BlockRoster>.playersBlock(characters: List<CharacterSnapshot>): BlockRoster? {
     if (characters.isEmpty()) return null

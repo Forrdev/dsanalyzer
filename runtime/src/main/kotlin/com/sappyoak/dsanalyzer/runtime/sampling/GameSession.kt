@@ -18,14 +18,12 @@ import com.sappyoak.dsanalyzer.runtime.read.EventFlagBlock
 import com.sappyoak.dsanalyzer.runtime.read.LoadQueueReader
 import com.sappyoak.dsanalyzer.runtime.read.MenuReader
 import com.sappyoak.dsanalyzer.runtime.read.readersFor
-import com.sappyoak.dsanalyzer.runtime.read.attack.AttackReader
 import com.sappyoak.dsanalyzer.runtime.read.character.CharacterReading
 import com.sappyoak.dsanalyzer.runtime.read.character.PlayerReading
 import com.sappyoak.dsanalyzer.runtime.session.ai.AIScope
 import com.sappyoak.dsanalyzer.runtime.read.ai.AITracker
 import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
 import com.sappyoak.dsanalyzer.runtime.read.animation.AnimationTracker
-import com.sappyoak.dsanalyzer.runtime.read.attack.HitTracker
 import com.sappyoak.dsanalyzer.runtime.session.BlockRoster
 import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.CheatFlag
@@ -33,7 +31,6 @@ import com.sappyoak.dsanalyzer.runtime.session.RuntimeFeature
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.SampleCost
 import com.sappyoak.dsanalyzer.runtime.session.WorldPlace
-import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionSnapshot
 import com.sappyoak.dsanalyzer.runtime.write.CheatWriter
 import com.sappyoak.dsanalyzer.runtime.write.GameWriter
 
@@ -41,7 +38,7 @@ public class GameSession internal constructor(
     public val game: GameProcess,
     pointers: ResolvedPointers,
     private val memory: GameMemory,
-    layout: GameLayout,
+    private val layout: GameLayout,
     module: AddressRange,
     public val writer: GameWriter,
     private val extensions: List<SessionExtension>
@@ -56,9 +53,7 @@ public class GameSession internal constructor(
     private val menuReader = MenuReader()
     private val loadQueueReader = LoadQueueReader(layout.loadQueue)
     private val aiTracker = AITracker(AI_GRACE_PERIOD)
-    private val attackReader = AttackReader()
     private val animationTracker = AnimationTracker(layout)
-    private val hitTracker = HitTracker(HIT_LINGER_TICKS, HIT_SWEEP_LIMIT)
     private val cheats = CheatWriter(layout.writes)
 
     private var lastPlace: WorldPlace? = null
@@ -67,7 +62,7 @@ public class GameSession internal constructor(
     private var world = WorldTier()
     private var sinceWorld = 0
 
-    public val supports: Set<RuntimeFeature> get() = readers.supported + RuntimeFeature.Animation + RuntimeFeature.LoadQueue
+    public val supports: Set<RuntimeFeature> get() = readers.supported + layout.supported
 
     init {
         val context = SessionContext(game.edition, memory, writer, module, layout) { lastPlace }
@@ -120,7 +115,6 @@ public class GameSession internal constructor(
             characters = aiTracker.read(memory.memory, world.ai, world.characters),
             flagChanges = changes,
             animation = if (loaded) animationTracker.read(memory, animation, world.others) else null,
-            hits = hitTracker.update(attackReader.read(memory, world.tracked)),
             cost = SampleCost(
                 started.elapsedNow(),
                 present,
@@ -135,8 +129,6 @@ public class GameSession internal constructor(
     }
 
     public fun readPlacedEnemies(): List<BlockRoster> = readers.placedParts?.read(memory) ?: emptyList()
-
-    public fun readCollision(): CollisionSnapshot = readers.collision?.read(memory) ?: CollisionSnapshot.Empty
 
     public fun readCharacterEffects(): List<CharacterSnapshot> =
         readers.characters?.read(memory, allEffects = true)?.characters ?: emptyList()
@@ -188,9 +180,6 @@ public class GameSession internal constructor(
         const val WORLD_TIER_PERIOD = 6
 
         const val AI_GRACE_PERIOD: Int = 15
-
-        const val HIT_LINGER_TICKS = 15
-        const val HIT_SWEEP_LIMIT = 32
     }
 }
 

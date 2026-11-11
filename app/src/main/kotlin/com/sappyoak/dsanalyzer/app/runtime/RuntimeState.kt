@@ -5,11 +5,11 @@ import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.runtime.session.BlockRoster
 import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
+import com.sappyoak.dsanalyzer.runtime.session.EngineDrawStatus
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeFeature
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.WorldPlace
 import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
-import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionSnapshot
 
 public data class RuntimeState(
     public val attached: AttachedGame? = null,
@@ -20,7 +20,7 @@ public data class RuntimeState(
      */
     public val placedEnemies: List<BlockRoster>? = null,
     public val characterEffects: List<CharacterSnapshot>? = null,
-    public val collision: CollisionSnapshot? = null,
+    public val engineDraw: EngineDrawStatus? = null,
     public val problem: String? = null,
     public val installation: Installation? = null,
     public val timings: TimingLibrary = TimingLibrary(),

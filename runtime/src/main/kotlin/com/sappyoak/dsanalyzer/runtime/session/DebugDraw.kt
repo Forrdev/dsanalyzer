@@ -39,3 +39,18 @@ public interface EngineDraw {
     public fun tag(): Int
     public fun setHitboxes(enabled: Boolean): Boolean
 }
+
+public data class EngineDrawRequest(
+    public val installOnAttach: Boolean = false,
+    public val collision: CollisionDrawSettings? = null,
+    public val hitboxes: Boolean = false
+) {
+    public val drawsAnything: Boolean get() = collision != null || hitboxes
+}
+
+public sealed interface EngineDrawStatus {
+    public data object Unsupported : EngineDrawStatus
+    public data object Removed : EngineDrawStatus
+    public data class Installed(public val tagged: Int) : EngineDrawStatus
+    public data class Failed(public val reason: String) : EngineDrawStatus
+}

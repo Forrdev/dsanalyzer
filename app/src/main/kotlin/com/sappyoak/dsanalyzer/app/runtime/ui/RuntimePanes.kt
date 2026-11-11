@@ -110,7 +110,7 @@ public fun RuntimeDetail(
     panel: RuntimePanel,
     onFollow: (View) -> Unit,
     onReadPlacedEnemies: () -> Unit,
-    onReadCollision: () -> Unit,
+    onInstallDraw: (Boolean) -> Unit,
     onReadCharacterEffects: () -> Unit,
     onAnimate: (AnimationTarget) -> Unit
 ) {
@@ -148,7 +148,7 @@ public fun RuntimeDetail(
                         onAnimate
                     )
                     RuntimePanel.Collision ->
-                        item(key = "collision") { CollisionPanel(state.collision, onReadCollision) }
+                        item(key = "collision") { CollisionPanel(state.engineDraw, onInstallDraw) }
                     RuntimePanel.Flags -> flagItems(state.flagLog, onFollow)
                 }
             } ?: note(state.problem ?: "Waiting for the first sample")

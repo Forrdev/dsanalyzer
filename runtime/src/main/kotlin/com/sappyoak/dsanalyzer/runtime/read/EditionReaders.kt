@@ -4,7 +4,6 @@ import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.runtime.layout.GameLayout
 import com.sappyoak.dsanalyzer.runtime.read.character.CharacterSource
 import com.sappyoak.dsanalyzer.runtime.read.character.PTDECharacterReader
-import com.sappyoak.dsanalyzer.runtime.read.collision.CollisionReader
 import com.sappyoak.dsanalyzer.runtime.read.place.DSRPlaceReader
 import com.sappyoak.dsanalyzer.runtime.read.place.PlaceSource
 import com.sappyoak.dsanalyzer.runtime.read.place.PTDEPlaceReader
@@ -14,8 +13,7 @@ internal class EditionReaders(
     val place: PlaceSource?,
     val clock: ClockSource,
     val characters: CharacterSource?,
-    val placedParts: PlacedPartsReader?,
-    val collision: CollisionReader?
+    val placedParts: PlacedPartsReader?
 ) {
     val supported: Set<RuntimeFeature> = buildSet {
         add(RuntimeFeature.Clock)
@@ -28,7 +26,6 @@ internal class EditionReaders(
         }
         if (characters != null) add(RuntimeFeature.Characters)
         if (placedParts != null) add(RuntimeFeature.PlacedParts)
-        if (collision != null) add(RuntimeFeature.Collision)
     }
 }
 
@@ -37,8 +34,7 @@ internal fun readersFor(edition: GameEdition, layout: GameLayout): EditionReader
         place = PTDEPlaceReader(),
         clock = ClockSource.of(edition),
         characters = PTDECharacterReader(layout),
-        placedParts = PlacedPartsReader(),
-        collision = CollisionReader()
+        placedParts = PlacedPartsReader()
     )
 
     GameEdition.Remastered -> EditionReaders(
@@ -46,6 +42,5 @@ internal fun readersFor(edition: GameEdition, layout: GameLayout): EditionReader
         clock = ClockSource.of(edition),
         characters = null,
         placedParts = null,
-        collision = null
     )
 }

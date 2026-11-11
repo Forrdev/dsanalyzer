@@ -20,8 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
-import com.sappyoak.dsanalyzer.app.runtime.OverlaySettings
-import com.sappyoak.dsanalyzer.app.runtime.RuntimeSettings
+import com.sappyoak.dsanalyzer.app.settings.Settings
 import com.sappyoak.dsanalyzer.app.settings.SettingsEdit
 import com.sappyoak.dsanalyzer.app.settings.ui.SettingsScreen
 import com.sappyoak.dsanalyzer.app.ui.theme.AnalyzerTheme
@@ -31,8 +30,7 @@ private val SCRIM = Color.Black.copy(alpha = 0.55f)
 
 @Composable
 internal fun SettingsSheet(
-    overlay: OverlaySettings,
-    runtime: RuntimeSettings,
+    settings: Settings,
     onEdit: (SettingsEdit) -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -75,7 +73,7 @@ internal fun SettingsSheet(
             }
 
             HorizontalDivider(color = colors.border)
-            SettingsScreen(overlay, runtime, onEdit)
+            SettingsScreen(settings, onEdit)
         }
     }
 }

@@ -24,6 +24,7 @@ import com.sappyoak.dsanalyzer.app.runtime.drawsHitWindows
 import com.sappyoak.dsanalyzer.app.runtime.timing.TimingLoader
 import com.sappyoak.dsanalyzer.app.data.scripts.ScriptsEffects
 import com.sappyoak.dsanalyzer.app.data.scripts.ScriptsStore
+import com.sappyoak.dsanalyzer.app.runtime.engineDrawRequest
 import com.sappyoak.dsanalyzer.app.serialization.jsonSerializer
 import com.sappyoak.dsanalyzer.app.settings.SettingsEffects
 import com.sappyoak.dsanalyzer.app.settings.SettingsFile
@@ -92,6 +93,7 @@ public fun createAppModel(
                 link = link,
                 aiTracking = settings.state.map { it.settings.runtime.ai.tracking }.distinctUntilChanged(),
                 timingsWanted = settings.state.map { it.settings.drawsHitWindows }.distinctUntilChanged(),
+                engineDraw = settings.state.map { it.settings.engineDrawRequest }.distinctUntilChanged(),
                 timings = TimingLoader(data)
             ))
         ),

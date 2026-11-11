@@ -8,23 +8,28 @@ import kotlinx.coroutines.flow.map
 import com.sappyoak.dsanalyzer.app.store.EffectRunner
 import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
+import com.sappyoak.dsanalyzer.runtime.session.EngineDrawRequest
 import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
 
 public class RuntimeEffects(
     private val link: GameLink,
     private val aiTracking: Flow<AITracking>,
     private val timingsWanted: Flow<Boolean>,
+    private val engineDraw: Flow<EngineDrawRequest>,
     private val timings: TimingLoader
 ) : EffectRunner<RuntimeEffect, RuntimeMessage> {
     override fun keyOf(effect: RuntimeEffect): Any? = effect
     override fun execute(effect: RuntimeEffect): Flow<RuntimeMessage> = when (effect) {
         RuntimeEffect.Observe -> link.state.map(RuntimeMessage::LinkChanged)
         RuntimeEffect.RequestPlacedEnemies -> flow { link.requestPlacedEnemies() }
-        RuntimeEffect.RequestCollision -> flow { link.requestCollision() }
         RuntimeEffect.RequestCharacterEffects -> flow { link.requestCharacterEffects() }
         RuntimeEffect.FollowAITracking -> flow { aiTracking.collect { link.setAIScope(it.scope) } }
         is RuntimeEffect.Animate -> flow { link.setAnimationTarget(effect.target) }
         RuntimeEffect.FollowTimingsWanted -> timingsWanted.map(RuntimeMessage::TimingsWanted)
+
+        is RuntimeEffect.InstallEngineDraw -> flow { link.installEngineDraw(effect.install) }
+        RuntimeEffect.FollowEngineDraw -> flow { engineDraw.collect(link::setEngineDraw) }
+
         is RuntimeEffect.LoadMapTimings -> flow {
             emit(RuntimeMessage.TimingsLoaded(timings.forMap(effect.installation, effect.map, effect.known), effect.map))
         }
@@ -41,11 +46,13 @@ public class RuntimeEffects(
 public sealed interface RuntimeEffect {
     public data object Observe : RuntimeEffect
     public data object RequestPlacedEnemies : RuntimeEffect
-    public data object RequestCollision : RuntimeEffect
     public data object RequestCharacterEffects : RuntimeEffect
     public data object FollowAITracking : RuntimeEffect
     public data class Animate(public val target: AnimationTarget) : RuntimeEffect
     public data object FollowTimingsWanted : RuntimeEffect
+
+    public data class InstallEngineDraw(public val install: Boolean) : RuntimeEffect
+    public data object FollowEngineDraw : RuntimeEffect
 
     public data class LoadMapTimings(
         public val installation: Installation,

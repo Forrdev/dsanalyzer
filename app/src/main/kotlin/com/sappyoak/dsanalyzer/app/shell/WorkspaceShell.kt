@@ -21,9 +21,8 @@ import com.sappyoak.dsanalyzer.app.nav.ResolveContext
 import com.sappyoak.dsanalyzer.app.nav.View
 import com.sappyoak.dsanalyzer.app.nav.WorkspaceResolveContext
 import com.sappyoak.dsanalyzer.app.nav.resolve
-import com.sappyoak.dsanalyzer.app.runtime.OverlaySettings
 import com.sappyoak.dsanalyzer.app.runtime.RuntimeMessage
-import com.sappyoak.dsanalyzer.app.runtime.RuntimeSettings
+import com.sappyoak.dsanalyzer.app.settings.Settings
 import com.sappyoak.dsanalyzer.app.settings.SettingsEdit
 import com.sappyoak.dsanalyzer.app.workspace.Workspace
 import com.sappyoak.dsanalyzer.app.workspace.WorkspaceStores
@@ -35,8 +34,7 @@ public fun WorkspaceShell(
     workspace: Workspace,
     installation: Installation?,
     stores: WorkspaceStores,
-    overlay: OverlaySettings,
-    runtime: RuntimeSettings,
+    settings: Settings,
     onSettingsEdit: (SettingsEdit) -> Unit
 ) {
     val navigator = remember { Navigator() }
@@ -73,13 +71,12 @@ public fun WorkspaceShell(
             runtimeState = stores.runtime.state,
             onSettings = { settingsOpen = true },
             navigatorPane = { view -> NavigatorPane(view, stores, navigator::go) },
-            detailPane = { view -> DetailPane(view, stores, runtime, resolve, navigator::go) }
+            detailPane = { view -> DetailPane(view, stores, settings.runtime, resolve, navigator::go) }
         )
 
         if (settingsOpen) {
             SettingsSheet(
-                overlay = overlay,
-                runtime = runtime,
+                settings = settings,
                 onEdit = onSettingsEdit,
                 onDismiss = { settingsOpen = false }
             )

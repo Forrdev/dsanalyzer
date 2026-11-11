@@ -13,36 +13,38 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionSnapshot
+import com.sappyoak.dsanalyzer.runtime.session.EngineDrawStatus
 
+/** The state of the game's own debug draw. What it draws is set in the settings */
 @Composable
-internal fun CollisionPanel(collision: CollisionSnapshot?, onRead: () -> Unit) {
+internal fun CollisionPanel(status: EngineDrawStatus?, onInstall: (Boolean) -> Unit) {
     Column(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("Collision", style = MaterialTheme.typography.titleSmall)
-            TextButton(onClick = onRead) { Text(if (collision == null) "Read" else "Re-read") }
+            Text("In-game draw", style = MaterialTheme.typography.titleSmall)
+            when (status) {
+                is EngineDrawStatus.Installed -> TextButton(onClick = { onInstall(false) }) { Text("Remove") }
+                EngineDrawStatus.Removed, is EngineDrawStatus.Failed -> TextButton(onClick = { onInstall(true) }) { Text("Install") }
+                EngineDrawStatus.Unsupported, null -> Unit
+            }
         }
 
-        if (collision == null) {
-            Text(
-                text = "Not read yet - about two megabytes for one map block, so it is a deliberate read",
-                style = MaterialTheme.typography.bodySmall
-            )
-            return@Column
+        when (status) {
+            null -> Field("Code caves", "waiting for the session")
+            EngineDrawStatus.Unsupported -> Field("Code caves", "not built for this edition")
+            EngineDrawStatus.Removed -> Field("Code caves", "not installed")
+            is EngineDrawStatus.Failed -> Field("Code caves", "failed: ${status.reason}")
+            is EngineDrawStatus.Installed -> {
+                Field("Code caves", "installed")
+                Field("Collision parts tagged", status.tagged.toString())
+            }
         }
 
-        Field("Bodies", collision.bodies.size.toString())
-        Field("Triangles", collision.triangleCount.toString())
-
-        if (collision.unread > 0) {
-            Field("Without geometry", "${collision.unread} (shape kinds with no reader)")
-        }
-
-        if (collision.failed > 0) {
-            Field("Not read", "${collision.failed} (bodies whose read did not arrive)")
-        }
+        Text(
+            text = "Collision, filters, colors and hitboxes are set in Settings, under In-game draw",
+            style = MaterialTheme.typography.bodySmall
+        )
     }
 }

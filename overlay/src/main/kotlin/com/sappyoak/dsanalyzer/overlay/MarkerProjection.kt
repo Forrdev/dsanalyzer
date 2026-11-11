@@ -19,8 +19,7 @@ internal data class ProjectedMarker(
     val feet: ScreenPoint?,
     val distance: Float,
     /** One near the camera, falling to [MIN_STRENGTH] far away */
-    val strength: Float,
-    val depth: Float
+    val strength: Float
 )
 
 /**
@@ -43,8 +42,7 @@ internal fun MarkerView.projectedOnto(
         head = head,
         feet = worldToClip.project(marker.position, width, height),
         distance = distance,
-        strength = strengthAt(distance, drawDistance),
-        depth = worldToClip.clipW(headAt.x, headAt.y, headAt.z)
+        strength = strengthAt(distance, drawDistance)
     )
 }.sortedByDescending { it.distance }
 

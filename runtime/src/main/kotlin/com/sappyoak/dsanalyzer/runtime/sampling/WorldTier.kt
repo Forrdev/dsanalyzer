@@ -10,6 +10,4 @@ internal data class WorldTier(
     val characters: List<CharacterSnapshot> = emptyList(),
     val others: List<CharacterRef> = emptyList(),
     val ai: List<AISource> = emptyList()
-) {
-    val tracked: Set<Int> = ai.mapTo(HashSet()) { it.handle }
-}
+)

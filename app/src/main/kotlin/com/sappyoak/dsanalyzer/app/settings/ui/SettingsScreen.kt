@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -16,55 +15,60 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+
+
 import com.sappyoak.dsanalyzer.app.runtime.AISettings
 import com.sappyoak.dsanalyzer.app.runtime.AITracking
-
 import com.sappyoak.dsanalyzer.app.runtime.CharacterDrawDistance
 import com.sappyoak.dsanalyzer.app.runtime.CharacterDrawing
-import com.sappyoak.dsanalyzer.app.runtime.CollisionCull
-import com.sappyoak.dsanalyzer.app.runtime.CollisionDepthCue
-import com.sappyoak.dsanalyzer.app.runtime.CollisionKindDrawn
-import com.sappyoak.dsanalyzer.app.runtime.CollisionOpacity
-import com.sappyoak.dsanalyzer.app.runtime.CollisionRadius
-import com.sappyoak.dsanalyzer.app.runtime.CollisionTriangleBudget
-import com.sappyoak.dsanalyzer.app.runtime.DrawAttackHitboxes
 import com.sappyoak.dsanalyzer.app.runtime.DrawCharacters
-import com.sappyoak.dsanalyzer.app.runtime.DrawCollision
+import com.sappyoak.dsanalyzer.app.runtime.DrawHitWindows
 import com.sappyoak.dsanalyzer.app.runtime.DrawPlayer
+import com.sappyoak.dsanalyzer.app.runtime.EngineDrawSettings
 import com.sappyoak.dsanalyzer.app.runtime.HideDeadCharacters
-import com.sappyoak.dsanalyzer.app.runtime.OccludeMarkers
-import com.sappyoak.dsanalyzer.app.runtime.OverlayEnabled
 import com.sappyoak.dsanalyzer.app.runtime.OverlaySettings
 import com.sappyoak.dsanalyzer.app.runtime.RuntimeSettings
+import com.sappyoak.dsanalyzer.app.runtime.OverlayEnabled
 import com.sappyoak.dsanalyzer.app.runtime.TrackAI
+import com.sappyoak.dsanalyzer.app.settings.CavesOnLaunch
+import com.sappyoak.dsanalyzer.app.settings.Settings
 import com.sappyoak.dsanalyzer.app.settings.SettingsEdit
-import com.sappyoak.dsanalyzer.overlay.FaceCull
-import com.sappyoak.dsanalyzer.runtime.session.collision.ShapeKind
+import com.sappyoak.dsanalyzer.app.settings.ToolSettings
 
 private val DRAW_DISTANCE = 10f..400f
-private val COLLISION_RADIUS = 5f..200f
-private val TRIANGLE_BUDGET = 500f..20_000f
-private val OPACITY = 0.1f..1f
 
 @Composable
-public fun SettingsScreen(overlay: OverlaySettings, runtime: RuntimeSettings, onEdit: (SettingsEdit) -> Unit) {
+public fun SettingsScreen(settings: Settings, onEdit: (SettingsEdit) -> Unit) {
     Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+        ToolSection(settings.tool, onEdit)
         SettingsSection("Overlay") {
             ToggleRow(
                 label = "Draw the overlay",
-                checked = overlay.enabled,
+                checked = settings.overlay.enabled,
                 explain = "Off means no overlay window at all, rather than an empty one"
             ) { onEdit(OverlayEnabled(it)) }
         }
         HorizontalDivider()
 
-        CharacterSettings(overlay, runtime, onEdit)
+        CharacterSettings(settings.overlay, settings.runtime, onEdit)
         HorizontalDivider()
 
-        CollisionSettings(overlay, onEdit)
+        EngineDrawSection(settings.engineDraw, onEdit)
         HorizontalDivider()
 
-        AISettingsSection(runtime.ai, overlay, onEdit)
+        AISettingsSection(settings.runtime.ai, settings.overlay, onEdit)
+    }
+}
+
+@Composable
+private fun ToolSection(settings: ToolSettings, onEdit: (SettingsEdit) -> Unit) {
+    SettingsSection("Tool") {
+        ToggleRow(
+            label = "Create code caves on launch",
+            checked = settings.cavesOnLaunch,
+            explain = "Installs the tool's code caves as soon as it attaches. Off installs them when a " +
+            "feature first needs them. Every patch shows in the write strip and goes back with revert-all"
+        ) { onEdit(CavesOnLaunch(it)) }
     }
 }
 
@@ -116,111 +120,11 @@ private fun CharacterSettings(overlay: OverlaySettings, runtime: RuntimeSettings
         )
 
         ToggleRow(
-            label = "Hide behind collision",
-            checked = settings.occludeByCollision,
-            enabled = on,
-            explain = "Drops a marker only when collision covers it completely. Reads collision even if the wireframe is off"
-        ) { onEdit(OccludeMarkers(it)) }
-
-        ToggleRow(
             label = "Hide the dead",
             checked = runtime.hideDeadCharacters,
             explain = "Leaves dead characters out of the Runtime tab's list. off keeps them at the foot of the list. " +
             "The overlay never draws them"
         ) { onEdit(HideDeadCharacters(it)) }
-    }
-}
-
-@Composable
-private fun CollisionSettings(overlay: OverlaySettings, onEdit: (SettingsEdit) -> Unit) {
-    val settings = overlay.collision
-    val on = overlay.enabled && settings.enabled
-
-    SettingsSection("Collision") {
-        ToggleRow(
-            label = "Draw collision",
-            checked = settings.enabled,
-            enabled = overlay.enabled,
-            explain = "Needs a read first, from the Collision panel in the Runtime tab"
-        ) { onEdit(DrawCollision(it)) }
-
-        SliderRow(
-            label = "Radius",
-            value = settings.radius,
-            range = COLLISION_RADIUS,
-            steps = sliderSteps(COLLISION_RADIUS, by = 5f),
-            enabled = on,
-            format = { "${it.toInt()}m" }
-        ) { onEdit(CollisionRadius(it)) }
-
-        SliderRow(
-            label = "Triangle budget",
-            value = settings.triangleBudget.toFloat(),
-            range = TRIANGLE_BUDGET,
-            steps = sliderSteps(TRIANGLE_BUDGET, by = 500f),
-            enabled = on
-        ) { onEdit(CollisionTriangleBudget(it.toInt())) }
-
-        Text(
-            text = "Nearest geometry is drawn first, so the budget drops what is furthest away",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-
-        SliderRow(
-            label = "Opacity",
-            value = settings.opacity,
-            range = OPACITY,
-            steps = sliderSteps(OPACITY, by = 0.05f),
-            enabled = on,
-            format = { "${(it * 100).toInt()}%" }
-        ) { onEdit(CollisionOpacity(it)) }
-
-        ToggleRow(
-            label = "Fade with distance",
-            checked = settings.depthCue,
-            enabled = on
-        ) { onEdit(CollisionDepthCue(it)) }
-
-        Text(
-            text = "Hidden surfaces",
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(top = 6.dp, bottom = 2.dp)
-        )
-
-        Column(modifier = Modifier.selectableGroup()) {
-            FaceCull.entries.forEach { mode ->
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    RadioButton(
-                        selected = settings.cull == mode,
-                        onClick = { onEdit(CollisionCull(mode)) },
-                        enabled = on
-                    )
-                    Text(text = mode.describe(), style = MaterialTheme.typography.bodySmall)
-                }
-            }
-        }
-
-        Text(
-            text = "Shapes",
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(top = 6.dp, bottom = 2.dp)
-        )
-
-        ShapeKind.entries.forEach { kind ->
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(
-                    checked = kind in settings.kinds,
-                    onCheckedChange = { onEdit(CollisionKindDrawn(kind, it)) },
-                    enabled = on
-                )
-                Text(
-                    text = kind.name,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }
-        }
     }
 }
 
@@ -248,20 +152,12 @@ internal fun AISettingsSection(
         )
 
         ToggleRow(
-            label = "Draw Attack Hitboxes",
-            checked = overlay.attackHitboxes,
-            enabled = overlay.attackHitboxes && ai.tracking != AITracking.Off,
-            explain = "The active hitbox volume of an incoming attack, kept on screen for half a second after it closes. Only enemies tracked above"
-        ) {
-            onEdit(DrawAttackHitboxes(it))
-        }
+            label = "Attack countdown",
+            checked = overlay.characters.hitWindows,
+            enabled = overlay.enabled && ai.tracking != AITracking.Off,
+            explain = "A ring on each tracked enemy's marker that fills up to its next attack. Only enemies tracked above"
+        ) { onEdit(DrawHitWindows(it)) }
     }
-}
-
-private fun FaceCull.describe(): String = when (this) {
-    FaceCull.Off -> "Draw every face, including the ones pointing away"
-    FaceCull.Clockwise -> "Drop clockwise faces"
-    FaceCull.CounterClockwise -> "Drop counter-clockwise faces"
 }
 
 private fun CharacterDrawing.describe(): String = when (this) {

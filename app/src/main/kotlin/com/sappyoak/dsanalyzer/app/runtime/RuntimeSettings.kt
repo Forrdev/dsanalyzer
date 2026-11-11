@@ -32,7 +32,7 @@ internal val AITracking.scope: AIScope
     }
 
 internal val Settings.drawsHitWindows: Boolean
-    get() = overlay.enabled && overlay.attackHitboxes && runtime.ai.tracking != AITracking.Off
+    get() = overlay.enabled && overlay.characters.hitWindows && runtime.ai.tracking != AITracking.Off
 
 
 internal fun List<CharacterSnapshot>.listed(hideDead: Boolean): List<CharacterSnapshot> {

@@ -3,6 +3,7 @@ package com.sappyoak.dsanalyzer.app.settings
 import kotlinx.serialization.Serializable
 
 import com.sappyoak.dsanalyzer.app.connection.ConnectionSettings
+import com.sappyoak.dsanalyzer.app.runtime.EngineDrawSettings
 import com.sappyoak.dsanalyzer.app.runtime.OverlaySettings
 import com.sappyoak.dsanalyzer.app.runtime.RuntimeSettings
 import com.sappyoak.dsanalyzer.app.workspace.WorkspaceId
@@ -14,7 +15,9 @@ public data class Settings(
     public val lastActiveWorkspaceId: WorkspaceId? = null,
     public val connection: ConnectionSettings = ConnectionSettings(),
     public val overlay: OverlaySettings = OverlaySettings(),
-    public val runtime: RuntimeSettings = RuntimeSettings()
+    public val runtime: RuntimeSettings = RuntimeSettings(),
+    public val tool: ToolSettings = ToolSettings(),
+    public val engineDraw: EngineDrawSettings = EngineDrawSettings()
 )
 
 public interface SettingsEdit {
@@ -27,4 +30,15 @@ public interface SettingsAccess {
     public suspend fun loaded(): Settings
     /** Queues [edit], which is saved once applied */
     public fun edit(edit: SettingsEdit)
+}
+
+
+@Serializable
+public data class ToolSettings(
+    public val cavesOnLaunch: Boolean = false
+)
+
+public data class CavesOnLaunch(public val enabled: Boolean) : SettingsEdit {
+    override fun applyTo(settings: Settings): Settings =
+        settings.copy(tool = settings.tool.copy(cavesOnLaunch = enabled))
 }

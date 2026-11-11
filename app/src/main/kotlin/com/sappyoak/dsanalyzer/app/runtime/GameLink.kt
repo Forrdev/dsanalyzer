@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -25,10 +26,11 @@ import com.sappyoak.dsanalyzer.runtime.sampling.SampleRequests
 import com.sappyoak.dsanalyzer.runtime.session.ai.AIScope
 import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
 import com.sappyoak.dsanalyzer.runtime.sampling.sampling
-import com.sappyoak.dsanalyzer.runtime.session.collision.CollisionSnapshot
+import com.sappyoak.dsanalyzer.runtime.session.EngineDrawRequest
+import com.sappyoak.dsanalyzer.runtime.session.EngineDrawStatus
 import com.sappyoak.dsanalyzer.runtime.watchForGame
-import kotlinx.coroutines.flow.getAndUpdate
-
+import com.sappyoak.dsanalyzer.runtime.write.debugdraw.EngineDrawExtension
+import com.sappyoak.dsanalyzer.runtime.write.debugdraw.EngineDrawRequests
 private val logger = KotlinLogging.logger {  }
 
 /** Room for the occasional status change, since ticks do not travel this way */
@@ -40,7 +42,7 @@ public data class LinkState(
     public val note: String? = null,
     public val snapshot: RuntimeSnapshot? = null,
     public val placedEnemies: List<BlockRoster>? = null,
-    public val collision: CollisionSnapshot? = null,
+    public val engineDraw: EngineDrawStatus? = null,
     public val characterEffects: List<CharacterSnapshot>? = null
 )
 
@@ -60,6 +62,7 @@ public class GameLink(
 
     private var watch: Job? = null
     private val requests = SampleRequests()
+    private val draws = EngineDrawRequests()
     private val maps = MapFollower()
 
     /** Begins watching */
@@ -68,7 +71,9 @@ public class GameLink(
 
         watch = scope.launch {
             try {
-                processes().watchForGame(editions).sampling(requests).collect(::record)
+                processes().watchForGame(editions)
+                    .sampling(requests, extensions = { listOf(EngineDrawExtension(draws, ::drawChanged)) })
+                    .collect(::record)
             } catch (cancellation: CancellationException) {
                 throw cancellation
             } catch (err: Throwable) {
@@ -95,10 +100,6 @@ public class GameLink(
         requests.requestPlacedEnemies()
     }
 
-    public fun requestCollision() {
-        requests.requestCollision()
-    }
-
     public fun requestCharacterEffects() {
         requests.requestCharacterEffects()
     }
@@ -111,9 +112,16 @@ public class GameLink(
         requests.setAnimationTarget(target)
     }
 
+    public fun installEngineDraw(enabled: Boolean) {
+        draws.install(enabled)
+    }
+
+    public fun setEngineDraw(request: EngineDrawRequest) {
+        draws.set(request)
+    }
+
     private suspend fun record(event: RuntimeEvent) {
         if (event is RuntimeEvent.Attached) event.log()
-        if (event is RuntimeEvent.Collision) event.log()
         mutableState.update { it.after(event) }
         if (event is RuntimeEvent.Sampled && maps.entered(event.snapshot)) readWorldAgain()
         if (event is RuntimeEvent.Attached || event == RuntimeEvent.Searching) maps.forget()
@@ -121,9 +129,12 @@ public class GameLink(
     }
 
     private fun readWorldAgain() {
-        val before = mutableState.getAndUpdate { it.copy(placedEnemies = null, collision = null) }
+        val before = mutableState.getAndUpdate { it.copy(placedEnemies = null) }
         if (before.placedEnemies != null) requests.requestPlacedEnemies()
-        if (before.collision != null) requests.requestCollision()
+    }
+
+    private fun drawChanged(status: EngineDrawStatus) {
+        mutableState.update { it.copy(engineDraw = status) }
     }
 
     private fun RuntimeEvent.Attached.log() {
@@ -139,24 +150,11 @@ public class GameLink(
             )
         }
     }
-
-    private fun RuntimeEvent.Collision.log() {
-        logger.atInfo {
-            message = "Read the collision"
-            payload = mapOf(
-                "bodies" to snapshot.bodies.size,
-                "triangles" to snapshot.triangleCount,
-                "unread" to snapshot.unread,
-                "failed" to snapshot.failed
-            )
-        }
-    }
 }
 
 internal fun LinkState.after(event: RuntimeEvent): LinkState = when (event) {
     is RuntimeEvent.Sampled -> copy(snapshot = event.snapshot)
     is RuntimeEvent.PlacedEnemies -> copy(placedEnemies = event.rosters)
-    is RuntimeEvent.Collision -> copy(collision = event.snapshot)
     is RuntimeEvent.CharacterEffects -> copy(characterEffects = event.characters)
     is RuntimeEvent.Attached -> LinkState(attached = event.describe())
     is RuntimeEvent.Resolved -> copy(attached = attached?.copy(unresolved = event.pointers.unresolvedNames))
@@ -168,8 +166,7 @@ internal fun LinkState.after(event: RuntimeEvent): LinkState = when (event) {
 
 private val RuntimeEvent.changesConnection: Boolean
     get() = this !is RuntimeEvent.Sampled &&
-            this !is RuntimeEvent.PlacedEnemies &&
-            this !is RuntimeEvent.Collision
+            this !is RuntimeEvent.PlacedEnemies
 
 private fun RuntimeEvent.Attached.describe(): AttachedGame = AttachedGame(
     executableName = game.process.executableName,

@@ -27,13 +27,9 @@ private val BASE_HALF_WIDTH = 4.dp
 private val LABEL_GAP = 6.dp
 private const val LABEL_LIMIT = 20
 
-/** How far either side of the head the occlusion test samples */
-private val OCCLUSION_SPREAD = 7.dp
-
 internal fun DrawScope.drawMarkers(
     scene: OverlayScene,
-    measurer: TextMeasurer,
-    occlusion: OcclusionBuffer?
+    measurer: TextMeasurer
 ) {
     val camera = scene.camera ?: return
     if (scene.markers.markers.isEmpty()) return
@@ -42,18 +38,12 @@ internal fun DrawScope.drawMarkers(
     val height = size.height.toInt()
     if (width <= 0 || height <= 0) return
 
-    val projected = scene.markers.projectedOnto(
+    val visible = scene.markers.projectedOnto(
         worldToClip = camera.worldToClip,
         eye = camera.position,
         width = width,
         height = height
     )
-
-    val spread = OCCLUSION_SPREAD.toPx()
-    val visible = when (occlusion) {
-        null -> projected
-        else -> projected.filterNot { occlusion.isHidden(it.head.x, it.head.y, spread, it.depth) }
-    }
 
     visible.forEach { drawPin(it) }
     visible.forEach { projected -> projected.marker.ring?.let { drawRing(projected, it) } }

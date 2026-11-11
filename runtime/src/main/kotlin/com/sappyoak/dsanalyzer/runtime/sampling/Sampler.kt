@@ -31,7 +31,6 @@ private val logger = KotlinLogging.logger {  }
  */
 public class SampleRequests {
     private val placedEnemies = AtomicBoolean(false)
-    private val collision = AtomicBoolean(false)
     private val characterEffects = AtomicBoolean(false)
     private val ai = AtomicReference(AIScope.TargetingPlayer)
     private val animated = AtomicReference<AnimationTarget>(AnimationTarget.Player)
@@ -46,12 +45,6 @@ public class SampleRequests {
     }
 
     internal fun takePlacedEnemies(): Boolean = placedEnemies.getAndSet(false)
-
-    public fun requestCollision() {
-        collision.set(true)
-    }
-
-    internal fun takeCollision(): Boolean = collision.getAndSet(false)
 
     public fun requestCharacterEffects() {
         characterEffects.set(true)
@@ -76,6 +69,7 @@ public class SampleRequests {
  */
 public fun Flow<ConnectionEvent>.sampling(
     requests: SampleRequests,
+    extensions: () -> List<SessionExtension> = ::emptyList,
     period: (GameEdition) -> Duration = ::tickPeriod,
     tables: (GameEdition) -> EditionTables? = ::tablesFor,
     context: CoroutineContext = Dispatchers.IO
@@ -83,7 +77,7 @@ public fun Flow<ConnectionEvent>.sampling(
     when (event) {
         ConnectionEvent.Searching -> emit(RuntimeEvent.Searching)
         is ConnectionEvent.Refused -> emit(RuntimeEvent.Refused(event.game, event.reason))
-        is ConnectionEvent.Connected -> sampleWhileConnected(event.connection, requests, period, tables)
+        is ConnectionEvent.Connected -> sampleWhileConnected(event.connection, requests, extensions, period, tables)
     }
 }.flowOn(context)
 
@@ -92,6 +86,7 @@ private fun tickPeriod(edition: GameEdition): Duration = 1.seconds / edition.log
 private suspend fun FlowCollector<RuntimeEvent>.sampleWhileConnected(
     connection: GameConnection,
     requests: SampleRequests,
+    extensions: () -> List<SessionExtension>,
     period: (GameEdition) -> Duration,
     tables: (GameEdition) -> EditionTables?
 ) {
@@ -102,7 +97,7 @@ private suspend fun FlowCollector<RuntimeEvent>.sampleWhileConnected(
         return
     }
 
-    val session = connection.openSession(edition)
+    val session = connection.openSession(edition, extensions())
     val build = readBuild(game.edition, connection.memory, connection.mainModule)
 
 
@@ -139,10 +134,7 @@ private suspend fun FlowCollector<RuntimeEvent>.sampleUntilCancelled(
             logger.debug { "Reading the enemies the loaded blocks place" }
             emit(RuntimeEvent.PlacedEnemies(session.readPlacedEnemies()))
         }
-        if (requests.takeCollision()) {
-            logger.debug { "Reading the fixed island's collision geometry" }
-            emit(RuntimeEvent.Collision(session.readCollision()))
-        }
+
         if (requests.takeCharacterEffects()) {
             logger.debug { "Reading every character's special effects" }
             emit(RuntimeEvent.CharacterEffects(session.readCharacterEffects()))

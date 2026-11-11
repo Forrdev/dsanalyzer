@@ -56,7 +56,6 @@ public class ConnectionEffects(
         is RuntimeEvent.Sampled -> null
         is RuntimeEvent.Resolved -> null
         is RuntimeEvent.PlacedEnemies -> null
-        is RuntimeEvent.Collision -> null
         is RuntimeEvent.CharacterEffects -> null
     }
 }

@@ -1,6 +1,5 @@
 package com.sappyoak.dsanalyzer.game.world.effects
 
-import com.sappyoak.dsanalyzer.game.bundledText
 
 private const val NAMES_RESOURCE = "/definitions/ds1-speffect-names.tsv"
 private const val COMMENT = '#'
@@ -33,30 +32,7 @@ public class SpEffectNames(entries: Collection<SpEffectName>) {
     public fun withGenerated(generated: Collection<SpEffectName>): SpEffectNames =
         SpEffectNames(generated.filterNot { it.id in byId } + byId.values)
 
-    /** The file's text: a header comment, then one line per id in id order */
-    public fun toTsv(): String = buildString {
-        appendLine("$COMMENT id${SEPARATOR}name${SEPARATOR}source")
-        entries.forEach { appendLine("${it.id}$SEPARATOR${it.name}$SEPARATOR${it.source}") }
-    }
-
     public companion object {
         public val None: SpEffectNames = SpEffectNames(emptyList())
-
-        public val Bundled: SpEffectNames by lazy { parse(bundledText(NAMES_RESOURCE)) }
-
-        /** Throws on a malformed line, naming it: the file is ours, so a bad line is a bug to fix */
-        public fun parse(text: String): SpEffectNames = SpEffectNames(
-            text.lineSequence().withIndex()
-                .filterNot { (_, line) -> line.isBlank() || line.startsWith(COMMENT) }
-                .map { (index, line) -> entryOf(index + 1, line) }
-                .toList()
-        )
-
-        private fun entryOf(lineNumber: Int, line: String): SpEffectName {
-            val columns = line.split(SEPARATOR)
-            require(columns.size == COLUMNS) { "line $lineNumber: expected $COLUMNS tab-separated columns, got ${columns.size}" }
-            val id = requireNotNull(columns[0].trim().toIntOrNull()) { "line $lineNumber: '${columns[0]}' is not an id" }
-            return SpEffectName(id, columns[1].trim(), columns[2].trim())
-        }
     }
 }

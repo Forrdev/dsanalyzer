@@ -13,9 +13,9 @@ public fun reduceRuntime(
     message: RuntimeMessage
 ): Transition<RuntimeState, RuntimeEffect> = when (message) {
     is RuntimeMessage.Opened -> state.copy(installation = message.installation)
-        .with(RuntimeEffect.Observe, RuntimeEffect.FollowAITracking, RuntimeEffect.FollowTimingsWanted)
+        .with(RuntimeEffect.Observe, RuntimeEffect.FollowAITracking, RuntimeEffect.FollowTimingsWanted, RuntimeEffect.FollowEngineDraw)
     RuntimeMessage.PlacedEnemiesRequested -> state.with(RuntimeEffect.RequestPlacedEnemies)
-    RuntimeMessage.CollisionRequested -> state.with(RuntimeEffect.RequestCollision)
+    is RuntimeMessage.EngineDrawInstallRequested -> state.with(RuntimeEffect.InstallEngineDraw(message.install))
     RuntimeMessage.CharacterEffectsRequested -> state.with(RuntimeEffect.RequestCharacterEffects)
 
     is RuntimeMessage.LinkChanged -> state.copy(
@@ -23,7 +23,7 @@ public fun reduceRuntime(
         snapshot = message.link.snapshot,
         flagLog = state.logAfter(message.link),
         placedEnemies = message.link.placedEnemies,
-        collision = message.link.collision,
+        engineDraw = message.link.engineDraw,
         characterEffects = message.link.characterEffects,
         problem = message.link.note,
     ).withTimingRequests()
