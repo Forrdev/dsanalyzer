@@ -2,8 +2,9 @@ package com.sappyoak.dsanalyzer.runtime.read
 
 import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.runtime.layout.GameLayout
+import com.sappyoak.dsanalyzer.runtime.read.action.PTDEActionReader
 import com.sappyoak.dsanalyzer.runtime.read.character.CharacterSource
-import com.sappyoak.dsanalyzer.runtime.read.character.PTDECharacterReader
+import com.sappyoak.dsanalyzer.runtime.read.character.CharacterReader
 import com.sappyoak.dsanalyzer.runtime.read.place.DSRPlaceReader
 import com.sappyoak.dsanalyzer.runtime.read.place.PlaceSource
 import com.sappyoak.dsanalyzer.runtime.read.place.PTDEPlaceReader
@@ -13,7 +14,8 @@ internal class EditionReaders(
     val place: PlaceSource?,
     val clock: ClockSource,
     val characters: CharacterSource?,
-    val placedParts: PlacedPartsReader?
+    val placedParts: PlacedPartsReader?,
+    val tracksAI: Boolean
 ) {
     val supported: Set<RuntimeFeature> = buildSet {
         add(RuntimeFeature.Clock)
@@ -24,7 +26,6 @@ internal class EditionReaders(
             add(RuntimeFeature.PlayerState)
             add(RuntimeFeature.Characters)
         }
-        if (characters != null) add(RuntimeFeature.Characters)
         if (placedParts != null) add(RuntimeFeature.PlacedParts)
     }
 }
@@ -33,14 +34,16 @@ internal fun readersFor(edition: GameEdition, layout: GameLayout): EditionReader
     GameEdition.PrepareToDie -> EditionReaders(
         place = PTDEPlaceReader(),
         clock = ClockSource.of(edition),
-        characters = PTDECharacterReader(layout),
-        placedParts = PlacedPartsReader()
+        characters = CharacterReader(layout, PTDEActionReader()),
+        placedParts = PlacedPartsReader(),
+        tracksAI = true
     )
 
     GameEdition.Remastered -> EditionReaders(
         place = DSRPlaceReader(),
         clock = ClockSource.of(edition),
-        characters = null,
+        characters = CharacterReader(layout, actions = null),
         placedParts = null,
+        tracksAI = false
     )
 }

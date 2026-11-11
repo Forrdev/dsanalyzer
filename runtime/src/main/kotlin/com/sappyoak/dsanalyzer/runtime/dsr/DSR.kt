@@ -14,6 +14,7 @@ public val DSRPointers: List<GamePointer> = listOf(
     AnimRequestMgr.Pointer,
     PlayerGameData.Pointer,
     GameDataMan.Pointer,
+    GameMan.Pointer,
     MenuMan.Pointer,
     WorldHitMan.Pointer,
     AttackMan.Pointer,
@@ -22,5 +23,5 @@ public val DSRPointers: List<GamePointer> = listOf(
 
 public val DSREdition: EditionTables = EditionTables(
     pointers = DSRPointers,
-    layout = DSRLayout
+    layoutFor = { module -> dsrLayout(DSRVersion.from(module.size.toInt())) }
 )

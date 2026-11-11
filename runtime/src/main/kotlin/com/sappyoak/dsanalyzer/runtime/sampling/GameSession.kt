@@ -34,6 +34,7 @@ import com.sappyoak.dsanalyzer.runtime.session.WorldPlace
 import com.sappyoak.dsanalyzer.runtime.write.CheatWriter
 import com.sappyoak.dsanalyzer.runtime.write.GameWriter
 
+
 public class GameSession internal constructor(
     public val game: GameProcess,
     pointers: ResolvedPointers,
@@ -165,7 +166,7 @@ public class GameSession internal constructor(
             loadQueue = loadQueueReader.read(memory),
             characters = reading.characters,
             others = reading.others,
-            ai = aiTracker.select(memory.memory, scope, reading)
+            ai = if (readers.tracksAI) aiTracker.select(memory.memory, scope, reading) else emptyList()
         )
     }
 
@@ -189,5 +190,5 @@ public fun GameConnection.openSession(
 ): GameSession {
     val resolved = memory.resolvePointers(edition.pointers, mainModule)
     val writer = GameWriter(memory, code)
-    return GameSession(game, resolved, GameMemory(memory, resolved), edition.layout, mainModule, writer, extensions)
+    return GameSession(game, resolved, GameMemory(memory, resolved), edition.layoutFor(mainModule), mainModule, writer, extensions)
 }

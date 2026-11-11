@@ -8,22 +8,30 @@ import com.sappyoak.dsanalyzer.runtime.layout.AnimRequestLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimSlotLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimationLayout
 import com.sappyoak.dsanalyzer.runtime.layout.CameraLayout
+import com.sappyoak.dsanalyzer.runtime.layout.CharacterLayout
+import com.sappyoak.dsanalyzer.runtime.layout.CharacterSlotLayout
+import com.sappyoak.dsanalyzer.runtime.layout.ChrCtrlLayout
+import com.sappyoak.dsanalyzer.runtime.layout.ChrInsLayout
 import com.sappyoak.dsanalyzer.runtime.layout.DebugDrawLayout
 import com.sappyoak.dsanalyzer.runtime.layout.FieldLayout
 import com.sappyoak.dsanalyzer.runtime.layout.GameLayout
+import com.sappyoak.dsanalyzer.runtime.layout.GameManLayout
 import com.sappyoak.dsanalyzer.runtime.layout.HitInsLayout
 import com.sappyoak.dsanalyzer.runtime.layout.IdentityLayout
 import com.sappyoak.dsanalyzer.runtime.layout.LoadQueueLayout
 import com.sappyoak.dsanalyzer.runtime.layout.PartFilterLayout
 import com.sappyoak.dsanalyzer.runtime.layout.PlayerGameDataLayout
+import com.sappyoak.dsanalyzer.runtime.layout.PoseLayout
+import com.sappyoak.dsanalyzer.runtime.layout.PositionLayout
 import com.sappyoak.dsanalyzer.runtime.layout.ProgressLayout
 import com.sappyoak.dsanalyzer.runtime.layout.ResistBlockLayout
 import com.sappyoak.dsanalyzer.runtime.layout.SpecialEffectLayout
 import com.sappyoak.dsanalyzer.runtime.layout.StatBlockLayout
+import com.sappyoak.dsanalyzer.runtime.layout.TargetLayout
 import com.sappyoak.dsanalyzer.runtime.layout.VitalsLayout
 import com.sappyoak.dsanalyzer.runtime.layout.WriteLayout
 
-internal val DSRLayout: GameLayout = GameLayout(
+internal fun dsrLayout(version: DSRVersion): GameLayout = GameLayout(
     camera = CameraLayout(
         pointer = ChrCam.Pointer,
         transform = ChrCam.Transform,
@@ -34,6 +42,48 @@ internal val DSRLayout: GameLayout = GameLayout(
         smoothedPosition = null,
         orientation = null,
         targetPitch = null
+    ),
+    characters = CharacterLayout(
+        manager = WorldChrMan.Pointer,
+        player = WorldChrMan.PlayerPointer,
+        deathCam = WorldChrMan.DeathCamActive,
+        playerSlots = WorldChrMan.PlayerSlots,
+        blocks = WorldChrMan.Blocks,
+        blockCharacters = WorldBlockChr.Characters,
+        slot = CharacterSlotLayout(size = CHARACTER_SLOT_SIZE, character = CharacterSlot.Character),
+        chr = ChrInsLayout(
+            handle = version.chr(ChrIns.Handle),
+            modelId = version.chr(ChrIns.ModelId),
+            npcParamId = version.chr(ChrIns.NpcParamId),
+            chrType = version.chr(ChrIns.ChrType),
+            teamType = version.chr(ChrIns.TeamType),
+            health = version.chr(ChrIns.Health),
+            healthMax = version.chr(ChrIns.HealthMax),
+            stamina = version.chr(ChrIns.Stamina),
+            target = TargetLayout.InManipulator(ComManipulator.TargetHandle),
+            flags1 = version.chr(ChrIns.Flags1),
+            flags2 = version.chr(ChrIns.Flags2),
+            playRegion = version.chr(ChrIns.PlayRegion),
+            specialEffect = version.chr(ChrIns.SpecialEffectPointer),
+            control = version.chr(ChrIns.ChrCtrlPointer),
+            comManipulator = version.chr(ChrIns.ComManipulatorPointer),
+            position = PositionLayout(x = version.chr(ChrIns.Position), stride = Float.SIZE_BYTES),
+            size = CHR_INS_SIZE
+        ),
+        control = ChrCtrlLayout(
+            position = ChrCtrl.PositionPointer,
+            animData = ChrCtrl.AnimDataPointer,
+            flags = ChrCtrl.Flags,
+            playSpeed = AnimData.PlaySpeed,
+            size = CHR_CTRL_SIZE
+        ),
+        pose = PoseLayout(position = ChrPosData.Position, angle = ChrPosData.Angle, size = POSE_SIZE),
+        world = GameManLayout(
+            pointer = GameMan.Pointer,
+            stablePosition = GameMan.StablePosition - version.gameManShift,
+            stableAngle = GameMan.StableAngle - version.gameManShift,
+            lastBonfire = GameMan.LastBonfire - version.gameManShift
+        )
     ),
     specialEffect = SpecialEffectLayout(
         holderSize = SPECIAL_EFFECT_SIZE,
@@ -206,7 +256,8 @@ internal val DSRLayout: GameLayout = GameLayout(
         chrFlags1 = FieldLayout(Player.Pointer, ChrIns.Flags1),
         chrFlags2 = FieldLayout(Player.Pointer, ChrIns.Flags2),
         mapFlags = FieldLayout(ChrCtrl.Pointer, ChrCtrl.Flags),
-        hitboxDraw = FieldLayout(AttackMan.Pointer, AttackMan.HitboxDraw)
+        hitboxDraw = FieldLayout(AttackMan.Pointer, AttackMan.HitboxDraw),
+        cheatBits = DSRCheatBits
     )
 )
 

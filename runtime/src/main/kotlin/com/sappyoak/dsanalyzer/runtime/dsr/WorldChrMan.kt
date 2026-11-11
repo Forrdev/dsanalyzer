@@ -15,9 +15,7 @@ internal const val WORLD_BLOCK_CHR_SIZE: Int = 0xE8
 internal const val CHARACTER_SLOT_SIZE: Int = 0x38
 
 /** Through [WorldChrMan.PlayerPointer], the furthest field declared here */
-private const val WORLD_CHR_MAN_SIZE: Int = 0x70
-/** Through [ChrIns.Stamina] */
-private const val CHR_INS_SIZE: Int = 0x400
+private const val WORLD_CHR_MAN_SIZE: Int = 0x78
 
 public object WorldChrMan {
     public val Pointer: GamePointer = GamePointer(
@@ -33,9 +31,23 @@ public object WorldChrMan {
     public const val AreasPointer: Int = 0x20
     public const val BlockCount: Int = 0x28
     public const val BlocksPointer: Int = 0x30
+    public const val PlayerSlotCount: Int = 0x38
+    public const val PlayerSlotsPointer: Int = 0x40
 
     /** The local player as a 'ChrIns*' */
     public const val PlayerPointer: Int = 0x68
+    public const val DeathCamActive: Int = 0x70
+
+    public val PlayerSlots: GameTable = GameTable(
+        name = "PlayerSlots",
+        shape = TableShape.Counted(
+            lengthAt = PlayerSlotCount,
+            firstAt = PlayerSlotsPointer,
+            indirect = true
+        ),
+        elements = TableElements.Inline(CHARACTER_SLOT_SIZE),
+        limit = 16
+    )
 
     public val Blocks: GameTable = GameTable(
         name = "WorldBlockChr",

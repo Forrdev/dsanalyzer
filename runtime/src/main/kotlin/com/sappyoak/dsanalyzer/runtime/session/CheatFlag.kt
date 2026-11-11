@@ -73,9 +73,7 @@ internal val CHEAT_BITS: Map<CheatFlag, CheatBit> = mapOf(
     CheatFlag.MapCollisionDisabled to CheatBit(CheatWord.MapFlags, ChrMapFlags.DisableMapHit)
 )
 
-internal fun cheatsIn(flags1: Int, flags2: Int, mapFlags: Int): Set<CheatFlag> = buildSet {
+internal fun cheatsIn(bits: Map<CheatFlag, CheatBit>, flags1: Int, flags2: Int, mapFlags: Int): Set<CheatFlag> {
     val words = mapOf(CheatWord.ChrFlags1 to flags1, CheatWord.ChrFlags2 to flags2, CheatWord.MapFlags to mapFlags)
-    return CHEAT_BITS.filterTo(LinkedHashMap()) {
-            (_, bit) -> words.getValue(bit.word) and bit.mask != 0
-    }.keys
+    return bits.filterValues { words.getValue(it.word) and it.mask != 0 }.keys
 }

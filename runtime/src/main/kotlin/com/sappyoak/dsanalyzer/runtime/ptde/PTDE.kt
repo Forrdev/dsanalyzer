@@ -42,5 +42,5 @@ public val PTDETables: List<Pair<GamePointer, GameTable>> = listOf(
 
 public val PTDEEdition: EditionTables = EditionTables(
     pointers = PTDEPointers,
-    layout = PTDELayout
+    layoutFor = { ptdeLayout() }
 )

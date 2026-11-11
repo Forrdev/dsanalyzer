@@ -10,6 +10,12 @@ public object DSRSignatures {
         target = SignatureTarget.Relative(at = 3, instructionEnd = 7)
     )
 
+    public val GameMan: Signature = Signature.parse(
+        name = "GameMan",
+        pattern = "EB 19 48 8D 8E ?? ?? ?? ?? E8",
+        target = SignatureTarget.Relative(at = 17, instructionEnd = 21)
+    )
+
     public val FieldArea: Signature = Signature.parse(
         name = "FieldArea",
         pattern = "48 8B 05 ?? ?? ?? ?? 48 85 C0 48 0F 44 C6 48 89 05 ?? ?? ?? ??",
