@@ -52,6 +52,13 @@ internal class WindowsCodeMemory(
     override fun makeWritable(address: Address, size: Long): Boolean =
         isOpen() && Kernel32.virtualProtectEx(handle, address.value, size, PAGE_READWRITE) != null
 
+    override fun startThread(entry: Address, parameter: Address): Boolean {
+        if (!isOpen()) return false
+        val thread = Kernel32.createRemoteThread(handle, entry.value, parameter.value) ?: return false
+        Kernel32.closeHandle(thread)
+        return true
+    }
+
     override fun patch(patches: List<CodePatch>): Boolean {
         if (!isOpen() || patches.isEmpty()) return false
         repeat(BUSY_ATTEMPTS) {

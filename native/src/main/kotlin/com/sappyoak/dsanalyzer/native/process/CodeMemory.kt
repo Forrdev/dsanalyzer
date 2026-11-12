@@ -25,6 +25,10 @@ public interface CodeMemory {
 
     /** Lets the game write [size] bytes at [address] itself, such as constants a cave rewrites */
     public fun makeWritable(address: Address, size: Long): Boolean = false
+
+    /** Starts a thread in the game at [entry], passing [parameter]. Returns false when shared threads cannot be started */
+    public fun startThread(entry: Address, parameter: Address): Boolean = false
+
     public fun patch(patches: List<CodePatch>): Boolean
 }
 

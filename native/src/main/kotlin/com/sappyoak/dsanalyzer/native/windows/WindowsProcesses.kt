@@ -22,13 +22,14 @@ private const val ERROR_ACCESS_DENIED = 5
 private const val ERROR_BAD_LENGTH = 24
 private const val SNAPSHOT_ATTEMPTS = 5
 
+private const val PROCESS_CREATE_THREAD = 0x0002
 private const val PROCESS_VM_OPERATION = 0x0008
 private const val PROCESS_VM_READ = 0x0010
 private const val PROCESS_VM_WRITE = 0x0020
 private const val PROCESS_QUERY_INFORMATION = 0x0400
 
 private const val ATTACH_ACCESS =
-    PROCESS_VM_OPERATION or PROCESS_VM_READ or PROCESS_VM_WRITE or PROCESS_QUERY_INFORMATION
+   PROCESS_CREATE_THREAD or PROCESS_VM_OPERATION or PROCESS_VM_READ or PROCESS_VM_WRITE or PROCESS_QUERY_INFORMATION
 
 private class Snapshot(val handle: MemorySegment) : AutoCloseable {
     override fun close() {

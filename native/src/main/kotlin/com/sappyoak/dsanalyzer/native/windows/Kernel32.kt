@@ -133,6 +133,11 @@ internal object Kernel32 {
         FunctionDescriptor.of(JAVA_INT, ADDRESS, ADDRESS)
     )
 
+    private val createRemoteThreadCall = library.downcall(
+        "CreateRemoteThread",
+        FunctionDescriptor.of(ADDRESS, ADDRESS, ADDRESS, JAVA_LONG, ADDRESS, ADDRESS, JAVA_INT, ADDRESS)
+    )
+
     public fun openProcess(access: Int, pid: Int): MemorySegment = capturing { state ->
         val handle = openProcessCall.invokeExact(state, access, 0, pid) as MemorySegment
         if (handle.address() == 0L) throw failure("OpenProcess", state)
@@ -239,6 +244,20 @@ internal object Kernel32 {
     /** Fills [context] for a 32-bit thread running under WoW64 */
     fun wow64GetThreadContext(thread: MemorySegment, context: MemorySegment): Boolean =
         wow64GetThreadContextCall.invokeExact(thread, context) as Int != 0
+
+    /** Starts a thread in [process] at [start] with parameter. */
+    fun createRemoteThread(process: MemorySegment, start: Long, parameter: Long): MemorySegment? {
+        val handle = createRemoteThreadCall.invokeExact(
+            process,
+            MemorySegment.NULL,
+            0L,
+            MemorySegment.ofAddress(start),
+            MemorySegment.ofAddress(parameter),
+            0,
+            MemorySegment.NULL
+        ) as MemorySegment
+        return handle.takeIf { it.address() != 0L }
+    }
 
     private fun transfer(
         function: MethodHandle,
