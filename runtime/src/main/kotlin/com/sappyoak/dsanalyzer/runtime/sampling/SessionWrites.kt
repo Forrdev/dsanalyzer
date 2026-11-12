@@ -7,29 +7,43 @@ import kotlinx.coroutines.flow.asSharedFlow
 
 import com.sappyoak.dsanalyzer.native.memory.AddressRange
 import com.sappyoak.dsanalyzer.native.process.ProcessMemory
-import com.sappyoak.dsanalyzer.runtime.layout.MailboxLayout
+import com.sappyoak.dsanalyzer.runtime.layout.PlayerGameDataLayout
+import com.sappyoak.dsanalyzer.runtime.layout.Stat
+import com.sappyoak.dsanalyzer.runtime.layout.WriteLayout
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
+import com.sappyoak.dsanalyzer.runtime.session.SavedPosition
+import com.sappyoak.dsanalyzer.runtime.session.WorldPlace
 import com.sappyoak.dsanalyzer.runtime.write.GameWriter
 import com.sappyoak.dsanalyzer.runtime.write.UndoResult
 import com.sappyoak.dsanalyzer.runtime.write.mailbox.CallOutcome
 import com.sappyoak.dsanalyzer.runtime.write.mailbox.GameCall
 import com.sappyoak.dsanalyzer.runtime.write.mailbox.Mailbox
 import com.sappyoak.dsanalyzer.runtime.write.mailbox.Submission
+import com.sappyoak.dsanalyzer.runtime.write.position.RestorePositionTask
+import com.sappyoak.dsanalyzer.runtime.write.stats.LevelUpTask
+import com.sappyoak.dsanalyzer.runtime.write.stats.StatsEdit
 import com.sappyoak.dsanalyzer.runtime.write.task.TaskContext
 import com.sappyoak.dsanalyzer.runtime.write.task.TaskOutcome
 import com.sappyoak.dsanalyzer.runtime.write.task.TaskRunner
 import com.sappyoak.dsanalyzer.runtime.write.task.WriteTask
+import com.sappyoak.dsanalyzer.runtime.write.warp.BonfireWarpTask
 
 private const val OUTCOME_BUFFER = 256
 
-public class SessionWrites internal constructor(layout: MailboxLayout, private val writer: GameWriter) {
-    private val mailbox = Mailbox(layout, writer)
+public class SessionWrites internal constructor(
+    private val layout: WriteLayout,
+    private val player: PlayerGameDataLayout,
+    private val writer: GameWriter
+) {
+    private val mailbox = Mailbox(layout.mailbox, writer)
     private val tasks = TaskRunner()
     private val calls = MutableSharedFlow<CallOutcome>(extraBufferCapacity = OUTCOME_BUFFER, onBufferOverflow = BufferOverflow.DROP_OLDEST)
     private val taskSteps = MutableSharedFlow<TaskOutcome>(extraBufferCapacity = OUTCOME_BUFFER, onBufferOverflow = BufferOverflow.DROP_OLDEST)
 
     public val callOutcomes: SharedFlow<CallOutcome> = calls.asSharedFlow()
     public val taskOutcomes: SharedFlow<TaskOutcome> = taskSteps.asSharedFlow()
+
+    private val stats = StatsEdit(layout.stats, player)
 
     /** Queues a call for the game's logic thread */
     public fun call(call: GameCall): Submission = mailbox.submit(call)
@@ -43,9 +57,23 @@ public class SessionWrites internal constructor(layout: MailboxLayout, private v
         return result
     }
 
-    internal fun afterSample(memory: GameMemory, module: AddressRange, inWorld: Boolean) {
-        val arrived = mailbox.poll(memory.memory, module)
-        val context = TaskContext(memory, writer, inWorld, mailbox::submit, arrived.associateBy { it.id })
+    public fun restorePosition(saved: SavedPosition): Submission = tasks.start(RestorePositionTask(saved, layout.position))
+    public fun setSouls(souls: Int): Submission = tasks.start(stats.souls(souls))
+    public fun setHumanity(humanity: Int): Submission = tasks.start(stats.humanity((humanity)))
+    public fun setNewGame(cycle: Int): Submission = tasks.start(stats.newGame(cycle))
+    public fun setCovenant(covenant: Int): Submission = tasks.start(stats.covenant(covenant))
+
+    public fun setCovenantPoints(covenant: Int, points: Int): Submission =
+        tasks.start(stats.covenantPoints(covenant, points))
+
+    public fun setAttributes(attributes: Map<Stat, Int>): Submission =
+        tasks.start(LevelUpTask(attributes, layout.stats.levelUp, player))
+
+    public fun warpToBonfire(bonfireId: Int): Submission = tasks.start(BonfireWarpTask(bonfireId, layout.warp))
+
+    internal fun afterSample(memory: GameMemory, module: AddressRange, inWorld: Boolean, place: WorldPlace) {
+        val arrived = mailbox.poll(memory.memory, module, inWorld)
+        val context = TaskContext(memory, writer, inWorld, place,  mailbox::submit, arrived.associateBy { it.id })
         tasks.step(context).forEach(taskSteps::tryEmit)
         arrived.forEach(calls::tryEmit)
     }

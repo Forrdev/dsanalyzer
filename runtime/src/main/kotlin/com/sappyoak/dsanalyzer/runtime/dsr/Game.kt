@@ -91,7 +91,7 @@ public object PlayerGameData {
     public const val StatStride: Int = 0x08
 
     public const val Humanity: Int = 0x84
-    public const val Durability: Int = 0x88
+    public const val Resistance: Int = 0x88
     public const val SoulLevel: Int = 0x90
     public const val Souls: Int = 0x94
     public const val SoulMemory: Int = 0x98
@@ -119,6 +119,8 @@ public object PlayerGameData {
     public const val DiseaseResist: Int = 0x108
     public const val CurseResist: Int = 0x10C
     public const val CurrentCovenant: Int = 0x113
+    public const val CovenantPoints: Int = 0xED
+
     public const val FaceType: Int = 0x114
     public const val HairType: Int = 0x115
     public const val HairColor: Int = 0x116

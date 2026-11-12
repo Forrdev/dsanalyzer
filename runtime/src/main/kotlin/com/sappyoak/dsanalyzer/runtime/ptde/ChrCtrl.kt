@@ -86,6 +86,15 @@ public object ChrPosData {
 
     /** X, Y, and Z consecutively from here */
     public const val Position: Int = 0x10
+
+    /** 'hkpCharacterProxy' */
+    public const val ProxyPointer: Int = 0x38
+    public const val Velocity: Int = 0xC0
+    public const val AirTimer: Int = 0x190
+}
+
+public object CharacterProxy {
+    public const val Velocity: Int = 0x40
 }
 
 /**

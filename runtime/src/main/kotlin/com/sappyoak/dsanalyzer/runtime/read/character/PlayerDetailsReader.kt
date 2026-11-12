@@ -79,7 +79,6 @@ internal class PlayerDetailsReader(layout: GameLayout) {
             souls = view.int(progress.souls),
             soulMemory = view.int(progress.soulMemory),
             humanity = view.int(progress.humanity),
-            durability = view.int(progress.durability),
             covenant = progress.covenant?.let(view::unsigned),
             stance = sheet.stance?.let(view::int),
             gender = view.unsigned(identity.gender),

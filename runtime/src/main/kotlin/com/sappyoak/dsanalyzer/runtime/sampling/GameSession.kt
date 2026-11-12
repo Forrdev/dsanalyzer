@@ -63,7 +63,7 @@ public class GameSession internal constructor(
     private var world = WorldTier()
     private var sinceWorld = 0
 
-    public val writes: SessionWrites = SessionWrites(layout.writes.mailbox, writer)
+    public val writes: SessionWrites = SessionWrites(layout.writes,  layout.playerGameData,  writer)
     public val supports: Set<RuntimeFeature> get() = readers.supported + layout.supported
 
     init {
@@ -129,7 +129,7 @@ public class GameSession internal constructor(
 
     internal fun afterSample() {
         extensions.forEach(SessionExtension::afterSample)
-        writes.afterSample(memory, module, wasLoaded)
+        writes.afterSample(memory, module, wasLoaded, lastPlace ?: WorldPlace.Unreadable)
     }
 
     public fun readPlacedEnemies(): List<BlockRoster> = placedPartsReader.read(memory)

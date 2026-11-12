@@ -25,7 +25,10 @@ public val PTDEPointers: List<GamePointer> = listOf(
     AttackMan.Pointer,
     BulletMan.Pointer,
     WorldHitMan.Pointer,
-    Graphics.Pointer
+    Graphics.Pointer,
+    PTDEFunctions.LevelUp,
+    PTDEFunctions.WarpDispatch,
+    PTDEFunctions.WarpOwner
 )
 
 /**

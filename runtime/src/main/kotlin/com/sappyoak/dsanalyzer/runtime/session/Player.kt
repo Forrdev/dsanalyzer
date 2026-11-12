@@ -30,7 +30,6 @@ public data class AttributeSnapshot(
     public val souls: Int,
     public val soulMemory: Int,
     public val humanity: Int,
-    public val durability: Int,
     public val covenant: Int?,
     public val stance: Int?,
     public val gender: Int,

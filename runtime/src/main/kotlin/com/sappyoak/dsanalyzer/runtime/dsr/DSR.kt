@@ -19,7 +19,10 @@ public val DSRPointers: List<GamePointer> = listOf(
     EventFlags.Pointer,
     WorldHitMan.Pointer,
     AttackMan.Pointer,
-    Graphics.Pointer
+    Graphics.Pointer,
+    DSRFunctions.LevelUp,
+    DSRFunctions.Warp,
+    DSRFunctions.EventMan
 )
 
 public val DSREdition: EditionTables = EditionTables(

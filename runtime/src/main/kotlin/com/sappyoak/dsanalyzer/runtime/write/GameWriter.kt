@@ -98,6 +98,12 @@ public class GameWriter internal constructor(
     @GameMutation
     public fun perform(address: Address, bytes: ByteArray): Boolean = memory.write(address, bytes)
 
+    /**
+     * Drops a record without writing anything back, for a target the game has already moved on from.
+     * Putting the old bytes back there would write into whatever holds that address now
+     */
+    internal fun forget(key: WriteKey): Boolean = history.take(key) != null
+
     public fun revert(key: WriteKey): Boolean = history.take(key)?.let(::restore) ?: false
 
     /** Undoes every change, newest first; the count that could be put back */
@@ -166,5 +172,4 @@ public class GameWriter internal constructor(
         is Original.Code -> code?.patch(entry.address, original.bytes) ?: false
         Original.None, is Original.Task -> false
     }
-
 }

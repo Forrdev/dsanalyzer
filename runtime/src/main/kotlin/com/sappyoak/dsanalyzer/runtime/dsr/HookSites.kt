@@ -2,6 +2,8 @@ package com.sappyoak.dsanalyzer.runtime.dsr
 
 import com.sappyoak.dsanalyzer.native.memory.Signature
 import com.sappyoak.dsanalyzer.runtime.inject.HookSite
+import com.sappyoak.dsanalyzer.runtime.inject.PlayerGate
+import com.sappyoak.dsanalyzer.runtime.inject.StepTableSite
 import com.sappyoak.dsanalyzer.runtime.inject.code
 
 public class DisplayTest(public val site: HookSite, public val bits: Int) {
@@ -11,15 +13,19 @@ public class DisplayTest(public val site: HookSite, public val bits: Int) {
 
 public object DSRHookSites {
     /**
-     * `mov rax,[GameDataMan]` (RIP-relative) after the IGT add, once per logic frame
-     * Plain code, the bytes on disk equal the bytes in memory. 1.0.3.1 only until others are tested, because the
-     * displacement is part of the expected bytes
+     * 'SysStep': FrpgSystem +0x8 is its task, whose +0x20 is the step. It lives for the whole
+     * process and runs step 8 once per frame on the logic thread, menus and loads included. A heap
+     * pointer rather than code.
      */
-    public val Mailbox: HookSite = HookSite(
-        DSRSignatures.MailboxStep,
-        offset = 0x13,
-        expected = code(0x48, 0x8B, 0x05, 0xC5, 0x18, 0x53, 0x01)
+    public val Mailbox: StepTableSite = StepTableSite(
+        root = DSRSignatures.FrpgSystem,
+        path = listOf(0L, 0x8L, 0x20L),
+        table = 0x20,
+        slot = 8
     )
+
+    public val MailboxGate: PlayerGate = PlayerGate(DSRSignatures.WorldChrMan, WorldChrMan.PlayerPointer)
+
     /**
      * `MOV R8D,ESI; MOV EDX,0x16` ahead of the first pass's `EndTargetCamera`. RDI is the plan
      * stream and ESI the plan's handle. The builder runs on every load screen

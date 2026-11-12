@@ -25,9 +25,20 @@ public data class GameCall(
     public val target: Address,
     public val label: String,
     public val registers: Map<CallRegister, Long> = emptyMap(),
-    public val stack: List<Long> = emptyList()
+    public val stack: List<Long> = emptyList(),
+    /**
+     * Copied into the mailbox before the call. [dataPointers] put the address of this block, plus an
+     * offset into it, in a register, which is how a call that wants a structure gets one
+     */
+    public val data: ByteArray = ByteArray(0),
+    public val dataPointers: Map<CallRegister, Int> = emptyMap()
 ) {
     init {
+        require(data.size <= MailboxSlot.DATA_LIMIT) {
+            "$label carries ${data.size} bytes of data. The mailbox takes ${MailboxSlot.DATA_LIMIT}"
+        }
+        require(dataPointers.values.all { it >= 0 && it < data.size }) { "$label points a register outside its own data" }
+        require(dataPointers.keys.none { it in registers }) { "$label sets the same register twice" }
         require(stack.size <= MailboxSlot.MAX_ARGS) {
             "$label passes ${stack.size} stack arguments. The mailbox takes ${MailboxSlot.MAX_ARGS}"
         }
@@ -41,6 +52,10 @@ internal object MailboxSlot {
     const val TARGET: Int = 0x10
     const val RETURN: Int = 0x70
     const val SIZE: Int = 0x80
+
+    /** A call's data block, from the slot. It sits past the slot in the same allocation */
+    const val DATA: Int = 0x100
+    const val DATA_LIMIT: Int = 0x700
     const val MAX_ARGS: Int = 6
 
     const val FREE: Int = 0

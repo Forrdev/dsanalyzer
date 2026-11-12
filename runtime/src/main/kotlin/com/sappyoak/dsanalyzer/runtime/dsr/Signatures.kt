@@ -34,10 +34,26 @@ public object DSRSignatures {
         target = SignatureTarget.Relative(at = 9, instructionEnd = 13)
     )
 
-    /** In the IGT update: `mulss`, `cvttss2si`, then `add [rcx+0xA4],eax` just ahead of the mailbox site */
-    public val MailboxStep: Signature = Signature.parse(
-        name = "MailboxStep",
-        pattern = "F3 0F 59 05 ?? ?? ?? ?? F3 48 0F 2C C0 01 81 A4 00 00 00"
+    public val FrpgSystem: Signature = Signature.parse(
+        name = "FrpgSystem",
+        pattern = "48 8B 0D ?? ?? ?? ?? E8 ?? ?? ?? ?? 0F B6 F8 E8 ?? ?? ?? ?? 48 8B C8 33 D2",
+        target = SignatureTarget.Relative(at = 3, instructionEnd = 7)
+    )
+
+    public val LevelUp: Signature = Signature.parse(
+        name = "LevelUp",
+        pattern = "48 89 74 24 20 57 48 83 EC 20 48 8B 05 ?? ?? ?? ?? 4C 8B C1 C7 44 24 30 00 00 00 00"
+    )
+
+    public val Warp: Signature = Signature.parse(
+        name = "Warp",
+        pattern = "48 89 5C 24 08 57 48 83 EC 20 48 8B D9 8B FA 48 8B 49 08 48 85 C9 0F 84"
+    )
+
+    public val EventMan: Signature = Signature.parse(
+        name = "EventMan",
+        pattern = "48 8B 0D ?? ?? ?? ?? 48 8D 55 C0",
+        target = SignatureTarget.Relative(at = 3, instructionEnd = 7)
     )
 
     public val MenuMan: Signature = Signature.parse(

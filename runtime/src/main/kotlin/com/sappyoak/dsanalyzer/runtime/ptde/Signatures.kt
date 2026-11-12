@@ -1,6 +1,5 @@
 package com.sappyoak.dsanalyzer.runtime.ptde
 
-import com.sappyoak.dsanalyzer.*
 import com.sappyoak.dsanalyzer.native.memory.Signature
 import com.sappyoak.dsanalyzer.native.memory.SignatureTarget
 
@@ -83,6 +82,24 @@ object PTDESignatures {
     public val GameLoopStep: Signature = Signature.parse(
         name = "GameLoopStep",
         pattern = "51 A1 ?? ?? ?? ?? 56 57 85 C0 74 17 80 78 18 00 74 05 8B 40 14 EB 03 8B 40 10"
+    )
+
+    /** `PlayerGameData_ApplyLevelUp` */
+    public val LevelUp: Signature = Signature.parse(
+        name = "LevelUp",
+        pattern = "83 EC 08 8B 15 ?? ?? ?? ?? 56 57 8B 7A 08 8B 10 89 57 38"
+    )
+
+    /** `NS_FRPG_WarpDispatch_ByKind` */
+    public val WarpDispatch: Signature = Signature.parse(
+        name = "WarpDispatch",
+        pattern = "33 C0 39 46 04 74 ?? 8B 0D ?? ?? ?? ?? 8B 15 ?? ?? ?? ?? C6 41 44 01"
+    )
+
+    public val WarpOwner: Signature = Signature.parse(
+        name = "WarpOwner",
+        pattern = "33 C0 39 46 04 74 ?? 8B 0D ?? ?? ?? ?? 8B 15 ?? ?? ?? ?? C6 41 44 01",
+        target = SignatureTarget.Embedded(15)
     )
 
     /** In the per-frame step, the call to the IGT update just ahead of the mailbox site */

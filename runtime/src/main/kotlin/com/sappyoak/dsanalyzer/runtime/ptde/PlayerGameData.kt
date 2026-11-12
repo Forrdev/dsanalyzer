@@ -30,7 +30,7 @@ public object PlayerGameData {
     public const val StatStride: Int = 0x08
 
     public const val Humanity: Int = 0x7C
-    public const val Durability: Int = 0x80
+    public const val Resistance: Int = 0x80
     public const val SoulLevel: Int = 0x88
     public const val Souls: Int = 0x8C
     public const val SoulMemory: Int = 0x090

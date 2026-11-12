@@ -1,6 +1,7 @@
 package com.sappyoak.dsanalyzer.runtime.write.task
 
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
+import com.sappyoak.dsanalyzer.runtime.session.WorldPlace
 import com.sappyoak.dsanalyzer.runtime.write.GameWriter
 import com.sappyoak.dsanalyzer.runtime.write.mailbox.CallOutcome
 import com.sappyoak.dsanalyzer.runtime.write.mailbox.GameCall
@@ -28,8 +29,9 @@ public interface WriteTask {
 public class TaskContext internal constructor(
     public val memory: GameMemory,
     public val writer: GameWriter,
-    /** The world is up and the player can be read, which is when the mailbox site runs */
+    /** The world is up and the player can be read, which is when the mailbox sends calls */
     public val inWorld: Boolean,
+    public val place: WorldPlace,
     private val submit: (GameCall) -> Submission,
     private val outcomes: Map<Long, CallOutcome>
 ) {

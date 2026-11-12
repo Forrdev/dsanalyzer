@@ -12,20 +12,15 @@ import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.native.memory.AddressRange
 import com.sappyoak.dsanalyzer.native.memory.intAt
 import com.sappyoak.dsanalyzer.native.process.ProcessMemory
-import com.sappyoak.dsanalyzer.runtime.inject.SiteLookup
-import com.sappyoak.dsanalyzer.runtime.inject.X86
-import com.sappyoak.dsanalyzer.runtime.inject.locate
 import com.sappyoak.dsanalyzer.runtime.layout.CallArch
 import com.sappyoak.dsanalyzer.runtime.layout.MailboxLayout
-import com.sappyoak.dsanalyzer.runtime.write.CodeEdit
 import com.sappyoak.dsanalyzer.runtime.write.GameMutation
 import com.sappyoak.dsanalyzer.runtime.write.GameWriter
 import com.sappyoak.dsanalyzer.runtime.write.WriteKey
 import com.sappyoak.dsanalyzer.shared.binary.littleEndian
 
-private const val BLOCK_SIZE = 0x1000
-private const val SLOT_AT = 0x800
 private val DEFAULT_TIMEOUT: Duration = 10.seconds
+private const val LEFT_WORLD = "The player left the world"
 
 public val MAILBOX_KEY: WriteKey = WriteKey("hook:mailbox")
 
@@ -52,10 +47,14 @@ public class Mailbox internal constructor(
     private val queue = ConcurrentLinkedQueue<Pending>()
     private val ids = AtomicLong(1)
     private val waiting = AtomicInteger(0)
-    private var slot: Address? = null
+    private var installed: InstalledMailbox? = null
+    private var retired: Address? = null
     private var current: Pending? = null
+    @Volatile private var inWorld = false
 
+    /** Refused outside the world, where the game would only hold the call until it timed out */
     public fun submit(call: GameCall): Submission {
+        if (!inWorld) return Submission.Refused("The player is not in the world")
         require(call.registers.keys.all { it.arch == layout.arch }) { "${call.label} uses registers of another architecture" }
         if (waiting.incrementAndGet() > QUEUE_LIMIT) {
             waiting.decrementAndGet()
@@ -66,12 +65,18 @@ public class Mailbox internal constructor(
         return Submission.Queued(id)
     }
 
-    public fun poll(memory: ProcessMemory, module: AddressRange): List<CallOutcome> {
+    /** Leaving the world fails every call the game has not started */
+    public fun poll(memory: ProcessMemory, module: AddressRange, inWorld: Boolean): List<CallOutcome> {
+        this.inWorld = inWorld
         val outcomes = mutableListOf<CallOutcome>()
         if (current == null && queue.isEmpty()) return outcomes
-        val box = ready(memory, module) ?: return drain(outcomes, "The mailbox could not be installed")
+        val box = ready(memory, module, outcomes) ?: return drain(outcomes, "The mailbox could not be installed")
 
         current?.let { pending -> check(memory, box, pending, outcomes) }
+        if (!inWorld) {
+            withdraw(memory, box, outcomes)
+            return failQueued(outcomes, LEFT_WORLD)
+        }
         if (current == null) take()?.let { pending ->
             if (send(box, pending)) current = pending
             else outcomes += CallOutcome.Failed(pending.id, "The request could not be written")
@@ -82,29 +87,46 @@ public class Mailbox internal constructor(
     /** Drops every request that has not started. Call before the hook is reverted */
     public fun cancelAll(memory: ProcessMemory) {
         while (take() != null) Unit
-        val box = slot
+        retired?.let(writer::free)
+        retired = null
+        val box = installed?.slot
         if (box != null && current != null && memory.intAt(box) == MailboxSlot.REQUESTED) write(box, MailboxSlot.FREE)
         current = null
     }
 
-    private fun ready(memory: ProcessMemory, module: AddressRange): Address? {
-        if (slot != null && MAILBOX_KEY in writer.active) return slot
-        slot = install(memory, module)
-        return slot
+    /** A sent call the game has not started; the clock gate holds it while the world is down */
+    /**
+     * Gives up a mailbox the game no longer enters. The record goes without being written back,
+     * because the field may now hold whatever the game put there, and the block is freed only on the
+     * next install, so the game cannot still be inside the cave when the memory goes
+     */
+    private fun retire() {
+        val gone = installed ?: return
+        writer.forget(MAILBOX_KEY)
+        retired?.let(writer::free)
+        retired = gone.block
+        installed = null
     }
 
-    private fun install(memory: ProcessMemory, module: AddressRange): Address? {
-        val at = (memory.locate(layout.site, module) as? SiteLookup.Found)?.address ?: return null
-        val block = writer.allocate(BLOCK_SIZE, at) ?: return null
-        val box = block + SLOT_AT.toLong()
-        val code = assembleMailbox(layout, block, box, at, layout.site.expected)
-        val jump = X86.jumpPatch(at, block, layout.site.displaced)
-        val installed = code.size <= SLOT_AT &&
-                writer.fill(block, code) &&
-                writer.fill(box, ByteArray(MailboxSlot.SIZE)) &&
-                writer.patchCode(CodeEdit(MAILBOX_KEY, at, layout.site.expected, jump))
-        if (!installed) writer.free(block)
-        return if (installed) box else null
+    private fun withdraw(memory: ProcessMemory, box: Address, outcomes: MutableList<CallOutcome>) {
+        val pending = current ?: return
+        if (memory.intAt(box) != MailboxSlot.REQUESTED || !write(box, MailboxSlot.FREE)) return
+        outcomes += CallOutcome.Failed(pending.id, LEFT_WORLD)
+        current = null
+    }
+
+    private fun ready(memory: ProcessMemory, module: AddressRange, outcomes: MutableList<CallOutcome>): Address? {
+        installed?.takeIf { MAILBOX_KEY in writer.active && it.intact(memory) }?.let { return it.slot }
+        if (installed != null) {
+            current?.let { outcomes += CallOutcome.Failed(it.id, "The mailbox was replaced") }
+            current = null
+            retire()
+        }
+        installed = when (val layout = layout) {
+            is MailboxLayout.Code -> installCodeMailbox(writer, memory, module, layout.site)
+            is MailboxLayout.StepTable -> installStepTableMailbox(writer, memory, module, layout)
+        }
+        return installed?.slot
     }
 
     private fun check(memory: ProcessMemory, box: Address, pending: Pending, outcomes: MutableList<CallOutcome>) {
@@ -135,11 +157,14 @@ public class Mailbox internal constructor(
         fun at(offset: Int) = offset - MailboxSlot.TARGET
         request.putLong(at(MailboxSlot.TARGET), call.target.value)
         call.registers.forEach { (register, value) -> request.putLong(at(register.offset), value) }
+        val data = box + MailboxSlot.DATA.toLong()
+        call.dataPointers.forEach { (register, offset) -> request.putLong(at(register.offset), data.value + offset) }
         request.putInt(at(MailboxSlot.argCount(arch)), call.stack.size)
         call.stack.forEachIndexed { i, value ->
             val offset = at(MailboxSlot.firstArg(arch) + i * MailboxSlot.argStride(arch))
             if (arch == CallArch.X86) request.putInt(offset, value.toInt()) else request.putLong(offset, value)
         }
+        if (call.data.isNotEmpty() && !writer.fill(data, call.data)) return false
         if (!writer.fill(box + MailboxSlot.TARGET.toLong(), request.array())) return false
         pending.sentAt = TimeSource.Monotonic.markNow()
         return write(box, MailboxSlot.REQUESTED)
@@ -157,6 +182,10 @@ public class Mailbox internal constructor(
     private fun drain(outcomes: MutableList<CallOutcome>, reason: String): List<CallOutcome> {
         current?.let { outcomes += CallOutcome.Failed(it.id, reason) }
         current = null
+        return failQueued(outcomes, reason)
+    }
+
+    private fun failQueued(outcomes: MutableList<CallOutcome>, reason: String): List<CallOutcome> {
         while (true) outcomes += CallOutcome.Failed((take() ?: return outcomes).id, reason)
     }
 

@@ -1,6 +1,7 @@
 package com.sappyoak.dsanalyzer.runtime.ptde
 
 
+import com.sappyoak.dsanalyzer.runtime.dsr.GameDataMan
 import com.sappyoak.dsanalyzer.runtime.layout.AILayout
 import com.sappyoak.dsanalyzer.runtime.layout.ActionLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimChannelLayout
@@ -10,6 +11,7 @@ import com.sappyoak.dsanalyzer.runtime.layout.AnimRequestEntryLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimRequestLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimSlotLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimationLayout
+import com.sappyoak.dsanalyzer.runtime.layout.BonfireWarpLayout
 import com.sappyoak.dsanalyzer.runtime.layout.CallArch
 import com.sappyoak.dsanalyzer.runtime.layout.CameraLayout
 import com.sappyoak.dsanalyzer.runtime.layout.CharacterLayout
@@ -17,7 +19,6 @@ import com.sappyoak.dsanalyzer.runtime.layout.CharacterSlotLayout
 import com.sappyoak.dsanalyzer.runtime.layout.ChrCtrlLayout
 import com.sappyoak.dsanalyzer.runtime.layout.ChrInsLayout
 import com.sappyoak.dsanalyzer.runtime.layout.DebugDrawLayout
-import com.sappyoak.dsanalyzer.runtime.layout.Displaced
 import com.sappyoak.dsanalyzer.runtime.layout.EsdStateLayout
 import com.sappyoak.dsanalyzer.runtime.layout.EventFieldsLayout
 import com.sappyoak.dsanalyzer.runtime.layout.EventFlagLayout
@@ -28,6 +29,8 @@ import com.sappyoak.dsanalyzer.runtime.layout.GoalLayout
 import com.sappyoak.dsanalyzer.runtime.layout.GoalTypeLayout
 import com.sappyoak.dsanalyzer.runtime.layout.HitInsLayout
 import com.sappyoak.dsanalyzer.runtime.layout.IdentityLayout
+import com.sappyoak.dsanalyzer.runtime.layout.LevelUpLayout
+import com.sappyoak.dsanalyzer.runtime.layout.LivePositionLayout
 import com.sappyoak.dsanalyzer.runtime.layout.LoadQueueLayout
 import com.sappyoak.dsanalyzer.runtime.layout.MailboxLayout
 import com.sappyoak.dsanalyzer.runtime.layout.MenuLayout
@@ -40,12 +43,14 @@ import com.sappyoak.dsanalyzer.runtime.layout.ProgressLayout
 import com.sappyoak.dsanalyzer.runtime.layout.ResistBlockLayout
 import com.sappyoak.dsanalyzer.runtime.layout.SpecialEffectLayout
 import com.sappyoak.dsanalyzer.runtime.layout.StatBlockLayout
+import com.sappyoak.dsanalyzer.runtime.layout.StatWriteLayout
 import com.sappyoak.dsanalyzer.runtime.layout.TargetLayout
 import com.sappyoak.dsanalyzer.runtime.layout.TargetingLayout
 import com.sappyoak.dsanalyzer.runtime.layout.ThinkLayout
 import com.sappyoak.dsanalyzer.runtime.layout.VitalsLayout
 import com.sappyoak.dsanalyzer.runtime.layout.WriteLayout
 import com.sappyoak.dsanalyzer.runtime.session.CHEAT_BITS
+import com.sappyoak.dsanalyzer.runtime.write.mailbox.CallRegister
 
 private const val CHARACTER_POSITION_STRIDE: Int = 0x10
 
@@ -298,11 +303,11 @@ internal fun ptdeLayout(): GameLayout = GameLayout(
         stats = StatBlockLayout(
             first = PlayerGameData.Stats,
             stride = 0x08,
-            count = 8
+            count = 8,
+            resistance = PlayerGameData.Resistance
         ),
         progress = ProgressLayout(
             humanity = PlayerGameData.Humanity,
-            durability = PlayerGameData.Durability,
             soulLevel = PlayerGameData.SoulLevel,
             souls = PlayerGameData.Souls,
             soulMemory = PlayerGameData.SoulMemory,
@@ -367,6 +372,32 @@ internal fun ptdeLayout(): GameLayout = GameLayout(
         mapFlags = FieldLayout(ChrCtrl.Pointer, ChrCtrl.Flags),
         hitboxDraw = FieldLayout(AttackMan.Pointer, AttackMan.HitboxDraw),
         cheatBits = CHEAT_BITS,
-        mailbox = MailboxLayout(PTDEHookSites.Mailbox, Displaced.Verbatim, CallArch.X86)
+        mailbox = MailboxLayout.Code(PTDEHookSites.Mailbox),
+        position = LivePositionLayout(
+            chrCtrl = ChrCtrl.Pointer,
+            warp = ChrCtrl.Warp,
+            warpPosition = ChrCtrl.WarpPosition,
+            warpAngle = ChrCtrl.WarpAngle,
+            posData = ChrCtrl.PositionPointer,
+            position = ChrPosData.Position,
+            angle = ChrPosData.Angle,
+            proxy = ChrPosData.ProxyPointer,
+            proxyVelocity = CharacterProxy.Velocity,
+            velocity = ChrPosData.Velocity,
+            airTimer = ChrPosData.AirTimer
+        ),
+        stats = StatWriteLayout(
+            newGame = FieldLayout(GameDataMan.Pointer, GameDataMan.NewGameCount),
+            covenant = PlayerGameData.Covenant,
+            covenantPoints = PlayerGameData.WarriorsOfSunlightPoints,
+            levelUp = LevelUpLayout.OneBlock(PTDEFunctions.LevelUp)
+        ),
+        warp = BonfireWarpLayout(
+            lastBonfire = FieldLayout(GameMan.Pointer, GameMan.LastBonfire),
+            function = PTDEFunctions.WarpDispatch,
+            owner = PTDEFunctions.WarpOwner,
+            ownerRegister = CallRegister.Esi,
+            kindRegister = null
+        )
     )
 )

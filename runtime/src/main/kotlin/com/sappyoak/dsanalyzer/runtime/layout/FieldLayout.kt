@@ -16,5 +16,8 @@ public data class WriteLayout(
     public val mapFlags: FieldLayout,
     public val hitboxDraw: FieldLayout?,
     public val cheatBits: Map<CheatFlag, CheatBit>,
-    public val mailbox: MailboxLayout
+    public val mailbox: MailboxLayout,
+    public val position: LivePositionLayout,
+    public val stats: StatWriteLayout,
+    public val warp: BonfireWarpLayout
 )

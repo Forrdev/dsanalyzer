@@ -87,11 +87,24 @@ public object ChrCtrl {
 
     public const val ActionCtrlPointer: Int = 0x48
     public const val Flags: Int = 0x104
+
+    public const val Warp: Int = 0x108
+    public const val WarpPosition: Int = 0x110
+    public const val WarpAngle: Int = 0x124
 }
 
 /** The structure holding a chracter's live position */
 public object ChrPosData {
     public const val Angle: Int = 0x04
     public const val Position: Int = 0x10
+
+    /** 'hkpCharacterProxy*' */
+    public const val ProxyPointer: Int = 0x38
+    public const val Velocity: Int = 0xD0
+    public const val AirTimer: Int = 0x1B0
 }
 
+/** 'hkpCharacterProxy', the havok character the game moves */
+public object CharacterProxy {
+    public const val Velocity: Int = 0x60
+}

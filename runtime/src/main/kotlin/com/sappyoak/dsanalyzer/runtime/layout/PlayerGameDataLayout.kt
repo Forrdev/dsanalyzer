@@ -34,13 +34,15 @@ public data class VitalsLayout(
 public data class StatBlockLayout(
     public val first: Int,
     public val stride: Int,
-    public val count: Int
+    public val count: Int,
+    public val resistance: Int
 ) {
     init {
         require(count == Stat.entries.size) { "expected ${Stat.entries.size} stats, got $count" }
     }
 
-    public fun offsetOf(stat: Stat): Int = first + stat.ordinal * stride
+    public fun offsetOf(stat: Stat): Int =
+        if (stat == Stat.Resistance) resistance else first + stat.ordinal * stride
 }
 
 public enum class Stat {
@@ -57,9 +59,6 @@ public enum class Stat {
 public data class ProgressLayout(
     /** The engine's 'HeroPoint' */
     public val humanity: Int,
-
-    /** A character field clamped '1..99', not equipment durability, which lives per-item */
-    public val durability: Int,
 
     public val soulLevel: Int,
     public val souls: Int,
