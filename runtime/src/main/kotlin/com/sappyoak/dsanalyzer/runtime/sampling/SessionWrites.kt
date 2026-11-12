@@ -79,12 +79,7 @@ public class SessionWrites internal constructor(
     public fun setAttributes(attributes: Map<Stat, Int>): Submission =
         tasks.start(LevelUpTask(attributes, layout.stats.levelUp, player))
 
-    public fun warpToBonfire(bonfireId: Int): Submission =
-        tasks.start(WarpTask(WarpDestination.Bonfire(bonfireId), layout.warp))
-
-    /** Loads [destination]'s map if it is another one, and spawns the player at its point */
-    public fun warpToPoint(destination: SavedPosition): Submission =
-        tasks.start(WarpTask(WarpDestination.Point(destination), layout.warp))
+    public fun warp(destination: WarpDestination): Submission = tasks.start(WarpTask(destination, layout.warp))
 
     /** Runs [command] as an NPC's talk script would, such as `TalkCommands.Repair` */
     public fun talk(command: TalkCommand): Submission = tasks.start(TalkTask(command, layout.talk, layout.mailbox.arch))

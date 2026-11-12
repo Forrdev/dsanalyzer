@@ -8,9 +8,11 @@ public data class SavedPosition(
     public val position: Vec3,
     public val angle: Float
 ) {
-    public fun of(snapshot: RuntimeSnapshot): SavedPosition? {
-        val map = snapshot.place.loadedMap ?: return null
-        val player = snapshot.player ?: return null
-        return SavedPosition(map, player.position, player.angle)
+    public companion object {
+        public fun of(snapshot: RuntimeSnapshot): SavedPosition? {
+            val map = snapshot.place.loadedMap ?: return null
+            val player = snapshot.player ?: return null
+            return SavedPosition(map, player.position, player.angle)
+        }
     }
 }

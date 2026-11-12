@@ -1,0 +1,80 @@
+# Warp destinations, from SilkySouls' WarpLocations resource with names corrected to the game's own
+# SilkySouls: MIT License, Copyright (c) 2025 Shilkey
+# map comes from the bonfire entity id. A row with no point warps to the bonfire
+# group	name	bonfire	map	x	y	z	angle
+Boss	Knight Artorias	1212961	m12_01_00_00	1023.09	-328.60	807.80	-1.85
+Boss	Bed of Chaos	1412960	m14_01_00_00	450.79	-361.68	335.68	-2.18
+Boss	Bell Gargoyle	1012961	m10_01_00_00	17.18	47.79	70.81	2.99
+Boss	Moonlight Butterfly	1202961	m12_00_00_00	182.12	6.69	27.69	2.15
+Boss	Capra Demon	1012962	m10_01_00_00	-64.31	-47.08	-13.41	1.07
+Boss	Ceaseless Discharge	1412961	m14_01_00_00	243.66	-283.15	66.65	-2.17
+Boss	Centipede Demon	1412963	m14_01_00_00	161.81	-383.20	87.48	-0.69
+Boss	Demon Firesage	1412962	m14_01_00_00	171.86	-341.16	82.85	1.61
+Boss	Four Kings	1602960	m16_00_00_00	87.87	-148.00	-28.19	1.54
+Boss	Gaping Dragon	1002960	m10_00_00_00	-151.83	-94.77	-8.23	1.03
+Boss	Dark Sun Gwyndolin	1512962	m15_01_00_00	432.13	60.20	254.97	-1.57
+Boss	Gwyn, Lord of Cinder	1802130	m18_00_00_00	422.48	-115.82	166.68	2.12
+Boss	Iron Golem	1502961	m15_00_00_00	80.35	82.25	255.39	-1.52
+Boss	Black Dragon Kalameet	1212961	m12_01_00_00	878.08	-344.66	751.87	0.75
+Boss	Manus, Father of the Abyss	1212964	m12_01_00_00	865.48	-536.76	884.27	0.74
+Boss	Gravelord Nito	1312961	m13_01_00_00	-110.95	-249.05	-33.80	1.82
+Boss	Ornstein and Smough	1512961	m15_01_00_00	532.77	142.60	254.83	-1.60
+Boss	Pinwheel	1302960	m13_00_00_00	49.66	-158.44	191.43	-0.42
+Boss	Crossbreed Priscilla	1102960	m11_00_00_00	-22.82	58.62	719.24	-0.01
+Boss	Chaos Witch Quelaag	1402960	m14_00_00_00	11.06	-236.86	112.53	-1.71
+Boss	Seath the Scaleless	1702960	m17_00_00_00	180.81	146.31	790.53	2.14
+Boss	Great Grey Wolf Sif	1202961	m12_00_00_00	292.66	-18.37	-225.22	0.39
+Boss	Stray Demon	1812900	m18_01_00_00	3.41	207.41	-74.73	3.12
+Boss	Taurus Demon	1012962	m10_01_00_00	58.21	17.22	-117.31	1.35
+Anor Londo	Firekeeper	1512960	m15_01_00_00
+Anor Londo	Archers	1512961	m15_01_00_00	440.74	132.00	227.13	1.24
+Anor Londo	Interior	1512961	m15_01_00_00
+Anor Londo	Rafters	1512960	m15_01_00_00	265.49	129.20	301.03	-2.04
+Anor Londo	Darkmoon Tomb	1512962	m15_01_00_00
+Ash Lake	Stone Dragon	1322960	m13_02_00_00
+Ash Lake	Entrance	1322961	m13_02_00_00
+Blighttown	Back Entrance	1602951	m16_00_00_00	-90.09	-138.74	17.78	2.11
+Blighttown	Bridge	1402962	m14_00_00_00
+Blighttown	Depths Entrance	1402963	m14_00_00_00
+Blighttown	Swamp	1402961	m14_00_00_00
+Blighttown	Quelaag's Domain	1402960	m14_00_00_00
+Darkroot Basin	Bonfire	1602961	m16_00_00_00
+Darkroot Basin	Hydra	1202961	m12_00_00_00	161.66	-32.03	-153.44	1.29
+Darkroot Garden	Bonfire	1202961	m12_00_00_00
+Demon Ruins	Before Ceaseless Discharge	1412961	m14_01_00_00
+Demon Ruins	Before Demon Firesage	1412962	m14_01_00_00
+Demon Ruins	Before Centipede Demon	1412963	m14_01_00_00
+Depths	Bonfire	1002960	m10_00_00_00
+Depths	Entrance	1000999	m10_00_00_00
+Firelink Shrine	Bonfire	1022960	m10_02_00_00
+The Great Hollow	Bonfire	1322962	m13_02_00_00
+Lost Izalith	Bounding Demons	1412960	m14_01_00_00
+Lost Izalith	Titanite Demon	1412960	m14_01_00_00	305.44	-360.18	214.23	-2.28
+Lost Izalith	Entrance	1412964	m14_01_00_00
+New Londo Ruins	Entrance	1602951	m16_00_00_00
+New Londo Ruins	Ingward	1602960	m16_00_00_00
+Northern Undead Asylum	Courtyard	1812960	m18_01_00_00
+Northern Undead Asylum	Hallway	1812961	m18_01_00_00
+Northern Undead Asylum	Start	1812900	m18_01_00_00
+Sanctuary Garden	Bonfire	1212963	m12_01_00_00
+Oolacile Sanctuary	Bonfire	1212961	m12_01_00_00
+Oolacile Township	Bonfire	1212962	m12_01_00_00
+Oolacile Township	Dungeon	1212964	m12_01_00_00
+Painted World of Ariamis	Bonfire	1102960	m11_00_00_00
+Sen's Fortress	Bonfire	1502961	m15_00_00_00
+The Catacombs	Bonfire	1302960	m13_00_00_00
+The Catacombs	Patches	1302961	m13_00_00_00
+The Catacombs	Vamos	1302962	m13_00_00_00
+The Duke's Archives	Balcony	1702960	m17_00_00_00
+The Duke's Archives	Entrance	1702962	m17_00_00_00
+The Duke's Archives	Cell	1702961	m17_00_00_00
+The Duke's Archives	Duke Skip	1702962	m17_00_00_00	296.09	288.62	551.54	-0.70
+Tomb of the Giants	Entrance	1302950	m13_00_00_00
+Tomb of the Giants	Bonfire 1	1312960	m13_01_00_00
+Tomb of the Giants	Bonfire 2	1312961	m13_01_00_00
+Undead Burg	Dragon Event	1012960	m10_01_00_00
+Undead Burg	Bonfire	1012962	m10_01_00_00
+Undead Burg	Below the Hellkite Bridge	1012961	m10_01_00_00
+Undead Parish	Andre	1012964	m10_01_00_00
+Undead Parish	Boar	1012965	m10_01_00_00
+Undead Parish	Lautrec	1012966	m10_01_00_00

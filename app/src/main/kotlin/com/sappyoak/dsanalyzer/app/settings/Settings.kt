@@ -6,6 +6,7 @@ import com.sappyoak.dsanalyzer.app.connection.ConnectionSettings
 import com.sappyoak.dsanalyzer.app.runtime.EngineDrawSettings
 import com.sappyoak.dsanalyzer.app.runtime.OverlaySettings
 import com.sappyoak.dsanalyzer.app.runtime.RuntimeSettings
+import com.sappyoak.dsanalyzer.app.runtime.WarpSettings
 import com.sappyoak.dsanalyzer.app.workspace.WorkspaceId
 import com.sappyoak.dsanalyzer.game.Installation
 
@@ -17,7 +18,8 @@ public data class Settings(
     public val overlay: OverlaySettings = OverlaySettings(),
     public val runtime: RuntimeSettings = RuntimeSettings(),
     public val tool: ToolSettings = ToolSettings(),
-    public val engineDraw: EngineDrawSettings = EngineDrawSettings()
+    public val engineDraw: EngineDrawSettings = EngineDrawSettings(),
+    public val warps: WarpSettings = WarpSettings()
 )
 
 public interface SettingsEdit {
