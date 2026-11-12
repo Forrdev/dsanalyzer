@@ -38,10 +38,12 @@ public class ItemCatalog(public val items: List<CatalogItem>) {
     public fun inGroup(group: ItemGroup): List<CatalogItem> = items.filter { it.group == group }
 }
 
-/** Where an edition's catalog sits among the bundled resources */
-public fun itemCatalogResource(edition: GameEdition): String = "/definitions/ds1-items-${edition.shortName}.tsv"
+private const val RESOURCE = "/definitions/ds1-items.tsv"
 
-public fun loadItemCatalog(edition: GameEdition): ItemCatalog = bundled(itemCatalogResource(edition), ::readItemCatalog)
+private val itemCatalog by lazy {
+    bundled(RESOURCE, ::readItemCatalog)
+}
+public fun loadItemCatalog(): ItemCatalog = itemCatalog
 
 public fun readItemCatalog(reader: BufferedReader): ItemCatalog = ItemCatalog(
     reader.lineSequence()

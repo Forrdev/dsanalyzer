@@ -1,0 +1,1782 @@
+# category	id	group	maxCount	maxUpgrade	name
+Weapon	100000	Weapon	1	15	Dagger
+Weapon	100100	Weapon	1	5	Crystal Dagger
+Weapon	100200	Weapon	1	5	Lightning Dagger
+Weapon	100300	Weapon	1	5	Raw Dagger
+Weapon	100400	Weapon	1	10	Magic Dagger
+Weapon	100500	Weapon	1	5	Enchanted Dagger
+Weapon	100600	Weapon	1	10	Divine Dagger
+Weapon	100700	Weapon	1	5	Occult Dagger
+Weapon	100800	Weapon	1	10	Fire Dagger
+Weapon	100900	Weapon	1	5	Chaos Dagger
+Weapon	101000	Weapon	1	15	Parrying Dagger
+Weapon	101100	Weapon	1	5	Crystal Parrying Dagger
+Weapon	101200	Weapon	1	5	Lightning Parrying Dagger
+Weapon	101300	Weapon	1	5	Raw Parrying Dagger
+Weapon	101400	Weapon	1	10	Magic Parrying Dagger
+Weapon	101500	Weapon	1	5	Enchanted Parrying Dagger
+Weapon	101600	Weapon	1	10	Divine Parrying Dagger
+Weapon	101700	Weapon	1	5	Occult Parrying Dagger
+Weapon	101800	Weapon	1	10	Fire Parrying Dagger
+Weapon	101900	Weapon	1	5	Chaos Parrying Dagger
+Weapon	102000	Weapon	1	5	Ghost Blade
+Weapon	103000	Weapon	1	15	Bandit's Knife
+Weapon	103100	Weapon	1	5	Crystal Knife
+Weapon	103200	Weapon	1	5	Lightning Knife
+Weapon	103300	Weapon	1	5	Raw Knife
+Weapon	103400	Weapon	1	10	Magic Knife
+Weapon	103500	Weapon	1	5	Enchanted Knife
+Weapon	103600	Weapon	1	10	Divine Knife
+Weapon	103700	Weapon	1	5	Occult Knife
+Weapon	103800	Weapon	1	10	Fire Knife
+Weapon	103900	Weapon	1	5	Chaos Knife
+Weapon	104000	Weapon	1	5	Priscilla's Dagger
+Weapon	200000	Weapon	1	15	Shortsword
+Weapon	200100	Weapon	1	5	Crystal Shortsword
+Weapon	200200	Weapon	1	5	Lightning Shortsword
+Weapon	200300	Weapon	1	5	Raw Shortsword
+Weapon	200400	Weapon	1	10	Magic Shortsword
+Weapon	200500	Weapon	1	5	Enchanted Shortsword
+Weapon	200600	Weapon	1	10	Divine Shortsword
+Weapon	200700	Weapon	1	5	Occult Shortsword
+Weapon	200800	Weapon	1	10	Fire Shortsword
+Weapon	200900	Weapon	1	5	Chaos Shortsword
+Weapon	201000	Weapon	1	15	Longsword
+Weapon	201100	Weapon	1	5	Crystal Longsword
+Weapon	201200	Weapon	1	5	Lightning Longsword
+Weapon	201300	Weapon	1	5	Raw Longsword
+Weapon	201400	Weapon	1	10	Magic Longsword
+Weapon	201500	Weapon	1	5	Enchanted Longsword
+Weapon	201600	Weapon	1	10	Divine Longsword
+Weapon	201700	Weapon	1	5	Occult Longsword
+Weapon	201800	Weapon	1	10	Fire Longsword
+Weapon	201900	Weapon	1	5	Chaos Longsword
+Weapon	202000	Weapon	1	15	Broadsword
+Weapon	202100	Weapon	1	5	Crystal Broadsword
+Weapon	202200	Weapon	1	5	Lightning Broadsword
+Weapon	202300	Weapon	1	5	Raw Broadsword
+Weapon	202400	Weapon	1	10	Magic Broadsword
+Weapon	202500	Weapon	1	5	Enchanted Broadsword
+Weapon	202600	Weapon	1	10	Divine Broadsword
+Weapon	202700	Weapon	1	5	Occult Broadsword
+Weapon	202800	Weapon	1	10	Fire Broadsword
+Weapon	202900	Weapon	1	5	Chaos Broadsword
+Weapon	203000	Weapon	1	15	Broken Straight Sword
+Weapon	203100	Weapon	1	5	Crys. Broken Str. Sword
+Weapon	203200	Weapon	1	5	Ltng. Broken Str. Sword
+Weapon	203300	Weapon	1	5	Raw Broken Straight Sword
+Weapon	203400	Weapon	1	10	Magic Broken Straight Sword
+Weapon	203500	Weapon	1	5	Ench. Broken Str. Sword
+Weapon	203600	Weapon	1	10	Div. Broken Str. Sword
+Weapon	203700	Weapon	1	5	Occ. Broken Str. Sword
+Weapon	203800	Weapon	1	10	Fire Broken Straight Sword
+Weapon	203900	Weapon	1	5	Chaos Broken Straight Sword
+Weapon	204000	Weapon	1	15	Balder Side Sword
+Weapon	204100	Weapon	1	5	Crystal Balder Side Sword
+Weapon	204200	Weapon	1	5	Lightning Balder Side Sword
+Weapon	204300	Weapon	1	5	Raw Balder Side Sword
+Weapon	204400	Weapon	1	10	Magic Balder Side Sword
+Weapon	204500	Weapon	1	5	Enchanted Balder Side Sword
+Weapon	204600	Weapon	1	10	Divine Balder Side Sword
+Weapon	204700	Weapon	1	5	Occult Balder Side Sword
+Weapon	204800	Weapon	1	10	Fire Balder Side Sword
+Weapon	204900	Weapon	1	5	Chaos Balder Side Sword
+Weapon	205000	Weapon	1	0	Crystal Straight Sword
+Weapon	206000	Weapon	1	15	Sunlight Straight Sword
+Weapon	206100	Weapon	1	5	Crys. Sunlight Str. Sword
+Weapon	206200	Weapon	1	5	Ltng. Sunlight Str. Sword
+Weapon	206300	Weapon	1	5	Raw Sunlight Straight Sword
+Weapon	206400	Weapon	1	10	Magic Sunlight Str. Sword
+Weapon	206500	Weapon	1	5	Ench. Sunlight Str. Sword
+Weapon	206600	Weapon	1	10	Div. Sunlight Str. Sword
+Weapon	206700	Weapon	1	5	Occ. Sunlight Str. Sword
+Weapon	206800	Weapon	1	10	Fire Sunlight Str. Sword
+Weapon	206900	Weapon	1	5	Chaos Sunlight Str. Sword
+Weapon	207000	Weapon	1	15	Barbed Straight Sword
+Weapon	207100	Weapon	1	5	Crys. Barbed Str. Sword
+Weapon	207200	Weapon	1	5	Ltng. Barbed Str. Sword
+Weapon	207300	Weapon	1	5	Raw Barbed Straight Sword
+Weapon	207400	Weapon	1	10	Magic Barbed Straight Sword
+Weapon	207500	Weapon	1	5	Ench. Barbed Str. Sword
+Weapon	207600	Weapon	1	10	Div. Barbed Str. Sword
+Weapon	207700	Weapon	1	5	Occ. Barbed Str. Sword
+Weapon	207800	Weapon	1	10	Fire Barbed Straight Sword
+Weapon	207900	Weapon	1	5	Chaos Barbed Straight Sword
+Weapon	208000	Weapon	1	5	Silv. Knight Str. Sword
+Weapon	209000	Weapon	1	5	Astora's Straight Sword
+Weapon	210000	Weapon	1	15	Darksword
+Weapon	210100	Weapon	1	5	Crystal Darksword
+Weapon	210200	Weapon	1	5	Lightning Darksword
+Weapon	210300	Weapon	1	5	Raw Darksword
+Weapon	210400	Weapon	1	10	Magic Darksword
+Weapon	210500	Weapon	1	5	Enchanted Darksword
+Weapon	210600	Weapon	1	10	Divine Darksword
+Weapon	210700	Weapon	1	5	Occult Darksword
+Weapon	210800	Weapon	1	10	Fire Darksword
+Weapon	210900	Weapon	1	5	Chaos Darksword
+Weapon	211000	Weapon	1	5	Drake Sword
+Weapon	212000	Weapon	1	15	Straight Sword Hilt
+Weapon	212100	Weapon	1	5	Crystal Straight Sword Hilt
+Weapon	212200	Weapon	1	5	Ltng. Str. Sword Hilt
+Weapon	212300	Weapon	1	5	Raw Straight Sword Hilt
+Weapon	212400	Weapon	1	10	Magic Straight Sword Hilt
+Weapon	212500	Weapon	1	5	Ench. Straight Sword Hilt
+Weapon	212600	Weapon	1	10	Divine Straight Sword Hilt
+Weapon	212700	Weapon	1	5	Occult Straight Sword Hilt
+Weapon	212800	Weapon	1	10	Fire Straight Sword Hilt
+Weapon	212900	Weapon	1	5	Chaos Straight Sword Hilt
+Weapon	300000	Weapon	1	15	Bastard Sword
+Weapon	300100	Weapon	1	5	Crystal Bastard Sword
+Weapon	300200	Weapon	1	5	Lightning Bastard Sword
+Weapon	300300	Weapon	1	5	Raw Bastard Sword
+Weapon	300400	Weapon	1	10	Magic Bastard Sword
+Weapon	300500	Weapon	1	5	Enchanted Bastard Sword
+Weapon	300600	Weapon	1	10	Divine Bastard Sword
+Weapon	300700	Weapon	1	5	Occult Bastard Sword
+Weapon	300800	Weapon	1	10	Fire Bastard Sword
+Weapon	300900	Weapon	1	5	Chaos Bastard Sword
+Weapon	301000	Weapon	1	15	Claymore
+Weapon	301100	Weapon	1	5	Crystal Claymore
+Weapon	301200	Weapon	1	5	Lightning Claymore
+Weapon	301300	Weapon	1	5	Raw Claymore
+Weapon	301400	Weapon	1	10	Magic Claymore
+Weapon	301500	Weapon	1	5	Enchanted Claymore
+Weapon	301600	Weapon	1	10	Divine Claymore
+Weapon	301700	Weapon	1	5	Occult Claymore
+Weapon	301800	Weapon	1	10	Fire Claymore
+Weapon	301900	Weapon	1	5	Chaos Claymore
+Weapon	302000	Weapon	1	15	Man-serpent Greatsword
+Weapon	302100	Weapon	1	5	Crys. Man-srp. Greatsword
+Weapon	302200	Weapon	1	5	Ltng. Man-srp. Greatsword
+Weapon	302300	Weapon	1	5	Raw Man-serpent Greatsword
+Weapon	302400	Weapon	1	10	Magic Man-srp. Greatsword
+Weapon	302500	Weapon	1	5	Ench. Man-srp. Greatsword
+Weapon	302600	Weapon	1	10	Div. Man-srp. Greatsword
+Weapon	302700	Weapon	1	5	Occ. Man-srp. Greatsword
+Weapon	302800	Weapon	1	10	Fire Man-serpent Greatsword
+Weapon	302900	Weapon	1	5	Chaos Man-srp. Greatsword
+Weapon	303000	Weapon	1	15	Flamberge
+Weapon	303100	Weapon	1	5	Crystal Flamberge
+Weapon	303200	Weapon	1	5	Lightning Flamberge
+Weapon	303300	Weapon	1	5	Raw Flamberge
+Weapon	303400	Weapon	1	10	Magic Flamberge
+Weapon	303500	Weapon	1	5	Enchanted Flamberge
+Weapon	303600	Weapon	1	10	Divine Flamberge
+Weapon	303700	Weapon	1	5	Occult Flamberge
+Weapon	303800	Weapon	1	10	Fire Flamberge
+Weapon	303900	Weapon	1	5	Chaos Flamberge
+Weapon	304000	Weapon	1	0	Crystal Greatsword
+Weapon	306000	Weapon	1	5	Stone Greatsword
+Weapon	307000	Weapon	1	5	Greatsword of Artorias
+Weapon	307100	Weapon	1	5	Greatsword of Artorias
+Weapon	309000	Weapon	1	5	Moonlight Greatsword
+Weapon	310000	Weapon	1	5	Black Knight Sword
+Weapon	311000	Weapon	1	5	Greatsword of Artorias
+Weapon	311100	Weapon	1	5	Greatsword of Artorias
+Weapon	311200	Weapon	1	5	Greatsword of Artorias
+Weapon	311300	Weapon	1	5	Greatsword of Artorias
+Weapon	311400	Weapon	1	5	Greatsword of Artorias
+Weapon	311500	Weapon	1	5	Greatsword of Artorias
+Weapon	311600	Weapon	1	5	Greatsword of Artorias
+Weapon	311700	Weapon	1	5	Greatsword of Artorias
+Weapon	311800	Weapon	1	5	Greatsword of Artorias
+Weapon	311900	Weapon	1	5	Greatsword of Artorias
+Weapon	312000	Weapon	1	5	Greatsword of Artorias
+Weapon	312100	Weapon	1	5	Greatsword of Artorias
+Weapon	312200	Weapon	1	5	Greatsword of Artorias
+Weapon	312300	Weapon	1	5	Greatsword of Artorias
+Weapon	312400	Weapon	1	5	Greatsword of Artorias
+Weapon	312500	Weapon	1	5	Greatsword of Artorias
+Weapon	312600	Weapon	1	5	Greatsword of Artorias
+Weapon	312700	Weapon	1	5	Greatsword of Artorias
+Weapon	314000	Weapon	1	5	Great Lord Greatsword
+Weapon	314100	Weapon	1	5	Great Lord Greatsword
+Weapon	314200	Weapon	1	5	Great Lord Greatsword
+Weapon	314300	Weapon	1	5	Great Lord Greatsword
+Weapon	314400	Weapon	1	5	Great Lord Greatsword
+Weapon	314500	Weapon	1	5	Great Lord Greatsword
+Weapon	314600	Weapon	1	5	Great Lord Greatsword
+Weapon	314700	Weapon	1	5	Great Lord Greatsword
+Weapon	314800	Weapon	1	5	Great Lord Greatsword
+Weapon	314900	Weapon	1	5	Great Lord Greatsword
+Weapon	315000	Weapon	1	5	Great Lord Greatsword
+Weapon	315100	Weapon	1	5	Great Lord Greatsword
+Weapon	315200	Weapon	1	5	Great Lord Greatsword
+Weapon	315300	Weapon	1	5	Great Lord Greatsword
+Weapon	315400	Weapon	1	5	Great Lord Greatsword
+Weapon	315500	Weapon	1	5	Great Lord Greatsword
+Weapon	315600	Weapon	1	5	Great Lord Greatsword
+Weapon	315700	Weapon	1	5	Great Lord Greatsword
+Weapon	350000	Weapon	1	15	Zweihander
+Weapon	350100	Weapon	1	5	Crystal Zweihander
+Weapon	350200	Weapon	1	5	Lightning Zweihander
+Weapon	350300	Weapon	1	5	Raw Zweihander
+Weapon	350400	Weapon	1	10	Magic Zweihander
+Weapon	350500	Weapon	1	5	Enchanted Zweihander
+Weapon	350600	Weapon	1	10	Divine Zweihander
+Weapon	350700	Weapon	1	5	Occult Zweihander
+Weapon	350800	Weapon	1	10	Fire Zweihander
+Weapon	350900	Weapon	1	5	Chaos Zweihander
+Weapon	351000	Weapon	1	15	Greatsword
+Weapon	351100	Weapon	1	5	Crystal Greatsword
+Weapon	351200	Weapon	1	5	Lightning Greatsword
+Weapon	351300	Weapon	1	5	Raw Greatsword
+Weapon	351400	Weapon	1	10	Magic Greatsword
+Weapon	351500	Weapon	1	5	Enchanted Greatsword
+Weapon	351600	Weapon	1	10	Divine Greatsword
+Weapon	351700	Weapon	1	5	Occult Greatsword
+Weapon	351800	Weapon	1	10	Fire Greatsword
+Weapon	351900	Weapon	1	5	Chaos Greatsword
+Weapon	352000	Weapon	1	15	Demon Great Machete
+Weapon	352100	Weapon	1	5	Crystal Demon Great Machete
+Weapon	352200	Weapon	1	5	Ltng. Demon Great Machete
+Weapon	352300	Weapon	1	5	Raw Demon Great Machete
+Weapon	352400	Weapon	1	10	Magic Demon Great Machete
+Weapon	352500	Weapon	1	5	Ench. Demon Great Machete
+Weapon	352600	Weapon	1	10	Divine Demon Great Machete
+Weapon	352700	Weapon	1	5	Occult Demon Great Machete
+Weapon	352800	Weapon	1	10	Fire Demon Great Machete
+Weapon	352900	Weapon	1	5	Chaos Demon Great Machete
+Weapon	354000	Weapon	1	5	Dragon Greatsword
+Weapon	355000	Weapon	1	5	Black Knight Greatsword
+Weapon	400000	Weapon	1	15	Scimitar
+Weapon	400100	Weapon	1	5	Crystal Scimitar
+Weapon	400200	Weapon	1	5	Lightning Scimitar
+Weapon	400300	Weapon	1	5	Raw Scimitar
+Weapon	400400	Weapon	1	10	Magic Scimitar
+Weapon	400500	Weapon	1	5	Enchanted Scimitar
+Weapon	400600	Weapon	1	10	Divine Scimitar
+Weapon	400700	Weapon	1	5	Occult Scimitar
+Weapon	400800	Weapon	1	10	Fire Scimitar
+Weapon	400900	Weapon	1	5	Chaos Scimitar
+Weapon	401000	Weapon	1	15	Falchion
+Weapon	401100	Weapon	1	5	Crystal Falchion
+Weapon	401200	Weapon	1	5	Lightning Falchion
+Weapon	401300	Weapon	1	5	Raw Falchion
+Weapon	401400	Weapon	1	10	Magic Falchion
+Weapon	401500	Weapon	1	5	Enchanted Falchion
+Weapon	401600	Weapon	1	10	Divine Falchion
+Weapon	401700	Weapon	1	5	Occult Falchion
+Weapon	401800	Weapon	1	10	Fire Falchion
+Weapon	401900	Weapon	1	5	Chaos Falchion
+Weapon	402000	Weapon	1	15	Shotel
+Weapon	402100	Weapon	1	5	Crystal Shotel
+Weapon	402200	Weapon	1	5	Lightning Shotel
+Weapon	402300	Weapon	1	5	Raw Shotel
+Weapon	402400	Weapon	1	10	Magic Shotel
+Weapon	402500	Weapon	1	5	Enchanted Shotel
+Weapon	402600	Weapon	1	10	Divine Shotel
+Weapon	402700	Weapon	1	5	Occult Shotel
+Weapon	402800	Weapon	1	10	Fire Shotel
+Weapon	402900	Weapon	1	5	Chaos Shotel
+Weapon	403000	Weapon	1	5	Jagged Ghost Blade
+Weapon	405000	Weapon	1	15	Painting Guardian Sword
+Weapon	405100	Weapon	1	5	Crys. Ptg. Guardian Sword
+Weapon	405200	Weapon	1	5	Ltng. Ptg. Guardian Sword
+Weapon	405300	Weapon	1	5	Raw Painting Guardian Sword
+Weapon	405400	Weapon	1	10	Magic Ptg. Guardian Sword
+Weapon	405500	Weapon	1	5	Ench. Ptg. Guardian Sword
+Weapon	405600	Weapon	1	10	Div. Ptg. Guardian Sword
+Weapon	405700	Weapon	1	5	Occ. Ptg. Guardian Sword
+Weapon	405800	Weapon	1	10	Fire Ptg. Guardian Sword
+Weapon	405900	Weapon	1	5	Chaos Ptg. Guardian Sword
+Weapon	406000	Weapon	1	5	Quelaag's Furysword
+Weapon	406100	Weapon	1	5	Quelaag's Furysword
+Weapon	406200	Weapon	1	5	Quelaag's Furysword
+Weapon	406300	Weapon	1	5	Quelaag's Furysword
+Weapon	406400	Weapon	1	5	Quelaag's Furysword
+Weapon	406500	Weapon	1	5	Quelaag's Furysword
+Weapon	450000	Weapon	1	15	Server
+Weapon	450100	Weapon	1	5	Crystal Server
+Weapon	450200	Weapon	1	5	Lightning Server
+Weapon	450300	Weapon	1	5	Raw Server
+Weapon	450400	Weapon	1	10	Magic Server
+Weapon	450500	Weapon	1	5	Enchanted Server
+Weapon	450600	Weapon	1	10	Divine Server
+Weapon	450700	Weapon	1	5	Occult Server
+Weapon	450800	Weapon	1	10	Fire Server
+Weapon	450900	Weapon	1	5	Chaos Server
+Weapon	451000	Weapon	1	15	Murakumo
+Weapon	451100	Weapon	1	5	Crystal Murakumo
+Weapon	451200	Weapon	1	5	Lightning Murakumo
+Weapon	451300	Weapon	1	5	Raw Murakumo
+Weapon	451400	Weapon	1	10	Magic Murakumo
+Weapon	451500	Weapon	1	5	Enchanted Murakumo
+Weapon	451600	Weapon	1	10	Divine Murakumo
+Weapon	451700	Weapon	1	5	Occult Murakumo
+Weapon	451800	Weapon	1	10	Fire Murakumo
+Weapon	451900	Weapon	1	5	Chaos Murakumo
+Weapon	453000	Weapon	1	5	Gravelord Sword
+Weapon	500000	Weapon	1	15	Uchigatana
+Weapon	500100	Weapon	1	5	Crystal Uchigatana
+Weapon	500200	Weapon	1	5	Lightning Uchigatana
+Weapon	500300	Weapon	1	5	Raw Uchigatana
+Weapon	500400	Weapon	1	10	Magic Uchigatana
+Weapon	500500	Weapon	1	5	Enchanted Uchigatana
+Weapon	500600	Weapon	1	10	Divine Uchigatana
+Weapon	500700	Weapon	1	5	Occult Uchigatana
+Weapon	500800	Weapon	1	10	Fire Uchigatana
+Weapon	500900	Weapon	1	5	Chaos Uchigatana
+Weapon	501000	Weapon	1	15	Washing Pole
+Weapon	501100	Weapon	1	5	Crystal Washing Pole
+Weapon	501200	Weapon	1	5	Lightning Washing Pole
+Weapon	501300	Weapon	1	5	Raw Washing Pole
+Weapon	501400	Weapon	1	10	Magic Washing Pole
+Weapon	501500	Weapon	1	5	Enchanted Washing Pole
+Weapon	501600	Weapon	1	10	Divine Washing Pole
+Weapon	501700	Weapon	1	5	Occult Washing Pole
+Weapon	501800	Weapon	1	10	Fire Washing Pole
+Weapon	501900	Weapon	1	5	Chaos Washing Pole
+Weapon	502000	Weapon	1	15	Iaito
+Weapon	502100	Weapon	1	5	Crystal Iaito
+Weapon	502200	Weapon	1	5	Lightning Iaito
+Weapon	502300	Weapon	1	5	Raw Iaito
+Weapon	502400	Weapon	1	10	Magic Iaito
+Weapon	502500	Weapon	1	5	Enchanted Iaito
+Weapon	502600	Weapon	1	10	Divine Iaito
+Weapon	502700	Weapon	1	5	Occult Iaito
+Weapon	502800	Weapon	1	10	Fire Iaito
+Weapon	502900	Weapon	1	5	Chaos Iaito
+Weapon	503000	Weapon	1	5	Chaos Blade
+Weapon	503100	Weapon	1	5	Chaos Blade
+Weapon	503200	Weapon	1	5	Chaos Blade
+Weapon	600000	Weapon	1	15	Mail Breaker
+Weapon	600100	Weapon	1	5	Crystal Mail Breaker
+Weapon	600200	Weapon	1	5	Lightning Mail Breaker
+Weapon	600300	Weapon	1	5	Raw Mail Breaker
+Weapon	600400	Weapon	1	10	Magic Mail Breaker
+Weapon	600500	Weapon	1	5	Enchanted Mail Breaker
+Weapon	600600	Weapon	1	10	Divine Mail Breaker
+Weapon	600700	Weapon	1	5	Occult Mail Breaker
+Weapon	600800	Weapon	1	10	Fire Mail Breaker
+Weapon	600900	Weapon	1	5	Chaos Mail Breaker
+Weapon	601000	Weapon	1	15	Rapier
+Weapon	601100	Weapon	1	5	Crystal Rapier
+Weapon	601200	Weapon	1	5	Lightning Rapier
+Weapon	601300	Weapon	1	5	Raw Rapier
+Weapon	601400	Weapon	1	10	Magic Rapier
+Weapon	601500	Weapon	1	5	Enchanted Rapier
+Weapon	601600	Weapon	1	10	Divine Rapier
+Weapon	601700	Weapon	1	5	Occult Rapier
+Weapon	601800	Weapon	1	10	Fire Rapier
+Weapon	601900	Weapon	1	5	Chaos Rapier
+Weapon	602000	Weapon	1	15	Estoc
+Weapon	602100	Weapon	1	5	Crystal Estoc
+Weapon	602200	Weapon	1	5	Lightning Estoc
+Weapon	602300	Weapon	1	5	Raw Estoc
+Weapon	602400	Weapon	1	10	Magic Estoc
+Weapon	602500	Weapon	1	5	Enchanted Estoc
+Weapon	602600	Weapon	1	10	Divine Estoc
+Weapon	602700	Weapon	1	5	Occult Estoc
+Weapon	602800	Weapon	1	10	Fire Estoc
+Weapon	602900	Weapon	1	5	Chaos Estoc
+Weapon	603000	Weapon	1	5	Velka's Rapier
+Weapon	604000	Weapon	1	15	Ricard's Rapier
+Weapon	604100	Weapon	1	5	Crystal Ricard's Rapier
+Weapon	604200	Weapon	1	5	Lightning Ricard's Rapier
+Weapon	604300	Weapon	1	5	Raw Ricard's Rapier
+Weapon	604400	Weapon	1	10	Magic Ricard's Rapier
+Weapon	604500	Weapon	1	5	Enchanted Ricard's Rapier
+Weapon	604600	Weapon	1	10	Divine Ricard's Rapier
+Weapon	604700	Weapon	1	5	Occult Ricard's Rapier
+Weapon	604800	Weapon	1	10	Fire Ricard's Rapier
+Weapon	604900	Weapon	1	5	Chaos Ricard's Rapier
+Weapon	700000	Weapon	1	15	Hand Axe
+Weapon	700100	Weapon	1	5	Crystal Hand Axe
+Weapon	700200	Weapon	1	5	Lightning Hand Axe
+Weapon	700300	Weapon	1	5	Raw Hand Axe
+Weapon	700400	Weapon	1	10	Magic Hand Axe
+Weapon	700500	Weapon	1	5	Enchanted Hand Axe
+Weapon	700600	Weapon	1	10	Divine Hand Axe
+Weapon	700700	Weapon	1	5	Occult Hand Axe
+Weapon	700800	Weapon	1	10	Fire Hand Axe
+Weapon	700900	Weapon	1	5	Chaos Hand Axe
+Weapon	701000	Weapon	1	15	Battle Axe
+Weapon	701100	Weapon	1	5	Crystal Battle Axe
+Weapon	701200	Weapon	1	5	Lightning Battle Axe
+Weapon	701300	Weapon	1	5	Raw Battle Axe
+Weapon	701400	Weapon	1	10	Magic Battle Axe
+Weapon	701500	Weapon	1	5	Enchanted Battle Axe
+Weapon	701600	Weapon	1	10	Divine Battle Axe
+Weapon	701700	Weapon	1	5	Occult Battle Axe
+Weapon	701800	Weapon	1	10	Fire Battle Axe
+Weapon	701900	Weapon	1	5	Chaos Battle Axe
+Weapon	702000	Weapon	1	5	Crescent Axe
+Weapon	703000	Weapon	1	15	Butcher Knife
+Weapon	703100	Weapon	1	5	Crystal Butcher Knife
+Weapon	703200	Weapon	1	5	Lightning Butcher Knife
+Weapon	703300	Weapon	1	5	Raw Butcher Knife
+Weapon	703400	Weapon	1	10	Magic Butcher Knife
+Weapon	703500	Weapon	1	5	Enchanted Butcher Knife
+Weapon	703600	Weapon	1	10	Divine Butcher Knife
+Weapon	703700	Weapon	1	5	Occult Butcher Knife
+Weapon	703800	Weapon	1	10	Fire Butcher Knife
+Weapon	703900	Weapon	1	5	Chaos Butcher Knife
+Weapon	704000	Weapon	1	5	Golem Axe
+Weapon	704100	Weapon	1	5	Golem Axe
+Weapon	704200	Weapon	1	5	Golem Axe
+Weapon	704300	Weapon	1	5	Golem Axe
+Weapon	704400	Weapon	1	5	Golem Axe
+Weapon	704500	Weapon	1	5	Golem Axe
+Weapon	704600	Weapon	1	5	Golem Axe
+Weapon	705000	Weapon	1	15	Gargoyle Tail Axe
+Weapon	705100	Weapon	1	5	Crystal Gargoyle Tail Axe
+Weapon	705200	Weapon	1	5	Lightning Gargoyle Tail Axe
+Weapon	705300	Weapon	1	5	Raw Gargoyle Tail Axe
+Weapon	705400	Weapon	1	10	Magic Gargoyle Tail Axe
+Weapon	705500	Weapon	1	5	Enchanted Gargoyle Tail Axe
+Weapon	705600	Weapon	1	10	Divine Gargoyle Tail Axe
+Weapon	705700	Weapon	1	5	Occult Gargoyle Tail Axe
+Weapon	705800	Weapon	1	10	Fire Gargoyle Tail Axe
+Weapon	705900	Weapon	1	5	Chaos Gargoyle Tail Axe
+Weapon	750000	Weapon	1	15	Greataxe
+Weapon	750100	Weapon	1	5	Crystal Greataxe
+Weapon	750200	Weapon	1	5	Lightning Greataxe
+Weapon	750300	Weapon	1	5	Raw Greataxe
+Weapon	750400	Weapon	1	10	Magic Greataxe
+Weapon	750500	Weapon	1	5	Enchanted Greataxe
+Weapon	750600	Weapon	1	10	Divine Greataxe
+Weapon	750700	Weapon	1	5	Occult Greataxe
+Weapon	750800	Weapon	1	10	Fire Greataxe
+Weapon	750900	Weapon	1	5	Chaos Greataxe
+Weapon	751000	Weapon	1	15	Demon's Greataxe
+Weapon	751100	Weapon	1	5	Crystal Demon's Greataxe
+Weapon	751200	Weapon	1	5	Lightning Demon's Greataxe
+Weapon	751300	Weapon	1	5	Raw Demon's Greataxe
+Weapon	751400	Weapon	1	10	Magic Demon's Greataxe
+Weapon	751500	Weapon	1	5	Enchanted Demon's Greataxe
+Weapon	751600	Weapon	1	10	Divine Demon's Greataxe
+Weapon	751700	Weapon	1	5	Occult Demon's Greataxe
+Weapon	751800	Weapon	1	10	Fire Demon's Greataxe
+Weapon	751900	Weapon	1	5	Chaos Demon's Greataxe
+Weapon	752000	Weapon	1	5	Dragon King Greataxe
+Weapon	753000	Weapon	1	5	Black Knight Greataxe
+Weapon	800000	Weapon	1	15	Club
+Weapon	800100	Weapon	1	5	Crystal Club
+Weapon	800200	Weapon	1	5	Lightning Club
+Weapon	800300	Weapon	1	5	Raw Club
+Weapon	800400	Weapon	1	10	Magic Club
+Weapon	800500	Weapon	1	5	Enchanted Club
+Weapon	800600	Weapon	1	10	Divine Club
+Weapon	800700	Weapon	1	5	Occult Club
+Weapon	800800	Weapon	1	10	Fire Club
+Weapon	800900	Weapon	1	5	Chaos Club
+Weapon	801000	Weapon	1	15	Mace
+Weapon	801100	Weapon	1	5	Crystal Mace
+Weapon	801200	Weapon	1	5	Lightning Mace
+Weapon	801300	Weapon	1	5	Raw Mace
+Weapon	801400	Weapon	1	10	Magic Mace
+Weapon	801500	Weapon	1	5	Enchanted Mace
+Weapon	801600	Weapon	1	10	Divine Mace
+Weapon	801700	Weapon	1	5	Occult Mace
+Weapon	801800	Weapon	1	10	Fire Mace
+Weapon	801900	Weapon	1	5	Chaos Mace
+Weapon	802000	Weapon	1	15	Morning Star
+Weapon	802100	Weapon	1	5	Crystal Morning Star
+Weapon	802200	Weapon	1	5	Lightning Morning Star
+Weapon	802300	Weapon	1	5	Raw Morning Star
+Weapon	802400	Weapon	1	10	Magic Morning Star
+Weapon	802500	Weapon	1	5	Enchanted Morning Star
+Weapon	802600	Weapon	1	10	Divine Morning Star
+Weapon	802700	Weapon	1	5	Occult Morning Star
+Weapon	802800	Weapon	1	10	Fire Morning Star
+Weapon	802900	Weapon	1	5	Chaos Morning Star
+Weapon	803000	Weapon	1	15	Warpick
+Weapon	803100	Weapon	1	5	Crystal Warpick
+Weapon	803200	Weapon	1	5	Lightning Warpick
+Weapon	803300	Weapon	1	5	Raw Warpick
+Weapon	803400	Weapon	1	10	Magic Warpick
+Weapon	803500	Weapon	1	5	Enchanted Warpick
+Weapon	803600	Weapon	1	10	Divine Warpick
+Weapon	803700	Weapon	1	5	Occult Warpick
+Weapon	803800	Weapon	1	10	Fire Warpick
+Weapon	803900	Weapon	1	5	Chaos Warpick
+Weapon	804000	Weapon	1	15	Pickaxe
+Weapon	804100	Weapon	1	5	Crystal Pickaxe
+Weapon	804200	Weapon	1	5	Lightning Pickaxe
+Weapon	804300	Weapon	1	5	Raw Pickaxe
+Weapon	804400	Weapon	1	10	Magic Pickaxe
+Weapon	804500	Weapon	1	5	Enchanted Pickaxe
+Weapon	804600	Weapon	1	10	Divine Pickaxe
+Weapon	804700	Weapon	1	5	Occult Pickaxe
+Weapon	804800	Weapon	1	10	Fire Pickaxe
+Weapon	804900	Weapon	1	5	Chaos Pickaxe
+Weapon	809000	Weapon	1	15	Reinforced Club
+Weapon	809100	Weapon	1	5	Crystal Reinforced Club
+Weapon	809200	Weapon	1	5	Lightning Reinforced Club
+Weapon	809300	Weapon	1	5	Raw Reinforced Club
+Weapon	809400	Weapon	1	10	Magic Reinforced Club
+Weapon	809500	Weapon	1	5	Enchanted Reinforced Club
+Weapon	809600	Weapon	1	10	Divine Reinforced Club
+Weapon	809700	Weapon	1	5	Occult Reinforced Club
+Weapon	809800	Weapon	1	10	Fire Reinforced Club
+Weapon	809900	Weapon	1	5	Chaos Reinforced Club
+Weapon	810000	Weapon	1	15	Blacksmith Hammer
+Weapon	810100	Weapon	1	5	Crystal Blacksmith Hammer
+Weapon	810200	Weapon	1	5	Lightning Blacksmith Hammer
+Weapon	810300	Weapon	1	5	Raw Blacksmith Hammer
+Weapon	810400	Weapon	1	10	Magic Blacksmith Hammer
+Weapon	810500	Weapon	1	5	Enchanted Blacksmith Hammer
+Weapon	810600	Weapon	1	10	Divine Blacksmith Hammer
+Weapon	810700	Weapon	1	5	Occult Blacksmith Hammer
+Weapon	810800	Weapon	1	10	Fire Blacksmith Hammer
+Weapon	810900	Weapon	1	5	Chaos Blacksmith Hammer
+Weapon	811000	Weapon	1	5	Blacksmith Giant Hammer
+Weapon	812000	Weapon	1	5	Hammer of Vamos
+Weapon	850000	Weapon	1	15	Great Club
+Weapon	850100	Weapon	1	5	Crystal Great Club
+Weapon	850200	Weapon	1	5	Lightning Great Club
+Weapon	850300	Weapon	1	5	Raw Great Club
+Weapon	850400	Weapon	1	10	Magic Great Club
+Weapon	850500	Weapon	1	5	Enchanted Great Club
+Weapon	850600	Weapon	1	10	Divine Great Club
+Weapon	850700	Weapon	1	5	Occult Great Club
+Weapon	850800	Weapon	1	10	Fire Great Club
+Weapon	850900	Weapon	1	5	Chaos Great Club
+Weapon	851000	Weapon	1	5	Grant
+Weapon	852000	Weapon	1	15	Demon's Great Hammer
+Weapon	852100	Weapon	1	5	Crys. Demon's Great Hammer
+Weapon	852200	Weapon	1	5	Ltng. Demon's Gr. Hammer
+Weapon	852300	Weapon	1	5	Raw Demon's Great Hammer
+Weapon	852400	Weapon	1	10	Magic Demon's Gr. Hammer
+Weapon	852500	Weapon	1	5	Ench. Demon's Gr. Hammer
+Weapon	852600	Weapon	1	10	Div. Demon's Gr. Hammer
+Weapon	852700	Weapon	1	5	Occ. Demon's Gr. Hammer
+Weapon	852800	Weapon	1	10	Fire Demon's Great Hammer
+Weapon	852900	Weapon	1	5	Chaos Demon's Great Hammer
+Weapon	854000	Weapon	1	5	Dragon Tooth
+Weapon	855000	Weapon	1	15	Large Club
+Weapon	855100	Weapon	1	5	Crystal Large Club
+Weapon	855200	Weapon	1	5	Lightning Large Club
+Weapon	855300	Weapon	1	5	Raw Large Club
+Weapon	855400	Weapon	1	10	Magic Large Club
+Weapon	855500	Weapon	1	5	Enchanted Large Club
+Weapon	855600	Weapon	1	10	Divine Large Club
+Weapon	855700	Weapon	1	5	Occult Large Club
+Weapon	855800	Weapon	1	10	Fire Large Club
+Weapon	855900	Weapon	1	5	Chaos Large Club
+Weapon	856000	Weapon	1	5	Smough's Hammer
+Weapon	856100	Weapon	1	5	Smough's Hammer
+Weapon	856200	Weapon	1	5	Smough's Hammer
+Weapon	856300	Weapon	1	5	Smough's Hammer
+Weapon	856400	Weapon	1	5	Smough's Hammer
+Weapon	856500	Weapon	1	5	Smough's Hammer
+Weapon	856600	Weapon	1	5	Smough's Hammer
+Weapon	856700	Weapon	1	5	Smough's Hammer
+Weapon	856800	Weapon	1	5	Smough's Hammer
+Weapon	856900	Weapon	1	5	Smough's Hammer
+Weapon	857000	Weapon	1	5	Smough's Hammer
+Weapon	857100	Weapon	1	5	Smough's Hammer
+Weapon	900000	Weapon	1	0	Fists
+Weapon	901000	Weapon	1	15	Caestus
+Weapon	901100	Weapon	1	5	Crystal Caestus
+Weapon	901200	Weapon	1	5	Lightning Caestus
+Weapon	901300	Weapon	1	5	Raw Caestus
+Weapon	901400	Weapon	1	10	Magic Caestus
+Weapon	901500	Weapon	1	5	Enchanted Caestus
+Weapon	901600	Weapon	1	10	Divine Caestus
+Weapon	901700	Weapon	1	5	Occult Caestus
+Weapon	901800	Weapon	1	10	Fire Caestus
+Weapon	901900	Weapon	1	5	Chaos Caestus
+Weapon	902000	Weapon	1	15	Claw
+Weapon	902100	Weapon	1	5	Crystal Claw
+Weapon	902200	Weapon	1	5	Lightning Claw
+Weapon	902300	Weapon	1	5	Raw Claw
+Weapon	902400	Weapon	1	10	Magic Claw
+Weapon	902500	Weapon	1	5	Enchanted Claw
+Weapon	902600	Weapon	1	10	Divine Claw
+Weapon	902700	Weapon	1	5	Occult Claw
+Weapon	902800	Weapon	1	10	Fire Claw
+Weapon	902900	Weapon	1	5	Chaos Claw
+Weapon	903000	Weapon	1	5	Dragon Bone Fist
+Weapon	903100	Weapon	1	5	Dragon Bone Fist
+Weapon	904000	Weapon	1	0	Dark Hand
+Weapon	1000000	Weapon	1	15	Spear
+Weapon	1000100	Weapon	1	5	Crystal Spear
+Weapon	1000200	Weapon	1	5	Lightning Spear
+Weapon	1000300	Weapon	1	5	Raw Spear
+Weapon	1000400	Weapon	1	10	Magic Spear
+Weapon	1000500	Weapon	1	5	Enchanted Spear
+Weapon	1000600	Weapon	1	10	Divine Spear
+Weapon	1000700	Weapon	1	5	Occult Spear
+Weapon	1000800	Weapon	1	10	Fire Spear
+Weapon	1000900	Weapon	1	5	Chaos Spear
+Weapon	1001000	Weapon	1	15	Winged Spear
+Weapon	1001100	Weapon	1	5	Crystal Winged Spear
+Weapon	1001200	Weapon	1	5	Lightning Winged Spear
+Weapon	1001300	Weapon	1	5	Raw Winged Spear
+Weapon	1001400	Weapon	1	10	Magic Winged Spear
+Weapon	1001500	Weapon	1	5	Enchanted Winged Spear
+Weapon	1001600	Weapon	1	10	Divine Winged Spear
+Weapon	1001700	Weapon	1	5	Occult Winged Spear
+Weapon	1001800	Weapon	1	10	Fire Winged Spear
+Weapon	1001900	Weapon	1	5	Chaos Winged Spear
+Weapon	1002000	Weapon	1	15	Partizan
+Weapon	1002100	Weapon	1	5	Crystal Partizan
+Weapon	1002200	Weapon	1	5	Lightning Partizan
+Weapon	1002300	Weapon	1	5	Raw Partizan
+Weapon	1002400	Weapon	1	10	Magic Partizan
+Weapon	1002500	Weapon	1	5	Enchanted Partizan
+Weapon	1002600	Weapon	1	10	Divine Partizan
+Weapon	1002700	Weapon	1	5	Occult Partizan
+Weapon	1002800	Weapon	1	10	Fire Partizan
+Weapon	1002900	Weapon	1	5	Chaos Partizan
+Weapon	1003000	Weapon	1	5	Demon's Spear
+Weapon	1004000	Weapon	1	5	Channeler's Trident
+Weapon	1006000	Weapon	1	5	Silver Knight Spear
+Weapon	1050000	Weapon	1	15	Pike
+Weapon	1050100	Weapon	1	5	Crystal Pike
+Weapon	1050200	Weapon	1	5	Lightning Pike
+Weapon	1050300	Weapon	1	5	Raw Pike
+Weapon	1050400	Weapon	1	10	Magic Pike
+Weapon	1050500	Weapon	1	5	Enchanted Pike
+Weapon	1050600	Weapon	1	10	Divine Pike
+Weapon	1050700	Weapon	1	5	Occult Pike
+Weapon	1050800	Weapon	1	10	Fire Pike
+Weapon	1050900	Weapon	1	5	Chaos Pike
+Weapon	1051000	Weapon	1	5	Dragonslayer Spear
+Weapon	1051100	Weapon	1	5	Dragonslayer Spear
+Weapon	1051200	Weapon	1	5	Dragonslayer Spear
+Weapon	1051300	Weapon	1	5	Dragonslayer Spear
+Weapon	1051400	Weapon	1	5	Dragonslayer Spear
+Weapon	1051500	Weapon	1	5	Dragonslayer Spear
+Weapon	1051600	Weapon	1	5	Dragonslayer Spear
+Weapon	1051700	Weapon	1	5	Dragonslayer Spear
+Weapon	1051800	Weapon	1	5	Dragonslayer Spear
+Weapon	1051900	Weapon	1	5	Dragonslayer Spear
+Weapon	1052000	Weapon	1	5	Moonlight Butterfly Horn
+Weapon	1052100	Weapon	1	5	Moonlight Butterfly Horn
+Weapon	1052200	Weapon	1	5	Moonlight Butterfly Horn
+Weapon	1052300	Weapon	1	5	Moonlight Butterfly Horn
+Weapon	1052400	Weapon	1	5	Moonlight Butterfly Horn
+Weapon	1052500	Weapon	1	5	Moonlight Butterfly Horn
+Weapon	1052600	Weapon	1	5	Moonlight Butterfly Horn
+Weapon	1052700	Weapon	1	5	Moonlight Butterfly Horn
+Weapon	1052800	Weapon	1	5	Moonlight Butterfly Horn
+Weapon	1052900	Weapon	1	5	Moonlight Butterfly Horn
+Weapon	1053000	Weapon	1	5	Moonlight Butterfly Horn
+Weapon	1054000	Weapon	1	5	Dragonslayer Spear
+Weapon	1100000	Weapon	1	15	Halberd
+Weapon	1100100	Weapon	1	5	Crystal Halberd
+Weapon	1100200	Weapon	1	5	Lightning Halberd
+Weapon	1100300	Weapon	1	5	Raw Halberd
+Weapon	1100400	Weapon	1	10	Magic Halberd
+Weapon	1100500	Weapon	1	5	Enchanted Halberd
+Weapon	1100600	Weapon	1	10	Divine Halberd
+Weapon	1100700	Weapon	1	5	Occult Halberd
+Weapon	1100800	Weapon	1	10	Fire Halberd
+Weapon	1100900	Weapon	1	5	Chaos Halberd
+Weapon	1101000	Weapon	1	5	Giant's Halberd
+Weapon	1102000	Weapon	1	5	Titanite Catch Pole
+Weapon	1103000	Weapon	1	15	Gargoyle's Halberd
+Weapon	1103100	Weapon	1	5	Crystal Gargoyle's Halberd
+Weapon	1103200	Weapon	1	5	Ltng. Gargoyle's Halberd
+Weapon	1103300	Weapon	1	5	Raw Gargoyle's Halberd
+Weapon	1103400	Weapon	1	10	Magic Gargoyle's Halberd
+Weapon	1103500	Weapon	1	5	Ench. Gargoyle's Halberd
+Weapon	1103600	Weapon	1	10	Divine Gargoyle's Halberd
+Weapon	1103700	Weapon	1	5	Occult Gargoyle's Halberd
+Weapon	1103800	Weapon	1	10	Fire Gargoyle's Halberd
+Weapon	1103900	Weapon	1	5	Chaos Gargoyle's Halberd
+Weapon	1105000	Weapon	1	5	Black Knight Halberd
+Weapon	1106000	Weapon	1	15	Lucerne
+Weapon	1106100	Weapon	1	5	Crystal Lucerne
+Weapon	1106200	Weapon	1	5	Lightning Lucerne
+Weapon	1106300	Weapon	1	5	Raw Lucerne
+Weapon	1106400	Weapon	1	10	Magic Lucerne
+Weapon	1106500	Weapon	1	5	Enchanted Lucerne
+Weapon	1106600	Weapon	1	10	Divine Lucerne
+Weapon	1106700	Weapon	1	5	Occult Lucerne
+Weapon	1106800	Weapon	1	10	Fire Lucerne
+Weapon	1106900	Weapon	1	5	Chaos Lucerne
+Weapon	1107000	Weapon	1	15	Scythe
+Weapon	1107100	Weapon	1	5	Crystal Scythe
+Weapon	1107200	Weapon	1	5	Lightning Scythe
+Weapon	1107300	Weapon	1	5	Raw Scythe
+Weapon	1107400	Weapon	1	10	Magic Scythe
+Weapon	1107500	Weapon	1	5	Enchanted Scythe
+Weapon	1107600	Weapon	1	10	Divine Scythe
+Weapon	1107700	Weapon	1	5	Occult Scythe
+Weapon	1107800	Weapon	1	10	Fire Scythe
+Weapon	1107900	Weapon	1	5	Chaos Scythe
+Weapon	1150000	Weapon	1	15	Great Scythe
+Weapon	1150100	Weapon	1	5	Crystal Great Scythe
+Weapon	1150200	Weapon	1	5	Lightning Great Scythe
+Weapon	1150300	Weapon	1	5	Raw Great Scythe
+Weapon	1150400	Weapon	1	10	Magic Great Scythe
+Weapon	1150500	Weapon	1	5	Enchanted Great Scythe
+Weapon	1150600	Weapon	1	10	Divine Great Scythe
+Weapon	1150700	Weapon	1	5	Occult Great Scythe
+Weapon	1150800	Weapon	1	10	Fire Great Scythe
+Weapon	1150900	Weapon	1	5	Chaos Great Scythe
+Weapon	1151000	Weapon	1	5	Lifehunt Scythe
+Weapon	1151100	Weapon	1	5	Lifehunt Scythe
+Weapon	1151200	Weapon	1	5	Lifehunt Scythe
+Weapon	1151300	Weapon	1	5	Lifehunt Scythe
+Weapon	1151400	Weapon	1	5	Lifehunt Scythe
+Weapon	1151500	Weapon	1	5	Lifehunt Scythe
+Weapon	1151600	Weapon	1	5	Lifehunt Scythe
+Weapon	1151700	Weapon	1	5	Lifehunt Scythe
+Weapon	1151800	Weapon	1	5	Lifehunt Scythe
+Weapon	1200000	Ranged	1	15	Short Bow
+Weapon	1200100	Ranged	1	5	Crystal Short Bow
+Weapon	1200200	Ranged	1	5	Lightning Short Bow
+Weapon	1200300	Ranged	1	5	Raw Short Bow
+Weapon	1200400	Ranged	1	10	Magic Short Bow
+Weapon	1200500	Ranged	1	5	Enchanted Short Bow
+Weapon	1200600	Ranged	1	10	Divine Short Bow
+Weapon	1200700	Ranged	1	5	Occult Short Bow
+Weapon	1200800	Ranged	1	10	Fire Short Bow
+Weapon	1200900	Ranged	1	5	Chaos Short Bow
+Weapon	1201000	Ranged	1	15	Longbow
+Weapon	1201100	Ranged	1	5	Crystal Longbow
+Weapon	1201200	Ranged	1	5	Lightning Longbow
+Weapon	1201300	Ranged	1	5	Raw Longbow
+Weapon	1201400	Ranged	1	10	Magic Longbow
+Weapon	1201500	Ranged	1	5	Enchanted Longbow
+Weapon	1201600	Ranged	1	10	Divine Longbow
+Weapon	1201700	Ranged	1	5	Occult Longbow
+Weapon	1201800	Ranged	1	10	Fire Longbow
+Weapon	1201900	Ranged	1	5	Chaos Longbow
+Weapon	1202000	Ranged	1	15	Black Bow of Pharis
+Weapon	1202100	Ranged	1	5	Crystal Black Bow of Pharis
+Weapon	1202200	Ranged	1	5	Ltng. Black Bow of Pharis
+Weapon	1202300	Ranged	1	5	Raw Black Bow of Pharis
+Weapon	1202400	Ranged	1	10	Magic Black Bow of Pharis
+Weapon	1202500	Ranged	1	5	Ench. Black Bow of Pharis
+Weapon	1202600	Ranged	1	10	Divine Black Bow of Pharis
+Weapon	1202700	Ranged	1	5	Occult Black Bow of Pharis
+Weapon	1202800	Ranged	1	10	Fire Black Bow of Pharis
+Weapon	1202900	Ranged	1	5	Chaos Black Bow of Pharis
+Weapon	1203000	Ranged	1	5	Dragonslayer Greatbow
+Weapon	1204000	Ranged	1	15	Composite Bow
+Weapon	1204100	Ranged	1	5	Crystal Composite Bow
+Weapon	1204200	Ranged	1	5	Lightning Composite Bow
+Weapon	1204300	Ranged	1	5	Raw Composite Bow
+Weapon	1204400	Ranged	1	10	Magic Composite Bow
+Weapon	1204500	Ranged	1	5	Enchanted Composite Bow
+Weapon	1204600	Ranged	1	10	Divine Composite Bow
+Weapon	1204700	Ranged	1	5	Occult Composite Bow
+Weapon	1204800	Ranged	1	10	Fire Composite Bow
+Weapon	1204900	Ranged	1	5	Chaos Composite Bow
+Weapon	1205000	Ranged	1	5	Darkmoon Bow
+Weapon	1205100	Ranged	1	5	Darkmoon Bow
+Weapon	1205200	Ranged	1	5	Darkmoon Bow
+Weapon	1205300	Ranged	1	5	Darkmoon Bow
+Weapon	1250000	Ranged	1	15	Light Crossbow
+Weapon	1250100	Ranged	1	5	Crystal Light Crossbow
+Weapon	1250200	Ranged	1	5	Lightning Light Crossbow
+Weapon	1250400	Ranged	1	10	Magic Light Crossbow
+Weapon	1250600	Ranged	1	10	Divine Light Crossbow
+Weapon	1250800	Ranged	1	10	Fire Light Crossbow
+Weapon	1251000	Ranged	1	15	Heavy Crossbow
+Weapon	1251100	Ranged	1	5	Crystal Heavy Crossbow
+Weapon	1251200	Ranged	1	5	Lightning Heavy Crossbow
+Weapon	1251400	Ranged	1	10	Magic Heavy Crossbow
+Weapon	1251600	Ranged	1	10	Divine Heavy Crossbow
+Weapon	1251800	Ranged	1	10	Fire Heavy Crossbow
+Weapon	1252000	Ranged	1	15	Avelyn
+Weapon	1252100	Ranged	1	5	Crystal Avelyn
+Weapon	1252200	Ranged	1	5	Lightning Avelyn
+Weapon	1252400	Ranged	1	10	Magic Avelyn
+Weapon	1252600	Ranged	1	10	Divine Avelyn
+Weapon	1252800	Ranged	1	10	Fire Avelyn
+Weapon	1253000	Ranged	1	15	Sniper Crossbow
+Weapon	1253100	Ranged	1	5	Crystal Sniper Crossbow
+Weapon	1253200	Ranged	1	5	Lightning Sniper Crossbow
+Weapon	1253400	Ranged	1	10	Magic Sniper Crossbow
+Weapon	1253600	Ranged	1	10	Divine Sniper Crossbow
+Weapon	1253800	Ranged	1	10	Fire Sniper Crossbow
+Weapon	1300000	Catalyst	1	15	Sorcerer's Catalyst
+Weapon	1301000	Catalyst	1	15	Beatrice's Catalyst
+Weapon	1302000	Catalyst	1	15	Tin Banishment Catalyst
+Weapon	1303000	Catalyst	1	15	Logan's Catalyst
+Weapon	1304000	Catalyst	1	5	Tin Darkmoon Catalyst
+Weapon	1304100	Catalyst	1	5	Tin Darkmoon Catalyst
+Weapon	1304200	Catalyst	1	5	Tin Darkmoon Catalyst
+Weapon	1304300	Catalyst	1	5	Tin Darkmoon Catalyst
+Weapon	1304400	Catalyst	1	5	Tin Darkmoon Catalyst
+Weapon	1304500	Catalyst	1	5	Tin Darkmoon Catalyst
+Weapon	1305000	Catalyst	1	15	Oolacile Ivory Catalyst
+Weapon	1306000	Catalyst	1	0	Tin Crystallization Ctlyst.
+Weapon	1307000	Catalyst	1	0	Demon's Catalyst
+Weapon	1308000	Catalyst	1	0	Izalith Catalyst
+Weapon	1330000	Catalyst	1	15	Pyromancy Flame
+Weapon	1330100	Catalyst	1	15	Pyromancy Flame+1
+Weapon	1330200	Catalyst	1	15	Pyromancy Flame+2
+Weapon	1330300	Catalyst	1	15	Pyromancy Flame+3
+Weapon	1330400	Catalyst	1	15	Pyromancy Flame+4
+Weapon	1330500	Catalyst	1	15	Pyromancy Flame+5
+Weapon	1330600	Catalyst	1	15	Pyromancy Flame+6
+Weapon	1330700	Catalyst	1	15	Pyromancy Flame+7
+Weapon	1330800	Catalyst	1	15	Pyromancy Flame+8
+Weapon	1330900	Catalyst	1	15	Pyromancy Flame+9
+Weapon	1331000	Catalyst	1	15	Pyromancy Flame+10
+Weapon	1331100	Catalyst	1	15	Pyromancy Flame+11
+Weapon	1331200	Catalyst	1	15	Pyromancy Flame+12
+Weapon	1331300	Catalyst	1	15	Pyromancy Flame+13
+Weapon	1331400	Catalyst	1	15	Pyromancy Flame+14
+Weapon	1331500	Catalyst	1	15	Pyromancy Flame+15
+Weapon	1332000	Catalyst	1	15	Pyromancy Flame
+Weapon	1332100	Catalyst	1	15	Pyromancy Flame+1
+Weapon	1332200	Catalyst	1	15	Pyromancy Flame+2
+Weapon	1332300	Catalyst	1	15	Pyromancy Flame+3
+Weapon	1332400	Catalyst	1	15	Pyromancy Flame+4
+Weapon	1332500	Catalyst	1	15	Pyromancy Flame+5
+Weapon	1360000	Catalyst	1	0	Talisman
+Weapon	1361000	Catalyst	1	0	Canvas Talisman
+Weapon	1362000	Catalyst	1	0	Thorolund Talisman
+Weapon	1363000	Catalyst	1	0	Ivory Talisman
+Weapon	1365000	Catalyst	1	0	Sunlight Talisman
+Weapon	1366000	Catalyst	1	0	Darkmoon Talisman
+Weapon	1367000	Catalyst	1	0	Velka's Talisman
+Weapon	1396000	Catalyst	1	0	Skull Lantern
+Weapon	1400000	Shield	1	0	East-West Shield
+Weapon	1400100	Shield	1	0	Crystal East-West Shield
+Weapon	1400200	Shield	1	0	Lightning East-West Shield
+Weapon	1400400	Shield	1	0	Magic East-West Shield
+Weapon	1400600	Shield	1	0	Divine East-West Shield
+Weapon	1400800	Shield	1	0	Fire East-West Shield
+Weapon	1401000	Shield	1	0	Wooden Shield
+Weapon	1401100	Shield	1	0	Crystal Wooden Shield
+Weapon	1401200	Shield	1	0	Lightning Wooden Shield
+Weapon	1401400	Shield	1	0	Magic Wooden Shield
+Weapon	1401600	Shield	1	0	Divine Wooden Shield
+Weapon	1401800	Shield	1	0	Fire Wooden Shield
+Weapon	1402000	Shield	1	0	Large Leather Shield
+Weapon	1402100	Shield	1	0	Crys. Large Leather Shield
+Weapon	1402200	Shield	1	0	Ltng. Large Leather Shield
+Weapon	1402400	Shield	1	0	Magic Large Leather Shield
+Weapon	1402600	Shield	1	0	Divine Large Leather Shield
+Weapon	1402800	Shield	1	0	Fire Large Leather Shield
+Weapon	1403000	Shield	1	0	Small Leather Shield
+Weapon	1403100	Shield	1	0	Crys. Small Leather Shield
+Weapon	1403200	Shield	1	0	Ltng. Small Leather Shield
+Weapon	1403400	Shield	1	0	Magic Small Leather Shield
+Weapon	1403600	Shield	1	0	Divine Small Leather Shield
+Weapon	1403800	Shield	1	0	Fire Small Leather Shield
+Weapon	1404000	Shield	1	15	Target Shield
+Weapon	1404100	Shield	1	5	Crystal Target Shield
+Weapon	1404200	Shield	1	5	Lightning Target Shield
+Weapon	1404400	Shield	1	10	Magic Target Shield
+Weapon	1404600	Shield	1	10	Divine Target Shield
+Weapon	1404800	Shield	1	10	Fire Target Shield
+Weapon	1405000	Shield	1	15	Buckler
+Weapon	1405100	Shield	1	5	Crystal Buckler
+Weapon	1405200	Shield	1	5	Lightning Buckler
+Weapon	1405400	Shield	1	10	Magic Buckler
+Weapon	1405600	Shield	1	10	Divine Buckler
+Weapon	1405800	Shield	1	10	Fire Buckler
+Weapon	1406000	Shield	1	15	Cracked Round Shield
+Weapon	1406100	Shield	1	5	Crys. Cracked Round Shield
+Weapon	1406200	Shield	1	5	Ltng. Cracked Round Shield
+Weapon	1406400	Shield	1	10	Magic Cracked Round Shield
+Weapon	1406600	Shield	1	10	Divine Cracked Round Shield
+Weapon	1406800	Shield	1	10	Fire Cracked Round Shield
+Weapon	1408000	Shield	1	0	Leather Shield
+Weapon	1408100	Shield	1	0	Crystal Leather Shield
+Weapon	1408200	Shield	1	0	Lightning Leather Shield
+Weapon	1408400	Shield	1	0	Magic Leather Shield
+Weapon	1408600	Shield	1	0	Divine Leather Shield
+Weapon	1408800	Shield	1	0	Fire Leather Shield
+Weapon	1409000	Shield	1	0	Plank Shield
+Weapon	1409100	Shield	1	0	Crystal Plank Shield
+Weapon	1409200	Shield	1	0	Lightning Plank Shield
+Weapon	1409400	Shield	1	0	Magic Plank Shield
+Weapon	1409600	Shield	1	0	Divine Plank Shield
+Weapon	1409800	Shield	1	0	Fire Plank Shield
+Weapon	1410000	Shield	1	0	Caduceus Round Shield
+Weapon	1410100	Shield	1	0	Crys. Caduceus Round Shield
+Weapon	1410200	Shield	1	0	Ltng. Caduceus Round Shield
+Weapon	1410400	Shield	1	0	Magic Caduceus Round Shield
+Weapon	1410600	Shield	1	0	Div. Caduceus Round Shield
+Weapon	1410800	Shield	1	0	Fire Caduceus Round Shield
+Weapon	1411000	Shield	1	5	Crystal Ring Shield
+Weapon	1411100	Shield	1	5	Crystal Ring Shield
+Weapon	1411200	Shield	1	5	Crystal Ring Shield
+Weapon	1411300	Shield	1	5	Crystal Ring Shield
+Weapon	1411400	Shield	1	5	Crystal Ring Shield
+Weapon	1411500	Shield	1	5	Crystal Ring Shield
+Weapon	1411600	Shield	1	5	Crystal Ring Shield
+Weapon	1411700	Shield	1	5	Crystal Ring Shield
+Weapon	1411800	Shield	1	5	Crystal Ring Shield
+Weapon	1411900	Shield	1	5	Crystal Ring Shield
+Weapon	1412000	Shield	1	5	Crystal Ring Shield
+Weapon	1412100	Shield	1	5	Crystal Ring Shield
+Weapon	1412200	Shield	1	5	Crystal Ring Shield
+Weapon	1412300	Shield	1	5	Crystal Ring Shield
+Weapon	1412400	Shield	1	5	Crystal Ring Shield
+Weapon	1412500	Shield	1	5	Crystal Ring Shield
+Weapon	1412600	Shield	1	5	Crystal Ring Shield
+Weapon	1412700	Shield	1	5	Crystal Ring Shield
+Weapon	1412800	Shield	1	5	Crystal Ring Shield
+Weapon	1412900	Shield	1	5	Crystal Ring Shield
+Weapon	1413000	Shield	1	5	Crystal Ring Shield
+Weapon	1413100	Shield	1	5	Crystal Ring Shield
+Weapon	1413200	Shield	1	5	Crystal Ring Shield
+Weapon	1413300	Shield	1	5	Crystal Ring Shield
+Weapon	1413400	Shield	1	5	Crystal Ring Shield
+Weapon	1413500	Shield	1	5	Crystal Ring Shield
+Weapon	1413600	Shield	1	5	Crystal Ring Shield
+Weapon	1413700	Shield	1	5	Crystal Ring Shield
+Weapon	1413800	Shield	1	5	Crystal Ring Shield
+Weapon	1413900	Shield	1	5	Crystal Ring Shield
+Weapon	1414000	Shield	1	5	Crystal Ring Shield
+Weapon	1414100	Shield	1	5	Crystal Ring Shield
+Weapon	1414200	Shield	1	5	Crystal Ring Shield
+Weapon	1414300	Shield	1	5	Crystal Ring Shield
+Weapon	1414400	Shield	1	5	Crystal Ring Shield
+Weapon	1414500	Shield	1	5	Crystal Ring Shield
+Weapon	1414600	Shield	1	5	Crystal Ring Shield
+Weapon	1450000	Shield	1	15	Heater Shield
+Weapon	1450100	Shield	1	5	Crystal Heater Shield
+Weapon	1450200	Shield	1	5	Lightning Heater Shield
+Weapon	1450400	Shield	1	10	Magic Heater Shield
+Weapon	1450600	Shield	1	10	Divine Heater Shield
+Weapon	1450800	Shield	1	10	Fire Heater Shield
+Weapon	1451000	Shield	1	15	Knight Shield
+Weapon	1451100	Shield	1	5	Crystal Knight Shield
+Weapon	1451200	Shield	1	5	Lightning Knight Shield
+Weapon	1451400	Shield	1	10	Magic Knight Shield
+Weapon	1451600	Shield	1	10	Divine Knight Shield
+Weapon	1451800	Shield	1	10	Fire Knight Shield
+Weapon	1452000	Shield	1	15	Tower Kite Shield
+Weapon	1452100	Shield	1	5	Crystal Tower Kite Shield
+Weapon	1452200	Shield	1	5	Lightning Tower Kite Shield
+Weapon	1452400	Shield	1	10	Magic Tower Kite Shield
+Weapon	1452600	Shield	1	10	Divine Tower Kite Shield
+Weapon	1452800	Shield	1	10	Fire Tower Kite Shield
+Weapon	1453000	Shield	1	15	Grass Crest Shield
+Weapon	1453100	Shield	1	5	Crystal Grass Crest Shield
+Weapon	1453200	Shield	1	5	Ltng. Grass Crest Shield
+Weapon	1453400	Shield	1	10	Magic Grass Crest Shield
+Weapon	1453600	Shield	1	10	Divine Grass Crest Shield
+Weapon	1453800	Shield	1	10	Fire Grass Crest Shield
+Weapon	1454000	Shield	1	15	Hollow Soldier Shield
+Weapon	1454100	Shield	1	5	Crys. Hollow Soldier Shield
+Weapon	1454200	Shield	1	5	Ltng. Hollow Soldier Shield
+Weapon	1454400	Shield	1	10	Magic Hollow Soldier Shield
+Weapon	1454600	Shield	1	10	Div. Hollow Soldier Shield
+Weapon	1454800	Shield	1	10	Fire Hollow Soldier Shield
+Weapon	1455000	Shield	1	15	Balder Shield
+Weapon	1455100	Shield	1	5	Crystal Balder Shield
+Weapon	1455200	Shield	1	5	Lightning Balder Shield
+Weapon	1455400	Shield	1	10	Magic Balder Shield
+Weapon	1455600	Shield	1	10	Divine Balder Shield
+Weapon	1455800	Shield	1	10	Fire Balder Shield
+Weapon	1456000	Shield	1	5	Crest Shield
+Weapon	1457000	Shield	1	5	Dragon Crest Shield
+Weapon	1460000	Shield	1	15	Warrior's Round Shield
+Weapon	1460100	Shield	1	5	Crys. Warrior's Rd. Shield
+Weapon	1460200	Shield	1	5	Ltng. Warrior's Rd. Shield
+Weapon	1460400	Shield	1	10	Magic Warrior's Rd. Shield
+Weapon	1460600	Shield	1	10	Div. Warrior's Round Shield
+Weapon	1460800	Shield	1	10	Fire Warrior's Round Shield
+Weapon	1461000	Shield	1	15	Iron Round Shield
+Weapon	1461100	Shield	1	5	Crystal Iron Round Shield
+Weapon	1461200	Shield	1	5	Lightning Iron Round Shield
+Weapon	1461400	Shield	1	10	Magic Iron Round Shield
+Weapon	1461600	Shield	1	10	Divine Iron Round Shield
+Weapon	1461800	Shield	1	10	Fire Iron Round Shield
+Weapon	1462000	Shield	1	15	Spider Shield
+Weapon	1462100	Shield	1	5	Crystal Spider Shield
+Weapon	1462200	Shield	1	5	Lightning Spider Shield
+Weapon	1462400	Shield	1	10	Magic Spider Shield
+Weapon	1462600	Shield	1	10	Divine Spider Shield
+Weapon	1462800	Shield	1	10	Fire Spider Shield
+Weapon	1470000	Shield	1	15	Spiked Shield
+Weapon	1470100	Shield	1	5	Crystal Spiked Shield
+Weapon	1470200	Shield	1	5	Lightning Spiked Shield
+Weapon	1470400	Shield	1	10	Magic Spiked Shield
+Weapon	1470600	Shield	1	10	Divine Spiked Shield
+Weapon	1470800	Shield	1	10	Fire Spiked Shield
+Weapon	1471000	Shield	1	0	Crystal Shield
+Weapon	1472000	Shield	1	15	Sunlight Shield
+Weapon	1472100	Shield	1	5	Crystal Sunlight Shield
+Weapon	1472200	Shield	1	5	Lightning Sunlight Shield
+Weapon	1472400	Shield	1	10	Magic Sunlight Shield
+Weapon	1472600	Shield	1	10	Divine Sunlight Shield
+Weapon	1472800	Shield	1	10	Fire Sunlight Shield
+Weapon	1473000	Shield	1	5	Silver Knight Shield
+Weapon	1474000	Shield	1	5	Black Knight Shield
+Weapon	1475000	Shield	1	15	Pierce Shield
+Weapon	1475100	Shield	1	5	Crystal Pierce Shield
+Weapon	1475200	Shield	1	5	Lightning Pierce Shield
+Weapon	1475400	Shield	1	10	Magic Pierce Shield
+Weapon	1475600	Shield	1	10	Divine Pierce Shield
+Weapon	1475800	Shield	1	10	Fire Pierce Shield
+Weapon	1476000	Shield	1	15	Red and White Round Shield
+Weapon	1476100	Shield	1	5	Crystal R&W Round Shield
+Weapon	1476200	Shield	1	5	Lightning R&W Round Shield
+Weapon	1476400	Shield	1	10	Magic R&W Round Shield
+Weapon	1476600	Shield	1	10	Divine R&W Round Shield
+Weapon	1476800	Shield	1	10	Fire R&W Round Shield
+Weapon	1477000	Shield	1	15	Caduceus Kite Shield
+Weapon	1477100	Shield	1	5	Crys. Caduceus Kite Shield
+Weapon	1477200	Shield	1	5	Ltng. Caduceus Kite Shield
+Weapon	1477400	Shield	1	10	Magic Caduceus Kite Shield
+Weapon	1477600	Shield	1	10	Divine Caduceus Kite Shield
+Weapon	1477800	Shield	1	10	Fire Caduceus Kite Shield
+Weapon	1478000	Shield	1	15	Gargoyle's Shield
+Weapon	1478100	Shield	1	5	Crystal Gargoyle's Shield
+Weapon	1478200	Shield	1	5	Lightning Gargoyle's Shield
+Weapon	1478400	Shield	1	10	Magic Gargoyle's Shield
+Weapon	1478600	Shield	1	10	Divine Gargoyle's Shield
+Weapon	1478800	Shield	1	10	Fire Gargoyle's Shield
+Weapon	1500000	Shield	1	15	Eagle Shield
+Weapon	1500100	Shield	1	5	Crystal Eagle Shield
+Weapon	1500200	Shield	1	5	Lightning Eagle Shield
+Weapon	1500400	Shield	1	10	Magic Eagle Shield
+Weapon	1500600	Shield	1	10	Divine Eagle Shield
+Weapon	1500800	Shield	1	10	Fire Eagle Shield
+Weapon	1501000	Shield	1	15	Tower Shield
+Weapon	1501100	Shield	1	5	Crystal Tower Shield
+Weapon	1501200	Shield	1	5	Lightning Tower Shield
+Weapon	1501400	Shield	1	10	Magic Tower Shield
+Weapon	1501600	Shield	1	10	Divine Tower Shield
+Weapon	1501800	Shield	1	10	Fire Tower Shield
+Weapon	1502000	Shield	1	15	Giant Shield
+Weapon	1502100	Shield	1	5	Crystal Giant Shield
+Weapon	1502200	Shield	1	5	Lightning Giant Shield
+Weapon	1502400	Shield	1	10	Magic Giant Shield
+Weapon	1502600	Shield	1	10	Divine Giant Shield
+Weapon	1502800	Shield	1	10	Fire Giant Shield
+Weapon	1503000	Shield	1	5	Stone Greatshield
+Weapon	1505000	Shield	1	5	Havel's Greatshield
+Weapon	1506000	Shield	1	15	Bonewheel Shield
+Weapon	1506100	Shield	1	5	Crystal Bonewheel Shield
+Weapon	1506200	Shield	1	5	Lightning Bonewheel Shield
+Weapon	1506400	Shield	1	10	Magic Bonewheel Shield
+Weapon	1506600	Shield	1	10	Divine Bonewheel Shield
+Weapon	1506800	Shield	1	10	Fire Bonewheel Shield
+Weapon	1507000	Shield	1	5	Greatshield of Artorias
+Weapon	1507100	Shield	1	5	Greatshield of Artorias
+Weapon	1507200	Shield	1	5	Greatshield of Artorias
+Weapon	1507300	Shield	1	5	Greatshield of Artorias
+Weapon	1507400	Shield	1	5	Greatshield of Artorias
+Weapon	1507500	Shield	1	5	Greatshield of Artorias
+Weapon	1507600	Shield	1	5	Greatshield of Artorias
+Weapon	1507700	Shield	1	5	Greatshield of Artorias
+Weapon	1507800	Shield	1	5	Greatshield of Artorias
+Weapon	1507900	Shield	1	5	Greatshield of Artorias
+Weapon	1508000	Shield	1	5	Greatshield of Artorias
+Weapon	1508100	Shield	1	5	Greatshield of Artorias
+Weapon	1508200	Shield	1	5	Greatshield of Artorias
+Weapon	1508300	Shield	1	5	Greatshield of Artorias
+Weapon	1508400	Shield	1	5	Greatshield of Artorias
+Weapon	1508500	Shield	1	5	Greatshield of Artorias
+Weapon	1508600	Shield	1	5	Greatshield of Artorias
+Weapon	1508700	Shield	1	5	Greatshield of Artorias
+Weapon	1508800	Shield	1	5	Greatshield of Artorias
+Weapon	1508900	Shield	1	5	Greatshield of Artorias
+Weapon	1509000	Shield	1	5	Greatshield of Artorias
+Weapon	1509100	Shield	1	5	Greatshield of Artorias
+Weapon	1509200	Shield	1	5	Greatshield of Artorias
+Weapon	1509300	Shield	1	5	Greatshield of Artorias
+Weapon	1509400	Shield	1	5	Greatshield of Artorias
+Weapon	1509500	Shield	1	5	Greatshield of Artorias
+Weapon	1509600	Shield	1	5	Greatshield of Artorias
+Weapon	1509700	Shield	1	5	Greatshield of Artorias
+Weapon	1509800	Shield	1	5	Greatshield of Artorias
+Weapon	1509900	Shield	1	5	Greatshield of Artorias
+Weapon	1510000	Shield	1	5	Greatshield of Artorias
+Weapon	1510100	Shield	1	5	Greatshield of Artorias
+Weapon	1510200	Shield	1	5	Greatshield of Artorias
+Weapon	1510300	Shield	1	5	Greatshield of Artorias
+Weapon	1510400	Shield	1	5	Greatshield of Artorias
+Weapon	1510500	Shield	1	5	Greatshield of Artorias
+Weapon	1510600	Shield	1	5	Greatshield of Artorias
+Weapon	1600000	Weapon	1	15	Whip
+Weapon	1600100	Weapon	1	5	Crystal Whip
+Weapon	1600200	Weapon	1	5	Lightning Whip
+Weapon	1600300	Weapon	1	5	Raw Whip
+Weapon	1600400	Weapon	1	10	Magic Whip
+Weapon	1600500	Weapon	1	5	Enchanted Whip
+Weapon	1600600	Weapon	1	10	Divine Whip
+Weapon	1600700	Weapon	1	5	Occult Whip
+Weapon	1600800	Weapon	1	10	Fire Whip
+Weapon	1600900	Weapon	1	5	Chaos Whip
+Weapon	1601000	Weapon	1	15	Notched Whip
+Weapon	1601100	Weapon	1	5	Crystal Notched Whip
+Weapon	1601200	Weapon	1	5	Lightning Notched Whip
+Weapon	1601300	Weapon	1	5	Raw Notched Whip
+Weapon	1601400	Weapon	1	10	Magic Notched Whip
+Weapon	1601500	Weapon	1	5	Enchanted Notched Whip
+Weapon	1601600	Weapon	1	10	Divine Notched Whip
+Weapon	1601700	Weapon	1	5	Occult Notched Whip
+Weapon	1601800	Weapon	1	10	Fire Notched Whip
+Weapon	1601900	Weapon	1	5	Chaos Notched Whip
+Weapon	2000000	Ammo	999	0	Standard Arrow
+Weapon	2001000	Ammo	999	0	Large Arrow
+Weapon	2002000	Ammo	999	0	Feather Arrow
+Weapon	2003000	Ammo	999	0	Fire Arrow
+Weapon	2004000	Ammo	999	0	Poison Arrow
+Weapon	2005000	Ammo	999	0	Moonlight Arrow
+Weapon	2006000	Ammo	999	0	Wooden Arrow
+Weapon	2007000	Ammo	999	0	Dragonslayer Arrow
+Weapon	2008000	Ammo	999	0	Gough's Great Arrow
+Weapon	2099000	Ammo	999	0	Arrow
+Weapon	2100000	Ammo	999	0	Standard Bolt
+Weapon	2101000	Ammo	999	0	Heavy Bolt
+Weapon	2102000	Ammo	999	0	Sniper Bolt
+Weapon	2103000	Ammo	999	0	Wood Bolt
+Weapon	2104000	Ammo	999	0	Lightning Bolt
+Weapon	2199000	Ammo	999	0	Bolt
+Weapon	9000000	Shield	1	15	Effigy Shield
+Weapon	9000100	Shield	1	5	Crystal Effigy Shield
+Weapon	9000200	Shield	1	5	Lightning Effigy Shield
+Weapon	9000400	Shield	1	10	Magic Effigy Shield
+Weapon	9000600	Shield	1	10	Divine Effigy Shield
+Weapon	9000800	Shield	1	10	Fire Effigy Shield
+Weapon	9001000	Shield	1	15	Sanctus
+Weapon	9001100	Shield	1	5	Crystal Sanctus
+Weapon	9001200	Shield	1	5	Lightning Sanctus
+Weapon	9001400	Shield	1	10	Magic Sanctus
+Weapon	9001600	Shield	1	10	Divine Sanctus
+Weapon	9001800	Shield	1	10	Fire Sanctus
+Weapon	9002000	Shield	1	15	Bloodshield
+Weapon	9002100	Shield	1	5	Crystal Bloodshield
+Weapon	9002200	Shield	1	5	Lightning Bloodshield
+Weapon	9002400	Shield	1	10	Magic Bloodshield
+Weapon	9002600	Shield	1	10	Divine Bloodshield
+Weapon	9002800	Shield	1	10	Fire Bloodshield
+Weapon	9003000	Shield	1	15	Black Iron Greatshield
+Weapon	9003100	Shield	1	5	Crys. Black Iron Grtshld.
+Weapon	9003200	Shield	1	5	Ltng. Black Iron Grtshld.
+Weapon	9003400	Shield	1	10	Mag. Black Iron Grtshld.
+Weapon	9003600	Shield	1	10	Div. Black Iron Greatshield
+Weapon	9003800	Shield	1	10	Fire Black Iron Greatshield
+Weapon	9010000	Weapon	1	5	Gold Tracer
+Weapon	9011000	Weapon	1	5	Dark Silver Tracer
+Weapon	9012000	Weapon	1	5	Abyss Greatsword
+Weapon	9012100	Weapon	1	5	Abyss Greatsword
+Weapon	9012200	Weapon	1	5	Abyss Greatsword
+Weapon	9012300	Weapon	1	5	Abyss Greatsword
+Weapon	9012400	Weapon	1	5	Abyss Greatsword
+Weapon	9012500	Weapon	1	5	Abyss Greatsword
+Weapon	9012600	Weapon	1	5	Abyss Greatsword
+Weapon	9012700	Weapon	1	5	Abyss Greatsword
+Weapon	9012800	Weapon	1	5	Abyss Greatsword
+Weapon	9013000	Weapon	1	5	Abyss Greatsword
+Weapon	9013100	Weapon	1	5	Abyss Greatsword
+Weapon	9013200	Weapon	1	5	Abyss Greatsword
+Weapon	9013300	Weapon	1	5	Abyss Greatsword
+Weapon	9013400	Weapon	1	5	Abyss Greatsword
+Weapon	9013500	Weapon	1	5	Abyss Greatsword
+Weapon	9013600	Weapon	1	5	Abyss Greatsword
+Weapon	9013700	Weapon	1	5	Abyss Greatsword
+Weapon	9014000	Shield	1	5	Cleansing Greatshield
+Weapon	9015000	Weapon	1	5	Stone Greataxe
+Weapon	9016000	Weapon	1	15	Four-pronged Plow
+Weapon	9016100	Weapon	1	5	Crystal Plow
+Weapon	9016200	Weapon	1	5	Lightning Plow
+Weapon	9016300	Weapon	1	5	Raw Plow
+Weapon	9016400	Weapon	1	10	Magic Plow
+Weapon	9016500	Weapon	1	5	Enchanted Plow
+Weapon	9016600	Weapon	1	10	Divine Plow
+Weapon	9016700	Weapon	1	5	Occult Plow
+Weapon	9016800	Weapon	1	10	Fire Plow
+Weapon	9016900	Weapon	1	5	Chaos Plow
+Weapon	9017000	Catalyst	1	5	Manus Catalyst
+Weapon	9017100	Catalyst	1	5	Manus Catalyst
+Weapon	9017200	Catalyst	1	5	Manus Catalyst
+Weapon	9017300	Catalyst	1	5	Manus Catalyst
+Weapon	9017400	Catalyst	1	5	Manus Catalyst
+Weapon	9017500	Catalyst	1	5	Manus Catalyst
+Weapon	9018000	Catalyst	1	15	Oolacile Catalyst
+Weapon	9019000	Weapon	1	15	Guardian Tail
+Weapon	9019100	Weapon	1	5	Crystal Guardian Tail
+Weapon	9019200	Weapon	1	5	Lightning Guardian Tail
+Weapon	9019300	Weapon	1	5	Raw Guardian Tail
+Weapon	9019400	Weapon	1	10	Magic Guardian Tail
+Weapon	9019500	Weapon	1	5	Enchanted Guardian Tail
+Weapon	9019600	Weapon	1	10	Divine Guardian Tail
+Weapon	9019700	Weapon	1	5	Occult Guardian Tail
+Weapon	9019800	Weapon	1	10	Fire Guardian Tail
+Weapon	9019900	Weapon	1	5	Chaos Guardian Tail
+Weapon	9020000	Weapon	1	5	Obsidian Greatsword
+Weapon	9021000	Ranged	1	5	Gough's Greatbow
+Armor	1000	Hair	1	0	Shaved
+Armor	1100	Hair	1	0	Receding
+Armor	1200	Hair	1	0	Short
+Armor	1300	Hair	1	0	Swept Back
+Armor	1400	Hair	1	0	Ponytail
+Armor	1500	Hair	1	0	Wild
+Armor	1600	Hair	1	0	Parted Center
+Armor	1700	Hair	1	0	Semi-Long
+Armor	1800	Hair	1	0	Curly
+Armor	1900	Hair	1	0	Bobbed
+Armor	2000	Hair	1	0	Male 11
+Armor	2100	Hair	1	0	Male 12
+Armor	2200	Hair	1	0	Male 13
+Armor	2300	Hair	1	0	Male 14
+Armor	2400	Hair	1	0	Male 15
+Armor	2500	Hair	1	0	Male 16
+Armor	2600	Hair	1	0	Male 17
+Armor	2700	Hair	1	0	Male 18
+Armor	2800	Hair	1	0	Male 19
+Armor	2900	Hair	1	0	Male 20
+Armor	3000	Hair	1	0	Shaved
+Armor	3100	Hair	1	0	Very Short
+Armor	3200	Hair	1	0	Wave
+Armor	3300	Hair	1	0	Straight A
+Armor	3400	Hair	1	0	Straight B
+Armor	3500	Hair	1	0	Ponytail A
+Armor	3600	Hair	1	0	Ponytail B
+Armor	3700	Hair	1	0	Pigtails
+Armor	3800	Hair	1	0	Bun
+Armor	3900	Hair	1	0	Braided
+Armor	4000	Hair	1	0	Female 11
+Armor	4100	Hair	1	0	Female 12
+Armor	4200	Hair	1	0	Female 13
+Armor	4300	Hair	1	0	Female 14
+Armor	4400	Hair	1	0	Female 15
+Armor	4500	Hair	1	0	Female 16
+Armor	4600	Hair	1	0	Female 17
+Armor	4700	Hair	1	0	Female 18
+Armor	4800	Hair	1	0	Female 19
+Armor	4900	Hair	1	0	Female 20
+Armor	5000	Hair	1	0	Travel Hairstyle
+Armor	10000	Armor	1	5	Catarina Helm
+Armor	11000	Armor	1	5	Catarina Armor
+Armor	12000	Armor	1	5	Catarina Gauntlets
+Armor	13000	Armor	1	5	Catarina Leggings
+Armor	20000	Armor	1	5	Paladin Helm
+Armor	21000	Armor	1	5	Paladin Armor
+Armor	22000	Armor	1	5	Paladin Gauntlets
+Armor	23000	Armor	1	5	Paladin Leggings
+Armor	40000	Armor	1	5	Dark Mask
+Armor	41000	Armor	1	5	Dark Armor
+Armor	42000	Armor	1	5	Dark Gauntlets
+Armor	43000	Armor	1	5	Dark Leggings
+Armor	50000	Armor	1	10	Brigand Hood
+Armor	51000	Armor	1	10	Brigand Armor
+Armor	52000	Armor	1	10	Brigand Gauntlets
+Armor	53000	Armor	1	10	Brigand Trousers
+Armor	60000	Armor	1	5	Shadow Mask
+Armor	61000	Armor	1	5	Shadow Garb
+Armor	62000	Armor	1	5	Shadow Gauntlets
+Armor	63000	Armor	1	5	Shadow Leggings
+Armor	70000	Armor	1	5	Black Iron Helm
+Armor	71000	Armor	1	5	Black Iron Armor
+Armor	72000	Armor	1	5	Black Iron Gauntlets
+Armor	73000	Armor	1	5	Black Iron Leggings
+Armor	80000	Armor	1	10	Smough's Helm
+Armor	81000	Armor	1	10	Smough's Armor
+Armor	82000	Armor	1	10	Smough's Gauntlets
+Armor	83000	Armor	1	10	Smough's Leggings
+Armor	90000	Armor	1	10	Six-Eyed Helm of the Channelers
+Armor	91000	Armor	1	10	Robe of the Channelers
+Armor	92000	Armor	1	10	Gauntlets of the Channelers
+Armor	93000	Armor	1	10	Waistcloth of the Channelers
+Armor	100000	Armor	1	5	Helm of Favor
+Armor	101000	Armor	1	5	Embraced Armor of Favor
+Armor	102000	Armor	1	5	Gauntlets of Favor
+Armor	103000	Armor	1	5	Leggings of Favor
+Armor	110000	Armor	1	10	Helm of the Wise
+Armor	111000	Armor	1	10	Armor of the Glorious
+Armor	112000	Armor	1	10	Gauntlets of the Vanquisher
+Armor	113000	Armor	1	10	Boots of the Explorer
+Armor	120000	Armor	1	10	Stone Helm
+Armor	121000	Armor	1	10	Stone Armor
+Armor	122000	Armor	1	10	Stone Gauntlets
+Armor	123000	Armor	1	10	Stone Leggings
+Armor	130000	Armor	1	10	Crystalline Helm
+Armor	131000	Armor	1	10	Crystalline Armor
+Armor	132000	Armor	1	10	Crystalline Gauntlets
+Armor	133000	Armor	1	10	Crystalline Leggings
+Armor	140000	Armor	1	5	Mask of the Sealer
+Armor	141000	Armor	1	5	Crimson Robe
+Armor	142000	Armor	1	5	Crimson Gloves
+Armor	143000	Armor	1	5	Crimson Waistcloth
+Armor	150000	Armor	1	5	Mask of Velka
+Armor	151000	Armor	1	5	Black Cleric Robe
+Armor	152000	Armor	1	5	Black Manchette
+Armor	153000	Armor	1	5	Black Tights
+Armor	160000	Armor	1	10	Iron Helm
+Armor	161000	Armor	1	10	Armor of the Sun
+Armor	162000	Armor	1	10	Iron Bracelet
+Armor	163000	Armor	1	10	Iron Leggings
+Armor	170000	Armor	1	10	Chain Helm
+Armor	171000	Armor	1	10	Chain Armor
+Armor	172000	Armor	1	10	Leather Gauntlets
+Armor	173000	Armor	1	10	Chain Leggings
+Armor	180000	Armor	1	10	Cleric Helm
+Armor	181000	Armor	1	10	Cleric Armor
+Armor	182000	Armor	1	10	Cleric Gauntlets
+Armor	183000	Armor	1	10	Cleric Leggings
+Armor	190000	Armor	1	10	Sunlight Maggot
+Armor	200000	Armor	1	5	Helm of Thorns
+Armor	201000	Armor	1	5	Armor of Thorns
+Armor	202000	Armor	1	5	Gauntlets of Thorns
+Armor	203000	Armor	1	5	Leggings of Thorns
+Armor	210000	Armor	1	10	Standard Helm
+Armor	211000	Armor	1	10	Hard Leather Armor
+Armor	212000	Armor	1	10	Hard Leather Gauntlets
+Armor	213000	Armor	1	10	Hard Leather Boots
+Armor	220000	Armor	1	10	Sorcerer Hat
+Armor	221000	Armor	1	10	Sorcerer Cloak
+Armor	222000	Armor	1	10	Sorcerer Gauntlets
+Armor	223000	Armor	1	10	Sorcerer Boots
+Armor	230000	Armor	1	10	Tattered Cloth Hood
+Armor	231000	Armor	1	10	Tattered Cloth Robe
+Armor	232000	Armor	1	10	Tattered Cloth Manchette
+Armor	233000	Armor	1	10	Heavy Boots
+Armor	240000	Armor	1	10	Pharis's Hat
+Armor	241000	Armor	1	10	Leather Armor
+Armor	242000	Armor	1	10	Leather Gloves
+Armor	243000	Armor	1	10	Leather Boots
+Armor	250000	Armor	1	5	Painting Guardian Hood
+Armor	251000	Armor	1	5	Painting Guardian Robe
+Armor	252000	Armor	1	5	Painting Guardian Gloves
+Armor	253000	Armor	1	5	Painting Guardian Waistcloth
+Armor	270000	Armor	1	10	Ornstein's Helm
+Armor	271000	Armor	1	10	Ornstein's Armor
+Armor	272000	Armor	1	10	Ornstein's Gauntlets
+Armor	273000	Armor	1	10	Ornstein's Leggings
+Armor	280000	Armor	1	5	Eastern Helm
+Armor	281000	Armor	1	5	Eastern Armor
+Armor	282000	Armor	1	5	Eastern Gauntlets
+Armor	283000	Armor	1	5	Eastern Leggings
+Armor	290000	Armor	1	5	Xanthous Crown
+Armor	291000	Armor	1	5	Xanthous Overcoat
+Armor	292000	Armor	1	5	Xanthous Gloves
+Armor	293000	Armor	1	5	Xanthous Waistcloth
+Armor	300000	Armor	1	10	Thief Mask
+Armor	301000	Armor	1	10	Black Leather Armor
+Armor	302000	Armor	1	10	Black Leather Gloves
+Armor	303000	Armor	1	10	Black Leather Boots
+Armor	310000	Armor	1	10	Priest's Hat
+Armor	311000	Armor	1	10	Holy Robe
+Armor	312000	Armor	1	10	Traveling Gloves
+Armor	313000	Armor	1	10	Holy Trousers
+Armor	320000	Armor	1	5	Black Knight Helm
+Armor	321000	Armor	1	5	Black Knight Armor
+Armor	322000	Armor	1	5	Black Knight Gauntlets
+Armor	323000	Armor	1	5	Black Knight Leggings
+Armor	330000	Armor	1	10	Crown of Dusk
+Armor	331000	Armor	1	5	Antiquated Dress
+Armor	332000	Armor	1	5	Antiquated Gloves
+Armor	333000	Armor	1	5	Antiquated Skirt
+Armor	340000	Armor	1	5	Witch Hat
+Armor	341000	Armor	1	5	Witch Cloak
+Armor	342000	Armor	1	5	Witch Gloves
+Armor	343000	Armor	1	5	Witch Skirt
+Armor	350000	Armor	1	10	Elite Knight Helm
+Armor	351000	Armor	1	10	Elite Knight Armor
+Armor	352000	Armor	1	10	Elite Knight Gauntlets
+Armor	353000	Armor	1	10	Elite Knight Leggings
+Armor	360000	Armor	1	10	Wanderer Hood
+Armor	361000	Armor	1	10	Wanderer Coat
+Armor	362000	Armor	1	10	Wanderer Manchette
+Armor	363000	Armor	1	10	Wanderer Boots
+Armor	370000	Armor	1	10	Mage Smith Hat
+Armor	371000	Armor	1	10	Mage Smith Coat
+Armor	372000	Armor	1	10	Mage Smith Gauntlets
+Armor	373000	Armor	1	10	Mage Smith Boots
+Armor	380000	Armor	1	5	Big Hat
+Armor	381000	Armor	1	5	Sage Robe
+Armor	382000	Armor	1	10	Traveling Gloves
+Armor	383000	Armor	1	10	Traveling Boots
+Armor	390000	Armor	1	10	Knight Helm
+Armor	391000	Armor	1	10	Knight Armor
+Armor	392000	Armor	1	10	Knight Gauntlets
+Armor	393000	Armor	1	10	Knight Leggings
+Armor	400000	Armor	1	10	Dingy Hood
+Armor	401000	Armor	1	10	Dingy Robe
+Armor	402000	Armor	1	10	Dingy Gloves
+Armor	403000	Armor	1	10	Blood-Stained Skirt
+Armor	410000	Armor	1	10	Maiden Hood
+Armor	411000	Armor	1	10	Maiden Robe
+Armor	412000	Armor	1	10	Maiden Gloves
+Armor	413000	Armor	1	10	Maiden Skirt
+Armor	420000	Armor	1	5	Silver Knight Helm
+Armor	421000	Armor	1	5	Silver Knight Armor
+Armor	422000	Armor	1	5	Silver Knight Gauntlets
+Armor	423000	Armor	1	5	Silver Knight Leggings
+Armor	440000	Armor	1	10	Havel's Helm
+Armor	441000	Armor	1	10	Havel's Armor
+Armor	442000	Armor	1	10	Havel's Gauntlets
+Armor	443000	Armor	1	10	Havel's Leggings
+Armor	450000	Armor	1	5	Brass Helm
+Armor	451000	Armor	1	5	Brass Armor
+Armor	452000	Armor	1	5	Brass Gauntlets
+Armor	453000	Armor	1	5	Brass Leggings
+Armor	460000	Armor	1	10	Gold-Hemmed Black Hood
+Armor	461000	Armor	1	10	Gold-Hemmed Black Cloak
+Armor	462000	Armor	1	10	Gold-Hemmed Black Gloves
+Armor	463000	Armor	1	10	Gold-Hemmed Black Skirt
+Armor	470000	Armor	1	10	Golem Helm
+Armor	471000	Armor	1	10	Golem Armor
+Armor	472000	Armor	1	10	Golem Gauntlets
+Armor	473000	Armor	1	10	Golem Leggings
+Armor	480000	Armor	1	10	Hollow Soldier Helm
+Armor	481000	Armor	1	10	Hollow Soldier Armor
+Armor	483000	Armor	1	10	Hollow Soldier Waistcloth
+Armor	490000	Armor	1	10	Steel Helm
+Armor	491000	Armor	1	10	Steel Armor
+Armor	492000	Armor	1	10	Steel Gauntlets
+Armor	493000	Armor	1	10	Steel Leggings
+Armor	500000	Armor	1	10	Hollow Thief's Hood
+Armor	501000	Armor	1	10	Hollow Thief's Leather Armor
+Armor	503000	Armor	1	10	Hollow Thief's Tights
+Armor	510000	Armor	1	10	Balder Helm
+Armor	511000	Armor	1	10	Balder Armor
+Armor	512000	Armor	1	10	Balder Gauntlets
+Armor	513000	Armor	1	10	Balder Leggings
+Armor	520000	Armor	1	10	Hollow Warrior Helm
+Armor	521000	Armor	1	10	Hollow Warrior Armor
+Armor	523000	Armor	1	10	Hollow Warrior Waistcloth
+Armor	530000	Armor	1	5	Giant Helm
+Armor	531000	Armor	1	5	Giant Armor
+Armor	532000	Armor	1	5	Giant Gauntlets
+Armor	533000	Armor	1	5	Giant Leggings
+Armor	540000	Armor	1	10	Crown of the Dark Sun
+Armor	541000	Armor	1	10	Moonlight Robe
+Armor	542000	Armor	1	10	Moonlight Gloves
+Armor	543000	Armor	1	10	Moonlight Waistcloth
+Armor	550000	Armor	1	10	Crown of the Great Lord
+Armor	551000	Armor	1	10	Robe of the Great Lord
+Armor	552000	Armor	1	10	Bracelet of the Great Lord
+Armor	553000	Armor	1	10	Anklet of the Great Lord
+Armor	560000	Armor	1	10	Sack
+Armor	570000	Armor	1	10	Symbol of Avarice
+Armor	580000	Armor	1	10	Royal Helm
+Armor	590000	Armor	1	10	Mask of the Father
+Armor	600000	Armor	1	10	Mask of the Mother
+Armor	610000	Armor	1	10	Mask of the Child
+Armor	620000	Armor	1	5	Fang Boar Helm
+Armor	630000	Armor	1	5	Gargoyle Helm
+Armor	640000	Armor	1	10	Black Sorcerer Hat
+Armor	641000	Armor	1	10	Black Sorcerer Cloak
+Armor	642000	Armor	1	10	Black Sorcerer Gauntlets
+Armor	643000	Armor	1	10	Black Sorcerer Boots
+Armor	650000	Armor	1	10	Elite Cleric Helm
+Armor	651000	Armor	1	10	Elite Cleric Armor
+Armor	652000	Armor	1	10	Elite Cleric Gauntlets
+Armor	653000	Armor	1	10	Elite Cleric Leggings
+Armor	660000	Armor	1	5	Helm of Artorias
+Armor	661000	Armor	1	5	Armor of Artorias
+Armor	662000	Armor	1	5	Gauntlets of Artorias
+Armor	663000	Armor	1	5	Leggings of Artorias
+Armor	670000	Armor	1	5	Porcelain Mask
+Armor	671000	Armor	1	5	Lord's Blade Robe
+Armor	672000	Armor	1	5	Lord's Blade Gloves
+Armor	673000	Armor	1	5	Lord's Blade Waistcloth
+Armor	680000	Armor	1	5	Gough's Helm
+Armor	681000	Armor	1	5	Gough's Armor
+Armor	682000	Armor	1	5	Gough's Gauntlets
+Armor	683000	Armor	1	5	Gough's Leggings
+Armor	690000	Armor	1	10	Guardian Helm
+Armor	691000	Armor	1	10	Guardian Armor
+Armor	692000	Armor	1	10	Guardian Gauntlets
+Armor	693000	Armor	1	10	Guardian Leggings
+Armor	700000	Armor	1	5	Snickering Top Hat
+Armor	701000	Armor	1	5	Chester's Long Coat
+Armor	702000	Armor	1	5	Chester's Gloves
+Armor	703000	Armor	1	5	Chester's Trousers
+Armor	710000	Armor	1	10	Bloated Head
+Armor	720000	Armor	1	10	Bloated Sorcerer Head
+Armor	900000	Armor	1	10	Head
+Armor	901000	Armor	1	10	Body
+Armor	902000	Armor	1	10	Arms
+Armor	903000	Armor	1	10	Legs
+Armor	950000	Armor	1	10	No Travel Gear / Head
+Armor	951000	Armor	1	10	No Travel Gear / Body
+Armor	952000	Armor	1	10	No Travel Gear / Arms
+Armor	953000	Armor	1	10	No Travel Gear / Legs
+Armor	1000000	Armor	1	10	Dragon Head
+Armor	1001000	Armor	1	10	Dragon Body
+Armor	1002000	Armor	1	10	Dragon Arms
+Armor	1003000	Armor	1	10	Dragon Legs
+Armor	1010000	Armor	1	10	Egg
+Ring	100	Ring	1	0	Havel's Ring
+Ring	101	Ring	1	0	Red Tearstone Ring
+Ring	102	Ring	1	0	Darkmoon Blade Covenant Ring
+Ring	103	Ring	1	0	Cat Covenant Ring
+Ring	104	Ring	1	0	Cloranthy Ring
+Ring	105	Ring	1	0	Flame Stoneplate Ring
+Ring	106	Ring	1	0	Thunder Stoneplate Ring
+Ring	107	Ring	1	0	Spell Stoneplate Ring
+Ring	108	Ring	1	0	Speckled Stoneplate Ring
+Ring	109	Ring	1	0	Bloodbite Ring
+Ring	110	Ring	1	0	Poisonbite Ring
+Ring	111	Ring	1	0	Tiny Being's Ring
+Ring	113	Ring	1	0	Cursebite Ring
+Ring	114	Ring	1	0	White Seance Ring
+Ring	115	Ring	1	0	Bellowing Dragoncrest Ring
+Ring	116	Ring	1	0	Dusk Crown Ring
+Ring	117	Ring	1	0	Hornet Ring
+Ring	119	Ring	1	0	Hawk Ring
+Ring	120	Ring	1	0	Ring of Steel Protection
+Ring	121	Ring	1	0	Covetous Gold Serpent Ring
+Ring	122	Ring	1	0	Covetous Silver Serpent Ring
+Ring	123	Ring	1	0	Slumbering Dragoncrest Ring
+Ring	124	Ring	1	0	Ring of Fog
+Ring	125	Ring	1	0	Rusted Iron Ring
+Ring	126	Ring	1	0	Ring of Sacrifice
+Ring	127	Ring	1	0	Rare Ring of Sacrifice
+Ring	128	Ring	1	0	Dark Wood Grain Ring
+Ring	130	Ring	1	0	Ring of the Sun Princess
+Ring	137	Ring	1	0	Old Witch's Ring
+Ring	138	Ring	1	0	Covenant of Artorias
+Ring	139	Ring	1	0	Orange Charred Ring
+Ring	141	Ring	1	0	Lingering Dragoncrest Ring
+Ring	142	Ring	1	0	Ring of the Evil Eye
+Ring	143	Ring	1	0	Ring of Favor and Protection
+Ring	144	Ring	1	0	Leo Ring
+Ring	145	Ring	1	0	East Wood Grain Ring
+Ring	146	Ring	1	0	Wolf Ring
+Ring	147	Ring	1	0	Blue Tearstone Ring
+Ring	148	Ring	1	0	Ring of the Sun's Firstborn
+Ring	149	Ring	1	0	Darkmoon Seance Ring
+Ring	150	Ring	1	0	Calamity Ring
+Goods	100	Consumable	1	0	White Sign Soapstone
+Goods	101	Consumable	1	0	Red Sign Soapstone
+Goods	102	Consumable	1	0	Red Eye Orb
+Goods	103	Consumable	1	0	Black Separation Crystal
+Goods	106	Consumable	1	0	Orange Guidance Soapstone
+Goods	108	Consumable	1	0	Book of the Guilty
+Goods	109	Consumable	99	0	Eye of Death
+Goods	111	Consumable	99	0	Cracked Red Eye Orb
+Goods	112	Consumable	1	0	Servant Roster
+Goods	113	Consumable	1	0	Blue Eye Orb
+Goods	114	Consumable	1	0	Dragon Eye
+Goods	115	Consumable	1	0	Black Eye Orb
+Goods	116	Consumable	1	0	Black Eye Orb
+Goods	117	Consumable	1	0	Darksign
+Goods	118	Consumable	1	0	Purple Coward's Crystal
+Goods	200	Consumable	1	0	Estus Flask
+Goods	201	Consumable	20	0	Estus Flask
+Goods	202	Consumable	1	0	Estus Flask+1
+Goods	203	Consumable	20	0	Estus Flask+1
+Goods	204	Consumable	1	0	Estus Flask+2
+Goods	205	Consumable	20	0	Estus Flask+2
+Goods	206	Consumable	1	0	Estus Flask+3
+Goods	207	Consumable	20	0	Estus Flask+3
+Goods	208	Consumable	1	0	Estus Flask+4
+Goods	209	Consumable	20	0	Estus Flask+4
+Goods	210	Consumable	1	0	Estus Flask+5
+Goods	211	Consumable	20	0	Estus Flask+5
+Goods	212	Consumable	1	0	Estus Flask+6
+Goods	213	Consumable	20	0	Estus Flask+6
+Goods	214	Consumable	1	0	Estus Flask+7
+Goods	215	Consumable	20	0	Estus Flask+7
+Goods	220	Consumable	99	0	Silver Pendant
+Goods	230	Consumable	99	0	Elizabeth's Mushroom
+Goods	240	Consumable	99	0	Divine Blessing
+Goods	260	Consumable	99	0	Green Blossom
+Goods	270	Consumable	99	0	Bloodred Moss Clump
+Goods	271	Consumable	99	0	Purple Moss Clump
+Goods	272	Consumable	99	0	Blooming Purple Moss Clump
+Goods	274	Consumable	99	0	Purging Stone
+Goods	275	Consumable	99	0	Egg Vermifuge
+Goods	280	Consumable	99	0	Repair Powder
+Goods	290	Consumable	99	0	Throwing Knife
+Goods	291	Consumable	99	0	Poison Throwing Knife
+Goods	292	Consumable	99	0	Firebomb
+Goods	293	Consumable	99	0	Dung Pie
+Goods	294	Consumable	99	0	Alluring Skull
+Goods	296	Consumable	99	0	Lloyd's Talisman
+Goods	297	Consumable	99	0	Black Firebomb
+Goods	310	Consumable	99	0	Charcoal Pine Resin
+Goods	311	Consumable	99	0	Gold Pine Resin
+Goods	312	Consumable	99	0	Transient Curse
+Goods	313	Consumable	99	0	Rotten Pine Resin
+Goods	330	Consumable	99	0	Homeward Bone
+Goods	350	Consumable	99	0	Humanity
+Goods	370	Consumable	99	0	Prism Stone
+Goods	371	Consumable	1	0	Binoculars
+Goods	373	Consumable	99	0	Indictment
+Goods	374	Consumable	99	0	Souvenir of Reprisal
+Goods	375	Consumable	99	0	Sunlight Medal
+Goods	376	Consumable	99	0	Pendant
+Goods	377	Consumable	99	0	Dragon Head Stone
+Goods	378	Consumable	99	0	Dragon Torso Stone
+Goods	380	Consumable	99	0	Rubbish
+Goods	381	Consumable	99	0	Copper Coin
+Goods	382	Consumable	99	0	Silver Coin
+Goods	383	Consumable	99	0	Gold Coin
+Goods	384	KeyItem	1	0	Peculiar Doll
+Goods	385	Consumable	1	0	Dried Finger
+Goods	390	Consumable	1	0	Fire Keeper Soul
+Goods	391	Consumable	1	0	Fire Keeper Soul
+Goods	392	Consumable	1	0	Fire Keeper Soul
+Goods	393	Consumable	1	0	Fire Keeper Soul
+Goods	394	Consumable	1	0	Fire Keeper Soul
+Goods	395	Consumable	1	0	Fire Keeper Soul
+Goods	396	Consumable	1	0	Fire Keeper Soul
+Goods	400	Consumable	99	0	Soul of a Lost Undead
+Goods	401	Consumable	99	0	Large Soul of a Lost Undead
+Goods	402	Consumable	99	0	Soul of a Nameless Soldier
+Goods	403	Consumable	99	0	Large Soul of a Nameless Soldier
+Goods	404	Consumable	99	0	Soul of a Proud Knight
+Goods	405	Consumable	99	0	Large Soul of a Proud Knight
+Goods	406	Consumable	99	0	Soul of a Brave Warrior
+Goods	407	Consumable	99	0	Large Soul of a Brave Warrior
+Goods	408	Consumable	99	0	Soul of a Hero
+Goods	409	Consumable	99	0	Soul of a Great Hero
+Goods	500	Consumable	99	0	Humanity
+Goods	501	Consumable	99	0	Twin Humanities
+Goods	510	Consumable	1	0	Hello Carving
+Goods	511	Consumable	1	0	Thank you Carving
+Goods	512	Consumable	1	0	Very good! Carving
+Goods	513	Consumable	1	0	I'm sorry Carving
+Goods	514	Consumable	1	0	Help me! Carving
+Goods	700	Consumable	99	0	Soul of Quelaag
+Goods	701	Consumable	99	0	Soul of Sif
+Goods	702	Consumable	99	0	Soul of Gwyn, Lord of Cinder
+Goods	703	Consumable	99	0	Core of an Iron Golem
+Goods	704	Consumable	99	0	Soul of Ornstein
+Goods	705	Consumable	99	0	Soul of the Moonlight Butterfly
+Goods	706	Consumable	99	0	Soul of Smough
+Goods	707	Consumable	99	0	Soul of Priscilla
+Goods	708	Consumable	99	0	Soul of Gwyndolin
+Goods	709	Consumable	99	0	Guardian Soul
+Goods	710	Consumable	99	0	Soul of Artorias
+Goods	711	Consumable	99	0	Soul of Manus
+Goods	800	KeyItem	1	0	Large Ember
+Goods	801	KeyItem	1	0	Very Large Ember
+Goods	802	KeyItem	1	0	Crystal Ember
+Goods	806	KeyItem	1	0	Large Magic Ember
+Goods	807	KeyItem	1	0	Enchanted Ember
+Goods	808	KeyItem	1	0	Divine Ember
+Goods	809	KeyItem	1	0	Large Divine Ember
+Goods	810	KeyItem	1	0	Dark Ember
+Goods	812	KeyItem	1	0	Large Flame Ember
+Goods	813	KeyItem	1	0	Chaos Flame Ember
+Goods	1000	UpgradeMaterial	99	0	Titanite Shard
+Goods	1010	UpgradeMaterial	99	0	Large Titanite Shard
+Goods	1020	UpgradeMaterial	99	0	Green Titanite Shard
+Goods	1030	UpgradeMaterial	99	0	Titanite Chunk
+Goods	1040	UpgradeMaterial	99	0	Blue Titanite Chunk
+Goods	1050	UpgradeMaterial	99	0	White Titanite Chunk
+Goods	1060	UpgradeMaterial	99	0	Red Titanite Chunk
+Goods	1070	UpgradeMaterial	99	0	Titanite Slab
+Goods	1080	UpgradeMaterial	99	0	Blue Titanite Slab
+Goods	1090	UpgradeMaterial	99	0	White Titanite Slab
+Goods	1100	UpgradeMaterial	99	0	Red Titanite Slab
+Goods	1110	UpgradeMaterial	99	0	Dragon Scale
+Goods	1120	UpgradeMaterial	99	0	Demon Titanite
+Goods	1130	UpgradeMaterial	99	0	Twinkling Titanite
+Goods	2001	KeyItem	1	0	Basement Key
+Goods	2002	KeyItem	1	0	Crest of Artorias
+Goods	2003	KeyItem	1	0	Cage Key
+Goods	2004	KeyItem	1	0	Archive Tower Cell Key
+Goods	2005	KeyItem	1	0	Archive Tower Giant Door Key
+Goods	2006	KeyItem	1	0	Archive Tower Giant Cell Key
+Goods	2007	KeyItem	1	0	Blighttown Key
+Goods	2008	KeyItem	1	0	Key to New Londo Ruins
+Goods	2009	KeyItem	1	0	Annex Key
+Goods	2010	KeyItem	1	0	Dungeon Cell Key
+Goods	2011	KeyItem	1	0	Big Pilgrim's Key
+Goods	2012	KeyItem	1	0	Undead Asylum F2 East Key
+Goods	2013	KeyItem	1	0	Key to the Seal
+Goods	2014	KeyItem	1	0	Key to Depths
+Goods	2015	KeyItem	1	0	Lift Chamber Key
+Goods	2016	KeyItem	1	0	Undead Asylum F2 West Key
+Goods	2017	KeyItem	1	0	Mystery Key
+Goods	2018	KeyItem	1	0	Sewer Chamber Key
+Goods	2019	KeyItem	1	0	Watchtower Basement Key
+Goods	2020	KeyItem	1	0	Archive Prison Extra Key
+Goods	2021	KeyItem	1	0	Residence Key
+Goods	2022	KeyItem	1	0	Crest Key
+Goods	2100	KeyItem	1	0	Master Key
+Goods	2500	KeyItem	1	0	Lord Soul
+Goods	2501	KeyItem	1	0	Lord Soul
+Goods	2502	KeyItem	1	0	Bequeathed Lord Soul Shard
+Goods	2503	KeyItem	1	0	Bequeathed Lord Soul Shard
+Goods	2510	KeyItem	1	0	Lordvessel
+Goods	2520	KeyItem	1	0	Broken Pendant
+Goods	2600	KeyItem	1	0	Weapon Smithbox
+Goods	2601	KeyItem	1	0	Armor Smithbox
+Goods	2602	KeyItem	1	0	Repairbox
+Goods	2607	KeyItem	1	0	Rite of Kindling
+Goods	2608	KeyItem	1	0	Bottomless Box
+Goods	3000	Spell	99	0	Sorcery: Soul Arrow
+Goods	3010	Spell	99	0	Sorcery: Great Soul Arrow
+Goods	3020	Spell	99	0	Sorcery: Heavy Soul Arrow
+Goods	3030	Spell	99	0	Sorcery: Great Heavy Soul Arrow
+Goods	3040	Spell	99	0	Sorcery: Homing Soulmass
+Goods	3050	Spell	99	0	Sorcery: Homing Crystal Soulmass
+Goods	3060	Spell	99	0	Soul Spear
+Goods	3070	Spell	99	0	Sorcery: Crystal Soul Spear
+Goods	3100	Spell	99	0	Magic Weapon
+Goods	3110	Spell	99	0	Sorcery: Great Magic Weapon
+Goods	3120	Spell	99	0	Sorcery: Crystal Magic Weapon
+Goods	3300	Spell	99	0	Sorcery: Magic Shield
+Goods	3310	Spell	99	0	Sorcery: Strong Magic Shield
+Goods	3400	Spell	99	0	Sorcery: Hidden Weapon
+Goods	3410	Spell	99	0	Sorcery: Hidden Body
+Goods	3500	Spell	99	0	Cast Light
+Goods	3510	Spell	99	0	Sorcery: Hush
+Goods	3520	Spell	99	0	Sorcery: Aural Decoy
+Goods	3530	Spell	99	0	Sorcery: Repair
+Goods	3540	Spell	99	0	Sorcery: Fall Control
+Goods	3550	Spell	99	0	Sorcery: Chameleon
+Goods	3600	Spell	99	0	Sorcery: Resist Curse
+Goods	3610	Spell	99	0	Sorcery: Remedy
+Goods	3700	Spell	99	0	Sorcery: White Dragon Breath
+Goods	3710	Spell	99	0	Dark Orb
+Goods	3720	Spell	99	0	Dark Bead
+Goods	3730	Spell	99	0	Dark Fog
+Goods	3740	Spell	99	0	Pursuers
+Goods	4000	Spell	99	0	Pyromancy: Fireball
+Goods	4010	Spell	99	0	Fire Orb
+Goods	4020	Spell	99	0	Pyromancy: Great Fireball
+Goods	4030	Spell	99	0	Pyromancy: Firestorm
+Goods	4040	Spell	99	0	Pyromancy: Fire Tempest
+Goods	4050	Spell	99	0	Pyromancy: Fire Surge
+Goods	4060	Spell	99	0	Pyromancy: Fire Whip
+Goods	4100	Spell	99	0	Pyromancy: Combustion
+Goods	4110	Spell	99	0	Great Combustion
+Goods	4200	Spell	99	0	Pyromancy: Poison Mist
+Goods	4210	Spell	99	0	Pyromancy: Toxic Mist
+Goods	4220	Spell	99	0	Pyromancy: Acid Surge
+Goods	4300	Spell	99	0	Iron Flesh
+Goods	4310	Spell	99	0	Pyromancy: Flash Sweat
+Goods	4360	Spell	99	0	Pyromancy: Undead Rapport
+Goods	4400	Spell	99	0	Pyromancy: Power Within
+Goods	4500	Spell	99	0	Pyromancy: Great Chaos Fireball
+Goods	4510	Spell	99	0	Pyromancy: Chaos Storm
+Goods	4520	Spell	99	0	Pyromancy: Chaos Fire Whip
+Goods	4530	Spell	99	0	Black Flame
+Goods	5000	Spell	99	0	Miracle: Heal
+Goods	5010	Spell	99	0	Miracle: Great Heal
+Goods	5020	Spell	99	0	Great Heal Excerpt
+Goods	5030	Spell	99	0	Miracle: Soothing Sunlight
+Goods	5040	Spell	99	0	Replenishment
+Goods	5050	Spell	99	0	Miracle: Bountiful Sunlight
+Goods	5100	Spell	99	0	Miracle: Gravelord Sword Dance
+Goods	5110	Spell	99	0	Miracle: Gravelord Greatsword Dance
+Goods	5200	Spell	99	0	Miracle: Escape Death
+Goods	5210	Spell	99	0	Homeward
+Goods	5300	Spell	99	0	Miracle: Force
+Goods	5310	Spell	99	0	Miracle: Wrath of the Gods
+Goods	5320	Spell	99	0	Miracle: Emit Force
+Goods	5400	Spell	99	0	Seek Guidance
+Goods	5500	Spell	99	0	Miracle: Lightning Spear
+Goods	5510	Spell	99	0	Miracle: Great Lightning Spear
+Goods	5520	Spell	99	0	Miracle: Sunlight Spear
+Goods	5600	Spell	99	0	Miracle: Magic Barrier
+Goods	5610	Spell	99	0	Miracle: Great Magic Barrier
+Goods	5700	Spell	99	0	Miracle: Karmic Justice
+Goods	5800	Spell	99	0	Miracle: Tranquil Walk of Peace
+Goods	5810	Spell	99	0	Miracle: Vow of Silence
+Goods	5900	Spell	99	0	Miracle: Sunlight Blade
+Goods	5910	Spell	99	0	Miracle: Darkmoon Blade
+Goods	9000	Consumable	1	0	Beckon
+Goods	9001	Consumable	1	0	Point forward
+Goods	9002	Consumable	1	0	Hurrah!
+Goods	9003	Consumable	1	0	Bow
+Goods	9004	Consumable	1	0	Joy
+Goods	9005	Consumable	1	0	Shrug
+Goods	9006	Consumable	1	0	Wave
+Goods	9007	Consumable	1	0	Praise the Sun
+Goods	9008	Consumable	1	0	Point up
+Goods	9009	Consumable	1	0	Point down
+Goods	9010	Consumable	1	0	Look skyward
+Goods	9011	Consumable	1	0	Well! What is it!
+Goods	9012	Consumable	1	0	Prostration
+Goods	9013	Consumable	1	0	Proper bow
+Goods	9014	Consumable	1	0	Prayer
