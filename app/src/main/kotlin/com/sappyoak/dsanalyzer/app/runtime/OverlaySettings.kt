@@ -9,9 +9,6 @@ import com.sappyoak.dsanalyzer.overlay.MarkerView
 /** Beyond this a draw distance stops meaning anything: the frustum cull is doing the work */
 private const val MAX_DRAW_DISTANCE = 1000f
 
-/** Enough to draw a whole map block, which is about 66,000 triangles */
-private const val MAX_TRIANGLE_BUDGET = 100_000
-
 @Serializable
 public data class OverlaySettings(
     public val enabled: Boolean = true,
@@ -20,7 +17,6 @@ public data class OverlaySettings(
 
 @Serializable
 public data class CharacterOverlaySettings(
-    public val drawPlayer: Boolean = true,
     public val draw: CharacterDrawing = CharacterDrawing.All,
     public val drawDistance: Float = MarkerView.DEFAULT_DRAW_DISTANCE,
     public val hitWindows: Boolean = true
@@ -36,11 +32,6 @@ public enum class CharacterDrawing {
 public data class OverlayEnabled(public val enabled: Boolean) : SettingsEdit {
     override fun applyTo(settings: Settings): Settings =
         settings.copy(overlay = settings.overlay.copy(enabled = enabled))
-}
-
-public data class DrawPlayer(public val enabled: Boolean) : SettingsEdit {
-    override fun applyTo(settings: Settings): Settings =
-        settings.overlay.characters.copy(drawPlayer = enabled).into(settings)
 }
 
 public data class DrawCharacters(public val mode: CharacterDrawing) : SettingsEdit {

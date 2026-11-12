@@ -23,7 +23,6 @@ import com.sappyoak.dsanalyzer.app.runtime.CharacterDrawDistance
 import com.sappyoak.dsanalyzer.app.runtime.CharacterDrawing
 import com.sappyoak.dsanalyzer.app.runtime.DrawCharacters
 import com.sappyoak.dsanalyzer.app.runtime.DrawHitWindows
-import com.sappyoak.dsanalyzer.app.runtime.DrawPlayer
 import com.sappyoak.dsanalyzer.app.runtime.EngineDrawSettings
 import com.sappyoak.dsanalyzer.app.runtime.HideDeadCharacters
 import com.sappyoak.dsanalyzer.app.runtime.OverlaySettings
@@ -78,18 +77,6 @@ private fun CharacterSettings(overlay: OverlaySettings, runtime: RuntimeSettings
     val on = overlay.enabled
 
     SettingsSection("Characters") {
-        ToggleRow(
-            label = "Your own marker",
-            checked = settings.drawPlayer,
-            enabled = on
-        ) { onEdit(DrawPlayer(it)) }
-
-        Text(
-            text = "Everyone else",
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(top = 6.dp, bottom = 2.dp)
-        )
-
         Column(modifier = Modifier.selectableGroup()) {
             CharacterDrawing.entries.forEach { mode ->
                 Row(verticalAlignment = Alignment.CenterVertically) {

@@ -11,7 +11,6 @@ import androidx.compose.ui.text.drawText
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-private val PLAYER_COLOR = Color(0xFF69F0AE)
 private val CHARACTER_COLOR = Color(0xFFFF5252)
 private val PLACED_COLOR = Color(0xFFFFC107)
 private val WINDUP_COLOR = Color(0xFFFFAB40)
@@ -107,7 +106,6 @@ private fun DrawScope.drawLabel(projected: ProjectedMarker, measurer: TextMeasur
 }
 
 private fun MarkerKind.color(): Color = when (this) {
-    MarkerKind.Player -> PLAYER_COLOR
     MarkerKind.Character -> CHARACTER_COLOR
     MarkerKind.Placed -> PLACED_COLOR
 }

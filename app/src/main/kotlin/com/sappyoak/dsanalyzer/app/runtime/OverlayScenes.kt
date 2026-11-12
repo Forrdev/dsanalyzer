@@ -53,15 +53,11 @@ internal fun RuntimeState.overlayScene(settings: OverlaySettings): OverlayScene 
 private fun RuntimeState.markersFor(settings: CharacterOverlaySettings, windows: Boolean): List<WorldMarker> {
     val characters = snapshot?.characters.orEmpty()
 
-    val player = listOfNotNull(
-        snapshot?.player?.takeIf { settings.drawPlayer }?.let { WorldMarker(it.position, "you", MarkerKind.Player) }
-    )
-
-    if (settings.draw == CharacterDrawing.None) return player
+    if (settings.draw == CharacterDrawing.None) return emptyList()
 
     // the dead are left standing in the block lists until it unloads, so they are passed over here
     val live = characters.filterNot { it.alive }.map { markerOf(it, windows) }
-    if (settings.draw == CharacterDrawing.Instantiated) return player + live
+    if (settings.draw == CharacterDrawing.Instantiated) return live
 
     // The full list, not the filtered one - see the note on settings above
     val block = placedEnemies?.playersBlock(characters)
@@ -69,7 +65,7 @@ private fun RuntimeState.markersFor(settings: CharacterOverlaySettings, windows:
         .filterNot { placed -> characters.any { it.position.near(placed.position) } }
         .map { it.marker() }
 
-    return player + live + unbuilt
+    return live + unbuilt
 }
 
 private fun List<BlockRoster>.playersBlock(characters: List<CharacterSnapshot>): BlockRoster? {

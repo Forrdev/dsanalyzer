@@ -33,7 +33,6 @@ internal fun CharacterAttributes(sheet: AttributeSnapshot) {
     Field("Souls", "${sheet.souls} (soul memory ${sheet.soulMemory})")
     Stat.entries.forEach { stat -> Field(stat.name, sheet.stats[stat]?.toString() ?: "-") }
     Field("Humanity", sheet.humanity.toString())
-    Field("Durability", sheet.durability.toString())
     Field("Covenant", sheet.covenant?.toString() ?: "not read for this edition")
     Field("Stance", sheet.stance?.describeStance() ?: "not read for this edition")
 

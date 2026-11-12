@@ -4,7 +4,6 @@ import com.sappyoak.dsanalyzer.runtime.session.CameraSnapshot
 import com.sappyoak.dsanalyzer.shared.math.Vec3
 
 public enum class MarkerKind {
-    Player,
     Character,
     Placed;
 }
