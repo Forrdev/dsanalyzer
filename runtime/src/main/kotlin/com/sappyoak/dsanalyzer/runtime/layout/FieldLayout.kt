@@ -19,5 +19,6 @@ public data class WriteLayout(
     public val mailbox: MailboxLayout,
     public val position: LivePositionLayout,
     public val stats: StatWriteLayout,
-    public val warp: BonfireWarpLayout
+    public val warp: WarpLayout,
+    public val talk: TalkLayout
 )

@@ -94,7 +94,6 @@ public class Mailbox internal constructor(
         current = null
     }
 
-    /** A sent call the game has not started; the clock gate holds it while the world is down */
     /**
      * Gives up a mailbox the game no longer enters. The record goes without being written back,
      * because the field may now hold whatever the game put there, and the block is freed only on the
@@ -152,20 +151,10 @@ public class Mailbox internal constructor(
 
     private fun send(box: Address, pending: Pending): Boolean {
         val call = pending.call
-        val arch = layout.arch
-        val request = littleEndian(MailboxSlot.RETURN + Long.SIZE_BYTES - MailboxSlot.TARGET)
-        fun at(offset: Int) = offset - MailboxSlot.TARGET
-        request.putLong(at(MailboxSlot.TARGET), call.target.value)
-        call.registers.forEach { (register, value) -> request.putLong(at(register.offset), value) }
         val data = box + MailboxSlot.DATA.toLong()
-        call.dataPointers.forEach { (register, offset) -> request.putLong(at(register.offset), data.value + offset) }
-        request.putInt(at(MailboxSlot.argCount(arch)), call.stack.size)
-        call.stack.forEachIndexed { i, value ->
-            val offset = at(MailboxSlot.firstArg(arch) + i * MailboxSlot.argStride(arch))
-            if (arch == CallArch.X86) request.putInt(offset, value.toInt()) else request.putLong(offset, value)
-        }
-        if (call.data.isNotEmpty() && !writer.fill(data, call.data)) return false
-        if (!writer.fill(box + MailboxSlot.TARGET.toLong(), request.array())) return false
+        val block = linkedData(call, layout.arch, data) ?: return false
+        if (block.isNotEmpty() && !writer.fill(data, block)) return false
+        if (!writer.fill(box + MailboxSlot.TARGET.toLong(), requestBytes(call, layout.arch, data))) return false
         pending.sentAt = TimeSource.Monotonic.markNow()
         return write(box, MailboxSlot.REQUESTED)
     }

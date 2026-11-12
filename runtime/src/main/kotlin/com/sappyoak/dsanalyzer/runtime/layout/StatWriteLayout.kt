@@ -31,11 +31,3 @@ public data class StatWriteLayout(
     public val covenantPoints: Int,
     public val levelUp: LevelUpLayout
 )
-
-public data class BonfireWarpLayout(
-    public val lastBonfire: FieldLayout,
-    public val function: GamePointer,
-    public val owner: GamePointer,
-    public val ownerRegister: CallRegister,
-    public val kindRegister: CallRegister?
-)

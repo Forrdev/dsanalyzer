@@ -28,7 +28,11 @@ public val PTDEPointers: List<GamePointer> = listOf(
     Graphics.Pointer,
     PTDEFunctions.LevelUp,
     PTDEFunctions.WarpDispatch,
-    PTDEFunctions.WarpOwner
+    PTDEFunctions.WarpOwner,
+    PTDEFunctions.TalkDispatch,
+    PTDEFunctions.TalkOwnerLookup,
+    PTDEFunctions.TalkEventVTable,
+    PTDEFunctions.TalkHandlerVTable
 )
 
 /**

@@ -22,11 +22,14 @@ import com.sappyoak.dsanalyzer.runtime.write.mailbox.Submission
 import com.sappyoak.dsanalyzer.runtime.write.position.RestorePositionTask
 import com.sappyoak.dsanalyzer.runtime.write.stats.LevelUpTask
 import com.sappyoak.dsanalyzer.runtime.write.stats.StatsEdit
+import com.sappyoak.dsanalyzer.runtime.write.talk.TalkCommand
+import com.sappyoak.dsanalyzer.runtime.write.talk.TalkTask
 import com.sappyoak.dsanalyzer.runtime.write.task.TaskContext
 import com.sappyoak.dsanalyzer.runtime.write.task.TaskOutcome
 import com.sappyoak.dsanalyzer.runtime.write.task.TaskRunner
 import com.sappyoak.dsanalyzer.runtime.write.task.WriteTask
-import com.sappyoak.dsanalyzer.runtime.write.warp.BonfireWarpTask
+import com.sappyoak.dsanalyzer.runtime.write.warp.WarpDestination
+import com.sappyoak.dsanalyzer.runtime.write.warp.WarpTask
 
 private const val OUTCOME_BUFFER = 256
 
@@ -69,7 +72,15 @@ public class SessionWrites internal constructor(
     public fun setAttributes(attributes: Map<Stat, Int>): Submission =
         tasks.start(LevelUpTask(attributes, layout.stats.levelUp, player))
 
-    public fun warpToBonfire(bonfireId: Int): Submission = tasks.start(BonfireWarpTask(bonfireId, layout.warp))
+    public fun warpToBonfire(bonfireId: Int): Submission =
+        tasks.start(WarpTask(WarpDestination.Bonfire(bonfireId), layout.warp))
+
+    /** Loads [destination]'s map if it is another one, and spawns the player at its point */
+    public fun warpToPoint(destination: SavedPosition): Submission =
+        tasks.start(WarpTask(WarpDestination.Point(destination), layout.warp))
+
+    /** Runs [command] as an NPC's talk script would, such as `TalkCommands.Repair` */
+    public fun talk(command: TalkCommand): Submission = tasks.start(TalkTask(command, layout.talk, layout.mailbox.arch))
 
     internal fun afterSample(memory: GameMemory, module: AddressRange, inWorld: Boolean, place: WorldPlace) {
         val arrived = mailbox.poll(memory.memory, module, inWorld)

@@ -76,6 +76,11 @@ public object WorldBlockChr {
     public const val AreaPointer: Int = 0x10
     public const val CharacterCount: Int = 0x48
     public const val CharactersPointer: Int = 0x50
+
+    /** The block's sorted (entity_id, slot) paris, which the talk owner lookup searches */
+    public const val EntityCount: Int = 0x80
+    public const val EntitiesPointer: Int = 0x88
+
     public const val MapDataPointer: Int = 0x90
 
     public val Characters: GameTable = GameTable(

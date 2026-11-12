@@ -9,14 +9,13 @@ import com.sappyoak.dsanalyzer.runtime.layout.AnimRequestEntryLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimRequestLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimSlotLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimationLayout
-import com.sappyoak.dsanalyzer.runtime.layout.BonfireWarpLayout
-import com.sappyoak.dsanalyzer.runtime.layout.CallArch
 import com.sappyoak.dsanalyzer.runtime.layout.CameraLayout
 import com.sappyoak.dsanalyzer.runtime.layout.CharacterLayout
 import com.sappyoak.dsanalyzer.runtime.layout.CharacterSlotLayout
 import com.sappyoak.dsanalyzer.runtime.layout.ChrCtrlLayout
 import com.sappyoak.dsanalyzer.runtime.layout.ChrInsLayout
 import com.sappyoak.dsanalyzer.runtime.layout.DebugDrawLayout
+import com.sappyoak.dsanalyzer.runtime.layout.EntityTableLayout
 import com.sappyoak.dsanalyzer.runtime.layout.EsdStateLayout
 import com.sappyoak.dsanalyzer.runtime.layout.EventFlagLayout
 import com.sappyoak.dsanalyzer.runtime.layout.FieldLayout
@@ -31,9 +30,11 @@ import com.sappyoak.dsanalyzer.runtime.layout.LivePositionLayout
 import com.sappyoak.dsanalyzer.runtime.layout.LoadQueueLayout
 import com.sappyoak.dsanalyzer.runtime.layout.MailboxLayout
 import com.sappyoak.dsanalyzer.runtime.layout.MenuLayout
+import com.sappyoak.dsanalyzer.runtime.layout.OwnerLinkLayout
 import com.sappyoak.dsanalyzer.runtime.layout.PartFilterLayout
 import com.sappyoak.dsanalyzer.runtime.layout.PlacedPartsLayout
 import com.sappyoak.dsanalyzer.runtime.layout.PlayerGameDataLayout
+import com.sappyoak.dsanalyzer.runtime.layout.PointWarpLayout
 import com.sappyoak.dsanalyzer.runtime.layout.PoseLayout
 import com.sappyoak.dsanalyzer.runtime.layout.PositionLayout
 import com.sappyoak.dsanalyzer.runtime.layout.ProgressLayout
@@ -41,10 +42,13 @@ import com.sappyoak.dsanalyzer.runtime.layout.ResistBlockLayout
 import com.sappyoak.dsanalyzer.runtime.layout.SpecialEffectLayout
 import com.sappyoak.dsanalyzer.runtime.layout.StatBlockLayout
 import com.sappyoak.dsanalyzer.runtime.layout.StatWriteLayout
+import com.sappyoak.dsanalyzer.runtime.layout.TalkEventLayout
+import com.sappyoak.dsanalyzer.runtime.layout.TalkLayout
 import com.sappyoak.dsanalyzer.runtime.layout.TargetLayout
 import com.sappyoak.dsanalyzer.runtime.layout.TargetingLayout
 import com.sappyoak.dsanalyzer.runtime.layout.ThinkLayout
 import com.sappyoak.dsanalyzer.runtime.layout.VitalsLayout
+import com.sappyoak.dsanalyzer.runtime.layout.WarpLayout
 import com.sappyoak.dsanalyzer.runtime.layout.WriteLayout
 import com.sappyoak.dsanalyzer.runtime.write.mailbox.CallRegister
 
@@ -379,12 +383,42 @@ internal fun dsrLayout(version: DSRVersion): GameLayout = GameLayout(
             covenantPoints = PlayerGameData.CovenantPoints,
             levelUp = LevelUpLayout.SplitBlock(DSRFunctions.LevelUp)
         ),
-        warp = BonfireWarpLayout(
-            lastBonfire = FieldLayout(GameMan.Pointer, GameMan.LastBonfire),
-            function = DSRFunctions.Warp,
-            owner = DSRFunctions.EventMan,
-            ownerRegister = CallRegister.Rcx,
-            kindRegister = CallRegister.Rdx
+        warp = WarpLayout(
+          lastBonfire = FieldLayout(GameMan.Pointer, GameMan.LastBonfire - version.gameManShift),
+          point = PointWarpLayout(
+              map = GameMan.PointWarpMap - version.gameManShift,
+              position = GameMan.PointWarpPosition - version.gameManShift,
+              angle = GameMan.PointWarpAngle - version.gameManShift,
+              flag = GameMan.PointWarpFlag - version.gameManShift
+          ),
+          function = DSRFunctions.Warp,
+          owner = DSRFunctions.EventMan,
+          ownerRegister = CallRegister.Rcx,
+          kindRegister = CallRegister.Rdx
+        ),
+        talk = TalkLayout(
+            dispatcher = DSRFunctions.TalkDispatch,
+            ownerLookup = DSRFunctions.TalkOwnerLookup,
+            eventVTable = DSRFunctions.TalkEventVTable,
+            handlerVTable = null,
+            event = TalkEventLayout(
+                size = TalkEvent.Size,
+                command = TalkEvent.Command,
+                firstParam = TalkEvent.FirstParam,
+                paramStride = TalkEvent.ParamStride,
+                paramType = TalkEvent.ParamType,
+                highestIndex = TalkEvent.HighestIndex,
+                maxParams = TalkEvent.MaxParams
+            ),
+            handlerOwner = TalkHandler.Owner,
+            ownerEntity = TalkOwner.EntityId,
+            ownerLink = OwnerLinkLayout(link = TalkOwner.Link, back = TalkOwner.LinkBack),
+            entities = EntityTableLayout(
+                manager = WorldChrMan.Pointer,
+                blocks = WorldChrMan.Blocks,
+                count = WorldBlockChr.EntityCount,
+                entries = WorldBlockChr.EntitiesPointer
+            )
         )
     )
 )

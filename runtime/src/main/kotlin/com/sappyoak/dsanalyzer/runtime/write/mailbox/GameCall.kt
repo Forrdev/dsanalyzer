@@ -31,7 +31,14 @@ public data class GameCall(
      * offset into it, in a register, which is how a call that wants a structure gets one
      */
     public val data: ByteArray = ByteArray(0),
-    public val dataPointers: Map<CallRegister, Int> = emptyMap()
+    public val dataPointers: Map<CallRegister, Int> = emptyMap(),
+    /**
+     * Pointer fields inside [data]. The field at each key gets the address of [data] plus the value,
+     * which is how a structure in the block points at another one in the same block
+     */
+    public val dataLinks: Map<Int, Int> = emptyMap(),
+    /** Stack arguments, by index, that get the address of [data] plus the value in place of their own */
+    public val stackData: Map<Int, Int> = emptyMap()
 ) {
     init {
         require(data.size <= MailboxSlot.DATA_LIMIT) {
@@ -39,6 +46,12 @@ public data class GameCall(
         }
         require(dataPointers.values.all { it >= 0 && it < data.size }) { "$label points a register outside its own data" }
         require(dataPointers.keys.none { it in registers }) { "$label sets the same register twice" }
+        require(dataLinks.all { (at, to) -> at >= 0 && at + Int.SIZE_BYTES <= data.size && to in data.indices }) {
+            "$label links a field outside its own data"
+        }
+        require(stackData.all { (index, to) -> index in stack.indices && to in data.indices }) {
+            "$label points a stack argument outside its stack or its data"
+        }
         require(stack.size <= MailboxSlot.MAX_ARGS) {
             "$label passes ${stack.size} stack arguments. The mailbox takes ${MailboxSlot.MAX_ARGS}"
         }

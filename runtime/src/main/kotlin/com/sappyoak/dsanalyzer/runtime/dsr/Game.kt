@@ -23,6 +23,11 @@ public object GameMan {
 
     public const val WarpPosition: Int = 0xA80
     public const val WarpAngle: Int = 0xA90
+
+    public const val PointWarpMap: Int = 0xB00
+    public const val PointWarpPosition: Int = 0xB10
+    public const val PointWarpAngle: Int = 0xB20
+    public const val PointWarpFlag: Int = 0xB30
     public const val LastBonfire: Int = 0xB34
     public const val StablePosition: Int = 0xBA0
     public const val StableAngle: Int = 0xBB4

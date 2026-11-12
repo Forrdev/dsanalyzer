@@ -1,7 +1,5 @@
 package com.sappyoak.dsanalyzer.runtime.ptde
 
-
-import com.sappyoak.dsanalyzer.runtime.dsr.GameDataMan
 import com.sappyoak.dsanalyzer.runtime.layout.AILayout
 import com.sappyoak.dsanalyzer.runtime.layout.ActionLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimChannelLayout
@@ -11,14 +9,13 @@ import com.sappyoak.dsanalyzer.runtime.layout.AnimRequestEntryLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimRequestLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimSlotLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimationLayout
-import com.sappyoak.dsanalyzer.runtime.layout.BonfireWarpLayout
-import com.sappyoak.dsanalyzer.runtime.layout.CallArch
 import com.sappyoak.dsanalyzer.runtime.layout.CameraLayout
 import com.sappyoak.dsanalyzer.runtime.layout.CharacterLayout
 import com.sappyoak.dsanalyzer.runtime.layout.CharacterSlotLayout
 import com.sappyoak.dsanalyzer.runtime.layout.ChrCtrlLayout
 import com.sappyoak.dsanalyzer.runtime.layout.ChrInsLayout
 import com.sappyoak.dsanalyzer.runtime.layout.DebugDrawLayout
+import com.sappyoak.dsanalyzer.runtime.layout.EntityTableLayout
 import com.sappyoak.dsanalyzer.runtime.layout.EsdStateLayout
 import com.sappyoak.dsanalyzer.runtime.layout.EventFieldsLayout
 import com.sappyoak.dsanalyzer.runtime.layout.EventFlagLayout
@@ -37,6 +34,7 @@ import com.sappyoak.dsanalyzer.runtime.layout.MenuLayout
 import com.sappyoak.dsanalyzer.runtime.layout.PartFilterLayout
 import com.sappyoak.dsanalyzer.runtime.layout.PlacedPartsLayout
 import com.sappyoak.dsanalyzer.runtime.layout.PlayerGameDataLayout
+import com.sappyoak.dsanalyzer.runtime.layout.PointWarpLayout
 import com.sappyoak.dsanalyzer.runtime.layout.PoseLayout
 import com.sappyoak.dsanalyzer.runtime.layout.PositionLayout
 import com.sappyoak.dsanalyzer.runtime.layout.ProgressLayout
@@ -44,10 +42,13 @@ import com.sappyoak.dsanalyzer.runtime.layout.ResistBlockLayout
 import com.sappyoak.dsanalyzer.runtime.layout.SpecialEffectLayout
 import com.sappyoak.dsanalyzer.runtime.layout.StatBlockLayout
 import com.sappyoak.dsanalyzer.runtime.layout.StatWriteLayout
+import com.sappyoak.dsanalyzer.runtime.layout.TalkEventLayout
+import com.sappyoak.dsanalyzer.runtime.layout.TalkLayout
 import com.sappyoak.dsanalyzer.runtime.layout.TargetLayout
 import com.sappyoak.dsanalyzer.runtime.layout.TargetingLayout
 import com.sappyoak.dsanalyzer.runtime.layout.ThinkLayout
 import com.sappyoak.dsanalyzer.runtime.layout.VitalsLayout
+import com.sappyoak.dsanalyzer.runtime.layout.WarpLayout
 import com.sappyoak.dsanalyzer.runtime.layout.WriteLayout
 import com.sappyoak.dsanalyzer.runtime.session.CHEAT_BITS
 import com.sappyoak.dsanalyzer.runtime.write.mailbox.CallRegister
@@ -392,12 +393,42 @@ internal fun ptdeLayout(): GameLayout = GameLayout(
             covenantPoints = PlayerGameData.WarriorsOfSunlightPoints,
             levelUp = LevelUpLayout.OneBlock(PTDEFunctions.LevelUp)
         ),
-        warp = BonfireWarpLayout(
+        warp = WarpLayout(
             lastBonfire = FieldLayout(GameMan.Pointer, GameMan.LastBonfire),
+            point = PointWarpLayout(
+                map = GameMan.PointWarpMap,
+                position = GameMan.PointWarpPosition,
+                angle = GameMan.PointWarpAngle,
+                flag = GameMan.PointWarpFlag
+            ),
             function = PTDEFunctions.WarpDispatch,
             owner = PTDEFunctions.WarpOwner,
             ownerRegister = CallRegister.Esi,
             kindRegister = null
+        ),
+        talk = TalkLayout(
+            dispatcher = PTDEFunctions.TalkDispatch,
+            ownerLookup = PTDEFunctions.TalkOwnerLookup,
+            eventVTable = PTDEFunctions.TalkEventVTable,
+            handlerVTable = PTDEFunctions.TalkHandlerVTable,
+            event = TalkEventLayout(
+                size = TalkEvent.Size,
+                command = TalkEvent.Command,
+                firstParam = TalkEvent.FirstParam,
+                paramStride = TalkEvent.ParamStride,
+                paramType = TalkEvent.ParamType,
+                highestIndex = TalkEvent.HighestIndex,
+                maxParams = TalkEvent.MaxParams
+            ),
+            handlerOwner = TalkHandler.Owner,
+            ownerEntity = TalkOwner.EntityId,
+            ownerLink = null,
+            entities = EntityTableLayout(
+                manager = WorldChrMan.Pointer,
+                blocks = WorldChrMan.Blocks,
+                count = WorldBlock.EntityCount,
+                entries = WorldBlock.EntitiesPointer
+            )
         )
     )
 )

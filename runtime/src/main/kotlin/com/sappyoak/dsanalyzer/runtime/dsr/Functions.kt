@@ -27,4 +27,28 @@ public object DSRFunctions {
         lifetime = Lifetime.Session,
         size = 0x10
     )
+
+    public val TalkDispatch: GamePointer = GamePointer(
+        name = "TalkDispatch",
+        base = DSRSignatures.TalkDispatch,
+        offsets = emptyList(),
+        lifetime = Lifetime.Process,
+        size = 1
+    )
+
+    public val TalkOwnerLookup: GamePointer = GamePointer(
+        name = "TalkOwnerLookup",
+        base = DSRSignatures.TalkOwnerLookup,
+        offsets = emptyList(),
+        lifetime = Lifetime.Process,
+        size = 1
+    )
+
+    public val TalkEventVTable: GamePointer = GamePointer(
+        name = "TalkEventVTable",
+        base = DSRSignatures.TalkEventVTable,
+        offsets = emptyList(),
+        lifetime = Lifetime.Process,
+        size = 1
+    )
 }

@@ -28,6 +28,11 @@ public object GameMan {
     public const val TwisterLeft: Int = 0x04
     public const val TwisterCursor: Int = 0x08
     public const val TwisterState: Int = 0x0C
+
+    public const val PointWarpMap: Int = 0xAD0
+    public const val PointWarpPosition: Int = 0xAE0
+    public const val PointWarpAngle: Int = 0xAF0
+    public const val PointWarpFlag: Int = 0xB00
     public const val LastBonfire: Int = 0xB04
 
     /** X, Y and Z consecutively from here */

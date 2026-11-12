@@ -199,4 +199,30 @@ object PTDESignatures {
         name = "AddTriangle",
         pattern = "53 8B 59 0C 85 DB 0F 84 ?? ?? ?? ?? 8B 54 24 08 81 E2 FF 03 00 80"
     )
+
+    public val TalkDispatch: Signature = Signature.parse(
+        name = "TalkDispatch",
+        pattern = "55 8B EC 83 E4 F0 6A FF 68 ?? ?? ?? ?? 64 A1 00 00 00 00 50 81 EC A8 02 00 00 53 56 57 " +
+                "A1 ?? ?? ?? ?? 33 C4 50 8D 84 24 B8 02 00 00 64 A3 00 00 00 00 8B F1"
+    )
+
+    public val TalkOwnerLookup: Signature = Signature.parse(
+        name = "TalkOwnerLookup",
+        pattern = "8B 41 08 E8 ?? ?? ?? ?? 8B 10 8B C8 8B 82 54 02 00 00",
+        target = SignatureTarget.Relative(at = 4, instructionEnd = 8)
+    )
+
+    /** The `EzStateExternalEventTemp` constructor */
+    public val TalkEventVTable: Signature = Signature.parse(
+        name = "TalkEventVTable",
+        pattern = "8B C1 8B 4C 24 04 C7 00 ?? ?? ?? ?? C7 80 FC 00 00 00 00 00 00 00 89 48 04 C2 04 00",
+        target = SignatureTarget.Embedded(8)
+    )
+
+    /** The `EzStateTalkEvent`*/
+    public val TalkHandlerVTable: Signature = Signature.parse(
+        name = "TalkHandlerVTable",
+        pattern = "8B 4E 14 89 48 08 8B 4C 24 1C C7 00 ?? ?? ?? ?? 89 70 04 89 78 0C",
+        target = SignatureTarget.Embedded(12)
+    )
 }

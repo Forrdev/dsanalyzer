@@ -125,6 +125,10 @@ public object WorldBlock {
     public const val LookupBCount: Int = 0x58
     public const val LookupBPointer: Int = 0x5C
 
+    /** The block's sorted (entity_id, slot) pairs */
+    public const val EntityCount: Int = 0x58
+    public const val EntitiesPointer: Int = 0x5C
+
     public val Characters: GameTable = GameTable(
         name = "BlockCharacters",
         shape = TableShape.Counted(

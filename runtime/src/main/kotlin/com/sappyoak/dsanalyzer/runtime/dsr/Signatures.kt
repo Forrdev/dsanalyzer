@@ -139,4 +139,24 @@ public object DSRSignatures {
         pattern = "8B CE E8 ?? ?? ?? ?? 44 8B C6 BA 16 00 00 00 48 8B CF E8 ?? ?? ?? ?? 48 8B 0F 48 83 C1 03 " +
                 "48 83 E1 FC 48 8D 41 04 48 89 07 C7 01 04 00 02 00"
     )
+
+    public val TalkDispatch: Signature = Signature.parse(
+        name = "TalkDispatch",
+        pattern = "48 8B C4 55 56 57 41 54 41 55 41 56 41 57 48 8D A8 D8 FD FF FF 48 81 EC F0 02 00 00 " +
+                "48 C7 45 D0 FE FF FF FF 48 89 58 18 0F 29 70 B8 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 85 D0 01 00 00 " +
+                "48 8B DA 48 8B F1"
+    )
+
+    public val TalkOwnerLookup: Signature = Signature.parse(
+        name = "TalkOwnerLookup",
+        pattern = "48 8B 4E 10 E8 ?? ?? ?? ?? 48 8B 10 48 8B C8 FF 92 B8 04 00 00",
+        target = SignatureTarget.Relative(at = 5, instructionEnd = 9)
+    )
+
+    /** The `EzStateExternalEventTemp` constructor  */
+    public val TalkEventVTable: Signature = Signature.parse(
+        name = "TalkEventVTable",
+        pattern = "48 8D 05 ?? ?? ?? ?? 48 89 01 48 8B C1 48 C7 81 F8 01 00 00 00 00 00 00 89 51 08 C3",
+        target = SignatureTarget.Relative(at = 3, instructionEnd = 7)
+    )
 }
