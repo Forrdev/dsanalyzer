@@ -20,5 +20,7 @@ public data class WriteLayout(
     public val position: LivePositionLayout,
     public val stats: StatWriteLayout,
     public val warp: WarpLayout,
-    public val talk: TalkLayout
+    public val talk: TalkLayout,
+    public val items: ItemLayout,
+    public val flags: FlagCallLayout
 )

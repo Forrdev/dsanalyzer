@@ -225,4 +225,39 @@ object PTDESignatures {
         pattern = "8B 4E 14 89 48 08 8B 4C 24 1C C7 00 ?? ?? ?? ?? 89 70 04 89 78 0C",
         target = SignatureTarget.Embedded(12)
     )
+
+    /** Entry of 'ChrAsm_AddItem' */
+    public val ItemAdd: Signature = Signature.parse(
+        name = "ItemAdd",
+        pattern = "55 8B EC 83 E4 F8 83 EC 34 8B 4D 0C 53 8B 5D 08 56 83 C8 FF 33 F6"
+    )
+
+    private const val ITEM_POPUP = "C1 E0 1C 55 50 A1 ?? ?? ?? ?? E8 ?? ?? ?? ?? 85 F6"
+
+    /** The item-get menu's global, loaded into EAX ahead of the popup call in the award path */
+    public val ItemGetMenuMan: Signature = Signature.parse(
+        name = "ItemGetMenuMan",
+        pattern = ITEM_POPUP,
+        target = SignatureTarget.Embedded(6)
+    )
+
+    /** 'ItemGetMenuMan_PushItem', called from the award path */
+    public val ItemPopup: Signature = Signature.parse(
+        name = "ItemPopup",
+        pattern = ITEM_POPUP,
+        target = SignatureTarget.Relative(at = 11, instructionEnd = 15)
+    )
+
+    /** Entry of 'SetEventFlag' */
+    public val SetEventFlag: Signature = Signature.parse(
+        name = "SetEventFlag",
+        pattern = "80 B8 14 01 00 00 00 56 8B 74 24 08 74 ?? 57 51 50 8B CE E8"
+    )
+
+    /** 'GetEventFlag', called right after the [EventFlags] match */
+    public val GetEventFlag: Signature = Signature.parse(
+        name = "GetEventFlag",
+        pattern = "56 8B F1 8B 46 1C 50 A1 ?? ?? ?? ?? 32 C9 E8 ?? ?? ?? ??",
+        target = SignatureTarget.Relative(at = 15, instructionEnd = 19)
+    )
 }

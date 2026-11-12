@@ -12,7 +12,6 @@ public object PlayerGameData {
         size = 0x4D0
     )
 
-
     public const val PlayerNo: Int = 0x08
     public const val Health: Int = 0xC
     /** The effective max, after equipment and effects */
@@ -68,6 +67,7 @@ public object PlayerGameData {
     public const val InvadeType: Int = 0x110
 
     public const val InventoryIndexStart: Int = 0x188
+    public const val Inventory: Int = 0x1B8
     public const val EquipLeft1Index: Int = 0x1D4
     public const val EquipRight1Index: Int = 0x1D8
     public const val EquipLeft2Index: Int = 0x1DC

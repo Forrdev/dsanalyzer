@@ -159,4 +159,45 @@ public object DSRSignatures {
         pattern = "48 8D 05 ?? ?? ?? ?? 48 89 01 48 8B C1 48 C7 81 F8 01 00 00 00 00 00 00 89 51 08 C3",
         target = SignatureTarget.Relative(at = 3, instructionEnd = 7)
     )
+
+    /** Entry of 'ChrAsm_AddItem' (SilkySouls: ItemGet) */
+    public val ItemAdd: Signature = Signature.parse(
+        name = "ItemAdd",
+        pattern = "48 89 5C 24 18 89 54 24 10 55 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 F9 48 81 EC A0 00 00 00 44 0F B6 6D 6F 83 CE FF"
+    )
+
+    private const val ITEM_POPUP =
+        "48 8B 3D ?? ?? ?? ?? 83 CB FF 41 81 FD FF FF FF 0F 41 0F 45 DD 83 C9 FF 41 83 FF 0F 41 0F 45 CF " +
+                "E8 ?? ?? ?? ?? 8B D0 44 8B CE 44 8B C3 48 8B CF E8 ?? ?? ?? ??"
+
+    /** The item-get menu's global, loaded ahead of the popup call in the award path */
+    public val ItemGetMenuMan: Signature = Signature.parse(
+        name = "ItemGetMenuMan",
+        pattern = ITEM_POPUP,
+        target = SignatureTarget.Relative(at = 3, instructionEnd = 7)
+    )
+
+    /** 'ItemGetMenuMan_PushItem' (SilkySouls: ItemDlgFunc), called from the award path */
+    public val ItemPopup: Signature = Signature.parse(
+        name = "ItemPopup",
+        pattern = ITEM_POPUP,
+        target = SignatureTarget.Relative(at = 49, instructionEnd = 53)
+    )
+
+    /**
+     * 'SetEvent', called from the game's own wrapper. The function has a byte-identical twin, so the
+     * wrapper is what is matched
+     */
+    public val SetEvent: Signature = Signature.parse(
+        name = "SetEvent",
+        pattern = "48 83 EC 28 48 8B 0D ?? ?? ?? ?? 45 33 C9 E8 ?? ?? ?? ?? B0 01 48 83 C4 28 C3",
+        target = SignatureTarget.Relative(at = 15, instructionEnd = 19)
+    )
+
+    /** 'GetEvent', at one of its call sites; the function has a byte-identical twin */
+    public val GetEvent: Signature = Signature.parse(
+        name = "GetEvent",
+        pattern = "0F B6 F9 45 33 C0 48 8B 0D ?? ?? ?? ?? BA CC 1F 00 00 33 DB E8 ?? ?? ?? ?? 84 C0",
+        target = SignatureTarget.Relative(at = 21, instructionEnd = 25)
+    )
 }

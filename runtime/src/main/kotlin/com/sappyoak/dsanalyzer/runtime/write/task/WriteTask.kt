@@ -33,11 +33,16 @@ public class TaskContext internal constructor(
     public val inWorld: Boolean,
     public val place: WorldPlace,
     private val submit: (GameCall) -> Submission,
+    private val submitRemote: (GameCall) -> Submission,
     private val outcomes: Map<Long, CallOutcome>
 ) {
+    /** Runs [call] on the game's logic thread, once per frame */
     public fun call(call: GameCall): Submission = submit(call)
 
-    /** The outcome of a call this task submitted, in the sample it arrived; null while it is pending */
+    /** Runs [call] on the tool's own thread in the game, for calls the logic thread must not make */
+    public fun callRemote(call: GameCall): Submission = submitRemote(call)
+
+    /** The outcome of a call this task submitted, on either mailbox, in the sample it arrived; null while it is pending */
     public fun outcome(id: Long): CallOutcome? = outcomes[id]
 }
 

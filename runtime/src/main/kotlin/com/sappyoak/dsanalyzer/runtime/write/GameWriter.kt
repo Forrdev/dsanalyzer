@@ -21,6 +21,9 @@ public class GameWriter internal constructor(
     public val active: Set<WriteKey> get() = history.keys.toSet()
     public val canPlaceCode: Boolean get() = code != null
 
+    /** Every write this session, oldest first, for the history view */
+    public val records: List<WriteEntry> get() = history.records.map { it.entry() }
+
     internal fun writeBits(key: WriteKey, address: Address, lifetime: Lifetime, mask: Int, on: Boolean): Boolean {
         val word = memory.intAt(address) ?: return false
         val original = (history[key]?.original as? Original.Bits)?.bits ?: (word and mask)
@@ -91,6 +94,10 @@ public class GameWriter internal constructor(
     @GameMutation
     public fun free(address: Address): Boolean = code?.free(address) ?: false
 
+    /** Starts a thread of the tool's own in the game at [entry] with [parameter]; never journaled */
+    @GameMutation
+    public fun startThread(entry: Address, parameter: Address): Boolean = code?.startThread(entry, parameter) ?: false
+
     /**
      * A one-shot action on the game, such as a warp: never journaled, because there is no state to
      * put back. Undoing a warp is another warp
@@ -111,9 +118,6 @@ public class GameWriter internal constructor(
 
     /** Forgets, without reverting, the changes that died with [event] */
     internal fun discard(event: Lifetime): Unit = history.discard(event)
-
-    /** Every write this session, oldest first, for the history view */
-    public val records: List<WriteEntry> get() = history.records.map { it.entry() }
 
     /**
      * Writes a value the user wants to keep. It stays through [revertAll] and is undone only by [undo].

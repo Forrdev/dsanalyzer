@@ -135,6 +135,7 @@ public object PlayerGameData {
     public const val EstusLevel: Int = 0x11A
     public const val NameRemote: Int = 0x12C
 
+    public const val Inventory: Int = 0x280
     public const val EquipLeft1Index: Int = 0x324
     public const val EquipRight1Index: Int = 0x328
     public const val EquipLeft2Index: Int = 0x32C

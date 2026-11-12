@@ -51,4 +51,52 @@ public object DSRFunctions {
         lifetime = Lifetime.Process,
         size = 1
     )
+
+    public val ItemAdd: GamePointer = GamePointer(
+        name = "ItemAdd",
+        base = DSRSignatures.ItemAdd,
+        offsets = emptyList(),
+        lifetime = Lifetime.Process,
+        size = 1
+    )
+
+    public val ItemPopup: GamePointer = GamePointer(
+        name = "ItemPopup",
+        base = DSRSignatures.ItemPopup,
+        offsets = emptyList(),
+        lifetime = Lifetime.Process,
+        size = 1
+    )
+
+    public val ItemGetMenuMan: GamePointer = GamePointer(
+        name = "ItemGetMenuMan",
+        base = DSRSignatures.ItemGetMenuMan,
+        offsets = listOf(0L),
+        lifetime = Lifetime.Session,
+        size = 8
+    )
+
+    public val SetEvent: GamePointer = GamePointer(
+        name = "SetEvent",
+        base = DSRSignatures.SetEvent,
+        offsets = emptyList(),
+        lifetime = Lifetime.Process,
+        size = 1
+    )
+
+    public val GetEvent: GamePointer = GamePointer(
+        name = "GetEvent",
+        base = DSRSignatures.GetEvent,
+        offsets = emptyList(),
+        lifetime = Lifetime.Process,
+        size = 1
+    )
+
+    public val EventFlagMan: GamePointer = GamePointer(
+        name = "EventFlagMan",
+        base = DSRSignatures.EventFlagMan,
+        offsets = listOf(0L),
+        lifetime = Lifetime.Session,
+        size = 8
+    )
 }

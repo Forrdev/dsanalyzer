@@ -1,10 +1,12 @@
 package com.sappyoak.dsanalyzer.runtime.sampling
 
+import java.util.concurrent.atomic.AtomicLong
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
+import com.sappyoak.dsanalyzer.game.world.items.ItemCategory
 import com.sappyoak.dsanalyzer.native.memory.AddressRange
 import com.sappyoak.dsanalyzer.native.process.ProcessMemory
 import com.sappyoak.dsanalyzer.runtime.layout.PlayerGameDataLayout
@@ -15,9 +17,12 @@ import com.sappyoak.dsanalyzer.runtime.session.SavedPosition
 import com.sappyoak.dsanalyzer.runtime.session.WorldPlace
 import com.sappyoak.dsanalyzer.runtime.write.GameWriter
 import com.sappyoak.dsanalyzer.runtime.write.UndoResult
+import com.sappyoak.dsanalyzer.runtime.write.flags.EventFlagTask
+import com.sappyoak.dsanalyzer.runtime.write.items.SpawnItemTask
 import com.sappyoak.dsanalyzer.runtime.write.mailbox.CallOutcome
 import com.sappyoak.dsanalyzer.runtime.write.mailbox.GameCall
 import com.sappyoak.dsanalyzer.runtime.write.mailbox.Mailbox
+import com.sappyoak.dsanalyzer.runtime.write.mailbox.RemoteMailbox
 import com.sappyoak.dsanalyzer.runtime.write.mailbox.Submission
 import com.sappyoak.dsanalyzer.runtime.write.position.RestorePositionTask
 import com.sappyoak.dsanalyzer.runtime.write.stats.LevelUpTask
@@ -38,7 +43,9 @@ public class SessionWrites internal constructor(
     private val player: PlayerGameDataLayout,
     private val writer: GameWriter
 ) {
-    private val mailbox = Mailbox(layout.mailbox, writer)
+    private val callIds = AtomicLong(1)
+    private val mailbox = Mailbox(layout.mailbox, writer, callIds)
+    private val remote = RemoteMailbox(layout.mailbox.arch, writer, callIds)
     private val tasks = TaskRunner()
     private val calls = MutableSharedFlow<CallOutcome>(extraBufferCapacity = OUTCOME_BUFFER, onBufferOverflow = BufferOverflow.DROP_OLDEST)
     private val taskSteps = MutableSharedFlow<TaskOutcome>(extraBufferCapacity = OUTCOME_BUFFER, onBufferOverflow = BufferOverflow.DROP_OLDEST)
@@ -82,9 +89,20 @@ public class SessionWrites internal constructor(
     /** Runs [command] as an NPC's talk script would, such as `TalkCommands.Repair` */
     public fun talk(command: TalkCommand): Submission = tasks.start(TalkTask(command, layout.talk, layout.mailbox.arch))
 
+    /** Adds [count] of item [id] to the inventory and shows the game's item-get popup for it */
+    public fun spawnItem(category: ItemCategory, id: Int, count: Int): Submission =
+        tasks.start(SpawnItemTask(category, id, count, layout.items, layout.mailbox.arch))
+
+    /** Sets event flag [flag] through the game's own call, so what the game ties to it follows */
+    public fun setFlag(flag: Int, value: Boolean): Submission =
+        tasks.start(EventFlagTask(flag, value, layout.flags, layout.mailbox.arch))
+
+    /** Reads event flag [flag] through the game's own call; the task is done with 1 or 0 */
+    public fun readFlag(flag: Int): Submission = tasks.start(EventFlagTask(flag, null, layout.flags, layout.mailbox.arch))
+
     internal fun afterSample(memory: GameMemory, module: AddressRange, inWorld: Boolean, place: WorldPlace) {
-        val arrived = mailbox.poll(memory.memory, module, inWorld)
-        val context = TaskContext(memory, writer, inWorld, place,  mailbox::submit, arrived.associateBy { it.id })
+        val arrived = mailbox.poll(memory.memory, module, inWorld) + remote.poll(memory.memory, module, inWorld)
+        val context = TaskContext(memory, writer, inWorld, place, mailbox::submit, remote::submit, arrived.associateBy { it.id })
         tasks.step(context).forEach(taskSteps::tryEmit)
         arrived.forEach(calls::tryEmit)
     }
@@ -92,5 +110,6 @@ public class SessionWrites internal constructor(
     internal fun cancelAll(memory: ProcessMemory) {
         tasks.cancelAll()
         mailbox.cancelAll(memory)
+        remote.cancelAll(memory)
     }
 }

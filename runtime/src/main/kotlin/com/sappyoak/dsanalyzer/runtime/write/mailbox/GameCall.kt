@@ -58,12 +58,33 @@ public data class GameCall(
     }
 }
 
+/** The x64 registers the first four arguments go in */
+private val X64_ARGUMENTS = listOf(CallRegister.Rcx, CallRegister.Rdx, CallRegister.R8, CallRegister.R9)
+
+/**
+ * A call in the edition's own convention: on x86 every argument on the stack, first argument first; on
+ * x64 the first four in RCX RDX R8 R9 and the rest on the stack. [registers] adds implicit ones, such as EAX
+ */
+public fun conventionalCall(
+    arch: CallArch,
+    target: Address,
+    label: String,
+    arguments: List<Long>,
+    registers: Map<CallRegister, Long> = emptyMap()
+): GameCall {
+    if (arch == CallArch.X86) return GameCall(target, label, registers, arguments)
+    val inRegisters = X64_ARGUMENTS.zip(arguments).toMap()
+    return GameCall(target, label, registers + inRegisters, arguments.drop(X64_ARGUMENTS.size))
+}
+
 /** The request slot both caves share. Register fields are 8 bytes wide in both */
 internal object MailboxSlot {
     const val STATE: Int = 0x00
     const val FRAMES: Int = 0x04
     const val TARGET: Int = 0x10
     const val RETURN: Int = 0x70
+    /** The remote thread's control word: the tool writes [STOP], the thread answers [STOPPED] as it ends */
+    const val CONTROL: Int = 0x78
     const val SIZE: Int = 0x80
 
     /** A call's data block, from the slot. It sits past the slot in the same allocation */
@@ -75,6 +96,9 @@ internal object MailboxSlot {
     const val REQUESTED: Int = 1
     const val RUNNING: Int = 2
     const val DONE: Int = 3
+
+    const val STOP: Int = 1
+    const val STOPPED: Int = 2
 
     fun argCount(arch: CallArch): Int = if (arch == CallArch.X86) 0x48 else 0x38
     fun firstArg(arch: CallArch): Int = if (arch == CallArch.X86) 0x50 else 0x40

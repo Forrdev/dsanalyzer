@@ -20,12 +20,14 @@ import com.sappyoak.dsanalyzer.runtime.layout.EsdStateLayout
 import com.sappyoak.dsanalyzer.runtime.layout.EventFieldsLayout
 import com.sappyoak.dsanalyzer.runtime.layout.EventFlagLayout
 import com.sappyoak.dsanalyzer.runtime.layout.FieldLayout
+import com.sappyoak.dsanalyzer.runtime.layout.FlagCallLayout
 import com.sappyoak.dsanalyzer.runtime.layout.GameLayout
 import com.sappyoak.dsanalyzer.runtime.layout.GameManLayout
 import com.sappyoak.dsanalyzer.runtime.layout.GoalLayout
 import com.sappyoak.dsanalyzer.runtime.layout.GoalTypeLayout
 import com.sappyoak.dsanalyzer.runtime.layout.HitInsLayout
 import com.sappyoak.dsanalyzer.runtime.layout.IdentityLayout
+import com.sappyoak.dsanalyzer.runtime.layout.ItemLayout
 import com.sappyoak.dsanalyzer.runtime.layout.LevelUpLayout
 import com.sappyoak.dsanalyzer.runtime.layout.LivePositionLayout
 import com.sappyoak.dsanalyzer.runtime.layout.LoadQueueLayout
@@ -429,6 +431,21 @@ internal fun ptdeLayout(): GameLayout = GameLayout(
                 count = WorldBlock.EntityCount,
                 entries = WorldBlock.EntitiesPointer
             )
+        ),
+        items = ItemLayout(
+            add = PTDEFunctions.ItemAdd,
+            inventory = FieldLayout(PlayerGameData.Pointer, PlayerGameData.Inventory),
+            addFlags = listOf(1L, 0L),
+            popup = PTDEFunctions.ItemPopup,
+            popupOwner = PTDEFunctions.ItemGetMenuMan,
+            popupOwnerRegister = CallRegister.Eax
+        ),
+        flags = FlagCallLayout(
+            set = PTDEFunctions.SetEventFlag,
+            get = PTDEFunctions.GetEventFlag,
+            owner = PTDEFunctions.EventFlagMan,
+            ownerRegister = CallRegister.Eax,
+            kindRegister = CallRegister.Ecx
         )
     )
 )
