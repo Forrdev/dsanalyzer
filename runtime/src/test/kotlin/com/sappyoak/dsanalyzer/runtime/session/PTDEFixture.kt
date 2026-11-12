@@ -1,41 +1,39 @@
 package com.sappyoak.dsanalyzer.runtime.session
 
 import com.sappyoak.dsanalyzer.game.GameEdition
-import com.sappyoak.dsanalyzer.native.memory.SignatureTarget
+import com.sappyoak.dsanalyzer.native.memory.Signature
 import com.sappyoak.dsanalyzer.native.process.ProcessInfo
 import com.sappyoak.dsanalyzer.runtime.GameConnection
 import com.sappyoak.dsanalyzer.runtime.GameProcess
 import com.sappyoak.dsanalyzer.runtime.pointers.FakeGame
-import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
-import com.sappyoak.dsanalyzer.runtime.pointers.GamePointer
-import com.sappyoak.dsanalyzer.runtime.pointers.resolvePointers
 import com.sappyoak.dsanalyzer.runtime.ptde.AnimData
 import com.sappyoak.dsanalyzer.runtime.ptde.ChrPosData
 import com.sappyoak.dsanalyzer.runtime.ptde.CharacterSlot
 import com.sappyoak.dsanalyzer.runtime.ptde.ChrCtrl
 import com.sappyoak.dsanalyzer.runtime.ptde.ChrIns
 import com.sappyoak.dsanalyzer.runtime.ptde.EventFlags
+import com.sappyoak.dsanalyzer.runtime.ptde.FollowCam
 import com.sappyoak.dsanalyzer.runtime.ptde.GameDataMan
+import com.sappyoak.dsanalyzer.runtime.ptde.GameMan
 import com.sappyoak.dsanalyzer.runtime.ptde.PlayerGameData
 import com.sappyoak.dsanalyzer.runtime.ptde.PTDEEdition
 import com.sappyoak.dsanalyzer.runtime.ptde.PTDEPointers
 import com.sappyoak.dsanalyzer.runtime.ptde.PTDESignatures
+import com.sappyoak.dsanalyzer.runtime.ptde.WorldArea
 import com.sappyoak.dsanalyzer.runtime.ptde.WorldChrMan
+import com.sappyoak.dsanalyzer.runtime.read.EventFlagIds
 import com.sappyoak.dsanalyzer.runtime.sampling.GameSession
+import com.sappyoak.dsanalyzer.runtime.sampling.openSession
 
 
 internal val PTDE_PROCESS = GameProcess(ProcessInfo(4242, "DARKSOULS.exe"), GameEdition.PrepareToDie)
 
-/** The version word sits at a fixed distance into the module */
+/** The Rich header marker sits at a fixed distance into the module */
 private const val VERSION_AT = 0x80
 
-/** One slot per signature, far enough apart for the longest pattern */
+/** Where the signatures are planted, then the globals their operands name */
 private const val SIGNATURES_AT = 0x1000
-private const val SIGNATURE_STRIDE = 0x40
-
-/** The globals the operands name */
 private const val STATICS_AT = 0x2000
-private const val STATIC_STRIDE = 0x10
 
 private const val TITLE_SCREEN_WORLD = 255
 
@@ -68,14 +66,10 @@ internal class PTDEFixture {
 
     init {
         game.int(VERSION_AT, STEAM_VERSION)
-        plantSignatures()
-        plantWalks()
+        plantWalks(game.plantSignatures(PTDEPointers.map { it.base }.distinct(), SIGNATURES_AT, STATICS_AT))
     }
 
-    fun session(): GameSession {
-        val resolved = game.resolvePointers(PTDEEdition.pointers, game.module)
-        return GameSession(PTDE_PROCESS, resolved, GameMemory(game, resolved), PTDEEdition.layout)
-    }
+    fun session(): GameSession = connection().openSession(PTDEEdition)
 
     /** The same process behind a connection, for anything testing the watch rather than a tick */
     fun connection(game: GameProcess = PTDE_PROCESS): GameConnection =
@@ -138,29 +132,12 @@ internal class PTDEFixture {
     }
 
     fun setFlag(flagId: Int, set: Boolean) {
-        val at = checkNotNull(EventFlags.locate(flagId))
+        val at = checkNotNull(EventFlagIds.locate(flagId))
         game.int(FLAGS_AT + at.byteOffset, if (set) at.mask.toInt() else 0)
     }
 
-    private fun plantSignatures() {
-        distinctBases().forEachIndexed { slot, pointer ->
-            val at = SIGNATURES_AT + slot * SIGNATURE_STRIDE
-            val target = pointer.base.target
-            require(target is SignatureTarget.Embedded) { "${pointer.base} is not planted by this fixture" }
-
-            pointer.base.pattern.toString().split(' ').forEachIndexed { index, token ->
-                if (token != WILDCARD) game.write(at + index, token.toInt(16))
-            }
-            game.pointer(at + target.at, STATICS_AT + slot * STATIC_STRIDE)
-        }
-    }
-
     /** Each walk laid out link by link, so the offsets in the tables are the ones exercised */
-    private fun plantWalks() {
-        val statics = distinctBases().withIndex().associate { (slot, pointer) ->
-            pointer.base to STATICS_AT + slot * STATIC_STRIDE
-        }
-
+    private fun plantWalks(statics: Map<Signature, Int>) {
         // ChrIns1: static -> +0 -> +4 -> +0
         game.pointer(statics.getValue(PTDESignatures.WorldChrMan), WORLD_CHR_MAN_AT)
         game.pointer(WORLD_CHR_MAN_AT + WorldChrMan.PlayerPointer, CHARACTER_AT)
@@ -179,7 +156,7 @@ internal class PTDEFixture {
         game.pointer(statics.getValue(WorldArea.Pointer.base), AREA_AT)
         game.pointer(statics.getValue(GameDataMan.Pointer.base), GAME_DATA_AT)
 
-        game.pointer(GAME_DATA_AT + com.sappyoak.dsanalyzer.runtime.dsr.GameDataMan.PlayerGameDataPointer, ATTRIBUTES_AT)
+        game.pointer(GAME_DATA_AT + GameDataMan.PlayerGameDataPointer, ATTRIBUTES_AT)
 
         // EventFlags: static -> +0 -> +0
         game.pointer(statics.getValue(EventFlags.Pointer.base), LINKS_AT + 0x300)
@@ -191,12 +168,8 @@ internal class PTDEFixture {
         game.pointer(LINKS_AT + 0x500 + 0x60, FOLLOW_CAM_AT)
     }
 
-    private fun distinctBases(): List<GamePointer> = PTDEPointers.distinctBy { it.base }
-
     private companion object {
-        const val WILDCARD = "??"
-
-        /** The word the Steam build carries, which [PTDEBuild.of] should recognise */
+        /** The Rich marker the Steam build carries, which [PTDEVersion.of] recognizes */
         val STEAM_VERSION: Int = 0xFC293654.toInt()
     }
 }

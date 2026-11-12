@@ -6,6 +6,7 @@ import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.native.memory.AddressRange
 import com.sappyoak.dsanalyzer.native.memory.MemoryRegion
 import com.sappyoak.dsanalyzer.native.process.AttachedProcess
+import com.sappyoak.dsanalyzer.native.process.CodeMemory
 import com.sappyoak.dsanalyzer.native.process.ModuleInfo
 import com.sappyoak.dsanalyzer.native.process.ProcessAccessException
 import com.sappyoak.dsanalyzer.native.process.ProcessInfo
@@ -41,6 +42,7 @@ internal class FakeAttachedProcess(
         private set
 
     override val isRunning: Boolean get() = !closed && alive()
+    override val code: CodeMemory? = null
 
     override fun modules(): List<ModuleInfo> = loaded
 

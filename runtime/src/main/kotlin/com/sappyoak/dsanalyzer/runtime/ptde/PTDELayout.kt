@@ -443,7 +443,7 @@ internal fun ptdeLayout(): GameLayout = GameLayout(
         flags = FlagCallLayout(
             set = PTDEFunctions.SetEventFlag,
             get = PTDEFunctions.GetEventFlag,
-            owner = PTDEFunctions.EventFlagMan,
+            owner = EventFlags.Manager,
             ownerRegister = CallRegister.Eax,
             kindRegister = CallRegister.Ecx
         )

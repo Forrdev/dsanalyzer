@@ -99,12 +99,4 @@ public object PTDEFunctions {
         lifetime = Lifetime.Process,
         size = 1
     )
-
-    public val EventFlagMan: GamePointer = GamePointer(
-        name = "EventFlagMan",
-        base = PTDESignatures.EventFlags,
-        offsets = listOf(0L),
-        lifetime = Lifetime.Session,
-        size = 8
-    )
 }

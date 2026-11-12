@@ -9,11 +9,9 @@ import io.kotest.matchers.shouldNotBe
 
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.runtime.ptde.ChrIns
-import com.sappyoak.dsanalyzer.runtime.ptde.ChrInsFlags2
 import com.sappyoak.dsanalyzer.runtime.ptde.ChrCtrl
 import com.sappyoak.dsanalyzer.runtime.ptde.ChrCtrlFlags
 import com.sappyoak.dsanalyzer.runtime.ptde.ChrPosData
-import com.sappyoak.dsanalyzer.runtime.ptde.FlagChange
 import com.sappyoak.dsanalyzer.shared.math.Vec3
 
 private const val SAMPLE_FLAG = 11_010_902

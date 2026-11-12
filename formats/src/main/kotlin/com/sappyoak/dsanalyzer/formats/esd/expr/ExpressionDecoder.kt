@@ -70,7 +70,7 @@ private class Decoder(private val bytes: ByteArray) {
     }
 
     private fun pop(count: Int, then: (List<EsdExpression>) -> String?): String? {
-        if (stack.size < count) return "needs $count values and the stack hold ${stack.size}"
+        if (stack.size < count) return "needs $count values and the stack holds ${stack.size}"
         return then(List(count) { stack.removeLast() }.reversed())
     }
 

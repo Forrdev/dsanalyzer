@@ -25,7 +25,13 @@ public val DSRPointers: List<GamePointer> = listOf(
     DSRFunctions.EventMan,
     DSRFunctions.TalkDispatch,
     DSRFunctions.TalkOwnerLookup,
-    DSRFunctions.TalkEventVTable
+    DSRFunctions.TalkEventVTable,
+    DSRFunctions.ItemAdd,
+    DSRFunctions.ItemPopup,
+    DSRFunctions.ItemGetMenuMan,
+    DSRFunctions.SetEvent,
+    DSRFunctions.GetEvent,
+    DSRFunctions.EventFlagMan
 )
 
 public val DSREdition: EditionTables = EditionTables(

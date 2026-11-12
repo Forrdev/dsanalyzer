@@ -19,9 +19,12 @@ import io.kotest.matchers.types.shouldBeInstanceOf
 import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.native.process.ProcessInfo
 import com.sappyoak.dsanalyzer.runtime.ConnectionEvent
+import com.sappyoak.dsanalyzer.runtime.EditionTables
 import com.sappyoak.dsanalyzer.runtime.GameProcess
-import com.sappyoak.dsanalyzer.runtime.ptde.PTDEBuild
+import com.sappyoak.dsanalyzer.runtime.ptde.PTDEVersion
+import com.sappyoak.dsanalyzer.runtime.sampling.SampleRequests
 import com.sappyoak.dsanalyzer.runtime.sampling.sampling
+import com.sappyoak.dsanalyzer.runtime.tablesFor
 
 private val TICK = 100.milliseconds
 
@@ -31,10 +34,14 @@ private val REMASTERED = GameProcess(
 )
 
 /** Collects in the background of [runTest] so a test steps time rather than waiting for it */
-private fun TestScope.sample(upstream: Flow<ConnectionEvent>): List<RuntimeEvent> {
+private fun TestScope.sample(
+    upstream: Flow<ConnectionEvent>,
+    tables: (GameEdition) -> EditionTables? = ::tablesFor
+): List<RuntimeEvent> {
     val events = mutableListOf<RuntimeEvent>()
     backgroundScope.launch {
-        upstream.sampling(period = { TICK }, context = EmptyCoroutineContext).collect(events::add)
+        upstream.sampling(SampleRequests(), period = { TICK }, tables = tables, context = EmptyCoroutineContext)
+            .collect(events::add)
     }
     runCurrent()
     return events
@@ -51,7 +58,7 @@ class SamplerTest : FunSpec({
 
             assertSoftly {
                 attached.game shouldBe PTDE_PROCESS
-                attached.build shouldBe PTDEBuild.Steam
+                attached.build shouldBe PTDEVersion.Steam.name
                 attached.pointers.complete shouldBe true
                 events.count { it is RuntimeEvent.Attached } shouldBe 1
                 events.count { it is RuntimeEvent.Sampled } shouldBe 4
@@ -98,7 +105,7 @@ class SamplerTest : FunSpec({
     test("an edition with no tables is reported rather than sampled") {
         runTest {
             val fixture = PTDEFixture()
-            val events = sample(flowOf(ConnectionEvent.Connected(fixture.connection(REMASTERED))))
+            val events = sample(flowOf(ConnectionEvent.Connected(fixture.connection(REMASTERED))), tables = { null })
 
             advanceTimeBy(350.milliseconds)
 
@@ -119,3 +126,4 @@ class SamplerTest : FunSpec({
         }
     }
 })
+

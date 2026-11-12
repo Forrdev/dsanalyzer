@@ -61,7 +61,7 @@ private fun structures(): List<Structure> = classFiles().flatMap { type ->
 
     val offsets = type.declaredFields
         .filter { Modifier.isStatic(it.modifiers) && Modifier.isPublic(it.modifiers) }
-        .filter { it.type == Int::class.javaPrimitiveType }
+        .filter { it.type == Int::class.javaPrimitiveType && !it.name.isConstantName() }
         .map { Offset(it.name, it.getInt(null)) }
 
     if (offsets.isEmpty()) {
@@ -70,6 +70,9 @@ private fun structures(): List<Structure> = classFiles().flatMap { type ->
         accessors.map { Structure(it.invoke(instance.get(null)) as GamePointer, offsets) }
     }
 }
+
+/** `SIZE`, `COUNT` and masks are named in capitals, and are not offsets */
+private fun String.isConstantName(): Boolean = all { it.isUpperCase() || it.isDigit() || it == '_' }
 
 /**
  * The package's classes, read off every classpath directory that holds it

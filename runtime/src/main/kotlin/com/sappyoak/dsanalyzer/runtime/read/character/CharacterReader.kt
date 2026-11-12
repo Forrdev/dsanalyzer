@@ -66,13 +66,16 @@ internal class CharacterReader(
     override fun player(game: GameMemory): PlayerReading {
         if (!manager.refresh(game)) return PlayerReading.Empty
 
+        val world = details.world(game, deathCam = manager.boolean(chars.deathCam))
         val player = manager.pointer(chars.player)
-        if (player.isNull || !one.refresh(game.memory, player)) return PlayerReading(null, null, 1)
+        if (player.isNull || !one.refresh(game.memory, player)) {
+            return PlayerReading(null, world, if (world == null) 1 else 2)
+        }
 
         val base = snapshotOf(game, posed = true, withEffects = true)
         return PlayerReading(
             player = details.read(game, one, base),
-            world = details.world(deathCam = manager.boolean(chars.deathCam)),
+            world = world,
             present = PLAYER_OWN_STRUCTURES + details.present
         )
     }
@@ -142,4 +145,3 @@ internal class CharacterReader(
             found.add(snapshotOf(game, posed = false, withEffects = allEffects))
         }
     }
-}

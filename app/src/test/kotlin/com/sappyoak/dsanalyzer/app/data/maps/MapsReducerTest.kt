@@ -175,7 +175,7 @@ class MapsReducerTest : FunSpec({
         )
 
         assertSoftly {
-            state.problem shouldBe "No layout file for $DEPTHS, so entity search will not cover it"
+            state.problem shouldBe "No usable layout for $DEPTHS, so entity search will not cover it"
             withClue("indexing is background work and must not cancel the map being read") {
                 state.loadingMap shouldBe PARISH
             }
@@ -196,3 +196,4 @@ class MapsReducerTest : FunSpec({
         }
     }
 })
+

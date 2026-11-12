@@ -44,7 +44,7 @@ public object Graphics {
         base = PTDESignatures.GraphicsMan,
         offsets = listOf(0L),
         lifetime = Lifetime.Process,
-        size = 0x58
+        size = 0x60
     )
 
     /** Points at the object whose first field is the draw registry */

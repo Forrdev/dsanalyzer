@@ -11,6 +11,7 @@ import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
+import com.sappyoak.dsanalyzer.runtime.pointers.Lifetime
 import com.sappyoak.dsanalyzer.runtime.pointers.TableElements
 import com.sappyoak.dsanalyzer.runtime.pointers.TableShape
 
@@ -107,9 +108,10 @@ class PTDETablesTest : FunSpec({
         PTDEPointers.groupBy { it.name }.filterValues { it.size > 1 }.keys.shouldBeEmpty()
     }
 
-    test("every pointer walks at least one offset from where its signature landed") {
+    test("every pointer walks at least one offset, except code and statics used where the signature lands") {
         assertSoftly {
-            PTDEPointers.forEach { withClue(it.name) { it.offsets.shouldBeGreaterThanZero() } }
+            PTDEPointers.filterNot { it.lifetime == Lifetime.Process }
+                .forEach { withClue(it.name) { it.offsets.shouldBeGreaterThanZero() } }
         }
     }
 

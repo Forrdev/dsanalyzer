@@ -39,7 +39,7 @@ internal object LibC {
     val available: Boolean = "process_vm_readv" in library
 
     private val readCall: MethodHandle by lazy {
-        library.capturingErrno("process_vm_readyv", DESCRIPTOR)
+        library.capturingErrno("process_vm_readv", DESCRIPTOR)
     }
 
     private val writeCall: MethodHandle by lazy {

@@ -6,7 +6,7 @@ import com.sappyoak.dsanalyzer.runtime.pointers.Lifetime
 /** Equal to `EventFlagIds.BLOCK_SIZE` */
 private const val BLOCK_SIZE: Int = 0x16D00
 
-private const val MANAGER_SIZE: Int = 0x118
+private const val MANAGER_SIZE: Int = 0x120
 
 public object EventFlags {
     public val Pointer: GamePointer = GamePointer(

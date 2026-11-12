@@ -45,8 +45,8 @@ class EsdReaderTest : FunSpec({
 
     test("a group's states are read by id, and the repeated first state is not a state of its own") {
         assertSoftly {
-            esd.groups.keys shouldContainExactly listOf(7L)
-            group.states.keys shouldContainExactly listOf(10L, 11L)
+            esd.groups.keys.toList() shouldContainExactly listOf(7L)
+            group.states.keys.toList() shouldContainExactly listOf(10L, 11L)
             esd.name shouldBe null
         }
     }

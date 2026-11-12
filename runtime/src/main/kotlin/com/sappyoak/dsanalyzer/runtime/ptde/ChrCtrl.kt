@@ -79,7 +79,7 @@ public object ChrPosData {
             ChrCtrl.PositionPointer.toLong()
         ),
         lifetime = Lifetime.World,
-        size = 0x20
+        size = 0x19C
     )
 
     public const val Angle: Int = 0x4

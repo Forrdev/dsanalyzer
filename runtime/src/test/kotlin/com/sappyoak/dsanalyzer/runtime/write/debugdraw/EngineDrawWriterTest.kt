@@ -12,8 +12,8 @@ import com.sappyoak.dsanalyzer.runtime.pointers.FakeGame
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.pointers.ResolvedPointers
 import com.sappyoak.dsanalyzer.runtime.ptde.AttackMan
-import com.sappyoak.dsanalyzer.runtime.ptde.PTDELayout
 import com.sappyoak.dsanalyzer.runtime.ptde.PTDESignatures
+import com.sappyoak.dsanalyzer.runtime.ptde.ptdeLayout
 import com.sappyoak.dsanalyzer.runtime.sampling.SessionContext
 import com.sappyoak.dsanalyzer.runtime.session.DrawInstall
 import com.sappyoak.dsanalyzer.runtime.write.GameWriter
@@ -39,8 +39,8 @@ private class Engine(backend: (FakeGame) -> DrawRoute) {
     }
     val writer = GameWriter(game, ArenaMemory(game))
     private val pointers = ResolvedPointers(mapOf(PTDESignatures.AttackMan to game.address(ATTACK_GLOBAL)), emptyList())
-    private val context = SessionContext(GameEdition.PrepareToDie, GameMemory(game, pointers), writer, game.module, PTDELayout) { null }
-    val draw = EngineDrawWriter(context, checkNotNull(PTDELayout.debugDraw)) { _, _ -> backend(game) }
+    private val context = SessionContext(GameEdition.PrepareToDie, GameMemory(game, pointers), writer, game.module, ptdeLayout()) { null }
+    val draw = EngineDrawWriter(context, checkNotNull(ptdeLayout().debugDraw)) { _, _ -> backend(game) }
 
     fun bytes(offset: Int, length: Int): List<Byte> = game.read(game.address(offset), length)!!.toList()
 }

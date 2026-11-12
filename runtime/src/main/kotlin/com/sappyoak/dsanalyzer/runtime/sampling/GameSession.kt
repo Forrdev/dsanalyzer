@@ -174,8 +174,8 @@ public class GameSession internal constructor(
     }
 
     private companion object {
-        /** The follow cam, the map, and the flag block, beside the player's own structures */
-        const val AROUND_PLAYER = 3
+        /** The follow cam, the map, the clock and the flag block, beside the player's own structures */
+        const val AROUND_PLAYER = 4
 
         /**
          * Ticks between slow-tier reads. Six against a 30hz logic tick is five times a second,

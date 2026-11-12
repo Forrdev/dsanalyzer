@@ -45,9 +45,10 @@ public fun readTae(reader: BinaryReader): Tae {
     reader.skip(2)
 
     val wide = reader.readBoolean()
+    val versionAt = reader.position
     val version = reader.readInt()
     if (wide || version != VERSION) {
-        throw BinaryFormatException("TAE version 0x${version.toString(16)} is not Dark Souls", 0L)
+        throw BinaryFormatException("TAE version 0x${version.toString(16)} is not Dark Souls", versionAt)
     }
 
     LAYOUT_MARKERS.forEach { (at, expected) -> reader.at(at) {

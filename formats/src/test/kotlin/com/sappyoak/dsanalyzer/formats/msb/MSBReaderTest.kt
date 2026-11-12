@@ -43,7 +43,7 @@ private fun layout(
     params: List<String> = listOf("MODEL_PARAM_ST", "EVENT_PARAM_ST", "POINT_PARAM_ST", "PARTS_PARAM_ST"),
     parts: List<ByteArray> = listOf(
         collision("h0000B0_0000", hitFilter = 8, placeName = -1, playRegion = 12),
-        collision("h0001B0_0000", hitFilter = 10, placeName = -5, playRegion = -1010),
+        collision("h0001B0_0000", hitFilter = 30, placeName = -5, playRegion = -1010),
         ENEMY,
         CONNECT
     )

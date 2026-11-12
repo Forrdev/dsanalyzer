@@ -30,11 +30,10 @@ internal class PlayerDetailsReader(layout: GameLayout) {
 
     fun read(game: GameMemory, character: StructView, base: CharacterSnapshot): PlayerSnapshot {
         val sheetRead = attributes.refresh(game)
-        val worldRead = worldState.refresh(game)
         val controlRead = refreshAt(game, control, character.pointer(chars.chr.control))
         val positionRead = controlRead && refreshAt(game, position, control.pointer(chars.control.position))
         val animationRead = controlRead && refreshAt(game, animation, control.pointer(chars.control.animData))
-        present = listOf(sheetRead, worldRead, controlRead, positionRead, animationRead).count { it }
+        present = listOf(sheetRead, worldState.isPresent, controlRead, positionRead, animationRead).count { it }
 
         return PlayerSnapshot(
             character = base,
@@ -51,8 +50,8 @@ internal class PlayerDetailsReader(layout: GameLayout) {
         )
     }
 
-    fun world(deathCam: Boolean): WorldSnapshot? {
-        if (!worldState.isPresent) return null
+    fun world(game: GameMemory, deathCam: Boolean): WorldSnapshot? {
+        if (!worldState.refresh(game)) return null
         val world = chars.world
         return WorldSnapshot(
             stablePosition = worldState.vec3(world.stablePosition),

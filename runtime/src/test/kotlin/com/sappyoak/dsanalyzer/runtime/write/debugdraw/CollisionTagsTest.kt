@@ -9,7 +9,7 @@ import com.sappyoak.dsanalyzer.runtime.ptde.MapPart
 import com.sappyoak.dsanalyzer.runtime.ptde.MapPartType
 import com.sappyoak.dsanalyzer.runtime.ptde.MapParts
 import com.sappyoak.dsanalyzer.runtime.ptde.MsbResCap
-import com.sappyoak.dsanalyzer.runtime.ptde.PTDELayout
+import com.sappyoak.dsanalyzer.runtime.ptde.ptdeLayout
 import com.sappyoak.dsanalyzer.runtime.write.GameMutation
 import com.sappyoak.dsanalyzer.runtime.write.GameWriter
 
@@ -57,15 +57,16 @@ private fun FakeGame.tagOf(instance: Int): Int =
 class CollisionTagsTest : FunSpec({
     test("each collision instance is tagged with its own part's filter; one that does not fit is left alone") {
         val game = world()
-        CollisionTags(checkNotNull(PTDELayout.debugDraw)).tag(game, GameWriter(game, null), game.address(MANAGER)) shouldBe 2
+        CollisionTags(checkNotNull(ptdeLayout().debugDraw)).tag(game, GameWriter(game, null), game.address(MANAGER)) shouldBe 2
         (0 until 3).map(game::tagOf) shouldBe listOf(0x88, 0x8D, 0x00)
     }
 
     test("clearing puts every tag back to zero") {
         val game = world()
-        val tags = CollisionTags(checkNotNull(PTDELayout.debugDraw))
+        val tags = CollisionTags(checkNotNull(ptdeLayout().debugDraw))
         tags.tag(game, GameWriter(game, null), game.address(MANAGER))
         tags.clear(game, GameWriter(game, null), game.address(MANAGER)) shouldBe 3
         (0 until 3).map(game::tagOf) shouldBe listOf(0, 0, 0)
     }
 })
+

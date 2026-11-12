@@ -39,40 +39,49 @@ public class ScriptsEffects(
                 checkNotNull(game.script(effect.script)) { "${effect.script} has no event script" }
                     .summarize(game.scriptNames(effect.script))
             )
-            is ScriptsEffect.IndexScripts -> queue.run { game.indexFlags(effect.scripts) }
+            is ScriptsEffect.IndexScripts -> queue.run { game.indexScripts(effect.scripts) }
         }
     }
 
-    private suspend fun GameData.indexFlags(scripts: List<ScriptId>): ScriptsMessage.ScriptsIndexed {
-        val read = scripts.associateWith { script -> flagUsesIn(script) }
+    private suspend fun GameData.indexScripts(scripts: List<ScriptId>): ScriptsMessage.ScriptsIndexed {
+        val read = scripts.associateWith { script -> indexingOf(script) }
+        val built = read.values.filterNotNull()
+
+        val calls = EventCallIndex.of(
+            found = built.flatMap { it.calls },
+            needs = built.fold(emptyMap<EventKey, Int>()) { all, one -> all + one.needs },
+            scripts = built.size
+        )
+
+        logger.atInfo {
+            message = "Scripts indexed"
+            payload = mapOf(
+                "scripts" to built.size,
+                "callSites" to calls.sites,
+                "callerArgumentOffset" to calls.base
+            )
+        }
+
         return ScriptsMessage.ScriptsIndexed(
-            flags = FlagIndex.of(
-                found = read.values.filterNotNull().flatten(),
-                scripts = read.count { (_, uses) -> uses != null }
-            ),
+            flags = FlagIndex.of(found = built.flatMap { it.flagUses }, scripts = built.size),
+            calls = calls,
             unreadable = read.filterValues { it == null }.keys.toList()
         )
     }
 
-
-    private suspend fun GameData.flagUsesIn(script: ScriptId): List<FoundFlagUse>? = try {
-        this.script(script)?.flagUses()
+    private suspend fun GameData.indexingOf(script: ScriptId): ScriptIndexing? = try {
+        this.script(script)?.indexed()
     } catch (err: BinaryFormatException) {
         logger.atWarn {
-            message = "Script left out of the flag index"
+            message = "Script left out of index"
             cause = err
-            payload = mapOf("script" to script.label)
+            payload = mapOf("script" to  script.label)
         }
         null
     }
 }
 
-private fun DecodedScript.flagUses(): List<FoundFlagUse> =
-    events.flatMap { (eventId, instructions) ->
-        instructions.flatMap { instruction ->
-            instruction.flagUses(eventId).map { use -> FoundFlagUse(script, eventId, use) }
-        }
-    }
+
 
 public sealed interface ScriptsEffect {
     public val installation: Installation

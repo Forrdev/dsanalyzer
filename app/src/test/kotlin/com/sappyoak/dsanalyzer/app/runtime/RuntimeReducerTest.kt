@@ -63,8 +63,13 @@ private fun installation(edition: GameEdition = GameEdition.PrepareToDie): Insta
 }
 
 class RuntimeReducerTest : FunSpec({
-    test("opening the view watches the link rather than the game, and keeps the AI tracking applied") {
-        reduceRuntime(RuntimeState(), RuntimeMessage.Opened(installation())).effects shouldBe listOf(RuntimeEffect.Observe, RuntimeEffect.FollowAITracking)
+    test("opening the view watches the link rather than the game, and follows the settings it applies") {
+        reduceRuntime(RuntimeState(), RuntimeMessage.Opened(installation())).effects shouldBe listOf(
+            RuntimeEffect.Observe,
+            RuntimeEffect.FollowAITracking,
+            RuntimeEffect.FollowTimingsWanted,
+            RuntimeEffect.FollowEngineDraw
+        )
     }
 
     test("what the link reports becomes the state") {
@@ -127,7 +132,7 @@ class RuntimeReducerTest : FunSpec({
     test("a roster that comes back becomes the state, and not-asked stays apart from none-found") {
         val fresh = RuntimeState()
         val answered = tick(fresh, LinkState(attached = GAME, placedEnemies = emptyList()))
-        
+
         assertSoftly {
             fresh.placedEnemies shouldBe null
             answered.placedEnemies shouldBe emptyList()
