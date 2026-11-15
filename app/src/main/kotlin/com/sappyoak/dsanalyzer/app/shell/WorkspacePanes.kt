@@ -1,6 +1,5 @@
 package com.sappyoak.dsanalyzer.app.shell
 
-
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -88,9 +87,11 @@ internal fun DetailPane(
 
         is View.Live -> {
             val state by stores.runtime.state.collectAsState()
+            val scripts by stores.scripts.state.collectAsState()
             RuntimeDetail(
                 state = state,
                 panel = view.panel,
+                flagNames = scripts.flagNames,
                 onFollow = onFollow,
                 onReadPlacedEnemies = { stores.runtime.dispatch(RuntimeMessage.PlacedEnemiesRequested) },
                 onInstallDraw = { stores.runtime.dispatch(RuntimeMessage.EngineDrawInstallRequested(it)) },

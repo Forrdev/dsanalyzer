@@ -1,4 +1,4 @@
-package com.sappyoak.dsanalyzer.app.data.scripts
+package com.sappyoak.dsanalyzer.game.world.scripts.index
 
 /**
  * Where a callee's 'sourceStartByte' counts from inside its caller's 'InitializeEvent'

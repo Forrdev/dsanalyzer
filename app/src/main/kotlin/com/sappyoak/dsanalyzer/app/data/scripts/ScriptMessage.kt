@@ -1,8 +1,11 @@
 package com.sappyoak.dsanalyzer.app.data.scripts
 
 import com.sappyoak.dsanalyzer.game.Installation
+import com.sappyoak.dsanalyzer.game.world.flags.FlagNames
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
+import com.sappyoak.dsanalyzer.game.world.scripts.index.EventCallIndex
+import com.sappyoak.dsanalyzer.game.world.scripts.index.FlagIndex
 
 public sealed interface ScriptsMessage {
     /** The workspace opened over this installation */
@@ -17,6 +20,10 @@ public sealed interface ScriptsMessage {
         public val calls: EventCallIndex,
         public val unreadable: List<ScriptId>
     ) : ScriptsMessage
+
+    public data class FlagsNamed(public val names: FlagNames) : ScriptsMessage
+
+    public data class NamingFailed(public val reason: String) : ScriptsMessage
 
     public data class ScriptSelected(public val script: ScriptId) : ScriptsMessage
 

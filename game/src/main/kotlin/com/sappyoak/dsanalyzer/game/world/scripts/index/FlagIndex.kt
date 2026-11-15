@@ -1,4 +1,4 @@
-package com.sappyoak.dsanalyzer.app.data.scripts
+package com.sappyoak.dsanalyzer.game.world.scripts.index
 
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.FlagAccess
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.FlagTarget

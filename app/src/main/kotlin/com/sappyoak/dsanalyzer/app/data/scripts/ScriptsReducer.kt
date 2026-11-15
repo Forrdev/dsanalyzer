@@ -33,7 +33,12 @@ public fun reduceScripts(
         indexing = false,
         unreadable = message.unreadable,
         problem = null
-    ).with()
+    ).let { next ->
+        next.installation?.let { next.with(ScriptsEffect.NameFlags(it, message.calls)) } ?: next.with()
+    }
+
+    is ScriptsMessage.FlagsNamed -> state.copy(flagNames = message.names, namingProblem = null).with()
+    is ScriptsMessage.NamingFailed -> state.copy(namingProblem = "Flags could not be named: ${message.reason}").with()
 
     is ScriptsMessage.ScriptSelected -> state.read(message.script)
     is ScriptsMessage.FlagRequested -> state.findFlag(message.flagId, message.seenIn)

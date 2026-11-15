@@ -15,16 +15,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-import com.sappyoak.dsanalyzer.app.data.scripts.CallerArguments
-import com.sappyoak.dsanalyzer.app.data.scripts.EventKey
 import com.sappyoak.dsanalyzer.app.data.scripts.ScriptsState
-import com.sappyoak.dsanalyzer.app.data.scripts.argumentsFor
 import com.sappyoak.dsanalyzer.app.nav.Resolution
 import com.sappyoak.dsanalyzer.app.nav.View
 import com.sappyoak.dsanalyzer.app.ui.theme.AnalyzerTheme
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.ArgValue
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.DecodedInstruction
 import com.sappyoak.dsanalyzer.game.ref.Address
+import com.sappyoak.dsanalyzer.game.world.scripts.index.CallerArguments
+import com.sappyoak.dsanalyzer.game.world.scripts.index.EventKey
+import com.sappyoak.dsanalyzer.game.world.scripts.index.argumentsFor
 
 @Composable
 internal fun InstructionPane(

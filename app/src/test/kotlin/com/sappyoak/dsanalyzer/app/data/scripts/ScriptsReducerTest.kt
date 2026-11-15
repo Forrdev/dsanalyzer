@@ -16,6 +16,8 @@ import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.game.InstallationId
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
+import com.sappyoak.dsanalyzer.game.world.scripts.index.EventCallIndex
+import com.sappyoak.dsanalyzer.game.world.scripts.index.FlagIndex
 
 private val INSTALLATION = Installation(
     id = InstallationId("ptde"),
@@ -75,6 +77,21 @@ class ScriptsReducerTest : FunSpec({
                 state.loading shouldBe false
             }
             effects shouldContainExactly listOf(ScriptsEffect.IndexScripts(INSTALLATION, catalog))
+        }
+    }
+
+    test("a finished index names the flags with what it says callers pass, and a failure is kept apart") {
+        val calls = EventCallIndex.Empty
+        val (indexed, effects) = reduceScripts(
+            CATALOGUED.copy(indexing = true),
+            ScriptsMessage.ScriptsIndexed(FlagIndex.Empty, calls, unreadable = emptyList())
+        )
+        val failed = reduceScripts(indexed, ScriptsMessage.NamingFailed("no params")).state
+
+        assertSoftly {
+            effects shouldContainExactly listOf(ScriptsEffect.NameFlags(INSTALLATION, calls))
+            failed.namingProblem shouldBe "Flags could not be named: no params"
+            failed.problem shouldBe null
         }
     }
 

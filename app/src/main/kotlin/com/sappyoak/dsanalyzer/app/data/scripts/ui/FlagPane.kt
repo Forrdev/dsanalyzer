@@ -18,12 +18,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-import com.sappyoak.dsanalyzer.app.nav.View
 import com.sappyoak.dsanalyzer.app.data.scripts.FlagFindings
-import com.sappyoak.dsanalyzer.app.data.scripts.FlagReference
 import com.sappyoak.dsanalyzer.app.data.scripts.ScriptsState
+import com.sappyoak.dsanalyzer.app.nav.View
 import com.sappyoak.dsanalyzer.app.ui.theme.AnalyzerTheme
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.FlagAccess
+import com.sappyoak.dsanalyzer.game.world.flags.FlagName
+import com.sappyoak.dsanalyzer.game.world.scripts.index.FlagReference
 import com.sappyoak.dsanalyzer.game.world.scripts.title
 
 private val ACCESS_WIDTH = 64.dp
@@ -35,6 +36,8 @@ internal fun FlagPane(state: ScriptsState, flagId: Int, onFollow: (View) -> Unit
     Column(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
             Text("Flag $flagId", style = MaterialTheme.typography.titleSmall)
+            state.flagNames[flagId]?.let { Meaning(it) }
+            state.namingProblem?.let { Text(it, style = AnalyzerTheme.text.label, color = AnalyzerTheme.colors.failed) }
             Text(
                 text = findings?.summarize() ?: state.describeWait(),
                 style = AnalyzerTheme.text.label,
@@ -88,6 +91,18 @@ private fun Reference(reference: FlagReference, onFollow: () -> Unit) {
                 color = AnalyzerTheme.colors.link
             )
         }
+    }
+}
+
+/** The best reading, then every other, each with its kind and whether it names this flag itself */
+@Composable
+private fun Meaning(name: FlagName) {
+    name.evidence.forEachIndexed { index, evidence ->
+        Text(
+            text = "${evidence.kind.label}: ${evidence.label}${if (evidence.direct) "" else " (shares an event)"}",
+            style = if (index == 0) MaterialTheme.typography.bodyMedium else AnalyzerTheme.text.label,
+            color = if (index == 0) AnalyzerTheme.colors.textHi else AnalyzerTheme.colors.textLo
+        )
     }
 }
 

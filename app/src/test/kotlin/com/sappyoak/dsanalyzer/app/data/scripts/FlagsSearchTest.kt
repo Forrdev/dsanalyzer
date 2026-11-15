@@ -4,6 +4,7 @@ import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import java.nio.file.Path
@@ -18,6 +19,9 @@ import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.game.InstallationId
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
+import com.sappyoak.dsanalyzer.game.world.scripts.index.EventCallIndex
+import com.sappyoak.dsanalyzer.game.world.scripts.index.FlagIndex
+import com.sappyoak.dsanalyzer.game.world.scripts.index.FoundFlagUse
 
 private const val FLAG = 11_010_902
 private const val SPANNED_FLAG = 11_020_050
@@ -162,7 +166,9 @@ class FlagSearchTest : FunSpec({
             withClue("the view re-asks once built flips, which is what replaced replaying it here") {
                 state.findings shouldBe null
             }
-            effects.shouldBeEmpty()
+            withClue("the only follow-up is naming the flags") {
+                effects.map { it::class } shouldContainExactly listOf(ScriptsEffect.NameFlags::class)
+            }
         }
     }
 

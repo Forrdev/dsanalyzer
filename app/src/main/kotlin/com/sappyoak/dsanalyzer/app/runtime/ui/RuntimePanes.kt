@@ -25,6 +25,7 @@ import com.sappyoak.dsanalyzer.app.runtime.RuntimeState
 import com.sappyoak.dsanalyzer.app.ui.theme.AnalyzerTheme
 import com.sappyoak.dsanalyzer.app.ui.theme.Indicator
 import com.sappyoak.dsanalyzer.app.ui.theme.of
+import com.sappyoak.dsanalyzer.game.world.flags.FlagNames
 import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
 
 @Composable
@@ -106,6 +107,8 @@ private fun PanelRow(
 public fun RuntimeDetail(
     state: RuntimeState,
     panel: RuntimePanel,
+    /** What each flag in the log means, from the scripts index */
+    flagNames: FlagNames,
     onFollow: (View) -> Unit,
     onReadPlacedEnemies: () -> Unit,
     onInstallDraw: (Boolean) -> Unit,
@@ -146,7 +149,7 @@ public fun RuntimeDetail(
                     )
                     RuntimePanel.Collision ->
                         item(key = "collision") { CollisionPanel(state.engineDraw, onInstallDraw) }
-                    RuntimePanel.Flags -> flagItems(state.flagLog, onFollow)
+                    RuntimePanel.Flags -> flagItems(state.flagLog, flagNames, onFollow)
                 }
             } ?: note(state.problem ?: "Waiting for the first sample")
         }

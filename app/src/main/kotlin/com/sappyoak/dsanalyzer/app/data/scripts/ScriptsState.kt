@@ -1,7 +1,11 @@
 package com.sappyoak.dsanalyzer.app.data.scripts
 
 import com.sappyoak.dsanalyzer.game.Installation
+import com.sappyoak.dsanalyzer.game.world.flags.FlagNames
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
+import com.sappyoak.dsanalyzer.game.world.scripts.index.EventCallIndex
+import com.sappyoak.dsanalyzer.game.world.scripts.index.FlagIndex
+import com.sappyoak.dsanalyzer.game.world.scripts.index.FlagReference
 
 public data class ScriptsState(
     public val installation: Installation? = null,
@@ -12,6 +16,10 @@ public data class ScriptsState(
     public val flagIndex: FlagIndex = FlagIndex.Empty,
     /** Every place every event is started, and with what */
     public val callIndex: EventCallIndex = EventCallIndex.Empty,
+    /** What the game data says each flag means; filled in after the index */
+    public val flagNames: FlagNames = FlagNames.Empty,
+    /** Why [flagNames] stayed empty, kept apart from [problem] so it does not hide a script's own */
+    public val namingProblem: String? = null,
     public val indexing: Boolean = false,
     /** Scripts the index could not read */
     public val unreadable: List<ScriptId> = emptyList(),

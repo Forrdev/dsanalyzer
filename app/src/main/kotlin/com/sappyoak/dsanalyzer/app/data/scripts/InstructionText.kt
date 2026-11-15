@@ -12,6 +12,7 @@ import com.sappyoak.dsanalyzer.game.ref.DataAddress
 import com.sappyoak.dsanalyzer.game.ref.DataSpace
 import com.sappyoak.dsanalyzer.game.world.params.GameParam
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
+import com.sappyoak.dsanalyzer.game.world.scripts.index.CallerArguments
 
 public data class ArgumentLine(
     public val label: String,
@@ -139,3 +140,4 @@ private const val ITEM_TYPE = "Item Type"
 
 private fun Double.asArgument(type: ArgType): String =
     if (type == ArgType.Float) toString() else toLong().toString()
+

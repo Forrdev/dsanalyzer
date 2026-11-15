@@ -1,20 +1,28 @@
 package com.sappyoak.dsanalyzer.app.data.scripts
 
-import com.sappyoak.dsanalyzer.app.data.IndexQueue
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
+import com.sappyoak.dsanalyzer.app.data.IndexQueue
 import com.sappyoak.dsanalyzer.app.store.EffectRunner
-import com.sappyoak.dsanalyzer.formats.emevd.emedf.flagUses
 import com.sappyoak.dsanalyzer.game.Installation
-import com.sappyoak.dsanalyzer.game.data.DecodedScript
 import com.sappyoak.dsanalyzer.game.data.GameData
 import com.sappyoak.dsanalyzer.game.data.InstallationData
+import com.sappyoak.dsanalyzer.game.world.flags.nameFlags
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
+import com.sappyoak.dsanalyzer.game.world.scripts.index.EventCallIndex
+import com.sappyoak.dsanalyzer.game.world.scripts.index.EventKey
+import com.sappyoak.dsanalyzer.game.world.scripts.index.FlagIndex
+import com.sappyoak.dsanalyzer.game.world.scripts.index.ScriptIndexing
+import com.sappyoak.dsanalyzer.game.world.scripts.index.indexed
+import com.sappyoak.dsanalyzer.game.world.text.TextLanguage
 import com.sappyoak.dsanalyzer.shared.binary.BinaryFormatException
 
 private val logger = KotlinLogging.logger {  }
+
+/** The language flag names are read in, matching the params view */
+private val NAME_LANGUAGE = TextLanguage.English
 
 public class ScriptsEffects(
     private val data: InstallationData,
@@ -27,8 +35,11 @@ public class ScriptsEffects(
 
     override fun onFailure(effect: ScriptsEffect, failure: Throwable): ScriptsMessage {
         val reason = failure.message ?: failure.toString()
-        return if (effect is ScriptsEffect.IndexScripts) ScriptsMessage.IndexFailed(reason)
-        else ScriptsMessage.Failed(reason)
+        return when (effect) {
+            is ScriptsEffect.IndexScripts -> ScriptsMessage.IndexFailed(reason)
+            is ScriptsEffect.NameFlags -> ScriptsMessage.NamingFailed(reason)
+            else -> ScriptsMessage.Failed(reason)
+        }
     }
 
     private suspend fun perform(effect: ScriptsEffect): ScriptsMessage {
@@ -40,6 +51,7 @@ public class ScriptsEffects(
                     .summarize(game.scriptNames(effect.script))
             )
             is ScriptsEffect.IndexScripts -> queue.run { game.indexScripts(effect.scripts) }
+            is ScriptsEffect.NameFlags -> queue.run { game.namedFlags(effect.calls) }
         }
     }
 
@@ -69,6 +81,15 @@ public class ScriptsEffects(
         )
     }
 
+    private suspend fun GameData.namedFlags(calls: EventCallIndex): ScriptsMessage.FlagsNamed {
+        val names = nameFlags(NAME_LANGUAGE, calls)
+        logger.atInfo {
+            message = "Flags named"
+            payload = mapOf("flags" to names.size, "byKind" to names.coverage())
+        }
+        return ScriptsMessage.FlagsNamed(names)
+    }
+
     private suspend fun GameData.indexingOf(script: ScriptId): ScriptIndexing? = try {
         this.script(script)?.indexed()
     } catch (err: BinaryFormatException) {
@@ -81,8 +102,6 @@ public class ScriptsEffects(
     }
 }
 
-
-
 public sealed interface ScriptsEffect {
     public val installation: Installation
 
@@ -91,6 +110,12 @@ public sealed interface ScriptsEffect {
     public data class LoadScript(
         override val installation: Installation,
         public val script: ScriptId
+    ) : ScriptsEffect
+
+    /** Names every flag, reading what [calls] says common events are handed */
+    public data class NameFlags(
+        override val installation: Installation,
+        public val calls: EventCallIndex
     ) : ScriptsEffect
 
     public data class IndexScripts(

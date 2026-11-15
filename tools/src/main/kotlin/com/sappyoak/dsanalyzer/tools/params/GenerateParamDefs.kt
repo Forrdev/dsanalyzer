@@ -86,13 +86,14 @@ internal fun generateParams(
     editions: EditionPair
 ): GeneratedParams {
     val defStems = loaded.mapValues { (edition, held) -> defStems(edition, held) }
+    val adopted = loaded.mapValues { (edition, held) -> held.adoptingVersions(defStems.getValue(edition)) }
     val used = defStems.values.flatMap { it.values }.distinct().sorted()
 
     val defsByStem = used.associateWith { stem ->
-        loaded.mapNotNull { (edition, held) -> held.defs[stem]?.let { edition to it } }.toMap()
+        adopted.mapNotNull { (edition, defs) -> defs[stem]?.let { edition to it } }.toMap()
     }
     val comparisons = compareParamDefs(
-        byEdition = loaded.mapValues { (_, held) -> held.defs.filterKeys { it in used } },
+        byEdition = adopted.mapValues { (_, defs) -> defs.filterKeys { it in used } },
         editions = editions
     )
     val varies = comparisons.associate { it.stem to it.variance.varies }
@@ -161,11 +162,24 @@ private fun defStems(edition: GameEdition, held: EditionParams): Map<String, Str
         if (def.dataVersion != param.dataVersion) {
             println(
                 " $edition $stem is data version ${param.dataVersion} against its def's " +
-                        "${def.dataVersion}; row size agrees at ${param.rowSize}, so the layout is taken as unchanged"
+                        "${def.dataVersion}; row size agrees at ${param.rowSize}, so the layout is taken as " +
+                        "unchanged and the row class takes the file's version"
             )
         }
 
         defStem
+    }
+}
+
+/**
+ * The defs with each one's data version replaced by the version its file states, where [defStems] took
+ * the layout as unchanged. The row class is checked against the file the game ships, not the def
+ */
+private fun EditionParams.adoptingVersions(defStems: Map<String, String>): Map<String, ParamDef> {
+    val fileVersions = defStems.entries.associate { (file, defStem) -> defStem to params.getValue(file).dataVersion }
+    return defs.mapValues { (stem, def) ->
+        val version = fileVersions[stem]
+        if (version == null || version == def.dataVersion) def else ParamDef(def.paramType, version, def.fields)
     }
 }
 

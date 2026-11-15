@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import com.sappyoak.dsanalyzer.app.data.FieldRow
 import com.sappyoak.dsanalyzer.app.data.scripts.ArgumentLine
 import com.sappyoak.dsanalyzer.app.data.scripts.ArgumentValue
-import com.sappyoak.dsanalyzer.app.data.scripts.CallerArguments
 import com.sappyoak.dsanalyzer.app.data.scripts.PassedOrigin
 import com.sappyoak.dsanalyzer.app.data.scripts.Unresolved
 import com.sappyoak.dsanalyzer.app.data.scripts.argumentLines
@@ -36,6 +35,7 @@ import com.sappyoak.dsanalyzer.app.ui.theme.AnalyzerTheme
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.DecodedInstruction
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.Emedf
 import com.sappyoak.dsanalyzer.game.ref.Address
+import com.sappyoak.dsanalyzer.game.world.scripts.index.CallerArguments
 
 private val CARD_RADIUS = 7.dp
 private val INDEX_WIDTH = 28.dp

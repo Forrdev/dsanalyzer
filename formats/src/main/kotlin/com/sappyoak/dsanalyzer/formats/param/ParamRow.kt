@@ -61,11 +61,14 @@ public class TypedParam<R : ParamRow>(public val type: ParamRowType<R>, public v
 
 /**
  * Reads this param through [type]. Refuses a param of another def, or one written against another
- * version of it, rather than reading fields from the wrong places
+ * version of it, rather than reading fields from the wrong places.
+ *
+ * The row size is only compared where the file can establish it: a param stores an offset per row, so
+ * with a single row the size comes from the end of the data and takes trailing padding with it
  */
 public fun <R : ParamRow> Param.typed(type: ParamRowType<R>): TypedParam<R> {
     require(paramType == type.paramType) { "A $paramType param cannot be read as ${type.paramType}" }
-    require(dataVersion == type.dataVersion && rowSize == type.rowSize) {
+    require(dataVersion == type.dataVersion && (rows.size <= 1 || rowSize == type.rowSize)) {
         "$paramType is data version $dataVersion with 0x${rowSize.toString(16)}-byte rows; " +
                 "the generated class expects ${type.dataVersion} and 0x${type.rowSize.toString(16)}"
     }
