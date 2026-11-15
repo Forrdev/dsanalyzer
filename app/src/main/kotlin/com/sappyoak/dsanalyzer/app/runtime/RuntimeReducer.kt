@@ -13,7 +13,13 @@ public fun reduceRuntime(
     message: RuntimeMessage
 ): Transition<RuntimeState, RuntimeEffect> = when (message) {
     is RuntimeMessage.Opened -> state.copy(installation = message.installation)
-        .with(RuntimeEffect.Observe, RuntimeEffect.FollowAITracking, RuntimeEffect.FollowTimingsWanted, RuntimeEffect.FollowEngineDraw)
+        .with(
+            RuntimeEffect.Observe,
+            RuntimeEffect.FollowAITracking,
+            RuntimeEffect.FollowFocus,
+            RuntimeEffect.FollowTimingsWanted,
+            RuntimeEffect.FollowEngineDraw
+        )
     RuntimeMessage.PlacedEnemiesRequested -> state.with(RuntimeEffect.RequestPlacedEnemies)
     is RuntimeMessage.EngineDrawInstallRequested -> state.with(RuntimeEffect.InstallEngineDraw(message.install))
     RuntimeMessage.CharacterEffectsRequested -> state.with(RuntimeEffect.RequestCharacterEffects)

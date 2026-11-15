@@ -107,6 +107,10 @@ public object ChrIns {
     public const val TargetHandle: Int = 0x1F8
 
     public const val Flags1: Int = 0x1FC
+
+    public const val HpBarHidden: Int = 0x200
+    public const val HpBarHiddenMask: Int = 0x08
+
     public const val PlayRegion: Int = 0x284
 
     /** The 'NS_FRPG::HitIns' this character is standing on */

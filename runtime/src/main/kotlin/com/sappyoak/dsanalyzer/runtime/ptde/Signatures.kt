@@ -78,6 +78,12 @@ object PTDESignatures {
         target = SignatureTarget.Embedded(9)
     )
 
+    public val LockOnMan: Signature = Signature.parse(
+        name = "LockOnMan",
+        pattern = "8B 54 24 3C A1 ?? ?? ?? ?? 52 51 D9 1C 24 50 E8",
+        target = SignatureTarget.Embedded(5)
+    )
+
     /** Entry of GameLoop_StepFrame */
     public val GameLoopStep: Signature = Signature.parse(
         name = "GameLoopStep",

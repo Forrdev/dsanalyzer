@@ -9,12 +9,14 @@ import com.sappyoak.dsanalyzer.runtime.layout.AnimRequestEntryLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimRequestLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimSlotLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimationLayout
+import com.sappyoak.dsanalyzer.runtime.layout.BossBarLayout
 import com.sappyoak.dsanalyzer.runtime.layout.CameraLayout
 import com.sappyoak.dsanalyzer.runtime.layout.CharacterLayout
 import com.sappyoak.dsanalyzer.runtime.layout.CharacterSlotLayout
 import com.sappyoak.dsanalyzer.runtime.layout.ChrCtrlLayout
 import com.sappyoak.dsanalyzer.runtime.layout.ChrInsLayout
 import com.sappyoak.dsanalyzer.runtime.layout.DebugDrawLayout
+import com.sappyoak.dsanalyzer.runtime.layout.EnemyBarLayout
 import com.sappyoak.dsanalyzer.runtime.layout.EntityTableLayout
 import com.sappyoak.dsanalyzer.runtime.layout.EsdStateLayout
 import com.sappyoak.dsanalyzer.runtime.layout.EventFieldsLayout
@@ -26,11 +28,14 @@ import com.sappyoak.dsanalyzer.runtime.layout.GameManLayout
 import com.sappyoak.dsanalyzer.runtime.layout.GoalLayout
 import com.sappyoak.dsanalyzer.runtime.layout.GoalTypeLayout
 import com.sappyoak.dsanalyzer.runtime.layout.HitInsLayout
+import com.sappyoak.dsanalyzer.runtime.layout.HpBarLayout
 import com.sappyoak.dsanalyzer.runtime.layout.IdentityLayout
 import com.sappyoak.dsanalyzer.runtime.layout.ItemLayout
 import com.sappyoak.dsanalyzer.runtime.layout.LevelUpLayout
 import com.sappyoak.dsanalyzer.runtime.layout.LivePositionLayout
 import com.sappyoak.dsanalyzer.runtime.layout.LoadQueueLayout
+import com.sappyoak.dsanalyzer.runtime.layout.LockOnLayout
+import com.sappyoak.dsanalyzer.runtime.layout.LockOnNodeLayout
 import com.sappyoak.dsanalyzer.runtime.layout.MailboxLayout
 import com.sappyoak.dsanalyzer.runtime.layout.MenuLayout
 import com.sappyoak.dsanalyzer.runtime.layout.PartFilterLayout
@@ -368,6 +373,40 @@ internal fun ptdeLayout(): GameLayout = GameLayout(
             typeParams = MapPart.TypeParams,
             collisionType = MapPartType.Collision
         )
+    ),
+    lockOn = LockOnLayout.Manager(
+        pointer = LockOnMan.Pointer,
+        locked = LockOnMan.Locked,
+        candidates = LockOnMan.Candidates,
+        node = LockOnNodeLayout(
+            next = LockOnNode.Next,
+            lockable = LockOnNode.Lockable,
+            flags = LockOnNode.Flags,
+            chosen = LockOnNode.Chosen,
+            handle = LockOnNode.Handle,
+            size = LockOnNode.SIZE
+        )
+    ),
+    hpBars = HpBarLayout(
+        enemies = EnemyHpBars.Pointer,
+        enemy = EnemyBarLayout(
+            count = EnemyHpBars.COUNT,
+            size = EnemyHpBars.SIZE,
+            handle = EnemyHpBars.Handle,
+            screen = EnemyHpBars.Screen,
+            shown = EnemyHpBars.Shown,
+            damage = EnemyHpBars.Damage,
+            timers = EnemyHpBars.Timers,
+            visible = EnemyHpBars.Visible
+        ),
+        bosses = BossBarLayout(
+            pointer = BossHpBars.Pointer,
+            count = BossHpBars.COUNT,
+            size = BossHpBars.SIZE,
+            handle = BossHpBars.Handle
+        ),
+        hideFlag = ChrIns.HpBarHidden,
+        hideMask = ChrIns.HpBarHiddenMask
     ),
     writes = WriteLayout(
         chrFlags1 = FieldLayout(ChrIns.Pointer, ChrIns.Flags1),

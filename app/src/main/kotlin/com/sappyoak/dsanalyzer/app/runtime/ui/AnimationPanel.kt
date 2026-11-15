@@ -17,7 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 
-import com.sappyoak.dsanalyzer.app.runtime.listed
+import com.sappyoak.dsanalyzer.app.runtime.living
 import com.sappyoak.dsanalyzer.app.ui.theme.AnalyzerTheme
 import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
@@ -30,11 +30,10 @@ import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
 internal fun LazyListScope.animationItems(
     snapshot: RuntimeSnapshot,
     target: AnimationTarget,
-    hideDead: Boolean,
     onAnimate: (AnimationTarget) -> Unit
 ) {
     item(key = "animation-target") {
-        TargetPicker(target, snapshot.characters.listed(hideDead), onAnimate)
+        TargetPicker(target, snapshot.characters.living(), onAnimate)
     }
 
     val animation = snapshot.animation

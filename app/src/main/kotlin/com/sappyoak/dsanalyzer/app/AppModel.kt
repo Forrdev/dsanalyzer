@@ -1,11 +1,11 @@
 package com.sappyoak.dsanalyzer.app
 
-import com.sappyoak.dsanalyzer.app.analysis.AnalysisEffects
-import com.sappyoak.dsanalyzer.app.analysis.AnalysisStore
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 
+import com.sappyoak.dsanalyzer.app.analysis.AnalysisEffects
+import com.sappyoak.dsanalyzer.app.analysis.AnalysisStore
 import com.sappyoak.dsanalyzer.app.connection.ConnectionEffects
 import com.sappyoak.dsanalyzer.app.connection.ConnectionMessage
 import com.sappyoak.dsanalyzer.app.connection.ConnectionStore
@@ -21,6 +21,7 @@ import com.sappyoak.dsanalyzer.app.runtime.GameLink
 import com.sappyoak.dsanalyzer.app.runtime.RuntimeEffects
 import com.sappyoak.dsanalyzer.app.runtime.RuntimeStore
 import com.sappyoak.dsanalyzer.app.runtime.drawsHitWindows
+import com.sappyoak.dsanalyzer.app.runtime.focusRequest
 import com.sappyoak.dsanalyzer.app.runtime.timing.TimingLoader
 import com.sappyoak.dsanalyzer.app.data.scripts.ScriptsEffects
 import com.sappyoak.dsanalyzer.app.data.scripts.ScriptsStore
@@ -92,6 +93,7 @@ public fun createAppModel(
             runtime = RuntimeStore(scope, RuntimeEffects(
                 link = link,
                 aiTracking = settings.state.map { it.settings.runtime.ai.tracking }.distinctUntilChanged(),
+                focus = settings.state.map { it.settings.focusRequest }.distinctUntilChanged(),
                 timingsWanted = settings.state.map { it.settings.drawsHitWindows }.distinctUntilChanged(),
                 engineDraw = settings.state.map { it.settings.engineDrawRequest }.distinctUntilChanged(),
                 timings = TimingLoader(data)

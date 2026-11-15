@@ -9,11 +9,13 @@ import com.sappyoak.dsanalyzer.app.store.EffectRunner
 import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.runtime.session.EngineDrawRequest
+import com.sappyoak.dsanalyzer.runtime.session.FocusRequest
 import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
 
 public class RuntimeEffects(
     private val link: GameLink,
     private val aiTracking: Flow<AITracking>,
+    private val focus: Flow<FocusRequest>,
     private val timingsWanted: Flow<Boolean>,
     private val engineDraw: Flow<EngineDrawRequest>,
     private val timings: TimingLoader
@@ -24,6 +26,7 @@ public class RuntimeEffects(
         RuntimeEffect.RequestPlacedEnemies -> flow { link.requestPlacedEnemies() }
         RuntimeEffect.RequestCharacterEffects -> flow { link.requestCharacterEffects() }
         RuntimeEffect.FollowAITracking -> flow { aiTracking.collect { link.setAIScope(it.scope) } }
+        RuntimeEffect.FollowFocus -> flow { focus.collect(link::setFocus) }
         is RuntimeEffect.Animate -> flow { link.setAnimationTarget(effect.target) }
         RuntimeEffect.FollowTimingsWanted -> timingsWanted.map(RuntimeMessage::TimingsWanted)
 
@@ -48,6 +51,7 @@ public sealed interface RuntimeEffect {
     public data object RequestPlacedEnemies : RuntimeEffect
     public data object RequestCharacterEffects : RuntimeEffect
     public data object FollowAITracking : RuntimeEffect
+    public data object FollowFocus : RuntimeEffect
     public data class Animate(public val target: AnimationTarget) : RuntimeEffect
     public data object FollowTimingsWanted : RuntimeEffect
 

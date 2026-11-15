@@ -71,7 +71,7 @@ public fun WorkspaceShell(
             runtimeState = stores.runtime.state,
             onSettings = { settingsOpen = true },
             navigatorPane = { view -> NavigatorPane(view, stores, navigator::go) },
-            detailPane = { view -> DetailPane(view, stores, settings.runtime, resolve, navigator::go) }
+            detailPane = { view -> DetailPane(view, stores, resolve, navigator::go) }
         )
 
         if (settingsOpen) {

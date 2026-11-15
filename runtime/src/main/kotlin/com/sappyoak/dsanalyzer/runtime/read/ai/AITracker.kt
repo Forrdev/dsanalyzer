@@ -27,17 +27,14 @@ internal class AITracker(gracePeriod: Int, layout: GameLayout) {
         }
     }
 
-    fun select(memory: ProcessMemory, scope: AIScope, reading: CharacterReading): List<AISource> {
-        if (scope == AIScope.Off) {
-            selection.select(scope, emptyMap(), null)
-            return emptyList()
-        }
-
-        val found = reading.others.mapNotNull { reader.locate(memory, it) }
+    /** [focus] is read whatever the [scope], since the target panel shows its AI */
+    fun select(memory: ProcessMemory, scope: AIScope, reading: CharacterReading, focus: Int?): List<AISource> {
+        val wanted = if (scope == AIScope.Off) reading.others.filter { it.handle == focus } else reading.others
+        val found = wanted.mapNotNull { reader.locate(memory, it) }
         val targets = found.associate { source ->
             source.handle to if (scope == AIScope.TargetingPlayer) reader.targetOf(memory, source).handle else null
         }
-        val selected = selection.select(scope, targets, reading.playerHandle)
+        val selected = selection.select(scope, targets, reading.playerHandle) + listOfNotNull(focus)
         return found.filter { it.handle in selected }
     }
 

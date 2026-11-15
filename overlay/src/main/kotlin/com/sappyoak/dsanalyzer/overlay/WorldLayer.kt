@@ -11,6 +11,6 @@ internal fun WorldLayer(scene: OverlayScene) {
     val measurer = rememberTextMeasurer()
 
     Canvas(modifier = Modifier.fillMaxSize()) {
-        drawMarkers(scene, measurer)
+        drawTargetPanel(scene, measurer)
     }
 }

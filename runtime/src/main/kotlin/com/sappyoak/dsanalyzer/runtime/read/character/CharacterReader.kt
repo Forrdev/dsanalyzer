@@ -100,7 +100,11 @@ internal class CharacterReader(
         is TargetLayout.InCharacter -> one.int(target.offset)
         is TargetLayout.InManipulator -> {
             val manipulator = one.pointer(chr.comManipulator)
-            if (!manipulator.isNull && word.refresh(game.memory, manipulator + target.offset.toLong())) word.int(0) else null
+            if (!manipulator.isNull && word.refresh(
+                    game.memory,
+                    manipulator + target.offset.toLong()
+                )
+            ) word.int(0) else null
         }
     }
 
@@ -137,11 +141,15 @@ internal class CharacterReader(
 
             if (one.int(chr.modelId) == BONFIRE_MODEL) return
 
-            refs.add(CharacterRef(
-                handle = one.int(chr.handle),
-                comManipulator = one.pointer(chr.comManipulator),
-                controller = one.pointer(chr.control)
-            ))
+            refs.add(
+                CharacterRef(
+                    handle = one.int(chr.handle),
+                    address = character,
+                    comManipulator = one.pointer(chr.comManipulator),
+                    controller = one.pointer(chr.control)
+                )
+            )
             found.add(snapshotOf(game, posed = false, withEffects = allEffects))
         }
     }
+}

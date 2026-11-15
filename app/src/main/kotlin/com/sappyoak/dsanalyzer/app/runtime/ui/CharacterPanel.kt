@@ -16,7 +16,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.sappyoak.dsanalyzer.app.runtime.listed
+import com.sappyoak.dsanalyzer.app.runtime.living
 import com.sappyoak.dsanalyzer.app.runtime.planLine
 import com.sappyoak.dsanalyzer.app.runtime.timing.TimingLibrary
 import com.sappyoak.dsanalyzer.app.runtime.timing.countdownOf
@@ -34,10 +34,9 @@ private val DETAIL_INDENT = Modifier.padding(start = 32.dp, end = 16.dp)
 
 internal class CharacterList(
     characters: List<CharacterSnapshot>,
-    read: List<CharacterSnapshot>?,
-    hideDead: Boolean
+    read: List<CharacterSnapshot>?
 ) {
-    val shown: List<CharacterSnapshot> = characters.listed(hideDead)
+    val shown: List<CharacterSnapshot> = characters.living()
     val effectsRead: Boolean = read != null
     private val effects: Map<Int, SpecialEffectSnapshot> =
         read.orEmpty().mapNotNull { character -> character.effects?.let { character.handle to it } }.toMap()

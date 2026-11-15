@@ -8,8 +8,9 @@ import com.sappyoak.dsanalyzer.runtime.session.WorldSnapshot
 
 internal data class CharacterRef(
     val handle: Int,
+    val address: Address,
     val comManipulator: Address,
-    val controller: Address
+    val controller: Address,
 )
 
 internal class CharacterReading(

@@ -4,53 +4,50 @@ import kotlinx.serialization.Serializable
 
 import com.sappyoak.dsanalyzer.app.settings.Settings
 import com.sappyoak.dsanalyzer.app.settings.SettingsEdit
-import com.sappyoak.dsanalyzer.overlay.MarkerView
+import com.sappyoak.dsanalyzer.runtime.session.FocusRequest
 
-/** Beyond this a draw distance stops meaning anything: the frustum cull is doing the work */
-private const val MAX_DRAW_DISTANCE = 1000f
+private const val MAX_TARGET_RANGE = 1000f
 
 @Serializable
 public data class OverlaySettings(
     public val enabled: Boolean = true,
-    public val characters: CharacterOverlaySettings = CharacterOverlaySettings(),
+    public val target: TargetPanelSettings = TargetPanelSettings()
 )
 
 @Serializable
-public data class CharacterOverlaySettings(
-    public val draw: CharacterDrawing = CharacterDrawing.All,
-    public val drawDistance: Float = MarkerView.DEFAULT_DRAW_DISTANCE,
+public data class TargetPanelSettings(
+    public val enabled: Boolean = true,
+    public val range: Float = DEFAULT_TARGET_RANGE,
     public val hitWindows: Boolean = true
-)
-
-@Serializable
-public enum class CharacterDrawing {
-    None,
-    Instantiated,
-    All;
+) {
+    public companion object {
+        public const val DEFAULT_TARGET_RANGE: Float = 30f
+    }
 }
+
+internal val Settings.focusRequest: FocusRequest
+    get() = if (overlay.enabled && overlay.target.enabled) FocusRequest(enabled = true, range = overlay.target.range)
+    else FocusRequest.Off
 
 public data class OverlayEnabled(public val enabled: Boolean) : SettingsEdit {
     override fun applyTo(settings: Settings): Settings =
         settings.copy(overlay = settings.overlay.copy(enabled = enabled))
 }
 
-public data class DrawCharacters(public val mode: CharacterDrawing) : SettingsEdit {
+public data class ShowTargetPanel(public val enabled: Boolean) : SettingsEdit {
     override fun applyTo(settings: Settings): Settings =
-        settings.overlay.characters.copy(draw = mode).into(settings)
+        settings.overlay.target.copy(enabled = enabled).into(settings)
 }
 
-public data class CharacterDrawDistance(public val units: Float) : SettingsEdit {
+public data class TargetPanelRange(public val units: Float) : SettingsEdit {
     override fun applyTo(settings: Settings): Settings =
-        settings.overlay.characters
-            .copy(drawDistance = units.coerceIn(0f, MAX_DRAW_DISTANCE))
-            .into(settings)
+        settings.overlay.target.copy(range = units.coerceIn(0f, MAX_TARGET_RANGE)).into(settings)
 }
 
 public data class DrawHitWindows(public val enabled: Boolean) : SettingsEdit {
     override fun applyTo(settings: Settings): Settings =
-        settings.overlay.characters.copy(hitWindows = enabled).into(settings)
+        settings.overlay.target.copy(hitWindows = enabled).into(settings)
 }
 
-private fun CharacterOverlaySettings.into(settings: Settings): Settings =
-    settings.copy(overlay = settings.overlay.copy(characters = this))
-
+private fun TargetPanelSettings.into(settings: Settings): Settings =
+    settings.copy(overlay = settings.overlay.copy(target = this))

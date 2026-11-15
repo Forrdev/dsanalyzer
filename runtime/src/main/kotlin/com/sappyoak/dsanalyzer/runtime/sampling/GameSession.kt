@@ -3,8 +3,6 @@ package com.sappyoak.dsanalyzer.runtime.sampling
 import kotlin.time.TimeSource
 
 import com.sappyoak.dsanalyzer.native.memory.AddressRange
-import com.sappyoak.dsanalyzer.runtime.EditionTables
-import com.sappyoak.dsanalyzer.runtime.GameConnection
 import com.sappyoak.dsanalyzer.runtime.GameProcess
 import com.sappyoak.dsanalyzer.runtime.layout.GameLayout
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
@@ -12,13 +10,14 @@ import com.sappyoak.dsanalyzer.runtime.pointers.GamePointer
 import com.sappyoak.dsanalyzer.runtime.pointers.Lifetime
 import com.sappyoak.dsanalyzer.runtime.pointers.ResolvedPointers
 import com.sappyoak.dsanalyzer.runtime.pointers.resolveMissing
-import com.sappyoak.dsanalyzer.runtime.pointers.resolvePointers
 import com.sappyoak.dsanalyzer.runtime.read.CameraReader
 import com.sappyoak.dsanalyzer.runtime.read.EventFlagBlock
 import com.sappyoak.dsanalyzer.runtime.read.LoadQueueReader
 import com.sappyoak.dsanalyzer.runtime.read.MenuReader
 import com.sappyoak.dsanalyzer.runtime.read.PlacedPartsReader
 import com.sappyoak.dsanalyzer.runtime.read.readersFor
+import com.sappyoak.dsanalyzer.runtime.read.target.Focus
+import com.sappyoak.dsanalyzer.runtime.read.target.FocusReader
 import com.sappyoak.dsanalyzer.runtime.session.ai.AIScope
 import com.sappyoak.dsanalyzer.runtime.read.ai.AITracker
 import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
@@ -26,13 +25,15 @@ import com.sappyoak.dsanalyzer.runtime.read.animation.AnimationTracker
 import com.sappyoak.dsanalyzer.runtime.session.BlockRoster
 import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.CheatFlag
+import com.sappyoak.dsanalyzer.runtime.session.FocusRequest
+import com.sappyoak.dsanalyzer.runtime.session.FocusSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeFeature
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.SampleCost
 import com.sappyoak.dsanalyzer.runtime.session.WorldPlace
 import com.sappyoak.dsanalyzer.runtime.write.CheatWriter
 import com.sappyoak.dsanalyzer.runtime.write.GameWriter
-
+import com.sappyoak.dsanalyzer.runtime.write.hpbar.HpBarHider
 
 public class GameSession internal constructor(
     public val game: GameProcess,
@@ -56,14 +57,18 @@ public class GameSession internal constructor(
     private val aiTracker = AITracker(AI_GRACE_PERIOD, layout)
     private val animationTracker = AnimationTracker(layout)
     private val cheats = CheatWriter(layout.writes)
+    private val focusReader = FocusReader(layout)
+    private val hpBars = HpBarHider(layout.hpBars)
 
     private var lastPlace: WorldPlace? = null
     private var wasLoaded: Boolean = false
 
     private var world = WorldTier()
+    private var focus: Focus? = null
+    private var followed: FocusSnapshot? = null
     private var sinceWorld = 0
 
-    public val writes: SessionWrites = SessionWrites(layout.writes,  layout.playerGameData,  writer)
+    public val writes: SessionWrites = SessionWrites(layout.writes, layout.playerGameData, writer)
     public val supports: Set<RuntimeFeature> get() = readers.supported + layout.supported
 
     init {
@@ -75,7 +80,8 @@ public class GameSession internal constructor(
 
     public fun sample(
         aiScope: AIScope = AIScope.TargetingPlayer,
-        animation: AnimationTarget = AnimationTarget.Player
+        animation: AnimationTarget = AnimationTarget.Player,
+        focusRequest: FocusRequest = FocusRequest.Off
     ): RuntimeSnapshot {
         val started = TimeSource.Monotonic.markNow()
 
@@ -85,11 +91,9 @@ public class GameSession internal constructor(
         val menu = menuReader.read(memory)
         val place = readers.place.place()
 
-
         val reloaded = lastPlace != null && place != lastPlace
-        // Coming back from a load screen is a reload even when the map is the same one. A death
-        // rebuilds every character without the place every changing, and the old addresses would
-        // still read, as whatever the allocator put there next
+        // Leaving a load screen is a reload even on the same map: a death rebuilds every character, and
+        // the old addresses would still read, as whatever the allocator put there next
         val returned = loaded && !wasLoaded
         if (reloaded || returned) forgetWorld()
         if (reloaded) flags.reset()
@@ -101,8 +105,12 @@ public class GameSession internal constructor(
         val present = listOf(loaded, areaPresent, readers.clock.refresh(memory), flags.isPresent)
             .count { it } + player.present
 
+        focus = if (loaded) focusReader.select(memory, focusRequest, player.player, world.characters) else null
         refreshWorldTier(aiScope)
 
+        val characters = aiTracker.read(memory.memory, world.ai, world.characters)
+        val animated = if (loaded) animationTracker.read(memory, animation, world.others) else null
+        followed = focusReader.snapshot(memory, focus, characters, world.others, animated)
         return RuntimeSnapshot(
             inGameTimeMillis = readers.clock.timeMillis(),
             frame = readers.clock.frame(),
@@ -114,9 +122,10 @@ public class GameSession internal constructor(
             camera = if (loaded) cameraReader.camera() else null,
             menu = menu,
             loadQueue = world.loadQueue,
-            characters = aiTracker.read(memory.memory, world.ai, world.characters),
+            characters = characters,
             flagChanges = changes,
-            animation = if (loaded) animationTracker.read(memory, animation, world.others) else null,
+            animation = animated,
+            focus = followed,
             cost = SampleCost(
                 started.elapsedNow(),
                 present,
@@ -129,6 +138,9 @@ public class GameSession internal constructor(
 
     internal fun afterSample() {
         extensions.forEach(SessionExtension::afterSample)
+        val handle = followed?.takeUnless { it.boss }?.character?.handle
+        val hidden = handle?.let { world.others.firstOrNull { it.handle == handle } }
+        hpBars.hide(hidden?.handle, hidden?.address, memory, writer)
         writes.afterSample(memory, module, wasLoaded, lastPlace ?: WorldPlace.Unreadable)
     }
 
@@ -145,6 +157,7 @@ public class GameSession internal constructor(
     }
 
     public fun setCheat(flag: CheatFlag, on: Boolean): Boolean = cheats.set(flag, on, memory, writer)
+
     public fun revertAll(): Int {
         extensions.forEach(SessionExtension::release)
         writes.cancelAll(memory.memory)
@@ -153,6 +166,8 @@ public class GameSession internal constructor(
 
     private fun forgetWorld() {
         memory.invalidate(Lifetime.World)
+        hpBars.forget(writer)
+        focusReader.forget()
         world = WorldTier()
         sinceWorld = 0
     }
@@ -169,7 +184,7 @@ public class GameSession internal constructor(
             loadQueue = loadQueueReader.read(memory),
             characters = reading.characters,
             others = reading.others,
-            ai = aiTracker.select(memory.memory, scope, reading)
+            ai = aiTracker.select(memory.memory, scope, reading, focus?.handle)
         )
     }
 
@@ -177,21 +192,9 @@ public class GameSession internal constructor(
         /** The follow cam, the map, the clock and the flag block, beside the player's own structures */
         const val AROUND_PLAYER = 4
 
-        /**
-         * Ticks between slow-tier reads. Six against a 30hz logic tick is five times a second,
-         * which is faster than a block can load and faster than anyone can read a list
-         */
+        /** Ticks between slow-tier reads: five times a second at 30hz, faster than a block loads */
         const val WORLD_TIER_PERIOD = 6
 
         const val AI_GRACE_PERIOD: Int = 15
     }
-}
-
-public fun GameConnection.openSession(
-    edition: EditionTables,
-    extensions: List<SessionExtension> = emptyList()
-): GameSession {
-    val resolved = memory.resolvePointers(edition.pointers, mainModule)
-    val writer = GameWriter(memory, code)
-    return GameSession(game, resolved, GameMemory(memory, resolved), edition.layoutFor(mainModule), mainModule, writer, extensions)
 }

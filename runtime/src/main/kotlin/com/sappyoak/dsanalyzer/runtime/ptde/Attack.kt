@@ -9,7 +9,7 @@ public object AttackMan {
         base = PTDESignatures.AttackMan,
         offsets = listOf(0L),
         lifetime = Lifetime.Session,
-        size = 0x20
+        size = 0x28
     )
 
     /** The first live [AttackHit], linked through [AttackHit.NextPointer] */

@@ -45,3 +45,5 @@ bin/
 .DS_Store
 
 *.log
+
+docs/Improvements.md

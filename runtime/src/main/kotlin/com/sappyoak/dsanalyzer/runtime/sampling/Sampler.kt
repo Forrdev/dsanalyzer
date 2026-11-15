@@ -18,6 +18,7 @@ import com.sappyoak.dsanalyzer.runtime.ConnectionEvent
 import com.sappyoak.dsanalyzer.runtime.EditionTables
 import com.sappyoak.dsanalyzer.runtime.GameConnection
 import com.sappyoak.dsanalyzer.runtime.read.readBuild
+import com.sappyoak.dsanalyzer.runtime.session.FocusRequest
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeEvent
 import com.sappyoak.dsanalyzer.runtime.session.ai.AIScope
 import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
@@ -34,11 +35,13 @@ public class SampleRequests {
     private val characterEffects = AtomicBoolean(false)
     private val ai = AtomicReference(AIScope.TargetingPlayer)
     private val animated = AtomicReference<AnimationTarget>(AnimationTarget.Player)
+    private val followed = AtomicReference(FocusRequest.Off)
 
     public val writes: WriteRequests = WriteRequests()
 
     internal val aiScope: AIScope get() = ai.get()
     internal val animationTarget: AnimationTarget get() = animated.get()
+    internal val focus: FocusRequest get() = followed.get()
 
     public fun requestPlacedEnemies() {
         placedEnemies.set(true)
@@ -58,6 +61,10 @@ public class SampleRequests {
 
     public fun setAnimationTarget(target: AnimationTarget) {
         animated.set(target)
+    }
+
+    public fun setFocus(request: FocusRequest) {
+        followed.set(request)
     }
 }
 

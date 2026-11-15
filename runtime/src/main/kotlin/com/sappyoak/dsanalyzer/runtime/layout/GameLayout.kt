@@ -16,6 +16,8 @@ public data class GameLayout(
     public val playerGameData: PlayerGameDataLayout,
     public val loadQueue: LoadQueueLayout,
     public val debugDraw: DebugDrawLayout,
+    public val hpBars: HpBarLayout,
+    public val lockOn: LockOnLayout,
     public val writes: WriteLayout
 ) {
     val supported: Set<RuntimeFeature> = buildSet {

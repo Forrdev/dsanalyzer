@@ -20,6 +20,7 @@ import com.sappyoak.dsanalyzer.native.process.Processes
 import com.sappyoak.dsanalyzer.runtime.pointers.ResolvedPointers
 import com.sappyoak.dsanalyzer.runtime.session.BlockRoster
 import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
+import com.sappyoak.dsanalyzer.runtime.session.FocusRequest
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeEvent
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
 import com.sappyoak.dsanalyzer.runtime.sampling.SampleRequests
@@ -106,6 +107,10 @@ public class GameLink(
 
     public fun setAIScope(scope: AIScope) {
         requests.setAIScope(scope)
+    }
+
+    public fun setFocus(request: FocusRequest) {
+        requests.setFocus(request)
     }
 
     public fun setAnimationTarget(target: AnimationTarget) {

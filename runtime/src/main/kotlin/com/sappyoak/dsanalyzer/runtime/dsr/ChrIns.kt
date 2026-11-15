@@ -35,6 +35,9 @@ public object ChrIns {
 
     public const val Flags1: Int = 0x284
 
+    public const val HpBarHidden: Int = 0x2A8
+    public const val HpBarHiddenMask: Int = 0x08
+
     /** A copy of the posed position, X, Y and Z one after another */
     public const val Position: Int = 0x2C0
 

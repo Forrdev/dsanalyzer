@@ -8,7 +8,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 public data class RuntimeSettings(
-    public val hideDeadCharacters: Boolean = true,
     public val ai: AISettings = AISettings()
 )
 
@@ -32,20 +31,10 @@ internal val AITracking.scope: AIScope
     }
 
 internal val Settings.drawsHitWindows: Boolean
-    get() = overlay.enabled && overlay.characters.hitWindows && runtime.ai.tracking != AITracking.Off
+    get() = overlay.enabled && overlay.target.enabled && overlay.target.hitWindows
 
 
-internal fun List<CharacterSnapshot>.listed(hideDead: Boolean): List<CharacterSnapshot> {
-    return if (hideDead) filter { it.alive } else sortedBy { !it.alive }
-}
-
-public data class HideDeadCharacters(public val enabled: Boolean) : SettingsEdit {
-    override fun applyTo(settings: Settings): Settings = settings.copy(
-        runtime = settings.runtime.copy(
-            hideDeadCharacters = enabled
-        )
-    )
-}
+internal fun List<CharacterSnapshot>.living(): List<CharacterSnapshot> = filter { it.alive }
 
 public data class TrackAI(public val tracking: AITracking) : SettingsEdit {
     override fun applyTo(settings: Settings): Settings = settings.copy(

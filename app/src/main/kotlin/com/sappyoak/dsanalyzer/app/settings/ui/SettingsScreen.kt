@@ -19,22 +19,19 @@ import androidx.compose.ui.unit.dp
 
 import com.sappyoak.dsanalyzer.app.runtime.AISettings
 import com.sappyoak.dsanalyzer.app.runtime.AITracking
-import com.sappyoak.dsanalyzer.app.runtime.CharacterDrawDistance
-import com.sappyoak.dsanalyzer.app.runtime.CharacterDrawing
-import com.sappyoak.dsanalyzer.app.runtime.DrawCharacters
 import com.sappyoak.dsanalyzer.app.runtime.DrawHitWindows
 import com.sappyoak.dsanalyzer.app.runtime.EngineDrawSettings
-import com.sappyoak.dsanalyzer.app.runtime.HideDeadCharacters
-import com.sappyoak.dsanalyzer.app.runtime.OverlaySettings
-import com.sappyoak.dsanalyzer.app.runtime.RuntimeSettings
 import com.sappyoak.dsanalyzer.app.runtime.OverlayEnabled
+import com.sappyoak.dsanalyzer.app.runtime.OverlaySettings
+import com.sappyoak.dsanalyzer.app.runtime.ShowTargetPanel
+import com.sappyoak.dsanalyzer.app.runtime.TargetPanelRange
 import com.sappyoak.dsanalyzer.app.runtime.TrackAI
 import com.sappyoak.dsanalyzer.app.settings.CavesOnLaunch
 import com.sappyoak.dsanalyzer.app.settings.Settings
 import com.sappyoak.dsanalyzer.app.settings.SettingsEdit
 import com.sappyoak.dsanalyzer.app.settings.ToolSettings
 
-private val DRAW_DISTANCE = 10f..400f
+private val TARGET_RANGE = 10f..200f
 
 @Composable
 public fun SettingsScreen(settings: Settings, onEdit: (SettingsEdit) -> Unit) {
@@ -49,7 +46,7 @@ public fun SettingsScreen(settings: Settings, onEdit: (SettingsEdit) -> Unit) {
         }
         HorizontalDivider()
 
-        CharacterSettings(settings.overlay, settings.runtime, onEdit)
+        TargetPanelSection(settings.overlay, onEdit)
         HorizontalDivider()
 
         EngineDrawSection(settings.engineDraw, onEdit)
@@ -66,52 +63,38 @@ private fun ToolSection(settings: ToolSettings, onEdit: (SettingsEdit) -> Unit) 
             label = "Create code caves on launch",
             checked = settings.cavesOnLaunch,
             explain = "Installs the tool's code caves as soon as it attaches. Off installs them when a " +
-            "feature first needs them. Every patch shows in the write strip and goes back with revert-all"
+                    "feature first needs them. Every patch shows in the write strip and goes back with revert-all"
         ) { onEdit(CavesOnLaunch(it)) }
     }
 }
 
 @Composable
-private fun CharacterSettings(overlay: OverlaySettings, runtime: RuntimeSettings, onEdit: (SettingsEdit) -> Unit) {
-    val settings = overlay.characters
-    val on = overlay.enabled
+private fun TargetPanelSection(overlay: OverlaySettings, onEdit: (SettingsEdit) -> Unit) {
+    val settings = overlay.target
 
-    SettingsSection("Characters") {
-        Column(modifier = Modifier.selectableGroup()) {
-            CharacterDrawing.entries.forEach { mode ->
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    RadioButton(
-                        selected = settings.draw == mode,
-                        onClick = { onEdit(DrawCharacters(mode)) },
-                        enabled = on
-                    )
-                    Text(text = mode.describe(), style = MaterialTheme.typography.bodySmall)
-                }
-            }
-        }
+    SettingsSection("Target panel") {
+        ToggleRow(
+            label = "Show the target panel",
+            checked = settings.enabled,
+            enabled = overlay.enabled,
+            explain = "A panel over the enemy you are locked onto, or were last locked onto, with its health, AI " +
+                    "and animation. The game's own HP bar is kept off that enemy while it shows. Dead characters are never shown"
+        ) { onEdit(ShowTargetPanel(it)) }
 
         SliderRow(
-            label = "Draw distance",
-            value = settings.drawDistance,
-            range = DRAW_DISTANCE,
-            steps = sliderSteps(DRAW_DISTANCE, by = 10f),
-            enabled = on && settings.draw != CharacterDrawing.None,
+            label = "Range",
+            value = settings.range,
+            range = TARGET_RANGE,
+            steps = sliderSteps(TARGET_RANGE, by = 10f),
+            enabled = overlay.enabled && settings.enabled,
             format = { "${it.toInt()}m" }
-        ) { onEdit(CharacterDrawDistance(it)) }
+        ) { onEdit(TargetPanelRange(it)) }
 
         Text(
-            text = "Markers fade to their faintest at this distance, so it sets the depth cue as " +
-                    "well as the cull",
+            text = "After the lock drops, the panel stays on that enemy until it dies or moves past this distance",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
-
-        ToggleRow(
-            label = "Hide the dead",
-            checked = runtime.hideDeadCharacters,
-            explain = "Leaves dead characters out of the Runtime tab's list. off keeps them at the foot of the list. " +
-            "The overlay never draws them"
-        ) { onEdit(HideDeadCharacters(it)) }
     }
 }
 
@@ -133,24 +116,18 @@ internal fun AISettingsSection(
 
         Text(
             text = "Read every tick, so each enemy tracked costs a few reads per tick. An enemy stays tracked " +
-            "for three seconds after it last targeted you, so it does not drop out between attacks",
+                    "for three seconds after it last targeted you, so it does not drop out between attacks",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
         ToggleRow(
             label = "Attack countdown",
-            checked = overlay.characters.hitWindows,
-            enabled = overlay.enabled && ai.tracking != AITracking.Off,
-            explain = "A ring on each tracked enemy's marker that fills up to its next attack. Only enemies tracked above"
+            checked = overlay.target.hitWindows,
+            enabled = overlay.enabled && overlay.target.enabled,
+            explain = "A ring beside the target panel that fills up to the enemy's next attack"
         ) { onEdit(DrawHitWindows(it)) }
     }
-}
-
-private fun CharacterDrawing.describe(): String = when (this) {
-    CharacterDrawing.None -> "None"
-    CharacterDrawing.Instantiated -> "Only the ones the game has built"
-    CharacterDrawing.All -> "Those, and the placed enemies it has not built"
 }
 
 private fun AITracking.describe(): String = when (this) {

@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 
 import com.sappyoak.dsanalyzer.app.nav.RuntimePanel
 import com.sappyoak.dsanalyzer.app.nav.View
-import com.sappyoak.dsanalyzer.app.runtime.RuntimeSettings
 import com.sappyoak.dsanalyzer.app.runtime.RuntimeState
 import com.sappyoak.dsanalyzer.app.ui.theme.AnalyzerTheme
 import com.sappyoak.dsanalyzer.app.ui.theme.Indicator
@@ -106,7 +105,6 @@ private fun PanelRow(
 @Composable
 public fun RuntimeDetail(
     state: RuntimeState,
-    settings: RuntimeSettings,
     panel: RuntimePanel,
     onFollow: (View) -> Unit,
     onReadPlacedEnemies: () -> Unit,
@@ -135,7 +133,7 @@ public fun RuntimeDetail(
                     RuntimePanel.LoadQueue ->
                         item(key = "load-queue") { LoadQueuePanel(snapshot.loadQueue) }
                     RuntimePanel.Characters -> characterItems(
-                        CharacterList(snapshot.characters, state.characterEffects, settings.hideDeadCharacters),
+                        CharacterList(snapshot.characters, state.characterEffects),
                         state.timings,
                         state.placedEnemies,
                         onReadPlacedEnemies,
@@ -144,7 +142,6 @@ public fun RuntimeDetail(
                     RuntimePanel.Animation -> animationItems(
                         snapshot,
                         state.animationTarget,
-                        settings.hideDeadCharacters,
                         onAnimate
                     )
                     RuntimePanel.Collision ->

@@ -22,7 +22,6 @@ import com.sappyoak.dsanalyzer.app.data.ui.DataNavigator
 import com.sappyoak.dsanalyzer.app.nav.Resolution
 import com.sappyoak.dsanalyzer.app.nav.View
 import com.sappyoak.dsanalyzer.app.runtime.RuntimeMessage
-import com.sappyoak.dsanalyzer.app.runtime.RuntimeSettings
 import com.sappyoak.dsanalyzer.app.runtime.ui.RuntimeDetail
 import com.sappyoak.dsanalyzer.app.runtime.ui.RuntimeNavigator
 import com.sappyoak.dsanalyzer.app.ui.theme.AnalyzerTheme
@@ -55,7 +54,6 @@ internal fun ColumnScope.NavigatorPane(view: View, stores: WorkspaceStores, onFo
 internal fun DetailPane(
     view: View,
     stores: WorkspaceStores,
-    runtime: RuntimeSettings,
     resolve: (Address) -> Resolution,
     onFollow: (View) -> Unit
 ) {
@@ -92,7 +90,6 @@ internal fun DetailPane(
             val state by stores.runtime.state.collectAsState()
             RuntimeDetail(
                 state = state,
-                settings = runtime,
                 panel = view.panel,
                 onFollow = onFollow,
                 onReadPlacedEnemies = { stores.runtime.dispatch(RuntimeMessage.PlacedEnemiesRequested) },
