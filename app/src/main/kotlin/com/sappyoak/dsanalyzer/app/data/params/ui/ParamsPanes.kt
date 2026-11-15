@@ -18,22 +18,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-import com.sappyoak.dsanalyzer.app.data.shownParam
 import com.sappyoak.dsanalyzer.app.data.params.ParamEntry
 import com.sappyoak.dsanalyzer.app.data.params.ParamsMessage
 import com.sappyoak.dsanalyzer.app.data.params.ParamsState
 import com.sappyoak.dsanalyzer.app.data.params.ParamsStore
+import com.sappyoak.dsanalyzer.app.data.params.RowNaming
 import com.sappyoak.dsanalyzer.app.data.params.indexOf
 import com.sappyoak.dsanalyzer.app.data.params.linksOf
-import com.sappyoak.dsanalyzer.app.data.params.nameOf
 import com.sappyoak.dsanalyzer.app.data.params.summaries
 import com.sappyoak.dsanalyzer.app.data.params.toFieldRows
+import com.sappyoak.dsanalyzer.app.data.shownParam
 import com.sappyoak.dsanalyzer.app.data.ui.FieldTable
 import com.sappyoak.dsanalyzer.app.nav.Resolution
 import com.sappyoak.dsanalyzer.app.nav.View
 import com.sappyoak.dsanalyzer.app.ui.theme.AnalyzerTheme
 import com.sappyoak.dsanalyzer.game.ref.Address
-import com.sappyoak.dsanalyzer.game.world.params.ParamNames
 
 private val ROW_LIST_WIDTH = 320.dp
 
@@ -52,8 +51,8 @@ public fun ParamsDetail(
 
     Row(modifier = Modifier.fillMaxSize()) {
         if (file != null && entry != null) {
-            val rows = remember(entry, state.names, state.query) {
-                entry.summaries(state.names).filter { it.matches(state.query) }
+            val rows = remember(entry, state.naming, state.query) {
+                entry.summaries(state.naming).filter { it.matches(state.query) }
             }
 
             Column(
@@ -76,7 +75,7 @@ public fun ParamsDetail(
         }
 
         Column(modifier = Modifier.fillMaxSize()) {
-            Header(file, entry, state.names, rowId, focused)
+            Header(file, entry, state.naming, rowId, focused)
             HorizontalDivider(color = AnalyzerTheme.colors.border)
 
             state.problem?.let { problem ->
@@ -115,14 +114,15 @@ private fun Fields(
 
 /** The param and row being shown, and how many rows share the id when the file repeats it */
 @Composable
-private fun Header(file: String?, entry: ParamEntry?, names: ParamNames, rowId: Int?, focused: Int?) {
+private fun Header(file: String?, entry: ParamEntry?, naming: RowNaming, rowId: Int?, focused: Int?) {
     val row = focused?.let { entry?.table?.rows?.get(it) }
-    val name = row?.let { entry?.nameOf(it, names) }.orEmpty()
+    val name = if (row == null || entry == null) "" else naming.nameOf(entry, row)
     val repeats = rowId?.let { entry?.table?.all(it)?.size } ?: 0
 
     val text = listOfNotNull(
         file,
         row?.let { "${it.id} $name".trim() },
+        row?.name?.takeIf { it.isNotBlank() && it != name },
         "id repeated ${repeats}×".takeIf { repeats > 1 }
     ).joinToString(" / ").ifEmpty { "No param" }
 

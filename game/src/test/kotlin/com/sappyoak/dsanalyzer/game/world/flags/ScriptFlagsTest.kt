@@ -9,13 +9,16 @@ import com.sappyoak.dsanalyzer.formats.emevd.emedf.Opcode
 import com.sappyoak.dsanalyzer.game.world.maps.CharacterModels
 import com.sappyoak.dsanalyzer.game.world.params.GameParams
 import com.sappyoak.dsanalyzer.game.world.params.ParamNames
+import com.sappyoak.dsanalyzer.game.world.params.RowNameTranslations
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
 
 private const val EVENT = 11010900L
 private const val KNIGHT = 1010700
 private const val FLAG = 11010700
 
-private val CONTEXT = NamingContext(GameParams(emptyMap()), ParamNames.None, emptyMap(), emptyMap(), CharacterModels(emptyMap()))
+private val CONTEXT = NamingContext(
+    GameParams(emptyMap()), ParamNames.None, emptyMap(), emptyMap(), CharacterModels(emptyMap()), RowNameTranslations.None
+)
 
 private fun instruction(bank: Int, id: Int, vararg values: Long?) = BoundInstruction(Opcode(bank, id), values.toList())
 

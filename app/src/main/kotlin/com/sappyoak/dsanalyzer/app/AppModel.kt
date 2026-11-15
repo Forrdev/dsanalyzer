@@ -1,11 +1,11 @@
 package com.sappyoak.dsanalyzer.app
 
+import com.sappyoak.dsanalyzer.app.analysis.AnalysisEffects
+import com.sappyoak.dsanalyzer.app.analysis.AnalysisStore
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 
-import com.sappyoak.dsanalyzer.app.analysis.AnalysisEffects
-import com.sappyoak.dsanalyzer.app.analysis.AnalysisStore
 import com.sappyoak.dsanalyzer.app.connection.ConnectionEffects
 import com.sappyoak.dsanalyzer.app.connection.ConnectionMessage
 import com.sappyoak.dsanalyzer.app.connection.ConnectionStore
@@ -81,15 +81,16 @@ public fun createAppModel(
     val data = InstallationData(installationFiles, scope)
     val indexes = IndexQueue()
     val link = GameLink(scope, processes = { Processes.Current })
+    val translatedNames = settings.state.map { it.settings.tool.translatedNames }.distinctUntilChanged()
 
     return AppModel(
         settings = settings,
         workspace = WorkspaceStores(
             analysis = AnalysisStore(scope, AnalysisEffects(data)),
-            params = ParamsStore(scope, ParamsEffects(data)),
+            params = ParamsStore(scope, ParamsEffects(data, translatedNames)),
             esds = EsdsStore(scope, EsdsEffects(data, indexes)),
             maps = MapsStore(scope, MapsEffects(data, indexes)),
-            scripts = ScriptsStore(scope, ScriptsEffects(data, indexes)),
+            scripts = ScriptsStore(scope, ScriptsEffects(data, indexes, translatedNames)),
             runtime = RuntimeStore(scope, RuntimeEffects(
                 link = link,
                 aiTracking = settings.state.map { it.settings.runtime.ai.tracking }.distinctUntilChanged(),

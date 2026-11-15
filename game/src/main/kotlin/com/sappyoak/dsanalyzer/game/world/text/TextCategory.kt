@@ -26,9 +26,13 @@ public enum class TextCategory(
     NpcNames(FmgRef(TextArchive.Item, 18), FmgRef(TextArchive.Menu, 119), "NPC names"),
     PlaceNames(FmgRef(TextArchive.Item, 19), FmgRef(TextArchive.Menu, 120), "Place names"),
     Conversations(FmgRef(TextArchive.Menu, 1), FmgRef(TextArchive.Menu, 104), "Conversations"),
-    EventText(FmgRef(TextArchive.Menu, 30), FmgRef(TextArchive.Menu, 101), "Event text");
+    EventText(FmgRef(TextArchive.Menu, 30), FmgRef(TextArchive.Menu, 101), "Event text"),
+    /** What a `<?sysmsg@N?>` tag reads from */
+    SystemMessages(FmgRef(TextArchive.Menu, 92), FmgRef(TextArchive.Menu, 103), "System messages");
 
     public companion object {
-        public val naming: List<TextCategory> = entries.filter { it != Conversations && it != EventText }
+        private val prose = setOf(Conversations, EventText, SystemMessages)
+
+        public val naming: List<TextCategory> = entries.filter { it !in prose }
     }
 }

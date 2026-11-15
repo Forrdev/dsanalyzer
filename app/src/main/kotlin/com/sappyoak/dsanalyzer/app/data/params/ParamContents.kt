@@ -7,7 +7,6 @@ import com.sappyoak.dsanalyzer.formats.param.TypedParam
 import com.sappyoak.dsanalyzer.formats.param.refs.references
 import com.sappyoak.dsanalyzer.game.ref.Address
 import com.sappyoak.dsanalyzer.game.world.params.GameParam
-import com.sappyoak.dsanalyzer.game.world.params.ParamNames
 import com.sappyoak.dsanalyzer.game.world.params.paramFor
 import com.sappyoak.dsanalyzer.game.world.params.side
 
@@ -20,7 +19,9 @@ public data class ParamSummary(
 public data class RowSummary(
     public val index: Int,
     public val id: Int,
-    public val name: String
+    public val name: String,
+    /** A translation the models disagreed on */
+    public val tentative: Boolean = false
 ) {
     public fun matches(query: String): Boolean {
         val wanted = query.trim()
@@ -28,11 +29,10 @@ public data class RowSummary(
     }
 }
 
-/** The game's own text for the row where it has one, else the name the param file stores */
-public fun ParamEntry.nameOf(row: ParamRow, names: ParamNames): String = names.nameOf(param, row.id) ?: row.name
-
-public fun ParamEntry.summaries(names: ParamNames): List<RowSummary> =
-    table.rows.mapIndexed { index, row -> RowSummary(index, row.id, nameOf(row, names)) }
+public fun ParamEntry.summaries(naming: RowNaming): List<RowSummary> = table.rows.mapIndexed { index, row ->
+    val label = naming.labelOf(this, row)
+    RowSummary(index, row.id, label.name, label.tentative)
+}
 
 /** The row a view of [id] opens: the first in file order, since which one the game finds is unconfirmed */
 public fun TypedParam<*>.indexOf(id: Int): Int? = rows.indexOfFirst { it.id == id }.takeIf { it >= 0 }

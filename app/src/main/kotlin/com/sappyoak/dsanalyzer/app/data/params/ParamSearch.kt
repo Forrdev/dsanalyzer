@@ -1,7 +1,5 @@
 package com.sappyoak.dsanalyzer.app.data.params
 
-import com.sappyoak.dsanalyzer.game.world.params.ParamNames
-
 /** A search is answered with at most this many matches, since a common value like 0 is in most fields */
 public const val SEARCH_LIMIT: Int = 500
 
@@ -30,7 +28,7 @@ public data class SearchOutcome(
 )
 
 /** Every param in registry order, each searched until the limit is reached across all of them */
-public fun searchParams(entries: Collection<ParamEntry>, names: ParamNames, query: ParamQuery): SearchOutcome {
+public fun searchParams(entries: Collection<ParamEntry>, naming: RowNaming, query: ParamQuery): SearchOutcome {
     val matches = ArrayList<ParamMatch>()
     for (entry in entries) {
         val left = SEARCH_LIMIT + 1 - matches.size
@@ -40,7 +38,7 @@ public fun searchParams(entries: Collection<ParamEntry>, names: ParamNames, quer
                 ParamMatch(
                     file = entry.param.fileName,
                     rowId = row.id,
-                    rowName = entry.nameOf(row, names),
+                    rowName = naming.nameOf(entry, row),
                     field = match.field.name,
                     value = formatValue(match.value)
                 )

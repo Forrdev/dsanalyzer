@@ -64,7 +64,10 @@ public class GameData internal constructor(
     public suspend fun params(): GameParams? = gameParams.get(Unit) { parse { it.loadGameParams(edition) } }
 
     public suspend fun paramNames(language: TextLanguage): ParamNames =
-        names.get(language) { parse { it.loadParamNames(language) } }
+        names.get(language) {
+            val params = params()
+            parse { it.loadParamNames(language, params) }
+        }
 
     public suspend fun script(script: ScriptId): DecodedScript? = scripts.get(script) {
         parse { it.loadScript(script)?.decoded(script, loadInstructionDefinitions()) }

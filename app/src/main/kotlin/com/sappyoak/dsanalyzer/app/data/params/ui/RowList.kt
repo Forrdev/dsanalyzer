@@ -61,7 +61,7 @@ private fun RowEntry(row: RowSummary, selected: Boolean, onSelect: () -> Unit) {
                 color = AnalyzerTheme.colors.textHi
             )
             Text(
-                text = row.name,
+                text = if (row.tentative) "${row.name} ?" else row.name,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

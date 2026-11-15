@@ -1,15 +1,18 @@
 package com.sappyoak.dsanalyzer.app.data.scripts
 
+import com.sappyoak.dsanalyzer.app.data.IndexQueue
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 
-import com.sappyoak.dsanalyzer.app.data.IndexQueue
 import com.sappyoak.dsanalyzer.app.store.EffectRunner
 import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.game.data.GameData
 import com.sappyoak.dsanalyzer.game.data.InstallationData
 import com.sappyoak.dsanalyzer.game.world.flags.nameFlags
+import com.sappyoak.dsanalyzer.game.world.params.RowNameTranslations
+import com.sappyoak.dsanalyzer.game.world.params.loadRowNameTranslations
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
 import com.sappyoak.dsanalyzer.game.world.scripts.index.EventCallIndex
 import com.sappyoak.dsanalyzer.game.world.scripts.index.EventKey
@@ -27,6 +30,8 @@ private val NAME_LANGUAGE = TextLanguage.English
 public class ScriptsEffects(
     private val data: InstallationData,
     private val queue: IndexQueue,
+    /** Whether the setting asks for translated names; read when flags are named */
+    private val translated: Flow<Boolean>
 ) : EffectRunner<ScriptsEffect, ScriptsMessage> {
     /** One load of each sort at a time, so switching scripts quickly cancels the load being replaced */
     override fun keyOf(effect: ScriptsEffect): Any = effect::class
@@ -82,7 +87,8 @@ public class ScriptsEffects(
     }
 
     private suspend fun GameData.namedFlags(calls: EventCallIndex): ScriptsMessage.FlagsNamed {
-        val names = nameFlags(NAME_LANGUAGE, calls)
+        val rowNames = if (translated.first()) loadRowNameTranslations() else RowNameTranslations.None
+        val names = nameFlags(NAME_LANGUAGE, calls, rowNames)
         logger.atInfo {
             message = "Flags named"
             payload = mapOf("flags" to names.size, "byKind" to names.coverage())

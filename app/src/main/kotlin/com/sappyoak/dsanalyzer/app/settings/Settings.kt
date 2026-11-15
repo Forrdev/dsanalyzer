@@ -37,10 +37,16 @@ public interface SettingsAccess {
 
 @Serializable
 public data class ToolSettings(
-    public val cavesOnLaunch: Boolean = false
+    public val cavesOnLaunch: Boolean = false,
+    public val translatedNames: Boolean = true
 )
 
 public data class CavesOnLaunch(public val enabled: Boolean) : SettingsEdit {
     override fun applyTo(settings: Settings): Settings =
         settings.copy(tool = settings.tool.copy(cavesOnLaunch = enabled))
+}
+
+public data class UseTranslatedNames(public val enabled: Boolean) : SettingsEdit {
+    override fun applyTo(settings: Settings): Settings =
+        settings.copy(tool = settings.tool.copy(translatedNames = enabled))
 }

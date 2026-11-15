@@ -7,6 +7,7 @@ import com.sappyoak.dsanalyzer.game.data.DecodedScript
 import com.sappyoak.dsanalyzer.game.data.GameData
 import com.sappyoak.dsanalyzer.game.world.esd.EsdSource
 import com.sappyoak.dsanalyzer.game.world.maps.loadCharacterModels
+import com.sappyoak.dsanalyzer.game.world.params.RowNameTranslations
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
 import com.sappyoak.dsanalyzer.game.world.scripts.index.EventCallIndex
 import com.sappyoak.dsanalyzer.game.world.text.TextLanguage
@@ -15,9 +16,14 @@ import com.sappyoak.dsanalyzer.shared.binary.BinaryFormatException
 
 /**
  * Names every flag the game data ties to something with a name of its own. [calls] fills in what
- * common events are handed, so it should be the index built over the same scripts
+ * common events are handed, so it should be the index built over the same scripts. [rowNames] names
+ * characters the game's text does not, from their NpcParam rows
  */
-public suspend fun GameData.nameFlags(language: TextLanguage, calls: EventCallIndex): FlagNames {
+public suspend fun GameData.nameFlags(
+    language: TextLanguage,
+    calls: EventCallIndex,
+    rowNames: RowNameTranslations = RowNameTranslations.None
+): FlagNames {
     val params = params() ?: return FlagNames.Empty
     val catalog = catalog()
     val maps = catalog.maps.mapNotNull { map -> msb(map)?.let { map to it } }.toMap()
@@ -29,7 +35,7 @@ public suspend fun GameData.nameFlags(language: TextLanguage, calls: EventCallIn
     }
 
     return withContext(Dispatchers.Default) {
-        val context = NamingContext(params, paramNames(language), text, maps, loadCharacterModels())
+        val context = NamingContext(params, paramNames(language), text, maps, loadCharacterModels(), rowNames)
         val bound = scripts.flatMap { it.bound(calls) }
         FlagNames.of(
             context.lotFlags() +

@@ -8,9 +8,11 @@ public fun reduceParams(
     message: ParamsMessage
 ): Transition<ParamsState, ParamsEffect> = when (message) {
     is ParamsMessage.Opened -> ParamsState(installation = message.installation, loading = true)
-        .with(ParamsEffect.Load(message.installation))
+        .with(ParamsEffect.Load(message.installation), ParamsEffect.FollowTranslations)
 
     is ParamsMessage.Loaded -> state.loaded(message.params, message.names).with()
+    is ParamsMessage.TranslationsChosen ->
+        state.copy(naming = state.naming.copy(translations = message.translations)).with()
     is ParamsMessage.QueryChanged -> state.copy(query = message.query).with()
 
     is ParamsMessage.SearchEdited -> state.copy(search = message.search).with()
@@ -20,7 +22,7 @@ public fun reduceParams(
         } else {
             state.copy(searching = true).with(ParamsEffect.Search(
                 state.entries.values,
-                state.names,
+                state.naming,
                 state.search
             ))
         }

@@ -3,6 +3,7 @@ package com.sappyoak.dsanalyzer.game.world.flags
 import com.sappyoak.dsanalyzer.formats.msb.event.Event
 import com.sappyoak.dsanalyzer.game.ref.WorldRef
 import com.sappyoak.dsanalyzer.game.world.maps.EntryKind
+import com.sappyoak.dsanalyzer.game.world.maps.label
 import com.sappyoak.dsanalyzer.game.world.params.GameParam
 import com.sappyoak.dsanalyzer.game.world.text.TextCategory
 
@@ -18,7 +19,7 @@ internal fun NamingContext.mapFlags(): List<Pair<Int, FlagEvidence>> = maps.flat
             ?: "Used"
         act.eventFlagId namedBy FlagEvidence(
             FlagKind.ObjectState,
-            "$verb: $target ($map)",
+            "$verb: $target (${map.label})",
             WorldRef.Entry(map, EntryKind.Event, index),
             direct = true
         )

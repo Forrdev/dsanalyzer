@@ -9,6 +9,7 @@ import com.sappyoak.dsanalyzer.formats.param.defs.NpcParamRow
 import com.sappyoak.dsanalyzer.formats.param.refs.item
 import com.sappyoak.dsanalyzer.formats.param.refs.items
 import com.sappyoak.dsanalyzer.game.ref.WorldRef
+import com.sappyoak.dsanalyzer.game.world.maps.label
 import com.sappyoak.dsanalyzer.game.world.params.GameParam
 import com.sappyoak.dsanalyzer.game.world.text.TextCategory
 
@@ -45,7 +46,7 @@ private fun NamingContext.lotPlaces(): Map<Int, String> {
     val treasures = maps.flatMap { (map, msb) ->
         msb.eventsOf<Event.Treasure>().flatMap { treasure ->
             val on = treasure.part?.let { msb[it].header.name }
-            treasure.itemLots.filter { it > 0 }.map { lot -> lot to listOfNotNull(map.name, on).joinToString(" ") }
+            treasure.itemLots.filter { it > 0 }.map { lot -> lot to listOfNotNull(map.label, on).joinToString(" ") }
         }
     }
     val drops = params[GameParam.NpcParam].rows.flatMap { npc ->

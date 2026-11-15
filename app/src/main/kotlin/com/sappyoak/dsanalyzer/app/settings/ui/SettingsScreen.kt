@@ -3,7 +3,6 @@ package com.sappyoak.dsanalyzer.app.settings.ui
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
@@ -14,13 +13,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-
 
 import com.sappyoak.dsanalyzer.app.runtime.AISettings
 import com.sappyoak.dsanalyzer.app.runtime.AITracking
 import com.sappyoak.dsanalyzer.app.runtime.DrawHitWindows
-import com.sappyoak.dsanalyzer.app.runtime.EngineDrawSettings
 import com.sappyoak.dsanalyzer.app.runtime.OverlayEnabled
 import com.sappyoak.dsanalyzer.app.runtime.OverlaySettings
 import com.sappyoak.dsanalyzer.app.runtime.ShowTargetPanel
@@ -30,6 +26,7 @@ import com.sappyoak.dsanalyzer.app.settings.CavesOnLaunch
 import com.sappyoak.dsanalyzer.app.settings.Settings
 import com.sappyoak.dsanalyzer.app.settings.SettingsEdit
 import com.sappyoak.dsanalyzer.app.settings.ToolSettings
+import com.sappyoak.dsanalyzer.app.settings.UseTranslatedNames
 
 private val TARGET_RANGE = 10f..200f
 
@@ -65,6 +62,12 @@ private fun ToolSection(settings: ToolSettings, onEdit: (SettingsEdit) -> Unit) 
             explain = "Installs the tool's code caves as soon as it attaches. Off installs them when a " +
                     "feature first needs them. Every patch shows in the write strip and goes back with revert-all"
         ) { onEdit(CavesOnLaunch(it)) }
+        ToggleRow(
+            label = "Use translated names",
+            checked = settings.translatedNames,
+            explain = "Shows English for param row names the game only carries in Japanese. They are " +
+                    "machine translations; a name marked ? is one the translations disagreed on"
+        ) { onEdit(UseTranslatedNames(it)) }
     }
 }
 

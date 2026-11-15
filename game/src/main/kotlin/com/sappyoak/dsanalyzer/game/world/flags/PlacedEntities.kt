@@ -6,6 +6,7 @@ import com.sappyoak.dsanalyzer.game.ref.WorldRef
 import com.sappyoak.dsanalyzer.game.world.maps.CharacterModels
 import com.sappyoak.dsanalyzer.game.world.maps.EntryKind
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
+import com.sappyoak.dsanalyzer.game.world.maps.label
 
 /** Something a map places under an entity id, as a script names it */
 public data class Placed(
@@ -15,7 +16,7 @@ public data class Placed(
     /** The character's name: its NPC name where it has one, else its model's */
     public val character: String?
 ) {
-    public val label: String get() = character?.let { "$it ($name, ${ref.map})" } ?: "$name (${ref.map})"
+    public val label: String get() = character?.let { "$it ($name, ${ref.map.label})" } ?: "$name (${ref.map.label})"
 }
 
 /** Every entity id the maps place, across all of them */

@@ -47,9 +47,21 @@ public class ParamNames(private val text: Map<GameParam<*>, Fmg>) {
 /** Blank entries are placeholders in the shipped text, not names */
 private fun Fmg.named(id: Int): String? = this[id]?.takeIf { it.isNotBlank() }
 
-/** Reads every category [namedBy] needs at once; a language the install lacks gives no names */
-public fun GameFiles.loadParamNames(language: TextLanguage): ParamNames {
+/**
+ * Reads every category [namedBy] needs at once; a language the install lacks gives no names. A talk row
+ * is named by the line it speaks, which its 'msgId' picks out of the conversations rather than its id
+ */
+public fun GameFiles.loadParamNames(language: TextLanguage, params: GameParams?): ParamNames {
     val wanted = GameParam.entries.mapNotNull { param -> param.namedBy?.let { param to it } }
-    val text = loadText(language, wanted.map { it.second }.distinct())
-    return ParamNames(wanted.mapNotNull { (param, category) -> text[category]?.let { param to it } }.toMap())
+    val text = loadText(language, wanted.map { it.second }.distinct() + TextCategory.Conversations)
+    val named = wanted.mapNotNull { (param, category) -> text[category]?.let { param to it } }.toMap()
+    val talk = text[TextCategory.Conversations]?.let { lines -> params?.talkLines(lines) }
+    return ParamNames(named + listOfNotNull(talk?.let { GameParam.TalkParam to it }))
 }
+
+/** Each talk row's line, keyed by the row's own id so [ParamNames.nameOf] reads it like any other */
+private fun GameParams.talkLines(conversations: Fmg): Fmg = Fmg(
+    this[GameParam.TalkParam].rows.mapNotNull { row ->
+        conversations[row.msgId]?.lineSequence()?.firstOrNull { it.isNotBlank() }?.let { row.id to it.trim() }
+    }.toMap()
+)

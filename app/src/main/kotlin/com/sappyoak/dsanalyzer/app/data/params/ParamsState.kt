@@ -16,7 +16,7 @@ public data class ParamsState(
     public val params: GameParams? = null,
     public val entries: Map<String, ParamEntry> = emptyMap(),
     public val catalog: List<ParamSummary> = emptyList(),
-    public val names: ParamNames = ParamNames.None,
+    public val naming: RowNaming = RowNaming(),
     public val loading: Boolean = false,
     public val query: String = "",
     /** The cross-param search being edited, and the last one run */
@@ -32,7 +32,7 @@ internal fun ParamsState.loaded(params: GameParams, names: ParamNames): ParamsSt
         params = params,
         entries = entries,
         catalog = entries.map { (file, entry) -> ParamSummary(file, entry.table.rows.size) },
-        names = names,
+        naming = naming.copy(names = names),
         loading = false
     )
 }

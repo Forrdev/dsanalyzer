@@ -3,10 +3,13 @@ package com.sappyoak.dsanalyzer.app.data.params
 import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.game.world.params.GameParams
 import com.sappyoak.dsanalyzer.game.world.params.ParamNames
+import com.sappyoak.dsanalyzer.game.world.params.RowNameTranslations
 
 public sealed interface ParamsMessage {
     public data class Opened(public val installation: Installation) : ParamsMessage
     public data class Loaded(public val params: GameParams, public val names: ParamNames) : ParamsMessage
+    /** The translations to name rows with; none when the setting is off */
+    public data class TranslationsChosen(public val translations: RowNameTranslations) : ParamsMessage
     public data class QueryChanged(public val query: String) : ParamsMessage
 
     public data class SearchEdited(public val search: ParamQuery) : ParamsMessage
