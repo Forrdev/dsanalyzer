@@ -145,7 +145,8 @@ public fun RuntimeDetail(
                     RuntimePanel.Animation -> animationItems(
                         snapshot,
                         state.animationTarget,
-                        onAnimate
+                        onAnimate,
+                        onFollow
                     )
                     RuntimePanel.Collision ->
                         item(key = "collision") { CollisionPanel(state.engineDraw, onInstallDraw) }

@@ -12,6 +12,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 
 import com.sappyoak.dsanalyzer.app.analysis.AnalysisMessage
+import com.sappyoak.dsanalyzer.app.data.animations.AnimationsMessage
 import com.sappyoak.dsanalyzer.app.data.esd.EsdsMessage
 import com.sappyoak.dsanalyzer.app.data.maps.MapsMessage
 import com.sappyoak.dsanalyzer.app.data.params.ParamsMessage
@@ -45,6 +46,7 @@ public fun WorkspaceShell(
             stores.analysis.dispatch(AnalysisMessage.Opened(it))
             stores.params.dispatch(ParamsMessage.Opened(it))
             stores.esds.dispatch(EsdsMessage.Opened(it))
+            stores.animations.dispatch(AnimationsMessage.Opened(it))
             stores.maps.dispatch(MapsMessage.Opened(it))
             stores.scripts.dispatch(ScriptsMessage.Opened(it))
             stores.runtime.dispatch(RuntimeMessage.Opened(it))
@@ -93,6 +95,8 @@ private fun WorkspaceStores.sync(view: View) {
         is View.Data.ScriptEvent -> scripts.dispatch(ScriptsMessage.ScriptSelected(view.script))
         is View.Data.EventFlag ->
             scripts.dispatch(ScriptsMessage.FlagRequested(view.flagId, view.seenIn))
+        is View.Data.AnimationSet -> animations.dispatch(AnimationsMessage.SetSelected(view.set))
+        is View.Data.Animation -> animations.dispatch(AnimationsMessage.SetSelected(view.set))
         is View.Data.Esd -> esds.dispatch(EsdsMessage.SourceSelected(view.source))
         is View.Data.EsdState -> esds.dispatch(EsdsMessage.SourceSelected(view.source))
         is View.Data.Overview, is View.Data.ParamSearch, is View.Data.Param, is View.Data.ParamRow,

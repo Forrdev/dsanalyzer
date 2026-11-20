@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 
 import com.sappyoak.dsanalyzer.app.analysis.ui.AnalysisNavigator
 import com.sappyoak.dsanalyzer.app.analysis.ui.LeadsPane
+import com.sappyoak.dsanalyzer.app.data.animations.ui.AnimationsPane
 import com.sappyoak.dsanalyzer.app.data.esd.ui.EsdDetail
 import com.sappyoak.dsanalyzer.app.data.flags.flagLive
 import com.sappyoak.dsanalyzer.app.data.flags.ui.FlagListPane
@@ -38,7 +39,11 @@ internal fun ColumnScope.NavigatorPane(view: View, stores: WorkspaceStores, onFo
             val esds by stores.esds.state.collectAsState()
             val maps by stores.maps.state.collectAsState()
             val scripts by stores.scripts.state.collectAsState()
-            DataNavigator(params.catalog, esds.sources, maps.maps, scripts.scripts, scripts.flagCatalog, view, onFollow)
+            val animations by stores.animations.state.collectAsState()
+            DataNavigator(
+                params.catalog, esds.sources, maps.maps, scripts.scripts, scripts.flagCatalog, animations,
+                view, onFollow
+            )
         }
         is View.Live -> {
             val runtime by stores.runtime.state.collectAsState()
@@ -75,6 +80,12 @@ internal fun DetailPane(
         is View.Data.ScriptEvent -> {
             val state by stores.scripts.state.collectAsState()
             ScriptsDetail(state, stores.scripts, view, resolve, onFollow)
+        }
+
+        is View.Data.AnimationSet,
+        is View.Data.Animation -> {
+            val state by stores.animations.state.collectAsState()
+            AnimationsPane(state, view, onFollow)
         }
 
         is View.Data.Esd,

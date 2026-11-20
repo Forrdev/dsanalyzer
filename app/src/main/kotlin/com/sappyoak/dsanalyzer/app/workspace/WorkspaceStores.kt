@@ -1,6 +1,7 @@
 package com.sappyoak.dsanalyzer.app.workspace
 
 import com.sappyoak.dsanalyzer.app.analysis.AnalysisStore
+import com.sappyoak.dsanalyzer.app.data.animations.AnimationsStore
 import com.sappyoak.dsanalyzer.app.data.esd.EsdsStore
 import com.sappyoak.dsanalyzer.app.data.maps.MapsStore
 import com.sappyoak.dsanalyzer.app.data.params.ParamsStore
@@ -14,6 +15,7 @@ public class WorkspaceStores(
     public val analysis: AnalysisStore,
     public val params: ParamsStore,
     public val esds: EsdsStore,
+    public val animations: AnimationsStore,
     public val maps: MapsStore,
     public val scripts: ScriptsStore,
     public val runtime: RuntimeStore

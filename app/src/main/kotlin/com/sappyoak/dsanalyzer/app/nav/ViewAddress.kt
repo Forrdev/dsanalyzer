@@ -8,8 +8,8 @@ import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
 
 public fun View.Data.toDataAddress(): DataAddress? = when (this) {
-    is View.Data.Overview -> null
-    is View.Data.FlagList -> null
+    // A navigator grouping, not a thing in the game's data
+    is View.Data.Overview, is View.Data.FlagList, is View.Data.AnimationSet, is View.Data.Animation -> null
 
     is View.Data.ParamSearch -> DataAddress(DataSpace.Param.token)
     is View.Data.Param ->

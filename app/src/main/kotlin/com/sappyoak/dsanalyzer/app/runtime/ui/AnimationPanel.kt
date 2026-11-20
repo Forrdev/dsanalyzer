@@ -1,5 +1,6 @@
 package com.sappyoak.dsanalyzer.app.runtime.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.lazy.LazyListScope
@@ -15,10 +16,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
+import com.sappyoak.dsanalyzer.app.nav.View
 import com.sappyoak.dsanalyzer.app.runtime.living
 import com.sappyoak.dsanalyzer.app.ui.theme.AnalyzerTheme
+import com.sappyoak.dsanalyzer.game.world.animations.AnimationSetId
 import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.animation.AnimChannelSnapshot
@@ -27,10 +31,14 @@ import com.sappyoak.dsanalyzer.runtime.session.animation.AnimSlotSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
 
+/** The player's model, whose animations are c0000's */
+private const val PLAYER_MODEL = 0
+
 internal fun LazyListScope.animationItems(
     snapshot: RuntimeSnapshot,
     target: AnimationTarget,
-    onAnimate: (AnimationTarget) -> Unit
+    onAnimate: (AnimationTarget) -> Unit,
+    onFollow: (View) -> Unit
 ) {
     item(key = "animation-target") {
         TargetPicker(target, snapshot.characters.living(), onAnimate)
@@ -46,15 +54,23 @@ internal fun LazyListScope.animationItems(
 
     item(key = "animation-summary") { Summary(animation) }
 
+    // Rows whose animation can be opened in the data view, when the watched character's model is known
+    val set = target.animationSet(snapshot.characters)
+    val open = { animationId: Int ->
+        set?.takeIf { animationId >= 0 }?.let { { onFollow(View.Data.Animation(it, animationId.toLong())) } }
+    }
+
     header("animation-slots", "Slots (${animation.occupied.size} of ${animation.slots.size} in use)")
     items(animation.occupied, key = { "slot-${it.index}" }) { slot ->
         val orphan = slot in animation.orphans
-        Mono(slot.line(), if (orphan) AnalyzerTheme.colors.failed else AnalyzerTheme.colors.textHi)
+        val color = if (orphan) AnalyzerTheme.colors.failed else AnalyzerTheme.colors.textHi
+        Mono(slot.line(), color, slot.animationId?.let(open))
     }
 
     header("animation-requests", "Requests (${animation.requests.count { it.live }} live)")
     items(animation.requests, key = { "request-${it.entry}" }) { request ->
-        Mono(request.line(), if (request.live) AnalyzerTheme.colors.textHi else AnalyzerTheme.colors.textLo)
+        val color = if (request.live) AnalyzerTheme.colors.textHi else AnalyzerTheme.colors.textLo
+        Mono(request.line(), color, open(request.animationId))
     }
 
     header("animation-channels", "Channels")
@@ -113,9 +129,18 @@ private fun LazyListScope.header(key: String, title: String) = item(key = key) {
     Text(title, style = MaterialTheme.typography.titleSmall, modifier = HEADER_PADDING)
 }
 
+/** A monospace line, opening [onClick] when there is one */
 @Composable
-private fun Mono(line: String, color: Color) {
-    Text(line, style = AnalyzerTheme.text.monoSmall, color = color, modifier = ROW_PADDING)
+private fun Mono(line: String, color: Color, onClick: (() -> Unit)? = null) {
+    val modifier = if (onClick == null) ROW_PADDING else Modifier.clickable(onClick = onClick).then(ROW_PADDING)
+    Text(line, style = AnalyzerTheme.text.monoSmall, color = color, modifier = modifier)
+}
+
+private fun AnimationTarget.animationSet(characters: List<CharacterSnapshot>): AnimationSetId? = when (this) {
+    AnimationTarget.Off -> null
+    AnimationTarget.Player -> AnimationSetId.Character(PLAYER_MODEL)
+    is AnimationTarget.Character ->
+        characters.firstOrNull { it.handle == handle }?.let { AnimationSetId.Character(it.modelId) }
 }
 
 private fun AnimationTarget.describe(characters: List<CharacterSnapshot>): String = when (this) {

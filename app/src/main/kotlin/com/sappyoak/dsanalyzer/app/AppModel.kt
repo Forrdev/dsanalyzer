@@ -10,6 +10,8 @@ import com.sappyoak.dsanalyzer.app.connection.ConnectionEffects
 import com.sappyoak.dsanalyzer.app.connection.ConnectionMessage
 import com.sappyoak.dsanalyzer.app.connection.ConnectionStore
 import com.sappyoak.dsanalyzer.app.data.IndexQueue
+import com.sappyoak.dsanalyzer.app.data.animations.AnimationsEffects
+import com.sappyoak.dsanalyzer.app.data.animations.AnimationsStore
 import com.sappyoak.dsanalyzer.app.data.esd.EsdsEffects
 import com.sappyoak.dsanalyzer.app.data.esd.EsdsStore
 import com.sappyoak.dsanalyzer.app.data.maps.MapsEffects
@@ -89,6 +91,7 @@ public fun createAppModel(
             analysis = AnalysisStore(scope, AnalysisEffects(data)),
             params = ParamsStore(scope, ParamsEffects(data, translatedNames)),
             esds = EsdsStore(scope, EsdsEffects(data, indexes)),
+            animations = AnimationsStore(scope, AnimationsEffects(data, indexes)),
             maps = MapsStore(scope, MapsEffects(data, indexes)),
             scripts = ScriptsStore(scope, ScriptsEffects(data, indexes, translatedNames)),
             runtime = RuntimeStore(scope, RuntimeEffects(

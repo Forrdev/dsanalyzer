@@ -3,11 +3,15 @@ package com.sappyoak.dsanalyzer.game.data
 import com.sappyoak.dsanalyzer.formats.emevd.EventNames
 import com.sappyoak.dsanalyzer.formats.esd.Esd
 import com.sappyoak.dsanalyzer.formats.msb.MSB
+import com.sappyoak.dsanalyzer.formats.tae.Tae
 import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.game.files.GameFiles
 import com.sappyoak.dsanalyzer.game.files.InstallationFiles
 import com.sappyoak.dsanalyzer.game.files.exists
 import com.sappyoak.dsanalyzer.game.verification.loadFileManifest
+import com.sappyoak.dsanalyzer.game.world.animations.AnimationSetId
+import com.sappyoak.dsanalyzer.game.world.animations.availableAnimationSets
+import com.sappyoak.dsanalyzer.game.world.animations.loadTae
 import com.sappyoak.dsanalyzer.game.world.esd.EsdSource
 import com.sappyoak.dsanalyzer.game.world.esd.availableTalk
 import com.sappyoak.dsanalyzer.game.world.esd.loadEsd
@@ -32,6 +36,7 @@ import kotlinx.coroutines.withContext
 
 private const val KEPT_LAYOUTS = 8
 private const val KEPT_ESDS = 6
+private const val KEPT_ANIMATION_SETS = 6
 
 public class GameData internal constructor(
     public val installation: Installation,
@@ -48,6 +53,8 @@ public class GameData internal constructor(
     private val eventNames = Memo<ScriptId, EventNames>("script names", scope)
     private val layouts = Memo<MapId, MSB?>("layout", scope, KEPT_LAYOUTS)
     private val esds = Memo<EsdSource, Esd?>("esd", scope, KEPT_ESDS)
+    private val animationSets = Memo<Unit, List<AnimationSetId>>("animation sets", scope)
+    private val animations = Memo<AnimationSetId, List<Tae>>("animations", scope, KEPT_ANIMATION_SETS)
 
     public suspend fun catalog(): GameCatalog = catalogs.get(Unit) {
         parse { game ->
@@ -80,12 +87,19 @@ public class GameData internal constructor(
 
     public suspend fun esd(source: EsdSource): Esd? = esds.get(source) { parse { it.loadEsd(source) } }
 
+    /** The characters and objects this installation has animations for */
+    public suspend fun animationSets(): List<AnimationSetId> =
+        animationSets.get(Unit) { parse { it.availableAnimationSets(loadFileManifest(edition)) } }
+
+    public suspend fun animations(set: AnimationSetId): List<Tae> = animations.get(set) { parse { it.loadTae(set) } }
+
     public suspend fun holds(path: String): Boolean = files.use(installation) { it.exists(path) }
 
     public suspend fun <T> read(block: suspend (GameFiles) -> T): T = files.use(installation, block)
 
-    internal fun clear() = listOf(catalogs, talkIds, gameParams, names, scripts, eventNames, layouts, esds)
-        .forEach(Memo<*, *>::clear)
+    internal fun clear() =
+        listOf(catalogs, talkIds, gameParams, names, scripts, eventNames, layouts, esds, animationSets, animations)
+            .forEach(Memo<*, *>::clear)
 
     private suspend fun <T> parse(block: (GameFiles) -> T): T =
         files.use(installation) { game -> withContext(Dispatchers.Default) { block(game)} }

@@ -3,6 +3,7 @@ package com.sappyoak.dsanalyzer.app.nav
 import com.sappyoak.dsanalyzer.analysis.FindingId
 import com.sappyoak.dsanalyzer.analysis.InvestigationId
 import com.sappyoak.dsanalyzer.app.data.flags.FlagGroup
+import com.sappyoak.dsanalyzer.game.world.animations.AnimationSetId
 import com.sappyoak.dsanalyzer.game.world.esd.EsdSource
 import com.sappyoak.dsanalyzer.game.world.maps.EntryKind
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
@@ -44,12 +45,17 @@ public sealed interface View {
             public val eventId: Long
         ) : Data
 
+        /** The flags of one navigator group */
         public data class FlagList(public val group: FlagGroup) : Data
 
         public data class EventFlag(
             public val flagId: Int,
             public val seenIn: MapId? = null
         ) : Data
+
+        /** The animation ids of one character or object */
+        public data class AnimationSet(public val set: AnimationSetId) : Data
+        public data class Animation(public val set: AnimationSetId, public val animationId: Long) : Data
 
         public data class Esd(public val source: EsdSource) : Data
         public data class EsdState(

@@ -140,28 +140,32 @@ private fun BinaryReader.readSource(offset: Int): Pair<AnimationSource, String?>
 
     return at(offset.toLong()) {
         val kind = readInt()
-        val written = readInt() != 0
+        val dataOffset = readInt()
 
-        val fileNameOffset = if (written) readInt() else 0
-        val fileName = if (fileNameOffset > 0) at(fileNameOffset.toLong()) { readUTF16() } else null
-
-        val source = when {
-            !written && kind == SOURCE_IMPORTED -> AnimationSource.Imported(0, 0)
-            !written -> AnimationSource.Own(false, false, false, 0)
-            kind == SOURCE_IMPORTED -> AnimationSource.Imported(
-                fromAnimationId = readInt(),
-                unknown = readInt()
-            )
-            kind == SOURCE_OWN -> AnimationSource.Own(
-                loopsByDefault = readBoolean(),
-                importsHkx = readBoolean(),
-                allowsDelayLoad = readBoolean(),
-                hkxSourceAnimationId = skip(1).readInt()
-            )
-            else -> throw BinaryFormatException("Unknown animation source $kind", offset.toLong())
+        when {
+            dataOffset <= 0 && kind == SOURCE_IMPORTED -> AnimationSource.Imported(0, 0) to null
+            dataOffset <= 0 -> AnimationSource.Own(false, false, false, 0) to null
+            else -> at(dataOffset.toLong()) { readSourceData(kind, offset) }
         }
+    }
+}
 
-        source to fileName
+/**
+ * The data block opens with the offset of the '.hkx' name. An import still writes one, but it points
+ * just past its own block, at the next animation's source or the end of the file, so it is not read
+ */
+private fun BinaryReader.readSourceData(kind: Int, sourceOffset: Int): Pair<AnimationSource, String?> {
+    val fileNameOffset = readInt()
+
+    return when (kind) {
+        SOURCE_IMPORTED -> AnimationSource.Imported(fromAnimationId = readInt(), unknown = readInt()) to null
+        SOURCE_OWN -> AnimationSource.Own(
+            loopsByDefault = readBoolean(),
+            importsHkx = readBoolean(),
+            allowsDelayLoad = readBoolean(),
+            hkxSourceAnimationId = skip(1).readInt()
+        ) to if (fileNameOffset > 0) at(fileNameOffset.toLong()) { readUTF16() } else null
+        else -> throw BinaryFormatException("Unknown animation source $kind", sourceOffset.toLong())
     }
 }
 

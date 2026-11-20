@@ -19,10 +19,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 import com.sappyoak.dsanalyzer.app.data.DataKind
+import com.sappyoak.dsanalyzer.app.data.animations.AnimationsState
 import com.sappyoak.dsanalyzer.app.data.esd.title
 import com.sappyoak.dsanalyzer.app.data.flags.FlagCatalog
 import com.sappyoak.dsanalyzer.app.data.kind
 import com.sappyoak.dsanalyzer.app.data.params.ParamSummary
+import com.sappyoak.dsanalyzer.app.data.shownAnimationSet
 import com.sappyoak.dsanalyzer.app.data.shownEsd
 import com.sappyoak.dsanalyzer.app.data.shownFlagGroup
 import com.sappyoak.dsanalyzer.app.data.shownMap
@@ -45,6 +47,7 @@ public fun ColumnScope.DataNavigator(
     maps: List<MapId>,
     scripts: List<ScriptId>,
     flags: FlagCatalog,
+    animations: AnimationsState,
     view: View.Data,
     onFollow: (View) -> Unit
 ) {
@@ -68,13 +71,13 @@ public fun ColumnScope.DataNavigator(
             item(key = kind.name) {
                 KindRow(
                     kind = kind,
-                    count = kind.countIn(params, esds, maps, scripts, flags),
+                    count = kind.countIn(params, esds, maps, scripts, flags, animations),
                     open = open,
                     onClick = { expanded = if (open) null else kind }
                 )
             }
 
-            if (open) children(kind, params, esds, maps, scripts, flags, view, onFollow)
+            if (open) children(kind, params, esds, maps, scripts, flags, animations, view, onFollow)
         }
     }
 }
@@ -86,6 +89,7 @@ private fun LazyListScope.children(
     maps: List<MapId>,
     scripts: List<ScriptId>,
     flags: FlagCatalog,
+    animations: AnimationsState,
     view: View.Data,
     onFollow: (View) -> Unit
 ) {
@@ -147,8 +151,16 @@ private fun LazyListScope.children(
                 )
             }
 
-        // Named in the tree so the concept is visible, but there is nothing behind it to list
-        DataKind.Animations -> note(kind, "Not read yet")
+        DataKind.Animations ->
+            if (animations.sets.isEmpty()) note(kind, "Listed once the installation is read")
+            else items(animations.sets, key = { "animations:$it" }) { set ->
+                ChildRow(
+                    label = animations.title(set),
+                    detail = null,
+                    selected = view.shownAnimationSet == set,
+                    onClick = { onFollow(View.Data.AnimationSet(set)) }
+                )
+            }
     }
 }
 
@@ -168,12 +180,13 @@ private fun DataKind.countIn(
     esds: List<EsdSource>,
     maps: List<MapId>,
     scripts: List<ScriptId>,
-    flags: FlagCatalog
+    flags: FlagCatalog,
+    animations: AnimationsState
 ): Int? = when (this) {
     DataKind.Params -> params.size
     DataKind.Maps -> maps.size
     DataKind.Scripts -> scripts.size
     DataKind.Esd -> esds.size
     DataKind.EventFlags -> flags.size.takeIf { it > 0 }
-    DataKind.Animations -> null
+    DataKind.Animations -> animations.sets.size.takeIf { it > 0 }
 }

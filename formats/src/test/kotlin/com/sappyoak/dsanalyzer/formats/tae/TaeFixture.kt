@@ -117,10 +117,11 @@ internal fun ptdeTae(
     bytes.put(FIRST_SOURCE + 14, 0)
     bytes.putInt(FIRST_SOURCE + 16, 0)
 
-    // Everything from the first animation, so it names no file of its own
+    // Everything from the first animation, so it names no file of its own. Its name offset points
+    // past its block as the game writes it, here at the end of the file
     bytes.putInt(SECOND_SOURCE, 1)
     bytes.putInt(SECOND_SOURCE + 4, SECOND_SOURCE + 8)
-    bytes.putInt(SECOND_SOURCE + 8, 0)
+    bytes.putInt(SECOND_SOURCE + 8, SIZE)
     bytes.putInt(SECOND_SOURCE + 12, OWN_ANIMATION.toInt())
     bytes.putInt(SECOND_SOURCE + 16, -1)
 
