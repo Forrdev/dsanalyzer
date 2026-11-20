@@ -43,6 +43,7 @@ public class FlagIndex private constructor(
     public val parameterized: Int
 ) {
     public val built: Boolean get() = scripts > 0
+    public val flagIds: Set<Int> get() = byFlag.keys
 
     public operator fun get(flagId: Int): List<FlagReference> =
         byFlag[flagId].orEmpty() + spans.filter { flagId in it.span }.map { it.reference }

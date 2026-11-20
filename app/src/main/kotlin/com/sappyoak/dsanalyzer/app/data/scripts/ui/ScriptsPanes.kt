@@ -41,11 +41,6 @@ public fun ScriptsDetail(
     resolve: (Address) -> Resolution,
     onFollow: (View) -> Unit
 ) {
-    if (view is View.Data.EventFlag) {
-        FlagPane(state, view.flagId, onFollow)
-        return
-    }
-
     Row(modifier = Modifier.fillMaxSize()) {
         if (view.shownScript != null) {
             Column(

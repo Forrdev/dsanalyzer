@@ -8,12 +8,17 @@ import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import java.nio.file.Path
 
+import com.sappyoak.dsanalyzer.app.data.flags.FlagGroup
 import com.sappyoak.dsanalyzer.app.nav.View
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.Emedf
 import com.sappyoak.dsanalyzer.game.GameBuild
 import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.game.InstallationId
+import com.sappyoak.dsanalyzer.game.ref.WorldRef
+import com.sappyoak.dsanalyzer.game.world.flags.FlagEvidence
+import com.sappyoak.dsanalyzer.game.world.flags.FlagKind
+import com.sappyoak.dsanalyzer.game.world.flags.FlagNames
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
 import com.sappyoak.dsanalyzer.game.world.scripts.index.EventCallIndex
@@ -93,6 +98,14 @@ class ScriptsReducerTest : FunSpec({
             failed.namingProblem shouldBe "Flags could not be named: no params"
             failed.problem shouldBe null
         }
+    }
+
+    test("named flags rebuild the catalog the navigator lists") {
+        val seath = FlagEvidence(FlagKind.BossDefeated, "Defeated Seath", WorldRef.Map(MapId.of(17, 0)), direct = true)
+        val names = FlagNames.of(listOf(14 to seath))
+        val named = reduceScripts(CATALOGUED, ScriptsMessage.FlagsNamed(names)).state
+
+        named.flagCatalog[FlagGroup.Kind(FlagKind.BossDefeated)] shouldBe listOf(14)
     }
 
     test("selecting a script reads it, and selecting it again does not") {

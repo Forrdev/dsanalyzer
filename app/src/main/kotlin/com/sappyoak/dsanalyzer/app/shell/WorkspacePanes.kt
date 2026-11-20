@@ -13,9 +13,12 @@ import androidx.compose.ui.Modifier
 import com.sappyoak.dsanalyzer.app.analysis.ui.AnalysisNavigator
 import com.sappyoak.dsanalyzer.app.analysis.ui.LeadsPane
 import com.sappyoak.dsanalyzer.app.data.esd.ui.EsdDetail
+import com.sappyoak.dsanalyzer.app.data.flags.flagLive
+import com.sappyoak.dsanalyzer.app.data.flags.ui.FlagListPane
 import com.sappyoak.dsanalyzer.app.data.maps.ui.MapsDetail
 import com.sappyoak.dsanalyzer.app.data.params.ui.ParamSearchPane
 import com.sappyoak.dsanalyzer.app.data.params.ui.ParamsDetail
+import com.sappyoak.dsanalyzer.app.data.scripts.ui.FlagPane
 import com.sappyoak.dsanalyzer.app.data.scripts.ui.ScriptsDetail
 import com.sappyoak.dsanalyzer.app.data.ui.DataNavigator
 import com.sappyoak.dsanalyzer.app.nav.Resolution
@@ -35,7 +38,7 @@ internal fun ColumnScope.NavigatorPane(view: View, stores: WorkspaceStores, onFo
             val esds by stores.esds.state.collectAsState()
             val maps by stores.maps.state.collectAsState()
             val scripts by stores.scripts.state.collectAsState()
-            DataNavigator(params.catalog, esds.sources, maps.maps, scripts.scripts, view, onFollow)
+            DataNavigator(params.catalog, esds.sources, maps.maps, scripts.scripts, scripts.flagCatalog, view, onFollow)
         }
         is View.Live -> {
             val runtime by stores.runtime.state.collectAsState()
@@ -57,9 +60,19 @@ internal fun DetailPane(
     onFollow: (View) -> Unit
 ) {
     when (view) {
-        is View.Data.Script,
-        is View.Data.ScriptEvent,
+        is View.Data.FlagList -> {
+            val state by stores.scripts.state.collectAsState()
+            FlagListPane(state.flagCatalog, state.flagNames, view.group, onFollow)
+        }
+
         is View.Data.EventFlag -> {
+            val state by stores.scripts.state.collectAsState()
+            val runtime by stores.runtime.state.collectAsState()
+            FlagPane(state, view.flagId, runtime.flagLive(view.flagId), onFollow)
+        }
+
+        is View.Data.Script,
+        is View.Data.ScriptEvent -> {
             val state by stores.scripts.state.collectAsState()
             ScriptsDetail(state, stores.scripts, view, resolve, onFollow)
         }

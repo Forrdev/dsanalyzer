@@ -30,6 +30,7 @@ import com.sappyoak.dsanalyzer.runtime.session.FocusSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeFeature
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.SampleCost
+import com.sappyoak.dsanalyzer.runtime.session.WatchedFlag
 import com.sappyoak.dsanalyzer.runtime.session.WorldPlace
 import com.sappyoak.dsanalyzer.runtime.write.CheatWriter
 import com.sappyoak.dsanalyzer.runtime.write.GameWriter
@@ -81,7 +82,8 @@ public class GameSession internal constructor(
     public fun sample(
         aiScope: AIScope = AIScope.TargetingPlayer,
         animation: AnimationTarget = AnimationTarget.Player,
-        focusRequest: FocusRequest = FocusRequest.Off
+        focusRequest: FocusRequest = FocusRequest.Off,
+        watchedFlag: Int? = null
     ): RuntimeSnapshot {
         val started = TimeSource.Monotonic.markNow()
 
@@ -126,6 +128,7 @@ public class GameSession internal constructor(
             flagChanges = changes,
             animation = animated,
             focus = followed,
+            watchedFlag = watchedFlag?.let { WatchedFlag(it, isFlagSet(it)) },
             cost = SampleCost(
                 started.elapsedNow(),
                 present,

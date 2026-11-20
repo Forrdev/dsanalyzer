@@ -23,6 +23,7 @@ public data class RuntimeSnapshot(
     public val menu: MenuSnapshot?,
     public val animation: AnimationSnapshot? = null,
     public val focus: FocusSnapshot? = null,
+    public val watchedFlag: WatchedFlag? = null,
     public val cost: SampleCost,
     public val writes: Set<WriteKey> = emptySet(),
     public val history: List<WriteEntry> = emptyList()

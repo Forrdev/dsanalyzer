@@ -15,6 +15,8 @@ public sealed interface RuntimeMessage {
     public data object CharacterEffectsRequested : RuntimeMessage
     public data class AnimationTargetChosen(public val target: AnimationTarget) : RuntimeMessage
 
+    public data class FlagShown(public val flagId: Int?) : RuntimeMessage
+
     public data class TimingsWanted(public val wanted: Boolean) : RuntimeMessage
     public data class TimingsLoaded(
         public val models: Map<Int, ModelTimings>,

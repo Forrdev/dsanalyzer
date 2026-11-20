@@ -1,5 +1,6 @@
 package com.sappyoak.dsanalyzer.app.data.scripts
 
+import com.sappyoak.dsanalyzer.app.data.flags.FlagCatalog
 import com.sappyoak.dsanalyzer.app.store.Transition
 import com.sappyoak.dsanalyzer.app.store.with
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
@@ -30,6 +31,7 @@ public fun reduceScripts(
     is ScriptsMessage.ScriptsIndexed -> state.copy(
         flagIndex = message.flags,
         callIndex = message.calls,
+        flagCatalog = FlagCatalog.of(state.flagNames, message.flags),
         indexing = false,
         unreadable = message.unreadable,
         problem = null
@@ -37,7 +39,11 @@ public fun reduceScripts(
         next.installation?.let { next.with(ScriptsEffect.NameFlags(it, message.calls)) } ?: next.with()
     }
 
-    is ScriptsMessage.FlagsNamed -> state.copy(flagNames = message.names, namingProblem = null).with()
+    is ScriptsMessage.FlagsNamed -> state.copy(
+        flagNames = message.names,
+        flagCatalog = FlagCatalog.of(message.names, state.flagIndex),
+        namingProblem = null
+    ).with()
     is ScriptsMessage.NamingFailed -> state.copy(namingProblem = "Flags could not be named: ${message.reason}").with()
 
     is ScriptsMessage.ScriptSelected -> state.read(message.script)

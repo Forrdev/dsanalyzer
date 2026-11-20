@@ -20,9 +20,11 @@ import androidx.compose.ui.unit.sp
 
 import com.sappyoak.dsanalyzer.app.data.DataKind
 import com.sappyoak.dsanalyzer.app.data.esd.title
+import com.sappyoak.dsanalyzer.app.data.flags.FlagCatalog
 import com.sappyoak.dsanalyzer.app.data.kind
 import com.sappyoak.dsanalyzer.app.data.params.ParamSummary
 import com.sappyoak.dsanalyzer.app.data.shownEsd
+import com.sappyoak.dsanalyzer.app.data.shownFlagGroup
 import com.sappyoak.dsanalyzer.app.data.shownMap
 import com.sappyoak.dsanalyzer.app.data.shownParam
 import com.sappyoak.dsanalyzer.app.data.shownScript
@@ -42,6 +44,7 @@ public fun ColumnScope.DataNavigator(
     esds: List<EsdSource>,
     maps: List<MapId>,
     scripts: List<ScriptId>,
+    flags: FlagCatalog,
     view: View.Data,
     onFollow: (View) -> Unit
 ) {
@@ -65,13 +68,13 @@ public fun ColumnScope.DataNavigator(
             item(key = kind.name) {
                 KindRow(
                     kind = kind,
-                    count = kind.countIn(params, esds, maps, scripts),
+                    count = kind.countIn(params, esds, maps, scripts, flags),
                     open = open,
                     onClick = { expanded = if (open) null else kind }
                 )
             }
 
-            if (open) children(kind, params, esds,  maps, scripts, view, onFollow)
+            if (open) children(kind, params, esds, maps, scripts, flags, view, onFollow)
         }
     }
 }
@@ -82,6 +85,7 @@ private fun LazyListScope.children(
     esds: List<EsdSource>,
     maps: List<MapId>,
     scripts: List<ScriptId>,
+    flags: FlagCatalog,
     view: View.Data,
     onFollow: (View) -> Unit
 ) {
@@ -132,22 +136,44 @@ private fun LazyListScope.children(
             )
         }
 
-        // Named in the tree so the concept is visible, but there is nothing behind them to list
-        else -> item(key = "${kind.name}:none") {
-            Text(
-                text = "Not read yet",
-                style = AnalyzerTheme.text.label,
-                color = AnalyzerTheme.colors.textLo,
-                modifier = Modifier.padding(start = CHILD_INDENT, top = 4.dp, bottom = 6.dp)
-            )
-        }
+        DataKind.EventFlags ->
+            if (flags.size == 0) note(kind, "Listed once the scripts are indexed")
+            else items(flags.groups, key = { "flags:$it" }) { group ->
+                ChildRow(
+                    label = group.label,
+                    detail = flags[group].size.toString(),
+                    selected = view.shownFlagGroup == group,
+                    onClick = { onFollow(View.Data.FlagList(group)) }
+                )
+            }
+
+        // Named in the tree so the concept is visible, but there is nothing behind it to list
+        DataKind.Animations -> note(kind, "Not read yet")
     }
 }
 
-private fun DataKind.countIn(params: List<ParamSummary>, esds: List<EsdSource>, maps: List<MapId>, scripts: List<ScriptId>): Int? = when (this) {
+private fun LazyListScope.note(kind: DataKind, text: String) {
+    item(key = "${kind.name}:none") {
+        Text(
+            text = text,
+            style = AnalyzerTheme.text.label,
+            color = AnalyzerTheme.colors.textLo,
+            modifier = Modifier.padding(start = CHILD_INDENT, top = 4.dp, bottom = 6.dp)
+        )
+    }
+}
+
+private fun DataKind.countIn(
+    params: List<ParamSummary>,
+    esds: List<EsdSource>,
+    maps: List<MapId>,
+    scripts: List<ScriptId>,
+    flags: FlagCatalog
+): Int? = when (this) {
     DataKind.Params -> params.size
     DataKind.Maps -> maps.size
     DataKind.Scripts -> scripts.size
     DataKind.Esd -> esds.size
-    DataKind.Params, DataKind.Animations, DataKind.EventFlags -> null
+    DataKind.EventFlags -> flags.size.takeIf { it > 0 }
+    DataKind.Animations -> null
 }

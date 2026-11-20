@@ -1,5 +1,6 @@
 package com.sappyoak.dsanalyzer.app.data
 
+import com.sappyoak.dsanalyzer.app.data.flags.FlagGroup
 import com.sappyoak.dsanalyzer.app.nav.View
 import com.sappyoak.dsanalyzer.game.world.esd.EsdSource
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
@@ -11,7 +12,7 @@ public val View.Data.kind: DataKind?
         is View.Data.Map, is View.Data.MapEntry -> DataKind.Maps
         is View.Data.Esd, is View.Data.EsdState -> DataKind.Esd
         is View.Data.Script, is View.Data.ScriptEvent -> DataKind.Scripts
-        is View.Data.EventFlag -> DataKind.EventFlags
+        is View.Data.FlagList, is View.Data.EventFlag -> DataKind.EventFlags
         is View.Data.Overview -> null
     }
 
@@ -28,6 +29,9 @@ public val View.Data.shownScript: ScriptId?
         is View.Data.ScriptEvent -> script
         else -> null
     }
+
+public val View.Data.shownFlagGroup: FlagGroup?
+    get() = (this as? View.Data.FlagList)?.group
 
 public val View.Data.shownParam: String?
     get() = when (this) {

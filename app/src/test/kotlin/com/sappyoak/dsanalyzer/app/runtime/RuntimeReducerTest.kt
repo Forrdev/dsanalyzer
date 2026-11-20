@@ -7,6 +7,8 @@ import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.shouldBe
 import kotlin.time.Duration.Companion.milliseconds
 
+import com.sappyoak.dsanalyzer.app.data.flags.FlagLive
+import com.sappyoak.dsanalyzer.app.data.flags.flagLive
 import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.game.InstallationId
@@ -15,6 +17,7 @@ import com.sappyoak.dsanalyzer.runtime.session.FlagChange
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeFeature
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.SampleCost
+import com.sappyoak.dsanalyzer.runtime.session.WatchedFlag
 import com.sappyoak.dsanalyzer.runtime.session.WorldPlace
 import java.nio.file.Files
 
@@ -147,6 +150,28 @@ class RuntimeReducerTest : FunSpec({
         assertSoftly {
             state.flagLog.size shouldBe 200
             state.flagLog.first().flagId shouldBe 11_000_001
+        }
+    }
+
+    test("showing a flag watches it once, and leaving it stops the watch") {
+        val shown = reduceRuntime(RuntimeState(), RuntimeMessage.FlagShown(14))
+
+        assertSoftly {
+            shown.effects shouldBe listOf(RuntimeEffect.WatchFlag(14))
+            reduceRuntime(shown.state, RuntimeMessage.FlagShown(14)).effects.shouldBeEmpty()
+            reduceRuntime(shown.state, RuntimeMessage.FlagShown(null)).effects shouldBe
+                    listOf(RuntimeEffect.WatchFlag(null))
+        }
+    }
+
+    test("the shown flag's live value comes from the sample that watched it") {
+        val watched = snapshot(1).copy(watchedFlag = WatchedFlag(14, true))
+        val attached = tick(RuntimeState(shownFlag = 14), LinkState(attached = GAME, snapshot = watched))
+
+        assertSoftly {
+            RuntimeState().flagLive(14) shouldBe FlagLive.Detached
+            attached.flagLive(14) shouldBe FlagLive.Set
+            attached.flagLive(15) shouldBe FlagLive.Unreadable
         }
     }
 })

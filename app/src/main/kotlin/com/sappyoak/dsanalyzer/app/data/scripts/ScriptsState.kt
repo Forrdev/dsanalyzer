@@ -1,5 +1,6 @@
 package com.sappyoak.dsanalyzer.app.data.scripts
 
+import com.sappyoak.dsanalyzer.app.data.flags.FlagCatalog
 import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.game.world.flags.FlagNames
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
@@ -20,6 +21,7 @@ public data class ScriptsState(
     public val flagNames: FlagNames = FlagNames.Empty,
     /** Why [flagNames] stayed empty, kept apart from [problem] so it does not hide a script's own */
     public val namingProblem: String? = null,
+    public val flagCatalog: FlagCatalog = FlagCatalog.Empty,
     public val indexing: Boolean = false,
     /** Scripts the index could not read */
     public val unreadable: List<ScriptId> = emptyList(),

@@ -2,6 +2,7 @@ package com.sappyoak.dsanalyzer.app.nav
 
 import com.sappyoak.dsanalyzer.analysis.FindingId
 import com.sappyoak.dsanalyzer.analysis.InvestigationId
+import com.sappyoak.dsanalyzer.app.data.flags.FlagGroup
 import com.sappyoak.dsanalyzer.game.world.esd.EsdSource
 import com.sappyoak.dsanalyzer.game.world.maps.EntryKind
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
@@ -42,6 +43,8 @@ public sealed interface View {
             public val script: ScriptId,
             public val eventId: Long
         ) : Data
+
+        public data class FlagList(public val group: FlagGroup) : Data
 
         public data class EventFlag(
             public val flagId: Int,

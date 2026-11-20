@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+import com.sappyoak.dsanalyzer.app.data.flags.FlagLive
 import com.sappyoak.dsanalyzer.app.data.scripts.FlagFindings
 import com.sappyoak.dsanalyzer.app.data.scripts.ScriptsState
 import com.sappyoak.dsanalyzer.app.nav.View
@@ -30,12 +31,17 @@ import com.sappyoak.dsanalyzer.game.world.scripts.title
 private val ACCESS_WIDTH = 64.dp
 
 @Composable
-internal fun FlagPane(state: ScriptsState, flagId: Int, onFollow: (View) -> Unit) {
+public fun FlagPane(state: ScriptsState, flagId: Int, live: FlagLive, onFollow: (View) -> Unit) {
     val findings = state.findings?.takeIf { it.flagId == flagId }
 
     Column(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
             Text("Flag $flagId", style = MaterialTheme.typography.titleSmall)
+            Text(
+                text = live.label,
+                style = AnalyzerTheme.text.label,
+                color = if (live == FlagLive.Set) AnalyzerTheme.colors.textHi else AnalyzerTheme.colors.textLo
+            )
             state.flagNames[flagId]?.let { Meaning(it) }
             state.namingProblem?.let { Text(it, style = AnalyzerTheme.text.label, color = AnalyzerTheme.colors.failed) }
             Text(

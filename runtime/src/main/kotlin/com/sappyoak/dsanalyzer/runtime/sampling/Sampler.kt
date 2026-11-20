@@ -36,12 +36,14 @@ public class SampleRequests {
     private val ai = AtomicReference(AIScope.TargetingPlayer)
     private val animated = AtomicReference<AnimationTarget>(AnimationTarget.Player)
     private val followed = AtomicReference(FocusRequest.Off)
+    private val watched = AtomicReference<Int?>(null)
 
     public val writes: WriteRequests = WriteRequests()
 
     internal val aiScope: AIScope get() = ai.get()
     internal val animationTarget: AnimationTarget get() = animated.get()
     internal val focus: FocusRequest get() = followed.get()
+    internal val watchedFlag: Int? get() = watched.get()
 
     public fun requestPlacedEnemies() {
         placedEnemies.set(true)
@@ -65,6 +67,10 @@ public class SampleRequests {
 
     public fun setFocus(request: FocusRequest) {
         followed.set(request)
+    }
+
+    public fun watchFlag(flagId: Int?) {
+        watched.set(flagId)
     }
 }
 

@@ -85,6 +85,7 @@ public fun WorkspaceShell(
 }
 
 private fun WorkspaceStores.sync(view: View) {
+    runtime.dispatch(RuntimeMessage.FlagShown((view as? View.Data.EventFlag)?.flagId))
     when (view) {
         is View.Data.Map -> maps.dispatch(MapsMessage.MapSelected(view.map))
         is View.Data.MapEntry -> maps.dispatch(MapsMessage.MapSelected(view.map))
@@ -95,6 +96,6 @@ private fun WorkspaceStores.sync(view: View) {
         is View.Data.Esd -> esds.dispatch(EsdsMessage.SourceSelected(view.source))
         is View.Data.EsdState -> esds.dispatch(EsdsMessage.SourceSelected(view.source))
         is View.Data.Overview, is View.Data.ParamSearch, is View.Data.Param, is View.Data.ParamRow,
-        is View.Analysis, is View.Live -> Unit
+        is View.Data.FlagList, is View.Analysis, is View.Live -> Unit
     }
 }

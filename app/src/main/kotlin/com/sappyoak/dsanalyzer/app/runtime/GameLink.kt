@@ -117,6 +117,10 @@ public class GameLink(
         requests.setAnimationTarget(target)
     }
 
+    public fun watchFlag(flagId: Int?) {
+        requests.watchFlag(flagId)
+    }
+
     public fun installEngineDraw(enabled: Boolean) {
         draws.install(enabled)
     }

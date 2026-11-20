@@ -24,12 +24,16 @@ public data class RuntimeState(
     public val problem: String? = null,
     public val installation: Installation? = null,
     public val timings: TimingLibrary = TimingLibrary(),
-    public val animationTarget: AnimationTarget = AnimationTarget.Player
+    public val animationTarget: AnimationTarget = AnimationTarget.Player,
+    public val shownFlag: Int? = null
 ) {
     public val live: Boolean get() = attached != null
     public val isCorrectGame: Boolean get() = installation != null && attached != null && installation.build.edition == attached.edition
 
     public val supports: Set<RuntimeFeature> get() = attached?.supports.orEmpty()
+
+    public val shownFlagSet: Boolean?
+        get() = snapshot?.watchedFlag?.takeIf { it.flagId == shownFlag }?.set
 }
 
 /** The game being read */

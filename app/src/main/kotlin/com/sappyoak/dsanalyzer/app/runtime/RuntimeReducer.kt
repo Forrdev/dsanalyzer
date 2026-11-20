@@ -34,6 +34,9 @@ public fun reduceRuntime(
         problem = message.link.note,
     ).withTimingRequests()
 
+    is RuntimeMessage.FlagShown ->
+        if (message.flagId == state.shownFlag) state.with()
+        else state.copy(shownFlag = message.flagId).with(RuntimeEffect.WatchFlag(message.flagId))
     is RuntimeMessage.AnimationTargetChosen -> state.copy(animationTarget = message.target).with(RuntimeEffect.Animate(message.target))
     is RuntimeMessage.TimingsWanted -> state.copy(timings = state.timings.copy(wanted = message.wanted))
         .withTimingRequests()
