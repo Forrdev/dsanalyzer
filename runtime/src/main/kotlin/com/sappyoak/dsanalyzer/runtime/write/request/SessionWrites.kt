@@ -21,6 +21,8 @@ import com.sappyoak.dsanalyzer.runtime.write.task.TaskContext
 import com.sappyoak.dsanalyzer.runtime.write.task.TaskRunner
 import com.sappyoak.dsanalyzer.runtime.write.task.TaskStep
 import com.sappyoak.dsanalyzer.runtime.write.task.WriteTask
+import com.sappyoak.dsanalyzer.runtime.layout.AnimRequestLayout
+import com.sappyoak.dsanalyzer.runtime.layout.AnimationLayout
 
 private val logger = KotlinLogging.logger { }
 
@@ -31,13 +33,15 @@ private val logger = KotlinLogging.logger { }
 internal class SessionWrites(
     private val layout: WriteLayout,
     player: PlayerGameDataLayout,
+    animation: AnimationLayout,
+    animRequests: AnimRequestLayout,
     private val writer: GameWriter
 ) {
     private val callIds = AtomicLong(1)
     private val mailbox = Mailbox(layout.mailbox, writer, callIds)
     private val remote = RemoteMailbox(layout.mailbox.arch, writer, callIds)
     private val tasks = TaskRunner()
-    private val requestTasks = RequestTasks(layout, player)
+    private val requestTasks = RequestTasks(layout, player, animation, animRequests)
     private val cheats = CheatWriter(layout)
 
     /** Each running task's ticket and label, by the task runner's own id */

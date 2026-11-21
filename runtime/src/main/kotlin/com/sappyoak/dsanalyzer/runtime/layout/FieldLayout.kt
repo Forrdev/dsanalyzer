@@ -15,6 +15,7 @@ public data class WriteLayout(
     public val chrFlags2: FieldLayout,
     public val mapFlags: FieldLayout,
     public val hitboxDraw: FieldLayout?,
+    public val eventAction: EventActionLayout?,
     public val cheatBits: Map<CheatFlag, CheatBit>,
     public val mailbox: MailboxLayout,
     public val position: LivePositionLayout,

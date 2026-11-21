@@ -10,9 +10,18 @@ import com.sappyoak.dsanalyzer.runtime.write.stats.StatsEdit
 import com.sappyoak.dsanalyzer.runtime.write.talk.TalkTask
 import com.sappyoak.dsanalyzer.runtime.write.task.WriteTask
 import com.sappyoak.dsanalyzer.runtime.write.warp.WarpTask
+import com.sappyoak.dsanalyzer.runtime.layout.AnimRequestLayout
+import com.sappyoak.dsanalyzer.runtime.layout.AnimationLayout
+import com.sappyoak.dsanalyzer.runtime.write.animation.LadderStorageTask
+import com.sappyoak.dsanalyzer.runtime.write.animation.PoopwalkTask
 
 /** Builds the task behind each request that takes more than one sample, with the edition's layout */
-internal class RequestTasks(private val layout: WriteLayout, private val player: PlayerGameDataLayout) {
+internal class RequestTasks(
+    private val layout: WriteLayout,
+    private val player: PlayerGameDataLayout,
+    private val animation: AnimationLayout,
+    private val animRequests: AnimRequestLayout
+) {
     private val stats = StatsEdit(layout.stats, player)
 
     /** Null for a request that is applied at once rather than as a task */
@@ -29,6 +38,10 @@ internal class RequestTasks(private val layout: WriteLayout, private val player:
         is WriteRequest.SetCovenant -> stats.covenant(request.covenant)
         is WriteRequest.SetCovenantPoints -> stats.covenantPoints(request.covenant, request.points)
         is WriteRequest.SetAttributes -> LevelUpTask(request.attributes, layout.stats.levelUp, player)
+        is WriteRequest.SetLadderStorage -> LadderStorageTask(request.rung, request.count, layout.eventAction)
+        WriteRequest.ClearLadderStorage -> LadderStorageTask(rung = null, count = 0, layout.eventAction)
+        WriteRequest.InducePoopwalk -> PoopwalkTask(induce = true, animation, animRequests)
+        WriteRequest.CurePoopwalk -> PoopwalkTask(induce = false, animation, animRequests)
         is WriteRequest.Run -> request.task
         is WriteRequest.SetCheat, is WriteRequest.Undo, WriteRequest.RevertAll -> null
     }

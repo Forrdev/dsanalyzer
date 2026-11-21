@@ -19,6 +19,7 @@ import com.sappyoak.dsanalyzer.runtime.layout.ClockLayout
 import com.sappyoak.dsanalyzer.runtime.layout.DebugDrawLayout
 import com.sappyoak.dsanalyzer.runtime.layout.EntityTableLayout
 import com.sappyoak.dsanalyzer.runtime.layout.EsdStateLayout
+import com.sappyoak.dsanalyzer.runtime.layout.EventActionLayout
 import com.sappyoak.dsanalyzer.runtime.layout.EventFieldsLayout
 import com.sappyoak.dsanalyzer.runtime.layout.EventFlagLayout
 import com.sappyoak.dsanalyzer.runtime.layout.FieldLayout
@@ -398,6 +399,13 @@ internal fun ptdeLayout(): GameLayout = GameLayout(
         chrFlags2 = FieldLayout(ChrIns.Pointer, ChrIns.Flags2),
         mapFlags = FieldLayout(ChrCtrl.Pointer, ChrCtrl.Flags),
         hitboxDraw = FieldLayout(AttackMan.Pointer, AttackMan.HitboxDraw),
+        eventAction = EventActionLayout(
+            chr = ChrIns.Pointer,
+            record = ChrIns.EventActionPointer,
+            type = ChrEventAction.Type,
+            first = ChrEventAction.First,
+            second = ChrEventAction.Second
+        ),
         cheatBits = CHEAT_BITS,
         mailbox = MailboxLayout.Code(PTDEHookSites.Mailbox),
         position = LivePositionLayout(

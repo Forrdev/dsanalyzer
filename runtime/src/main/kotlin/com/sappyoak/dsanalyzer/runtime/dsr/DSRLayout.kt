@@ -376,6 +376,7 @@ internal fun dsrLayout(version: DSRVersion): GameLayout = GameLayout(
         chrFlags2 = FieldLayout(Player.Pointer, ChrIns.Flags2),
         mapFlags = FieldLayout(ChrCtrl.Pointer, ChrCtrl.Flags),
         hitboxDraw = FieldLayout(AttackMan.Pointer, AttackMan.HitboxDraw),
+        eventAction = null,
         cheatBits = DSRCheatBits,
         mailbox = MailboxLayout.StepTable(DSRHookSites.Mailbox, DSRHookSites.MailboxGate),
         position = LivePositionLayout(

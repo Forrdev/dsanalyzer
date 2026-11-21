@@ -79,6 +79,25 @@ public sealed interface WriteRequest {
         override val label: String get() = "Set attributes"
     }
 
+    /** Holds the player in a ladder climb at [rung] of [count] with no ladder: ladder storage */
+    public data class SetLadderStorage(public val rung: Int, public val count: Int) : WriteRequest {
+        override val label: String get() = "Ladder storage, rung $rung of $count"
+    }
+
+    public data object ClearLadderStorage : WriteRequest {
+        override val label: String get() = "Leave ladder storage"
+    }
+
+    /** Waits up to ten seconds for the player to start a one-shot animation, then orphans its slot */
+    public data object InducePoopwalk : WriteRequest {
+        override val label: String get() = "Induce a poopwalk"
+    }
+
+    /** Releases every orphaned animation slot on the player; done with how many */
+    public data object CurePoopwalk : WriteRequest {
+        override val label: String get() = "Cure the poopwalk"
+    }
+
     /** A multi-sample write built outside this module */
     public data class Run(public val task: WriteTask) : WriteRequest {
         override val label: String get() = task.label

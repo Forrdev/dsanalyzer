@@ -66,7 +66,13 @@ public class GameSession internal constructor(
     private var lastPlace: WorldPlace? = null
     private var wasLoaded: Boolean = false
     private var world = newWorld()
-    private val writes = SessionWrites(layout.writes, layout.playerGameData, writer)
+    private val writes = SessionWrites(
+        layout = layout.writes,
+        player = layout.playerGameData,
+        animation = layout.animation,
+        animRequests = layout.animRequest,
+        writer = writer
+    )
     public val supports: Set<RuntimeFeature> = edition.supports
 
     init {
