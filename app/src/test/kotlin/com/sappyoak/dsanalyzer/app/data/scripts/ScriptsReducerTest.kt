@@ -11,14 +11,20 @@ import java.nio.file.Path
 import com.sappyoak.dsanalyzer.app.data.flags.FlagGroup
 import com.sappyoak.dsanalyzer.app.nav.View
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.Emedf
+import com.sappyoak.dsanalyzer.formats.emevd.emedf.FlagAccess
 import com.sappyoak.dsanalyzer.game.GameBuild
 import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.game.InstallationId
 import com.sappyoak.dsanalyzer.game.ref.WorldRef
+import com.sappyoak.dsanalyzer.game.world.esd.EsdSource
 import com.sappyoak.dsanalyzer.game.world.flags.FlagEvidence
 import com.sappyoak.dsanalyzer.game.world.flags.FlagKind
 import com.sappyoak.dsanalyzer.game.world.flags.FlagNames
+import com.sappyoak.dsanalyzer.game.world.flags.FlagReading
+import com.sappyoak.dsanalyzer.game.world.flags.FlagSite
+import com.sappyoak.dsanalyzer.game.world.flags.FlagSites
+import com.sappyoak.dsanalyzer.game.world.flags.FlagSource
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
 import com.sappyoak.dsanalyzer.game.world.scripts.index.EventCallIndex
@@ -94,18 +100,26 @@ class ScriptsReducerTest : FunSpec({
         val failed = reduceScripts(indexed, ScriptsMessage.NamingFailed("no params")).state
 
         assertSoftly {
-            effects shouldContainExactly listOf(ScriptsEffect.NameFlags(INSTALLATION, calls))
+            effects shouldContainExactly listOf(ScriptsEffect.ReadFlags(INSTALLATION, calls))
             failed.namingProblem shouldBe "Flags could not be named: no params"
             failed.problem shouldBe null
         }
     }
 
-    test("named flags rebuild the catalog the navigator lists") {
+    test("read flags rebuild the catalog the navigator lists, flags only used outside the scripts included") {
         val seath = FlagEvidence(FlagKind.BossDefeated, "Defeated Seath", WorldRef.Map(MapId.of(17, 0)), direct = true)
-        val names = FlagNames.of(listOf(14 to seath))
-        val named = reduceScripts(CATALOGUED, ScriptsMessage.FlagsNamed(names)).state
+        val talk = FlagSource.Talk(EsdSource.Talk(MapId.of(10, 1), 1000), 1, 3)
+        val reading = FlagReading(
+            FlagNames.of(listOf(14 to seath)),
+            FlagSites.of(listOf(4000 to FlagSite(FlagAccess.Reads, "checks it", talk)))
+        )
+        val read = reduceScripts(CATALOGUED, ScriptsMessage.FlagsRead(reading)).state
 
-        named.flagCatalog[FlagGroup.Kind(FlagKind.BossDefeated)] shouldBe listOf(14)
+        assertSoftly {
+            read.flagCatalog[FlagGroup.Kind(FlagKind.BossDefeated)] shouldBe listOf(14)
+            read.flagCatalog[FlagGroup.Unnamed] shouldBe listOf(4000)
+            read.flagSites[4000].map { it.label } shouldBe listOf("checks it")
+        }
     }
 
     test("selecting a script reads it, and selecting it again does not") {

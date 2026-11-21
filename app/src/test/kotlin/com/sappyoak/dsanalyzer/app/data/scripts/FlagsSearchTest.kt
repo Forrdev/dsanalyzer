@@ -167,7 +167,7 @@ class FlagSearchTest : FunSpec({
                 state.findings shouldBe null
             }
             withClue("the only follow-up is naming the flags") {
-                effects.map { it::class } shouldContainExactly listOf(ScriptsEffect.NameFlags::class)
+                effects.map { it::class } shouldContainExactly listOf(ScriptsEffect.ReadFlags::class)
             }
         }
     }

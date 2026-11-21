@@ -10,8 +10,6 @@ import com.sappyoak.dsanalyzer.game.world.params.GameParam
 import com.sappyoak.dsanalyzer.game.world.text.TextCategory
 
 private const val TALK_TO_PLAYER = 1
-private const val SET_FLAG = 11
-private const val ON = 1
 
 /** One map's talk script, by the talk id its NPC parts state */
 public data class TalkScript(public val map: MapId, public val talkId: Int, public val esd: Esd)
@@ -27,7 +25,7 @@ internal fun NamingContext.talkFlags(scripts: List<TalkScript>): List<Pair<Int, 
         val graph = TalkGraph(group)
         group.states.values.flatMap { state ->
             val calls = state.calls()
-            val flags = calls.filter { it.isTalk(SET_FLAG) && it.int(1) == ON }.mapNotNull { it.int(0) }
+            val flags = calls.filter { it.isTalk(SET_TALK_FLAG) && it.int(1) == TALK_FLAG_ON }.mapNotNull { it.int(0) }
             if (flags.isEmpty()) return@flatMap emptyList()
 
             val said = saying(calls)
@@ -40,7 +38,7 @@ internal fun NamingContext.talkFlags(scripts: List<TalkScript>): List<Pair<Int, 
 }
 
 /** The NPC placed with this talk id, and the part to cite; the map itself where none is */
-private fun NamingContext.speaker(talk: TalkScript): Pair<String, WorldRef> {
+internal fun NamingContext.speaker(talk: TalkScript): Pair<String, WorldRef> {
     val msb = maps[talk.map] ?: return "talk ${talk.talkId}" to WorldRef.Map(talk.map)
     val index = msb.parts.indexOfFirst { it is Part.Enemy && it.data.talkId == talk.talkId }
     if (index < 0) return "talk ${talk.talkId}" to WorldRef.Map(talk.map)

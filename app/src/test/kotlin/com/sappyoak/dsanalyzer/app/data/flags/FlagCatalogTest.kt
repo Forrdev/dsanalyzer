@@ -12,6 +12,7 @@ import com.sappyoak.dsanalyzer.game.ref.WorldRef
 import com.sappyoak.dsanalyzer.game.world.flags.FlagEvidence
 import com.sappyoak.dsanalyzer.game.world.flags.FlagKind
 import com.sappyoak.dsanalyzer.game.world.flags.FlagNames
+import com.sappyoak.dsanalyzer.game.world.flags.FlagSites
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
 import com.sappyoak.dsanalyzer.game.world.scripts.index.FlagIndex
@@ -36,7 +37,7 @@ private val INDEX = FlagIndex.of(
 
 class FlagCatalogTest : FunSpec({
     test("every flag the scripts use or the data names is listed once, by kind, by map and unnamed") {
-        val catalog = FlagCatalog.of(NAMES, INDEX)
+        val catalog = FlagCatalog.of(NAMES, FlagSites.Empty, INDEX)
         val undeadBurg = FlagGroup.Map(MapId.of(10, 1))
 
         assertSoftly {
@@ -48,7 +49,7 @@ class FlagCatalogTest : FunSpec({
     }
 
     test("groups run all, kinds in order, unnamed, then maps, leaving empty ones out") {
-        FlagCatalog.of(NAMES, INDEX).groups shouldContainExactly listOf(
+        FlagCatalog.of(NAMES, FlagSites.Empty, INDEX).groups shouldContainExactly listOf(
             FlagGroup.All,
             FlagGroup.Kind(FlagKind.ItemPickup),
             FlagGroup.Kind(FlagKind.ObjectState),

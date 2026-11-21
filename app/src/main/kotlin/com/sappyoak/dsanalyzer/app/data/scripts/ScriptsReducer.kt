@@ -31,17 +31,18 @@ public fun reduceScripts(
     is ScriptsMessage.ScriptsIndexed -> state.copy(
         flagIndex = message.flags,
         callIndex = message.calls,
-        flagCatalog = FlagCatalog.of(state.flagNames, message.flags),
+        flagCatalog = FlagCatalog.of(state.flagNames, state.flagSites, message.flags),
         indexing = false,
         unreadable = message.unreadable,
         problem = null
     ).let { next ->
-        next.installation?.let { next.with(ScriptsEffect.NameFlags(it, message.calls)) } ?: next.with()
+        next.installation?.let { next.with(ScriptsEffect.ReadFlags(it, message.calls)) } ?: next.with()
     }
 
-    is ScriptsMessage.FlagsNamed -> state.copy(
-        flagNames = message.names,
-        flagCatalog = FlagCatalog.of(message.names, state.flagIndex),
+    is ScriptsMessage.FlagsRead -> state.copy(
+        flagNames = message.reading.names,
+        flagSites = message.reading.sites,
+        flagCatalog = FlagCatalog.of(message.reading.names, message.reading.sites, state.flagIndex),
         namingProblem = null
     ).with()
     is ScriptsMessage.NamingFailed -> state.copy(namingProblem = "Flags could not be named: ${message.reason}").with()

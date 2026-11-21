@@ -14,12 +14,12 @@ private const val LOGIC_PREFIX = "LOGIC_ID_"
 private val GOAL_FUNCTION_SUFFIXES = listOf("_Activate", "_Update", "_Terminate", "_Interupt")
 
 /** Changes whenever the same scripts would index differently, so an index kept from before is not reused */
-internal const val AI_INDEX_REVISION: Int = 3
+internal const val AI_INDEX_REVISION: Int = 4
 
 /**
  * Indexes the AI: the goals and logic each binder's `.luainfo` registers ([infos]), named by the `GOAL_` and
- * `LOGIC_ID_` constants the lists in [mains] assign, with the goal parameter names the scripts register, and
- * every global function each script declares
+ * `LOGIC_ID_` constants the lists in [mains] assign, with the goal parameter names the scripts register,
+ * every global function each script declares, and the flags they set
  */
 public fun indexAi(mains: Map<LuaScriptId, FunctionBody>, infos: Map<LuaBinder, LuaInfo>): AiIndex {
     val statements = mains.mapValues { (_, body) -> (body as? FunctionBody.Decompiled)?.statements.orEmpty() }
@@ -45,7 +45,8 @@ public fun indexAi(mains: Map<LuaScriptId, FunctionBody>, infos: Map<LuaBinder, 
         logics = byId(logics) { id, first, binders ->
             AiLogic(id, logicConstants[id], listOfNotNull(first.name, first.interruptName), binders)
         },
-        functions = functions
+        functions = functions,
+        flagSets = luaFlagSets(mains).groupBy({ it.first }, { it.second })
     )
 }
 

@@ -32,12 +32,17 @@ public data class AiLogic(
     public val registeredIn: List<LuaBinder>
 )
 
-/** Every goal and logic the AI binders register, and which scripts define each global function */
+/**
+ * Every goal and logic the AI binders register, which scripts define each global function, and the flags the
+ * scripts set, the event binder's included
+ */
 public class AiIndex(
     public val goals: Map<Int, AiGoal>,
     public val logics: Map<Int, AiLogic>,
     /** Global function name to the scripts that define it */
-    public val functions: Map<String, List<LuaScriptId>>
+    public val functions: Map<String, List<LuaScriptId>>,
+    /** Flag id to every `SetEventFlag` of it */
+    public val flagSets: Map<Int, List<LuaFlagSet>> = emptyMap()
 ) {
     /** The scripts that define [function], or none for one no script declares */
     public fun definitionsOf(function: String): List<LuaScriptId> = functions[function].orEmpty()

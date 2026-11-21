@@ -10,7 +10,7 @@ import com.sappyoak.dsanalyzer.app.store.EffectRunner
 import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.game.data.GameData
 import com.sappyoak.dsanalyzer.game.data.InstallationData
-import com.sappyoak.dsanalyzer.game.world.flags.nameFlags
+import com.sappyoak.dsanalyzer.game.world.flags.readFlags
 import com.sappyoak.dsanalyzer.game.world.params.RowNameTranslations
 import com.sappyoak.dsanalyzer.game.world.params.loadRowNameTranslations
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
@@ -42,7 +42,7 @@ public class ScriptsEffects(
         val reason = failure.message ?: failure.toString()
         return when (effect) {
             is ScriptsEffect.IndexScripts -> ScriptsMessage.IndexFailed(reason)
-            is ScriptsEffect.NameFlags -> ScriptsMessage.NamingFailed(reason)
+            is ScriptsEffect.ReadFlags -> ScriptsMessage.NamingFailed(reason)
             else -> ScriptsMessage.Failed(reason)
         }
     }
@@ -56,7 +56,7 @@ public class ScriptsEffects(
                     .summarize(game.scriptNames(effect.script))
             )
             is ScriptsEffect.IndexScripts -> queue.run { game.indexScripts(effect.scripts) }
-            is ScriptsEffect.NameFlags -> queue.run { game.namedFlags(effect.calls) }
+            is ScriptsEffect.ReadFlags -> queue.run { game.flagReading(effect.calls) }
         }
     }
 
@@ -86,14 +86,18 @@ public class ScriptsEffects(
         )
     }
 
-    private suspend fun GameData.namedFlags(calls: EventCallIndex): ScriptsMessage.FlagsNamed {
+    private suspend fun GameData.flagReading(calls: EventCallIndex): ScriptsMessage.FlagsRead {
         val rowNames = if (translated.first()) loadRowNameTranslations() else RowNameTranslations.None
-        val names = nameFlags(NAME_LANGUAGE, calls, rowNames)
+        val reading = readFlags(NAME_LANGUAGE, calls, rowNames)
         logger.atInfo {
-            message = "Flags named"
-            payload = mapOf("flags" to names.size, "byKind" to names.coverage())
+            message = "Flags read"
+            payload = mapOf(
+                "named" to reading.names.size,
+                "byKind" to reading.names.coverage(),
+                "usedOutsideScripts" to reading.sites.flagIds.size
+            )
         }
-        return ScriptsMessage.FlagsNamed(names)
+        return ScriptsMessage.FlagsRead(reading)
     }
 
     private suspend fun GameData.indexingOf(script: ScriptId): ScriptIndexing? = try {
@@ -118,8 +122,8 @@ public sealed interface ScriptsEffect {
         public val script: ScriptId
     ) : ScriptsEffect
 
-    /** Names every flag, reading what [calls] says common events are handed */
-    public data class NameFlags(
+    /** Names every flag and finds where else each is used, reading what [calls] says common events are handed */
+    public data class ReadFlags(
         override val installation: Installation,
         public val calls: EventCallIndex
     ) : ScriptsEffect

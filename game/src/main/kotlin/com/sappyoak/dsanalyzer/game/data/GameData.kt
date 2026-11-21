@@ -108,7 +108,7 @@ public class GameData internal constructor(
 
     public suspend fun lua(script: LuaScriptId): LuaSource? = lua.source(script)
 
-    /** Goals and logic across every AI binder; the event scripts register none */
+    /** Goals and logic across every AI binder, and every Lua script's flags */
     public suspend fun aiIndex(): AiIndex = lua.aiIndex()
 
     /** The characters placed with each NpcThinkParam row, across every map */

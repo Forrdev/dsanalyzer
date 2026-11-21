@@ -12,6 +12,10 @@ import com.sappyoak.dsanalyzer.formats.esd.expr.decode
 internal const val TALK_BANK = 1
 internal const val ADD_TALK_LIST = 19
 
+/** 'SetEventFlag(eventFlagId, newFlagState)' in a talk script; [TALK_FLAG_ON] is the state that sets it */
+internal const val SET_TALK_FLAG = 11
+internal const val TALK_FLAG_ON = 1
+
 /** 'GetTalkListEntryResult', the slot of the menu entry the player picked */
 private const val PICKED_ENTRY = 23
 
@@ -76,6 +80,11 @@ internal fun CommandCall.int(index: Int): Int? =
 
 private fun EsdCondition.expression(): EsdExpression? = (evaluator.decode() as? Decoded.Expression)?.expression
 
+/** Every expression a state evaluates: its conditions, at any depth, and its commands' arguments */
+internal fun EsdState.expressions(): List<EsdExpression> =
+    conditions.flatMap { it.flattened() }.mapNotNull { it.expression() } +
+            calls().flatMap { call -> call.args.mapNotNull { (it.decode() as? Decoded.Expression)?.expression } }
+
 /** Registers a condition loads with the picked slot, `r0 = GetTalkListEntryResult()` */
 private fun EsdExpression.pickRegisters(): List<Int> = children().flatMap { it.pickRegisters() } +
         listOfNotNull((this as? EsdExpression.SetRegister)?.takeIf { it.value.isPick(emptySet()) }?.index)
@@ -98,7 +107,7 @@ private fun EsdExpression.isPick(registers: Set<Int>): Boolean = when (this) {
 
 private fun EsdExpression.unmarked(): EsdExpression = if (this is EsdExpression.Marked) expr.unmarked() else this
 
-private fun EsdExpression.children(): List<EsdExpression> = when (this) {
+internal fun EsdExpression.children(): List<EsdExpression> = when (this) {
     is EsdExpression.Binary -> listOf(left, right)
     is EsdExpression.Unary -> listOf(operand)
     is EsdExpression.Marked -> listOf(expr)

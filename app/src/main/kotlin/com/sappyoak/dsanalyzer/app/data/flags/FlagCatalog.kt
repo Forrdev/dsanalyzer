@@ -2,6 +2,7 @@ package com.sappyoak.dsanalyzer.app.data.flags
 
 import com.sappyoak.dsanalyzer.game.world.flags.FlagKind
 import com.sappyoak.dsanalyzer.game.world.flags.FlagNames
+import com.sappyoak.dsanalyzer.game.world.flags.FlagSites
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.game.world.scripts.index.FlagIndex
 
@@ -17,9 +18,12 @@ public class FlagCatalog private constructor(private val members: Map<FlagGroup,
     public companion object {
         public val Empty: FlagCatalog = FlagCatalog(emptyMap())
 
-        /** Flags the scripts use plus every flag the data names, so read-only and data-only flags both appear */
-        public fun of(names: FlagNames, index: FlagIndex): FlagCatalog {
-            val ids = (index.flagIds + names.all().map { it.flagId }).sorted()
+        /**
+         * Flags the event scripts use, every flag the data names, and every flag used anywhere else, so read-only
+         * and data-only flags all appear
+         */
+        public fun of(names: FlagNames, sites: FlagSites, index: FlagIndex): FlagCatalog {
+            val ids = (index.flagIds + names.all().map { it.flagId } + sites.flagIds).sorted()
             if (ids.isEmpty()) return Empty
 
             val kinds = FlagKind.entries.associate { kind -> FlagGroup.Kind(kind) as FlagGroup to mutableListOf<Int>() }

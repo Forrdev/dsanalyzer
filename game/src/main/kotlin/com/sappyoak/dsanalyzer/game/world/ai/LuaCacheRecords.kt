@@ -51,6 +51,9 @@ internal class GoalRecord(
 internal class ParameterRecord(val index: Int, val name: String)
 
 @Serializable
+internal class FlagSetRecord(val flagId: Int, val script: String, val function: String?, val on: Boolean?)
+
+@Serializable
 internal class LogicRecord(
     val id: Int,
     val constant: String?,
@@ -63,7 +66,8 @@ internal class LogicRecord(
 internal class AiIndexRecord(
     val goals: List<GoalRecord>,
     val logics: List<LogicRecord>,
-    val functions: Map<String, List<String>>
+    val functions: Map<String, List<String>>,
+    val flagSets: List<FlagSetRecord>
 ) {
     /** The index back, or null if a label no longer names a binder */
     fun toIndex(): AiIndex? = runCatching {
@@ -71,7 +75,8 @@ internal class AiIndexRecord(
             goals.map(GoalRecord::toGoal).associateBy { it.id }.toSortedMap(),
             logics.map { AiLogic(it.id, it.constant, it.functions, it.registeredIn.map(::binder)) }
                 .associateBy { it.id }.toSortedMap(),
-            functions.mapValues { (_, scripts) -> scripts.map(::script) }
+            functions.mapValues { (_, scripts) -> scripts.map(::script) },
+            flagSets.groupBy({ it.flagId }, { LuaFlagSet(script(it.script), it.function, it.on) })
         )
     }.getOrNull()
 
@@ -81,7 +86,10 @@ internal class AiIndexRecord(
             index.logics.values.map {
                 LogicRecord(it.id, it.constant, it.functions, it.registeredIn.map(LuaBinder::label))
             },
-            index.functions.mapValues { (_, scripts) -> scripts.map(LuaScriptId::toString) }
+            index.functions.mapValues { (_, scripts) -> scripts.map(LuaScriptId::toString) },
+            index.flagSets.flatMap { (flagId, sets) ->
+                sets.map { FlagSetRecord(flagId, it.script.toString(), it.function, it.on) }
+            }
         )
     }
 }

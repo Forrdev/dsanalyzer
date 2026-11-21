@@ -1,38 +1,38 @@
 package com.sappyoak.dsanalyzer.app.data.scripts.ui
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 import com.sappyoak.dsanalyzer.app.data.flags.FlagLive
-import com.sappyoak.dsanalyzer.app.data.scripts.FlagFindings
 import com.sappyoak.dsanalyzer.app.data.scripts.ScriptsState
 import com.sappyoak.dsanalyzer.app.nav.View
+import com.sappyoak.dsanalyzer.app.nav.view
 import com.sappyoak.dsanalyzer.app.ui.theme.AnalyzerTheme
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.FlagAccess
 import com.sappyoak.dsanalyzer.game.world.flags.FlagName
+import com.sappyoak.dsanalyzer.game.world.flags.FlagSite
 import com.sappyoak.dsanalyzer.game.world.scripts.index.FlagReference
 import com.sappyoak.dsanalyzer.game.world.scripts.title
 
-private val ACCESS_WIDTH = 64.dp
-
+/**
+ * One flag: its live value, what the game data says it means, then every place that sets or reads it, the
+ * event scripts first and then everywhere else
+ */
 @Composable
 public fun FlagPane(state: ScriptsState, flagId: Int, live: FlagLive, onFollow: (View) -> Unit) {
-    val findings = state.findings?.takeIf { it.flagId == flagId }
+    val references = state.findings?.takeIf { it.flagId == flagId }?.references
+    val sites = state.flagSites[flagId]
 
     Column(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
@@ -42,10 +42,10 @@ public fun FlagPane(state: ScriptsState, flagId: Int, live: FlagLive, onFollow: 
                 style = AnalyzerTheme.text.label,
                 color = if (live == FlagLive.Set) AnalyzerTheme.colors.textHi else AnalyzerTheme.colors.textLo
             )
-            state.flagNames[flagId]?.let { Meaning(it) }
+            state.flagNames[flagId]?.let { Meaning(it, onFollow) }
             state.namingProblem?.let { Text(it, style = AnalyzerTheme.text.label, color = AnalyzerTheme.colors.failed) }
             Text(
-                text = findings?.summarize() ?: state.describeWait(),
+                text = summarize(references, sites) ?: state.describeWait(),
                 style = AnalyzerTheme.text.label,
                 color = AnalyzerTheme.colors.textLo
             )
@@ -61,69 +61,52 @@ public fun FlagPane(state: ScriptsState, flagId: Int, live: FlagLive, onFollow: 
             )
         }
 
-        if (findings == null) return@Column
-
         LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(findings.references) { reference ->
-                Reference(reference) {
-                    onFollow(View.Data.ScriptEvent(reference.script, reference.eventId))
+            if (!references.isNullOrEmpty()) {
+                item(key = "heading:scripts") { Heading("Event scripts") }
+                items(references) { reference ->
+                    AccessRow(reference.access, reference.describe()) {
+                        onFollow(View.Data.ScriptEvent(reference.script, reference.eventId))
+                    }
                 }
             }
+            flagSites(sites, onFollow)
         }
     }
 }
 
+/** The best reading, then every other, each with its kind, whether it names this flag itself, and a link to it */
 @Composable
-private fun Reference(reference: FlagReference, onFollow: () -> Unit) {
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Text(
-            text = if (reference.access == FlagAccess.Writes) "sets" else "reads",
-            style = AnalyzerTheme.text.label,
-            color = if (reference.access == FlagAccess.Writes) {
-                AnalyzerTheme.colors.pending
-            } else {
-                AnalyzerTheme.colors.textLo
-            },
-            modifier = Modifier.width(ACCESS_WIDTH)
-        )
-
-        TextButton(onClick = onFollow, contentPadding = PaddingValues(0.dp)) {
-            Text(
-                text = reference.describe(),
-                style = MaterialTheme.typography.bodySmall,
-                color = AnalyzerTheme.colors.link
-            )
-        }
-    }
-}
-
-/** The best reading, then every other, each with its kind and whether it names this flag itself */
-@Composable
-private fun Meaning(name: FlagName) {
+private fun Meaning(name: FlagName, onFollow: (View) -> Unit) {
     name.evidence.forEachIndexed { index, evidence ->
+        val view = evidence.source.view()
         Text(
             text = "${evidence.kind.label}: ${evidence.label}${if (evidence.direct) "" else " (shares an event)"}",
             style = if (index == 0) MaterialTheme.typography.bodyMedium else AnalyzerTheme.text.label,
-            color = if (index == 0) AnalyzerTheme.colors.textHi else AnalyzerTheme.colors.textLo
+            color = when {
+                view != null -> AnalyzerTheme.colors.link
+                index == 0 -> AnalyzerTheme.colors.textHi
+                else -> AnalyzerTheme.colors.textLo
+            },
+            modifier = view?.let { Modifier.clickable { onFollow(it) } } ?: Modifier
         )
     }
 }
 
 private fun ScriptsState.describeWait(): String = when {
     indexing -> "Reading every script"
-    flagIndex.built -> "Nothing found"
+    flagIndex.built -> "Used nowhere the game data shows"
     else -> "Scripts have not been searched"
 }
 
-private fun FlagFindings.summarize(): String {
-    if (references.isEmpty()) return "Named by no script"
+/** How many places set and read the flag, counting the event scripts and everything else; null before any is known */
+private fun summarize(references: List<FlagReference>?, sites: List<FlagSite>): String? {
+    if (references == null && sites.isEmpty()) return null
+    val accesses = references.orEmpty().map { it.access } + sites.map { it.access }
+    if (accesses.isEmpty()) return "Used nowhere the game data shows"
 
-    val writes = references.count { it.access == FlagAccess.Writes }
-    val reads = references.size - writes
-
+    val writes = accesses.count { it == FlagAccess.Writes }
+    val reads = accesses.size - writes
     return listOfNotNull(
         writes.takeIf { it > 0 }?.let { "set in $it place${plural(it)}" },
         reads.takeIf { it > 0 }?.let { "read in $it place${plural(it)}" }

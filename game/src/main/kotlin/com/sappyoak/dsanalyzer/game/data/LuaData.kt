@@ -56,10 +56,10 @@ internal class LuaData(
         }
     }
 
-    /** Goals and logic across every AI binder; the event binder registers none */
+    /** Goals and logic across every AI binder, and every script's flags; the event binder registers no goals */
     suspend fun aiIndex(): AiIndex = aiIndexes.get(Unit) {
         cached({ it.aiIndex() }, { cache, value -> cache.saveAiIndex(value) }) {
-            val binders = scripts().keys - LuaBinder.Event
+            val binders = scripts().keys
             val cache = cache()
             parse { game ->
                 val mains = binders.flatMap { binder ->

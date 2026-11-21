@@ -1,0 +1,23 @@
+{
+  "note": "Flags DARKSOULS.exe sets or reads by a fixed id, found statically in Prepare to Die's executable.",
+  "sites": [
+    { "flags": [4047], "access": "Writes", "function": "FUN_00D78040", "address": "00D78040", "label": "set when the session limit sends the player out (OnLeave_Limit)" },
+    { "flags": [4047], "access": "Reads", "function": "FUN_00D78040", "address": "00D78040", "label": "leaving on the session limit is skipped while it is set" },
+    { "flags": [4047], "access": "Reads", "function": "FUN_00D77A70", "address": "00D77A70", "label": "a session handler does nothing while it is set" },
+    { "flags": [4047], "access": "Reads", "function": "FUN_00D77AB0", "address": "00D77AB0", "label": "the forced black phantom join request is skipped while it is set" },
+    { "flags": [4047], "access": "Reads", "function": "FUN_00D76630", "address": "00D76630", "label": "returning to the title is skipped while it is set" },
+    { "flags": [4047], "access": "Writes", "function": "FUN_00D76630", "address": "00D76630", "label": "set when returning to the title screen (ReturnTitle_wait)" },
+    { "flags": [4047], "access": "Writes", "function": "FUN_00EFAF40", "address": "00EFAF40", "label": "set when the map step stops the player to leave the session" },
+    { "flags": [5001], "access": "Reads", "function": "FUN_00D77AE0", "address": "00D77AE0", "label": "while set, the next map step shows event message 141210" },
+    { "flags": [5001, 5000, 4300], "access": "Writes", "function": "FUN_00D77AE0", "address": "00D77AE0", "label": "cleared when the map step shows event message 141210 for flag 5001" },
+    { "flags": [4200], "access": "Reads", "function": "FUN_00EA1C40", "address": "00EA1C40", "label": "while set, a GameMan update sequence plays animation 0 on the player and moves on" },
+    { "flags": [8150], "access": "Reads", "function": "ChrIns::vf1C", "address": "00E7CDA0", "label": "compared with whether special effect state 232 is active on the character" },
+    { "flags": [8150], "access": "Writes", "function": "ChrIns::vf1C", "address": "00E7CDA0", "label": "kept equal to whether special effect state 232 is active on the character" },
+    { "flags": [8140, 8141, 8142, 8143, 8144, 8145, 8146], "access": "Reads", "function": "Flag814x_ToAreaFlagAndConsume", "address": "00EF9380", "label": "rewritten to the m12_01 area flag 121xxxx when choosing where to spawn" },
+    { "flags": [8140, 8141, 8142, 8143, 8144, 8145, 8146], "access": "Writes", "function": "Flag814x_ToAreaFlagAndConsume", "address": "00EF9380", "label": "cleared once rewritten to the m12_01 area flag when choosing where to spawn" },
+    { "flags": [8140, 8141, 8142, 8143, 8144, 8145, 8146], "access": "Reads", "function": "Flag814x_ToDestinationMap", "address": "00EF99F0", "label": "while set, the destination map is m12_01" },
+    { "flags": [20, 21], "access": "Reads", "function": "InGameStep_MenuPauseTransition", "address": "00EFAA70", "label": "while set, the game step exits for the ending or a new game" },
+    { "flags": [8000], "access": "Writes", "function": "FUN_00F9E6B0", "address": "00F9E6B0", "label": "set by a per-frame subsystem update from whether a list scan matched; meaning not traced" },
+    { "flags": [11505100], "access": "Writes", "function": "FUN_00E612D0", "address": "00E612D0", "label": "set when the Sen's Fortress giant (c2860) fires animation event 228600200, 228600210 or 228600220" }
+  ]
+}
