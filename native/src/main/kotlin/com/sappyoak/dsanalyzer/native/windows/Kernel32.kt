@@ -15,6 +15,9 @@ import com.sappyoak.dsanalyzer.native.process.ProcessAccessException
 private const val THREAD_CALL_FAILED = -1
 private const val INVALID_HANDLE = -1L
 
+/** What a toolhelp walk fails with at the end of its list */
+private const val ERROR_NO_MORE_FILES = 18
+
 internal object Kernel32 {
     private val library = NativeLibrary.open("kernel32")
 
@@ -155,17 +158,11 @@ internal object Kernel32 {
         return result != 0
     }
 
-    public fun process32(snapshot: MemorySegment, entry: MemorySegment, first: Boolean): Boolean {
-        val function = if (first) process32FirstCall else process32NextCall
-        val result = function.invokeExact(snapshot, entry) as Int
-        return result != 0
-    }
+    public fun process32(snapshot: MemorySegment, entry: MemorySegment, first: Boolean): Boolean =
+        walk("Process32", if (first) process32FirstCall else process32NextCall, snapshot, entry)
 
-    public fun module32(snapshot: MemorySegment, entry: MemorySegment, first: Boolean): Boolean {
-        val function = if (first) module32FirstCall else module32NextCall
-        val result = function.invokeExact(snapshot, entry) as Int
-        return result != 0
-    }
+    public fun module32(snapshot: MemorySegment, entry: MemorySegment, first: Boolean): Boolean =
+        walk("Module32", if (first) module32FirstCall else module32NextCall, snapshot, entry)
 
     public fun readProcessMemory(process: MemorySegment, address: Long, into: MemorySegment): Boolean =
         transfer(readProcessMemoryCall, process, address, into)
@@ -222,10 +219,8 @@ internal object Kernel32 {
         completed != 0 && result.get(JAVA_INT, 0) != 0
     }
 
-    fun thread32(snapshot: MemorySegment, entry: MemorySegment, first: Boolean): Boolean {
-        val function = if (first) thread32FirstCall else thread32NextCall
-        return function.invokeExact(snapshot, entry) as Int != 0
-    }
+    fun thread32(snapshot: MemorySegment, entry: MemorySegment, first: Boolean): Boolean =
+        walk("Thread32", if (first) thread32FirstCall else thread32NextCall, snapshot, entry)
 
     /** The thread's handle, or null if it could not be opened */
     fun openThread(access: Int, threadId: Int): MemorySegment? {
@@ -272,6 +267,16 @@ internal object Kernel32 {
 
     private inline fun <T> capturing(call: (MemorySegment) -> T): T =
         Arena.ofConfined().use { arena -> call(arena.allocate(CallState.layout))}
+
+    private fun walk(
+        name: String,
+        step: MethodHandle,
+        snapshot: MemorySegment,
+        entry: MemorySegment
+    ): Boolean = capturing { state ->
+        if (step.invokeExact(state, snapshot, entry) as Int != 0) return@capturing true
+        if (CallState.WindowsLastError.read(state) == ERROR_NO_MORE_FILES) false else throw failure(name, state)
+    }
 
     private fun failure(function: String, state: MemorySegment): ProcessAccessException {
         val code = CallState.WindowsLastError.read(state)

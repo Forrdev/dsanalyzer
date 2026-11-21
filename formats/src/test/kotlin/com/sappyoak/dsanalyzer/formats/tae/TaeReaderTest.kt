@@ -89,11 +89,11 @@ class TaeReaderTest : FunSpec({
     test("a file that is not a Dark Souls TAE is refused by name rather than misread") {
         assertSoftly {
             shouldThrow<BinaryFormatException> { readTae(ptdeTae(magic = "BND3")) }
-                .message shouldBe "Not a TAE file, found 'BND3' (at 0x0"
+                .message shouldBe "Not a TAE file, found 'BND3' (at 0x0)"
             shouldThrow<BinaryFormatException> { readTae(ptdeTae(version = 0x1000C)) }
-                .message shouldBe "TAE version 0x1000c is not Dark Souls (at 0x8"
+                .message shouldBe "TAE version 0x1000c is not Dark Souls (at 0x8)"
             shouldThrow<BinaryFormatException> { readTae(ptdeTae(wide = true)) }
-                .message shouldBe "TAE version 0x1000b is not Dark Souls (at 0x8"
+                .message shouldBe "TAE version 0x1000b is not Dark Souls (at 0x8)"
         }
     }
 })
