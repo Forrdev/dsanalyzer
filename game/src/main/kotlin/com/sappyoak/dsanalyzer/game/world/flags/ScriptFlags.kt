@@ -3,9 +3,10 @@ package com.sappyoak.dsanalyzer.game.world.flags
 import com.sappyoak.dsanalyzer.formats.emevd.EventNames
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.Opcode
 import com.sappyoak.dsanalyzer.formats.param.refs.items
-import com.sappyoak.dsanalyzer.game.ref.WorldRef
 import com.sappyoak.dsanalyzer.game.world.params.GameParam
 import com.sappyoak.dsanalyzer.game.world.text.TextCategory
+import com.sappyoak.dsanalyzer.game.ref.DataAddress
+import com.sappyoak.dsanalyzer.game.ref.scriptEvent
 
 private val SET_FLAG = Opcode(2003, 2)
 private val REGISTER_BONFIRE = Opcode(2009, 3)
@@ -40,7 +41,7 @@ internal class ScriptOrigin(
  */
 internal fun NamingContext.scriptFlags(events: List<BoundEvent>, names: (BoundEvent) -> EventNames): List<Pair<Int, FlagEvidence>> =
     events.flatMap { event ->
-        val source = WorldRef.ScriptEvent(event.script, event.eventId)
+        val source = DataAddress.scriptEvent(event.script, event.eventId)
         val direct = event.instructions.flatMap { registrations(it, source) }
         val trigger = event.instructions.mapNotNull { trigger(it, event.instructions) }.minByOrNull { it.kind.ordinal }
         val named = names(event)[event.eventId]?.let { Trigger(FlagKind.EventState, it) }
@@ -55,7 +56,10 @@ internal fun NamingContext.scriptFlags(events: List<BoundEvent>, names: (BoundEv
 /** What an event is about, before it is tied to a flag */
 private data class Trigger(val kind: FlagKind, val label: String)
 
-private fun NamingContext.registrations(instruction: BoundInstruction, source: WorldRef): List<Pair<Int, FlagEvidence>> {
+private fun NamingContext.registrations(
+    instruction: BoundInstruction,
+    source: DataAddress
+): List<Pair<Int, FlagEvidence>> {
     fun direct(flag: Int?, kind: FlagKind, label: String) =
         flag?.takeIf { it > 0 }?.let { it namedBy FlagEvidence(kind, label, source, direct = true) }
 

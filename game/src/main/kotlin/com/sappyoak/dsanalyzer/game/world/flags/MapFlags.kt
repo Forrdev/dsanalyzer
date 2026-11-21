@@ -1,9 +1,10 @@
 package com.sappyoak.dsanalyzer.game.world.flags
 
 import com.sappyoak.dsanalyzer.formats.msb.event.Event
-import com.sappyoak.dsanalyzer.game.ref.WorldRef
 import com.sappyoak.dsanalyzer.game.world.maps.EntryKind
 import com.sappyoak.dsanalyzer.game.world.maps.label
+import com.sappyoak.dsanalyzer.game.ref.DataAddress
+import com.sappyoak.dsanalyzer.game.ref.mapEntry
 
 /** ObjActs placed in a map: each names the flag the game sets once the object is used */
 internal val MapOrigin: FlagOrigin = FlagOrigin { it.mapFlags().withSites() }
@@ -18,7 +19,7 @@ private fun NamingContext.mapFlags(): List<Pair<Int, FlagEvidence>> = maps.flatM
         act.eventFlagId namedBy FlagEvidence(
             FlagKind.ObjectState,
             "$verb: $target (${map.label})",
-            WorldRef.Entry(map, EntryKind.Event, index),
+            DataAddress.mapEntry(map, EntryKind.Event, index),
             direct = true
         )
     }

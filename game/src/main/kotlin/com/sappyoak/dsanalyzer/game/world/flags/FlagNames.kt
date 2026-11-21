@@ -1,7 +1,6 @@
 package com.sappyoak.dsanalyzer.game.world.flags
 
-import com.sappyoak.dsanalyzer.game.ref.WorldRef
-import com.sappyoak.dsanalyzer.game.ref.toAddress
+import com.sappyoak.dsanalyzer.game.ref.DataAddress
 
 /** What a flag records, ordered from the most specific meaning to the least */
 public enum class FlagKind(public val label: String) {
@@ -27,7 +26,7 @@ public data class FlagEvidence(
     public val kind: FlagKind,
     public val label: String,
     /** Where it was found */
-    public val source: WorldRef,
+    public val source: DataAddress,
     public val direct: Boolean
 )
 

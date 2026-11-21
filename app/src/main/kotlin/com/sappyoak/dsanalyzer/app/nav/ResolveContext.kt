@@ -4,8 +4,13 @@ import com.sappyoak.dsanalyzer.analysis.Citation
 import com.sappyoak.dsanalyzer.game.ref.Address
 import com.sappyoak.dsanalyzer.game.ref.DataAddress
 import com.sappyoak.dsanalyzer.game.ref.DataSpace
+import com.sappyoak.dsanalyzer.game.ref.EVENT_SEGMENT
+import com.sappyoak.dsanalyzer.game.ref.SEEN_IN
+import com.sappyoak.dsanalyzer.game.ref.entryKindOf
 import com.sappyoak.dsanalyzer.game.ref.knownSpace
 import com.sappyoak.dsanalyzer.game.ref.parseAddress
+import com.sappyoak.dsanalyzer.game.ref.scriptIdOf
+import com.sappyoak.dsanalyzer.game.ref.token
 import com.sappyoak.dsanalyzer.game.world.ai.LuaBinder
 import com.sappyoak.dsanalyzer.game.world.ai.LuaScriptId
 import com.sappyoak.dsanalyzer.game.world.animations.AnimationSetId
@@ -24,6 +29,17 @@ public interface ResolveContext {
     public fun entryFor(entityId: Int): View.Data.MapEntry?
 
     public companion object {
+        /** Holds everything an address names, so resolving says only which view the address is for */
+        public val Everything: ResolveContext = object : ResolveContext {
+            override fun hasMap(map: MapId): Boolean = true
+            override fun hasScript(script: ScriptId): Boolean = true
+            override fun hasParam(file: String): Boolean = true
+            override fun hasEsd(source: EsdSource): Boolean = true
+            override fun hasLua(script: LuaScriptId): Boolean = true
+            override fun hasAnimationSet(set: AnimationSetId): Boolean = true
+            override fun entryFor(entityId: Int): View.Data.MapEntry? = null
+        }
+
         public val Empty: ResolveContext = object : ResolveContext {
             override fun hasMap(map: MapId): Boolean = false
             override fun hasScript(script: ScriptId): Boolean = false
@@ -84,7 +100,7 @@ private fun ResolveContext.scriptView(address: DataAddress): Resolution {
 
     val view: View.Data = when {
         segments.size == 1 -> View.Data.Script(script)
-        segments.size == EVENT_SEGMENTS && segments[1] == EVENT -> {
+        segments.size == EVENT_SEGMENTS && segments[1] == EVENT_SEGMENT -> {
             val id = segments[2].toEventIdOrNull() ?: return Resolution.NoView(address)
             View.Data.ScriptEvent(script, id)
         }

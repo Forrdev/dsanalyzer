@@ -20,9 +20,10 @@ import com.sappyoak.dsanalyzer.app.nav.View
 import com.sappyoak.dsanalyzer.app.nav.view
 import com.sappyoak.dsanalyzer.app.ui.theme.AnalyzerTheme
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.FlagAccess
-import com.sappyoak.dsanalyzer.game.ref.WorldRef
-import com.sappyoak.dsanalyzer.game.world.flags.FlagSource
+import com.sappyoak.dsanalyzer.game.ref.DataSpace
+import com.sappyoak.dsanalyzer.game.ref.knownSpace
 import com.sappyoak.dsanalyzer.game.world.flags.FlagSite
+import com.sappyoak.dsanalyzer.game.world.flags.FlagSource
 import com.sappyoak.dsanalyzer.game.world.maps.label
 
 private val ACCESS_WIDTH = 64.dp
@@ -82,24 +83,24 @@ internal fun AccessRow(access: FlagAccess, text: String, onFollow: (() -> Unit)?
 
 /** The view that shows a place that uses a flag; the executable's code has none */
 internal fun FlagSource.view(): View.Data? = when (this) {
-    is FlagSource.World -> ref.view()
+    is FlagSource.World -> address.view()
     is FlagSource.Talk -> View.Data.EsdState(source, group, state)
     is FlagSource.Lua -> View.Data.LuaScript(script, function)
     is FlagSource.Engine -> null
 }
 
 private fun FlagSource.group(): UseGroup = when (this) {
-    is FlagSource.World -> if (ref is WorldRef.ParamRow) UseGroup.Params else UseGroup.Maps
+    is FlagSource.World -> if (address.knownSpace == DataSpace.Param) UseGroup.Params else UseGroup.Maps
     is FlagSource.Talk -> UseGroup.Talk
     is FlagSource.Lua -> UseGroup.Lua
     is FlagSource.Engine -> UseGroup.Engine
 }
 
 private fun FlagSource.where(): String = when (this) {
-    is FlagSource.World -> when (val ref = ref) {
-        is WorldRef.ParamRow -> "${ref.file} ${ref.rowId}"
-        is WorldRef.Entry -> "${ref.map.label} · ${ref.kind.name.lowercase()} ${ref.index}"
-        else -> ref.toString()
+    is FlagSource.World -> when (val view = address.view()) {
+        is View.Data.ParamRow -> "${view.file} ${view.rowId}"
+        is View.Data.MapEntry -> "${view.map.label} · ${view.kind.name.lowercase()} ${view.index}"
+        else -> address.toAddress()
     }
     is FlagSource.Talk -> "${source.title} · state $group/$state"
     is FlagSource.Lua -> listOfNotNull(script.toString(), function).joinToString(" · ")

@@ -8,7 +8,6 @@ import io.kotest.matchers.shouldBe
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.FlagAccess
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.FlagTarget
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.FlagUse
-import com.sappyoak.dsanalyzer.game.ref.WorldRef
 import com.sappyoak.dsanalyzer.game.world.flags.FlagEvidence
 import com.sappyoak.dsanalyzer.game.world.flags.FlagKind
 import com.sappyoak.dsanalyzer.game.world.flags.FlagNames
@@ -17,6 +16,8 @@ import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
 import com.sappyoak.dsanalyzer.game.world.scripts.index.FlagIndex
 import com.sappyoak.dsanalyzer.game.world.scripts.index.FoundFlagUse
+import com.sappyoak.dsanalyzer.game.ref.DataAddress
+import com.sappyoak.dsanalyzer.game.ref.scriptEvent
 
 private const val BOSS = 14
 private const val DOOR = 11010700
@@ -24,7 +25,7 @@ private const val READ_ONLY = 11010800
 private const val PICKUP = 50000520
 
 private fun named(flagId: Int, kind: FlagKind) =
-    flagId to FlagEvidence(kind, kind.label, WorldRef.ScriptEvent(ScriptId.Common, 0), direct = true)
+    flagId to FlagEvidence(kind, kind.label, DataAddress.scriptEvent(ScriptId.Common, 0), direct = true)
 
 private val NAMES = FlagNames.of(
     listOf(named(BOSS, FlagKind.BossDefeated), named(DOOR, FlagKind.ObjectState), named(PICKUP, FlagKind.ItemPickup))

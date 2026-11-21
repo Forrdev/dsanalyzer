@@ -16,7 +16,6 @@ import com.sappyoak.dsanalyzer.game.GameBuild
 import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.game.InstallationId
-import com.sappyoak.dsanalyzer.game.ref.WorldRef
 import com.sappyoak.dsanalyzer.game.world.esd.EsdSource
 import com.sappyoak.dsanalyzer.game.world.flags.FlagEvidence
 import com.sappyoak.dsanalyzer.game.world.flags.FlagKind
@@ -29,6 +28,8 @@ import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
 import com.sappyoak.dsanalyzer.game.world.scripts.index.EventCallIndex
 import com.sappyoak.dsanalyzer.game.world.scripts.index.FlagIndex
+import com.sappyoak.dsanalyzer.game.ref.DataAddress
+import com.sappyoak.dsanalyzer.game.ref.map
 
 private val INSTALLATION = Installation(
     id = InstallationId("ptde"),
@@ -107,7 +108,8 @@ class ScriptsReducerTest : FunSpec({
     }
 
     test("read flags rebuild the catalog the navigator lists, flags only used outside the scripts included") {
-        val seath = FlagEvidence(FlagKind.BossDefeated, "Defeated Seath", WorldRef.Map(MapId.of(17, 0)), direct = true)
+        val dukes = DataAddress.map(MapId.of(17, 0))
+        val seath = FlagEvidence(FlagKind.BossDefeated, "Defeated Seath", dukes, direct = true)
         val talk = FlagSource.Talk(EsdSource.Talk(MapId.of(10, 1), 1000), 1, 3)
         val reading = FlagReading(
             FlagNames.of(listOf(14 to seath)),

@@ -9,7 +9,8 @@ import com.sappyoak.dsanalyzer.formats.emevd.emedf.DecodedInstruction
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.Emedf
 import com.sappyoak.dsanalyzer.game.ref.Address
 import com.sappyoak.dsanalyzer.game.ref.DataAddress
-import com.sappyoak.dsanalyzer.game.ref.DataSpace
+import com.sappyoak.dsanalyzer.game.ref.entity
+import com.sappyoak.dsanalyzer.game.ref.flag
 import com.sappyoak.dsanalyzer.game.world.params.GameParam
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
 import com.sappyoak.dsanalyzer.game.world.scripts.index.CallerArguments
@@ -107,8 +108,8 @@ private fun ArgReference.linkTo(raw: Long, siblings: List<DecodedArg>): Address?
     if (id <= 0) return null
 
     return when {
-        placed -> DataAddress(DataSpace.Entity.token, listOf(id.toString()))
-        this == ArgReference.EventFlag -> DataAddress(DataSpace.Flag.token, listOf(id.toString()))
+        placed -> DataAddress.entity(id)
+        this == ArgReference.EventFlag -> DataAddress.flag(id)
         this == ArgReference.Item -> siblings.itemParam()?.let { paramAddress(it, id) }
         else -> paramNamed?.let { paramAddress(it, id) }
     }

@@ -19,10 +19,11 @@ import com.sappyoak.dsanalyzer.analysis.engine.LeadKind
 import com.sappyoak.dsanalyzer.analysis.engine.ParameterKind
 import com.sappyoak.dsanalyzer.analysis.engine.resultOf
 import com.sappyoak.dsanalyzer.game.data.DecodedScript
-import com.sappyoak.dsanalyzer.game.ref.WorldRef
-import com.sappyoak.dsanalyzer.game.ref.toDataAddress
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
 import com.sappyoak.dsanalyzer.game.world.scripts.title
+import com.sappyoak.dsanalyzer.game.ref.DataAddress
+import com.sappyoak.dsanalyzer.game.ref.scriptEvent
+import com.sappyoak.dsanalyzer.game.ref.flag
 
 private val ID = AnalyzerId("script.flag-write-race")
 private val RACE = LeadKind("flag-write-race", "Flag written by several events", weight = 8)
@@ -93,8 +94,8 @@ public object FlagWriteRace : Analyzer<DecodedScript> {
                 append("Nothing here checks whether they can run on the same frame.")
             },
             confidence = if (inverts) Confidence.Medium else Confidence.Low,
-            citations = listOf(cite(WorldRef.EventFlag(flag, (script as? ScriptId.Of)?.map), "flag $flag")) +
-                    events.take(WRITERS_SHOWN).map { cite(WorldRef.ScriptEvent(script, it), "event $it") },
+            citations = listOf(cite(DataAddress.flag(flag, (script as? ScriptId.Of)?.map), "flag $flag")) +
+                    events.take(WRITERS_SHOWN).map { cite(DataAddress.scriptEvent(script, it), "event $it") },
             reproduction = listOf(
                 "Find whether the writing events can be triggered together.",
                 "If they can, force the tie and see which branch the readers take.",
@@ -105,5 +106,5 @@ public object FlagWriteRace : Analyzer<DecodedScript> {
         )
     }
 
-    private fun cite(ref: WorldRef, label: String): Citation = Citation.of(ref.toDataAddress(), label)
+    private fun cite(address: DataAddress, label: String): Citation = Citation.of(address, label)
 }

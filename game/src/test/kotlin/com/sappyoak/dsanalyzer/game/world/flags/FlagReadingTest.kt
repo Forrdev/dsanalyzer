@@ -5,11 +5,12 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.FlagAccess
-import com.sappyoak.dsanalyzer.game.ref.WorldRef
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
+import com.sappyoak.dsanalyzer.game.ref.DataAddress
+import com.sappyoak.dsanalyzer.game.ref.map
 
 private const val FLAG = 11010700
-private val MAP = WorldRef.Map(MapId.of(10, 1))
+private val MAP = DataAddress.map(MapId.of(10, 1))
 private val PICKUP = FlagEvidence(FlagKind.ItemPickup, "Picked up a ring", MAP, direct = true)
 private val EVENT = FlagEvidence(FlagKind.EventState, "Some event", MAP, direct = false)
 private val SITE = FlagSite(FlagAccess.Writes, "turns it on", FlagSource.World(MAP))

@@ -23,6 +23,9 @@ public data class DataAddress(
         segments.forEach { append('/').append(it) }
         fragment?.let { append('#').append(it) }
     }
+
+    /** Holds the typed builders in `DataAddresses.kt` */
+    public companion object
 }
 
 internal const val DATA_SCHEME = "ds:/"

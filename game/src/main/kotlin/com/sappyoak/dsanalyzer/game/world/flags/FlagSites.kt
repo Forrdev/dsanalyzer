@@ -1,14 +1,14 @@
 package com.sappyoak.dsanalyzer.game.world.flags
 
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.FlagAccess
-import com.sappyoak.dsanalyzer.game.ref.WorldRef
 import com.sappyoak.dsanalyzer.game.world.ai.LuaScriptId
 import com.sappyoak.dsanalyzer.game.world.esd.EsdSource
+import com.sappyoak.dsanalyzer.game.ref.DataAddress
 
 /** Where outside the event scripts a flag is set or read */
 public sealed interface FlagSource {
     /** A param row or map entry: an item lot, a shop's stock, an ObjAct */
-    public data class World(public val ref: WorldRef) : FlagSource
+    public data class World(public val address: DataAddress) : FlagSource
 
     /** One state of an NPC's talk script */
     public data class Talk(

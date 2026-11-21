@@ -2,21 +2,24 @@ package com.sappyoak.dsanalyzer.game.world.flags
 
 import com.sappyoak.dsanalyzer.formats.msb.MSB
 import com.sappyoak.dsanalyzer.formats.msb.part.Part
-import com.sappyoak.dsanalyzer.game.ref.WorldRef
 import com.sappyoak.dsanalyzer.game.world.maps.CharacterModels
 import com.sappyoak.dsanalyzer.game.world.maps.EntryKind
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.game.world.maps.label
+import com.sappyoak.dsanalyzer.game.ref.DataAddress
+import com.sappyoak.dsanalyzer.game.ref.mapEntry
 
 /** Something a map places under an entity id, as a script names it */
 public data class Placed(
-    public val ref: WorldRef.Entry,
+    public val map: MapId,
+    /** The part or region itself */
+    public val address: DataAddress,
     /** The part or region's own name, such as `c2410_0001` */
     public val name: String,
     /** The character's name: its NPC name where it has one, else its model's */
     public val character: String?
 ) {
-    public val label: String get() = character?.let { "$it ($name, ${ref.map.label})" } ?: "$name (${ref.map.label})"
+    public val label: String get() = character?.let { "$it ($name, ${map.label})" } ?: "$name (${map.label})"
 }
 
 /** Every entity id the maps place, across all of them */
@@ -37,10 +40,11 @@ private fun MSB.placed(map: MapId, models: CharacterModels, npcName: (Int) -> St
     val parts = parts.withIndex().mapNotNull { (index, part) ->
         val id = part.header.entityId ?: return@mapNotNull null
         val character = characterName(part, models, npcName)
-        id to Placed(WorldRef.Entry(map, EntryKind.Part, index), part.header.name, character)
+        id to Placed(map, DataAddress.mapEntry(map, EntryKind.Part, index), part.header.name, character)
     }
     val regions = regions.withIndex().mapNotNull { (index, region) ->
-        region.entityId?.let { it to Placed(WorldRef.Entry(map, EntryKind.Region, index), region.name, null) }
+        val id = region.entityId ?: return@mapNotNull null
+        id to Placed(map, DataAddress.mapEntry(map, EntryKind.Region, index), region.name, null)
     }
     return parts + regions
 }

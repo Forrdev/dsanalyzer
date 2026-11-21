@@ -2,10 +2,13 @@ package com.sappyoak.dsanalyzer.app.nav
 
 import com.sappyoak.dsanalyzer.game.ref.DataAddress
 import com.sappyoak.dsanalyzer.game.ref.DataSpace
+import com.sappyoak.dsanalyzer.game.ref.flag
+import com.sappyoak.dsanalyzer.game.ref.map
+import com.sappyoak.dsanalyzer.game.ref.mapEntry
+import com.sappyoak.dsanalyzer.game.ref.paramRow
+import com.sappyoak.dsanalyzer.game.ref.scriptEvent
+import com.sappyoak.dsanalyzer.game.ref.token
 import com.sappyoak.dsanalyzer.game.world.esd.EsdSource
-import com.sappyoak.dsanalyzer.game.world.maps.EntryKind
-import com.sappyoak.dsanalyzer.game.world.maps.MapId
-import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
 
 public fun View.Data.toDataAddress(): DataAddress? = when (this) {
     // A navigator grouping, not a thing in the game's data
@@ -14,20 +17,15 @@ public fun View.Data.toDataAddress(): DataAddress? = when (this) {
     is View.Data.ParamSearch -> DataAddress(DataSpace.Param.token)
     is View.Data.Param ->
         DataAddress(DataSpace.Param.token, listOf(file))
-    is View.Data.ParamRow ->
-        DataAddress(DataSpace.Param.token, listOf(file, rowId.toString()))
+    is View.Data.ParamRow -> DataAddress.paramRow(file, rowId)
 
-    is View.Data.Map ->
-        DataAddress(DataSpace.Map.token, listOf(map.toString()))
-    is View.Data.MapEntry ->
-        DataAddress(DataSpace.Map.token, listOf(map.toString(), kind.token, index.toString()))
+    is View.Data.Map -> DataAddress.map(map)
+    is View.Data.MapEntry -> DataAddress.mapEntry(map, kind, index)
 
     is View.Data.Script ->
         DataAddress(DataSpace.Script.token, listOf(script.token))
-    is View.Data.ScriptEvent ->
-        DataAddress(DataSpace.Script.token, listOf(script.token, EVENT, eventId.toString()))
-    is View.Data.EventFlag ->
-        DataAddress(DataSpace.Flag.token, listOf("$flagId" + (seenIn?.let { "$SEEN_IN$it" } ?: "")))
+    is View.Data.ScriptEvent -> DataAddress.scriptEvent(script, eventId)
+    is View.Data.EventFlag -> DataAddress.flag(flagId, seenIn)
 
     is View.Data.AnimationSet ->
         DataAddress(DataSpace.Animation.token, listOf(set.label))
@@ -49,34 +47,8 @@ public fun View.Data.toDataAddress(): DataAddress? = when (this) {
         DataAddress(DataSpace.Esd.token, source.segments + listOf(group.toString(), state.toString()))
 }
 
-internal const val EVENT: String = "event"
-
 /** Logic shares the goal space, under its own segment */
 internal const val LOGIC: String = "logic"
-
-/** Separates a flag's id from the map a citation saw it in */
-internal const val SEEN_IN: Char = '@'
-
-internal val EntryKind.token: String get() = name.lowercase()
-
-internal fun entryKindOf(token: String): EntryKind? = when (token) {
-    "model" -> EntryKind.Model
-    "event" -> EntryKind.Event
-    "region" -> EntryKind.Region
-    "part" -> EntryKind.Part
-    else -> null
-}
-
-internal val ScriptId.token: String
-    get() = when (this) {
-        ScriptId.Common -> COMMON
-        is ScriptId.Of -> map.toString()
-    }
-
-internal fun scriptIdOf(token: String): ScriptId? =
-    if (token == COMMON) ScriptId.Common else MapId.parse(token)?.let(ScriptId::Of)
-
-private const val COMMON = "common"
 
 /** The player's ESD, by the character it belongs to */
 internal const val PLAYER_ESD = "c0000"
@@ -86,3 +58,7 @@ internal val EsdSource.segments: List<String>
         EsdSource.Player -> listOf(PLAYER_ESD)
         is EsdSource.Talk -> listOf(map.toString(), talkId.toString())
     }
+
+/** The view [this] names, where it names one, without asking whether the workspace holds it */
+public fun DataAddress.view(): View.Data? =
+    (ResolveContext.Everything.resolve(this) as? Resolution.Resolved)?.view as? View.Data

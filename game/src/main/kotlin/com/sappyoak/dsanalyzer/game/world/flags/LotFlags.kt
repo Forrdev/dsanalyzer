@@ -8,10 +8,11 @@ import com.sappyoak.dsanalyzer.formats.param.defs.ItemLotParamRow
 import com.sappyoak.dsanalyzer.formats.param.defs.NpcParamRow
 import com.sappyoak.dsanalyzer.formats.param.refs.item
 import com.sappyoak.dsanalyzer.formats.param.refs.items
-import com.sappyoak.dsanalyzer.game.ref.WorldRef
 import com.sappyoak.dsanalyzer.game.world.maps.label
 import com.sappyoak.dsanalyzer.game.world.params.GameParam
 import com.sappyoak.dsanalyzer.game.world.text.TextCategory
+import com.sappyoak.dsanalyzer.game.ref.DataAddress
+import com.sappyoak.dsanalyzer.game.ref.paramRow
 
 /** Item lots and limited shop stock: each row carries the flag the game sets when it is taken */
 internal val LotOrigin: FlagOrigin = FlagOrigin { it.lotFlags().withSites() }
@@ -69,4 +70,4 @@ private fun NamingContext.dropperOf(npc: NpcParamRow): String {
     return model?.let { models.describe(it) ?: it } ?: "NpcParam ${npc.id}"
 }
 
-internal fun ParamRow.source(param: GameParam<*>): WorldRef = WorldRef.ParamRow(param.fileName, id)
+internal fun ParamRow.source(param: GameParam<*>): DataAddress = DataAddress.paramRow(param.fileName, id)

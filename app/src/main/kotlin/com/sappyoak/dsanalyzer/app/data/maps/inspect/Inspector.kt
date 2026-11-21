@@ -5,7 +5,7 @@ import com.sappyoak.dsanalyzer.app.nav.View
 import com.sappyoak.dsanalyzer.app.nav.toDataAddress
 import com.sappyoak.dsanalyzer.game.ref.Address
 import com.sappyoak.dsanalyzer.game.ref.DataAddress
-import com.sappyoak.dsanalyzer.game.ref.DataSpace
+import com.sappyoak.dsanalyzer.game.ref.entity
 import com.sappyoak.dsanalyzer.game.world.maps.EntryKind
 
 public data class InspectorRow(
@@ -42,6 +42,6 @@ internal fun MutableList<InspectorRow>.entityRow(label: String, entityId: Int?) 
     add(InspectorRow(
         label = label,
         value = entityId?.toString() ?: "none",
-        link = entityId?.let { DataAddress(DataSpace.Entity.token, listOf(it.toString())) }
+        link = entityId?.let { DataAddress.entity(it) }
     ))
 }

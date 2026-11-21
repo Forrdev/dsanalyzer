@@ -3,10 +3,12 @@ package com.sappyoak.dsanalyzer.game.world.flags
 import com.sappyoak.dsanalyzer.formats.esd.CommandCall
 import com.sappyoak.dsanalyzer.formats.esd.Esd
 import com.sappyoak.dsanalyzer.formats.msb.part.Part
-import com.sappyoak.dsanalyzer.game.ref.WorldRef
 import com.sappyoak.dsanalyzer.game.world.maps.EntryKind
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.game.world.text.TextCategory
+import com.sappyoak.dsanalyzer.game.ref.DataAddress
+import com.sappyoak.dsanalyzer.game.ref.map
+import com.sappyoak.dsanalyzer.game.ref.mapEntry
 
 private const val TALK_TO_PLAYER = 1
 
@@ -14,7 +16,7 @@ private const val TALK_TO_PLAYER = 1
 public data class TalkScript(public val map: MapId, public val talkId: Int, public val esd: Esd)
 
 /** Who speaks a talk script, and the placed part to cite; the map itself where no part is placed */
-internal data class Speaker(val name: String, val ref: WorldRef)
+internal data class Speaker(val name: String, val address: DataAddress)
 
 /** Talk scripts both name the flags they turn on and are places that set and read flags */
 internal class TalkOrigin(private val scripts: List<TalkScript>) : FlagOrigin {
@@ -45,14 +47,14 @@ private fun NamingContext.talkFlags(talk: TalkScript, speaker: Speaker): List<Pa
                 ?: graph.before(state.id).firstNotNullOfOrNull { group.states[it]?.let { before -> saying(before.calls()) } }?.let { "after $it" }
                 ?: "talk state ${group.id}/${state.id}"
             flags.map { flag ->
-                flag namedBy FlagEvidence(FlagKind.NpcState, "${speaker.name}: $said", speaker.ref, direct = true)
+                flag namedBy FlagEvidence(FlagKind.NpcState, "${speaker.name}: $said", speaker.address, direct = true)
             }
         }
     }
 
 /** The NPC placed with this talk id */
 private fun NamingContext.speaker(talk: TalkScript): Speaker {
-    val unplaced = Speaker("talk ${talk.talkId}", WorldRef.Map(talk.map))
+    val unplaced = Speaker("talk ${talk.talkId}", DataAddress.map(talk.map))
     val msb = maps[talk.map] ?: return unplaced
     val index = msb.parts.indexOfFirst { it is Part.Enemy && it.data.talkId == talk.talkId }
     if (index < 0) return unplaced
@@ -61,7 +63,7 @@ private fun NamingContext.speaker(talk: TalkScript): Speaker {
     val name = npcName(part.data.npcParamId)
         ?: part.header.entityId?.let(entities::label)
         ?: part.header.name
-    return Speaker(name, WorldRef.Entry(talk.map, EntryKind.Part, index))
+    return Speaker(name, DataAddress.mapEntry(talk.map, EntryKind.Part, index))
 }
 
 /** The first line spoken in the state, else the first menu option it offers */

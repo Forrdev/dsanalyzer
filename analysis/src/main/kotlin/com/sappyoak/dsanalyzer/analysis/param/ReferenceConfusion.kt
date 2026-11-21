@@ -19,12 +19,12 @@ import com.sappyoak.dsanalyzer.analysis.engine.resultOf
 import com.sappyoak.dsanalyzer.formats.param.ParamRow
 import com.sappyoak.dsanalyzer.formats.param.refs.ParamRef
 import com.sappyoak.dsanalyzer.formats.param.refs.references
-import com.sappyoak.dsanalyzer.game.ref.WorldRef
-import com.sappyoak.dsanalyzer.game.ref.toDataAddress
 import com.sappyoak.dsanalyzer.game.world.params.GameParam
 import com.sappyoak.dsanalyzer.game.world.params.GameParams
 import com.sappyoak.dsanalyzer.game.world.params.paramFor
 import com.sappyoak.dsanalyzer.game.world.params.side
+import com.sappyoak.dsanalyzer.game.ref.DataAddress
+import com.sappyoak.dsanalyzer.game.ref.paramRow
 
 private val ID = AnalyzerId("param.reference-confusion")
 
@@ -118,5 +118,5 @@ public object ReferenceConfusion : Analyzer<GameParams> {
     }
 
     private fun cite(param: GameParam<*>, id: Int, label: String): Citation =
-        Citation.of(WorldRef.ParamRow(param.fileName, id).toDataAddress(), "${param.fileName} $id · $label")
+        Citation.of(DataAddress.paramRow(param.fileName, id), "${param.fileName} $id · $label")
 }

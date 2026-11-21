@@ -5,10 +5,11 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 
-import com.sappyoak.dsanalyzer.game.ref.WorldRef
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
+import com.sappyoak.dsanalyzer.game.ref.DataAddress
+import com.sappyoak.dsanalyzer.game.ref.scriptEvent
 
-private val SOURCE = WorldRef.ScriptEvent(ScriptId.Common, 50)
+private val SOURCE = DataAddress.scriptEvent(ScriptId.Common, 50)
 
 private fun evidence(kind: FlagKind, direct: Boolean, label: String = kind.label) =
     FlagEvidence(kind, label, SOURCE, direct)
