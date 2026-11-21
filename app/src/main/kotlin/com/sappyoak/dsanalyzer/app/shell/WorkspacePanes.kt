@@ -44,7 +44,8 @@ internal fun ColumnScope.NavigatorPane(view: View, stores: WorkspaceStores, onFo
             val animations by stores.animations.state.collectAsState()
             val ai by stores.ai.state.collectAsState()
             val contents = NavigatorContents(
-                params.catalog, esds.sources, maps.maps, scripts.scripts, scripts.flagCatalog, animations, ai
+                params.catalog, esds.sources, maps.maps, scripts.scripts, scripts.flagCatalog,
+                scripts.readingFlags, animations, ai
             )
             DataNavigator(contents, view, onFollow)
         }

@@ -30,10 +30,11 @@ internal val AITracking.scope: AIScope
         AITracking.All -> AIScope.All
     }
 
-internal val Settings.drawsHitWindows: Boolean
-    get() = overlay.enabled && overlay.target.enabled && overlay.target.hitWindows
+/** Attack windows only mean something for characters whose AI is read */
+internal val Settings.wantsTimings: Boolean
+    get() = runtime.ai.tracking != AITracking.Off
 
-
+/** The dead stay in the block lists until the block unloads, so every list passes over them */
 internal fun List<CharacterSnapshot>.living(): List<CharacterSnapshot> = filter { it.alive }
 
 public data class TrackAI(public val tracking: AITracking) : SettingsEdit {

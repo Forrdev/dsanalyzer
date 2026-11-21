@@ -24,8 +24,7 @@ import com.sappyoak.dsanalyzer.app.paths.ToolPaths
 import com.sappyoak.dsanalyzer.app.runtime.GameLink
 import com.sappyoak.dsanalyzer.app.runtime.RuntimeEffects
 import com.sappyoak.dsanalyzer.app.runtime.RuntimeStore
-import com.sappyoak.dsanalyzer.app.runtime.drawsHitWindows
-import com.sappyoak.dsanalyzer.app.runtime.focusRequest
+import com.sappyoak.dsanalyzer.app.runtime.wantsTimings
 import com.sappyoak.dsanalyzer.app.runtime.timing.TimingLoader
 import com.sappyoak.dsanalyzer.app.data.scripts.ScriptsEffects
 import com.sappyoak.dsanalyzer.app.data.scripts.ScriptsStore
@@ -100,8 +99,7 @@ public fun createAppModel(
             runtime = RuntimeStore(scope, RuntimeEffects(
                 link = link,
                 aiTracking = settings.state.map { it.settings.runtime.ai.tracking }.distinctUntilChanged(),
-                focus = settings.state.map { it.settings.focusRequest }.distinctUntilChanged(),
-                timingsWanted = settings.state.map { it.settings.drawsHitWindows }.distinctUntilChanged(),
+                timingsWanted = settings.state.map { it.settings.wantsTimings }.distinctUntilChanged(),
                 engineDraw = settings.state.map { it.settings.engineDrawRequest }.distinctUntilChanged(),
                 timings = TimingLoader(data)
             ))

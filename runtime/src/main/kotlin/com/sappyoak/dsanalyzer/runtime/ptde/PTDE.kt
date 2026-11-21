@@ -27,15 +27,18 @@ public val PTDEPointers: List<GamePointer> = listOf(
     WorldHitMan.Pointer,
     Graphics.Pointer,
     LockOnMan.Pointer,
-    EnemyHpBars.Pointer,
-    BossHpBars.Pointer,
     PTDEFunctions.LevelUp,
     PTDEFunctions.WarpDispatch,
     PTDEFunctions.WarpOwner,
     PTDEFunctions.TalkDispatch,
     PTDEFunctions.TalkOwnerLookup,
     PTDEFunctions.TalkEventVTable,
-    PTDEFunctions.TalkHandlerVTable
+    PTDEFunctions.TalkHandlerVTable,
+    PTDEFunctions.ItemAdd,
+    PTDEFunctions.ItemPopup,
+    PTDEFunctions.ItemGetMenuMan,
+    PTDEFunctions.SetEventFlag,
+    PTDEFunctions.GetEventFlag
 )
 
 /**

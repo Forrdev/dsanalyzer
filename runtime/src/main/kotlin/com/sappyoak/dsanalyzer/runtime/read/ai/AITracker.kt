@@ -27,7 +27,7 @@ internal class AITracker(gracePeriod: Int, layout: GameLayout) {
         }
     }
 
-    /** [focus] is read whatever the [scope], since the target panel shows its AI */
+    /** [focus] is read whatever the [scope], so whoever follows it always has its AI */
     fun select(memory: ProcessMemory, scope: AIScope, reading: CharacterReading, focus: Int?): List<AISource> {
         val wanted = if (scope == AIScope.Off) reading.others.filter { it.handle == focus } else reading.others
         val found = wanted.mapNotNull { reader.locate(memory, it) }

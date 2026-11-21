@@ -15,7 +15,6 @@ import com.sappyoak.dsanalyzer.runtime.layout.CharacterSlotLayout
 import com.sappyoak.dsanalyzer.runtime.layout.ChrCtrlLayout
 import com.sappyoak.dsanalyzer.runtime.layout.ChrInsLayout
 import com.sappyoak.dsanalyzer.runtime.layout.DebugDrawLayout
-import com.sappyoak.dsanalyzer.runtime.layout.EnemyBarLayout
 import com.sappyoak.dsanalyzer.runtime.layout.EntityTableLayout
 import com.sappyoak.dsanalyzer.runtime.layout.EsdStateLayout
 import com.sappyoak.dsanalyzer.runtime.layout.EventFlagLayout
@@ -26,7 +25,6 @@ import com.sappyoak.dsanalyzer.runtime.layout.GameManLayout
 import com.sappyoak.dsanalyzer.runtime.layout.GoalLayout
 import com.sappyoak.dsanalyzer.runtime.layout.GoalTypeLayout
 import com.sappyoak.dsanalyzer.runtime.layout.HitInsLayout
-import com.sappyoak.dsanalyzer.runtime.layout.HpBarLayout
 import com.sappyoak.dsanalyzer.runtime.layout.IdentityLayout
 import com.sappyoak.dsanalyzer.runtime.layout.ItemLayout
 import com.sappyoak.dsanalyzer.runtime.layout.LevelUpLayout
@@ -363,22 +361,6 @@ internal fun dsrLayout(version: DSRVersion): GameLayout = GameLayout(
         )
     ),
     lockOn = LockOnLayout.PlayerTarget,
-    hpBars = HpBarLayout(
-        enemies = EnemyHpBars.Pointer,
-        enemy = EnemyBarLayout(
-            count = EnemyHpBars.COUNT,
-            size = EnemyHpBars.SIZE,
-            handle = EnemyHpBars.Handle,
-            screen = EnemyHpBars.Screen,
-            shown = EnemyHpBars.Shown,
-            damage = EnemyHpBars.Damage,
-            timers = EnemyHpBars.Timers,
-            visible = EnemyHpBars.Visible
-        ),
-        bosses = null,
-        hideFlag = version.chr(ChrIns.HpBarHidden),
-        hideMask = ChrIns.HpBarHiddenMask
-    ),
     writes = WriteLayout(
         chrFlags1 = FieldLayout(Player.Pointer, ChrIns.Flags1),
         chrFlags2 = FieldLayout(Player.Pointer, ChrIns.Flags2),

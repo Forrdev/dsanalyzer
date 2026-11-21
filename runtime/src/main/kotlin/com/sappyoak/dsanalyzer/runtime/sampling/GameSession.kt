@@ -15,26 +15,24 @@ import com.sappyoak.dsanalyzer.runtime.read.EventFlagBlock
 import com.sappyoak.dsanalyzer.runtime.read.LoadQueueReader
 import com.sappyoak.dsanalyzer.runtime.read.MenuReader
 import com.sappyoak.dsanalyzer.runtime.read.PlacedPartsReader
+import com.sappyoak.dsanalyzer.runtime.read.ai.AITracker
+import com.sappyoak.dsanalyzer.runtime.read.animation.AnimationTracker
 import com.sappyoak.dsanalyzer.runtime.read.readersFor
 import com.sappyoak.dsanalyzer.runtime.read.target.Focus
 import com.sappyoak.dsanalyzer.runtime.read.target.FocusReader
-import com.sappyoak.dsanalyzer.runtime.session.ai.AIScope
-import com.sappyoak.dsanalyzer.runtime.read.ai.AITracker
-import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
-import com.sappyoak.dsanalyzer.runtime.read.animation.AnimationTracker
 import com.sappyoak.dsanalyzer.runtime.session.BlockRoster
 import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.CheatFlag
 import com.sappyoak.dsanalyzer.runtime.session.FocusRequest
-import com.sappyoak.dsanalyzer.runtime.session.FocusSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeFeature
 import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.SampleCost
 import com.sappyoak.dsanalyzer.runtime.session.WatchedFlag
 import com.sappyoak.dsanalyzer.runtime.session.WorldPlace
+import com.sappyoak.dsanalyzer.runtime.session.ai.AIScope
+import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
 import com.sappyoak.dsanalyzer.runtime.write.CheatWriter
 import com.sappyoak.dsanalyzer.runtime.write.GameWriter
-import com.sappyoak.dsanalyzer.runtime.write.hpbar.HpBarHider
 
 public class GameSession internal constructor(
     public val game: GameProcess,
@@ -49,7 +47,6 @@ public class GameSession internal constructor(
         private set
 
     private val flags = EventFlagBlock(layout.eventFlags)
-
     private val readers = readersFor(game.edition, layout)
     private val cameraReader = CameraReader(layout.camera)
     private val menuReader = MenuReader(layout.menu)
@@ -59,16 +56,12 @@ public class GameSession internal constructor(
     private val animationTracker = AnimationTracker(layout)
     private val cheats = CheatWriter(layout.writes)
     private val focusReader = FocusReader(layout)
-    private val hpBars = HpBarHider(layout.hpBars)
 
     private var lastPlace: WorldPlace? = null
     private var wasLoaded: Boolean = false
-
     private var world = WorldTier()
     private var focus: Focus? = null
-    private var followed: FocusSnapshot? = null
     private var sinceWorld = 0
-
     public val writes: SessionWrites = SessionWrites(layout.writes, layout.playerGameData, writer)
     public val supports: Set<RuntimeFeature> get() = readers.supported + layout.supported
 
@@ -112,7 +105,7 @@ public class GameSession internal constructor(
 
         val characters = aiTracker.read(memory.memory, world.ai, world.characters)
         val animated = if (loaded) animationTracker.read(memory, animation, world.others) else null
-        followed = focusReader.snapshot(memory, focus, characters, world.others, animated)
+        val followed = focusReader.snapshot(memory, focus, characters, world.others, animated)
         return RuntimeSnapshot(
             inGameTimeMillis = readers.clock.timeMillis(),
             frame = readers.clock.frame(),
@@ -141,9 +134,6 @@ public class GameSession internal constructor(
 
     internal fun afterSample() {
         extensions.forEach(SessionExtension::afterSample)
-        val handle = followed?.takeUnless { it.boss }?.character?.handle
-        val hidden = handle?.let { world.others.firstOrNull { it.handle == handle } }
-        hpBars.hide(hidden?.handle, hidden?.address, memory, writer)
         writes.afterSample(memory, module, wasLoaded, lastPlace ?: WorldPlace.Unreadable)
     }
 
@@ -169,7 +159,6 @@ public class GameSession internal constructor(
 
     private fun forgetWorld() {
         memory.invalidate(Lifetime.World)
-        hpBars.forget(writer)
         focusReader.forget()
         world = WorldTier()
         sinceWorld = 0

@@ -12,12 +12,11 @@ import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
 
 /**
- * Picks the character to follow from the lock-on state, then reads what the target panel shows of it.
+ * Picks the character to follow from the lock-on state, then reads it and its animation.
  * [select] runs before the characters are read, so their AI can include the focus
  */
 internal class FocusReader(layout: GameLayout) {
     private val lockOn = LockOnReader(layout.lockOn)
-    private val bosses = BossBarReader(layout.hpBars.bosses)
     private val tracker = FocusTracker()
     private val animations = AnimationTracker(layout)
 
@@ -46,7 +45,6 @@ internal class FocusReader(layout: GameLayout) {
         return FocusSnapshot(
             character = character,
             locked = focus.locked,
-            boss = focus.handle in bosses.handles(game),
             animation = shared?.takeIf { it.target == target } ?: animations.read(game, target, others)
         )
     }

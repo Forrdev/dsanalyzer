@@ -58,6 +58,7 @@ public fun ColumnScope.DataNavigator(contents: NavigatorContents, view: View.Dat
                 KindRow(
                     kind = kind,
                     count = contents.countOf(kind),
+                    loading = contents.loading(kind),
                     open = open,
                     onClick = { expanded = if (open) null else kind }
                 )
@@ -74,7 +75,7 @@ private fun LazyListScope.children(
     view: View.Data,
     onFollow: (View) -> Unit
 ) {
-    val (params, esds, maps, scripts, flags, animations) = contents
+    val (params, esds, maps, scripts, flags, _, animations) = contents
     when (kind) {
         DataKind.Params -> {
             item(key = "param:search") {

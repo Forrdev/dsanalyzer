@@ -27,6 +27,8 @@ public data class ScriptsState(
     /** Why [flagNames] stayed empty, kept apart from [problem] so it does not hide a script's own */
     public val namingProblem: String? = null,
     public val indexing: Boolean = false,
+    /** Flag names and sites are being read, after the index */
+    public val naming: Boolean = false,
     /** Scripts the index could not read */
     public val unreadable: List<ScriptId> = emptyList(),
     /** A flag follow waiting on the index */
@@ -38,6 +40,8 @@ public data class ScriptsState(
     }
 
     public val loading: Boolean get() = loadingScript != null
+
+    public val readingFlags: Boolean get() = indexing || naming
     public val shown: ScriptId? get() = contents?.script ?: loadingScript
 
     public fun event(eventId: Long): EventSummary? = contents?.event(eventId)

@@ -70,7 +70,6 @@ class RuntimeReducerTest : FunSpec({
         reduceRuntime(RuntimeState(), RuntimeMessage.Opened(installation())).effects shouldBe listOf(
             RuntimeEffect.Observe,
             RuntimeEffect.FollowAITracking,
-            RuntimeEffect.FollowFocus,
             RuntimeEffect.FollowTimingsWanted,
             RuntimeEffect.FollowEngineDraw
         )

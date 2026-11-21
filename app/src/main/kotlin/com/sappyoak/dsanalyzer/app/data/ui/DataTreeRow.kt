@@ -3,9 +3,12 @@ package com.sappyoak.dsanalyzer.app.data.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -20,9 +23,11 @@ import com.sappyoak.dsanalyzer.app.ui.theme.AnalyzerTheme
 
 internal val KIND_INDENT = 14.dp
 internal val CHILD_INDENT = 32.dp
+private val SPINNER = 10.dp
 
+/** [count] is shown once known; while [loading] a spinner stands in for it, otherwise a dash */
 @Composable
-internal fun KindRow(kind: DataKind, count: Int?, open: Boolean, onClick: () -> Unit) {
+internal fun KindRow(kind: DataKind, count: Int?, loading: Boolean, open: Boolean, onClick: () -> Unit) {
     val colors = AnalyzerTheme.colors
 
     Row(
@@ -43,13 +48,23 @@ internal fun KindRow(kind: DataKind, count: Int?, open: Boolean, onClick: () -> 
             style = AnalyzerTheme.text.label.copy(fontWeight = FontWeight.Medium),
             color = if (open) colors.textHi else colors.textMid
         )
-        Text(
-            text = count?.toString() ?: "—",
-            style = AnalyzerTheme.text.monoSmall,
-            color = colors.textLo,
-            modifier = Modifier.weight(1f),
-            textAlign = TextAlign.End
-        )
+        if (loading) {
+            Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.CenterEnd) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(SPINNER),
+                    color = colors.textLo,
+                    strokeWidth = 1.5.dp
+                )
+            }
+        } else {
+            Text(
+                text = count?.toString() ?: "—",
+                style = AnalyzerTheme.text.monoSmall,
+                color = colors.textLo,
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.End
+            )
+        }
     }
 }
 

@@ -16,6 +16,8 @@ public data class NavigatorContents(
     val maps: List<MapId>,
     val scripts: List<ScriptId>,
     val flags: FlagCatalog,
+    /** The script index or the flag reading behind [flags] is still running */
+    val flagsLoading: Boolean,
     val animations: AnimationsState,
     val ai: AiState
 ) {
@@ -29,4 +31,6 @@ public data class NavigatorContents(
         DataKind.Animations -> animations.sets.size.takeIf { it > 0 }
         DataKind.AiScripts -> ai.binders.values.sumOf { it.size }.takeIf { it > 0 }
     }
+
+    fun loading(kind: DataKind): Boolean = kind == DataKind.EventFlags && flagsLoading
 }

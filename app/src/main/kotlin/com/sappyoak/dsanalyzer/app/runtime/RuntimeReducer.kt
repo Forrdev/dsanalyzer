@@ -16,7 +16,6 @@ public fun reduceRuntime(
         .with(
             RuntimeEffect.Observe,
             RuntimeEffect.FollowAITracking,
-            RuntimeEffect.FollowFocus,
             RuntimeEffect.FollowTimingsWanted,
             RuntimeEffect.FollowEngineDraw
         )

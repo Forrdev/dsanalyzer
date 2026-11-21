@@ -20,7 +20,6 @@ public val DSRPointers: List<GamePointer> = listOf(
     WorldHitMan.Pointer,
     AttackMan.Pointer,
     Graphics.Pointer,
-    EnemyHpBars.Pointer,
     DSRFunctions.LevelUp,
     DSRFunctions.Warp,
     DSRFunctions.EventMan,

@@ -2,6 +2,10 @@ package com.sappyoak.dsanalyzer.app.data.scripts
 
 import com.sappyoak.dsanalyzer.app.data.IndexQueue
 import io.github.oshai.kotlinlogging.KotlinLogging
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -61,7 +65,9 @@ public class ScriptsEffects(
     }
 
     private suspend fun GameData.indexScripts(scripts: List<ScriptId>): ScriptsMessage.ScriptsIndexed {
-        val read = scripts.associateWith { script -> indexingOf(script) }
+        val read = coroutineScope {
+            scripts.map { script -> async(Dispatchers.Default) { script to indexingOf(script) } }.awaitAll().toMap()
+        }
         val built = read.values.filterNotNull()
 
         val calls = EventCallIndex.of(
