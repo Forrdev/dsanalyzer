@@ -80,6 +80,23 @@ class DecodeTest : FunSpec({
         instruction(SET_FLAG, 0, 0, 0, 0, 1, 0, 0, 0, 9, 9).decode(SET_FLAG).sizeMismatch shouldBe true
     }
 
+    test("padding out to a whole word is not more bytes") {
+        instruction(SET_FLAG, 0, 0, 0, 0, 1, 0, 0, 0).decode(SET_FLAG).sizeMismatch shouldBe false
+    }
+
+    test("the arguments an instruction hands the event it starts are not more bytes") {
+        val start = InstructionDefinition(
+            opcode = Opcode(2000, 0),
+            name = "Initialize Event",
+            args = listOf(
+                ArgDefinition("Slot", ArgType.Int, null, 0.0),
+                ArgDefinition("Event ID", ArgType.UInt, null, 0.0),
+                ArgDefinition("Parameter", ArgType.UInt, null, 0.0)
+            )
+        )
+        instruction(start, *IntArray(20)).decode(start).sizeMismatch shouldBe false
+    }
+
     test("floats decode as floats") {
         val definition = InstructionDefinition(
             Opcode(2004, 6),

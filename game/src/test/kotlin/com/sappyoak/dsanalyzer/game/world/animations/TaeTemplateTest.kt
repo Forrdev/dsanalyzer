@@ -26,6 +26,7 @@ class TaeTemplatesTest : FunSpec({
         }
     }
 
+    // Every ChrActionFlag in both editions is 12 bytes, so the template stops at ArgB
     test("the flag event is named, and its parameters account for their bytes") {
         val definition = checkNotNull(CHARACTERS[CHR_ACTION_FLAG])
 
@@ -34,12 +35,9 @@ class TaeTemplatesTest : FunSpec({
             definition.params.map { it.type } shouldBe listOf(
                 ParamType.S32,
                 ParamType.F32,
-                ParamType.S32,
-                ParamType.U8,
-                ParamType.U8,
-                ParamType.S16
+                ParamType.S32
             )
-            definition.packedSize shouldBe 16
+            definition.packedSize shouldBe 12
         }
     }
 

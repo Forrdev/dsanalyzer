@@ -24,15 +24,6 @@ private const val SIB_NAME_AT = 0x9CL
  */
 private val LAYOUT_MARKERS = mapOf(0x10L to 0x40, 0x60L to 0x90, 0x94L to 0x98)
 
-/** An event's data block opens with its type and a pointer to its parameters */
-private const val EVENT_DATA_HEADER = 8
-
-/** The size of one entry in the animation table: an id and an offset */
-private const val ANIMATION_ENTRY = 8
-
-private const val SOURCE_OWN = 0
-private const val SOURCE_IMPORTED = 1
-
 public fun readTae(reader: BinaryReader): Tae {
     reader.order = ByteOrder.LITTLE_ENDIAN
     reader.seek(0)
@@ -64,120 +55,11 @@ public fun readTae(reader: BinaryReader): Tae {
         bigEndian = bigEndian,
         skeletonName = reader.nameAt(SKELETON_NAME_AT),
         sibName = reader.nameAt(SIB_NAME_AT),
-        animations = List(count) { index ->
-            reader.at(animationsOffset.toLong() + index * ANIMATION_ENTRY) {
-                val animationId = readInt().toLong()
-                readAnimation(animationId, readInt())
-            }
-        }
+        animations = readAnimations(reader, animationsOffset, count)
     )
 }
 
 private fun BinaryReader.nameAt(at: Long): String? = at(at) {
     val offset = readInt()
     if (offset <= 0) null else at(offset.toLong()) { readUTF16() }
-}
-
-private fun BinaryReader.readAnimation(id: Long, offset: Int): TaeAnimation = at(offset.toLong()) {
-    val eventCount= readInt()
-    val eventHeadersOffset= readInt()
-    skip(4) // event group count
-    val eventGroupsOffset = readInt()
-    skip(4) // times count
-    val timesOffset = readInt()
-    val sourceOffset = readInt()
-
-    val headers = at(eventHeadersOffset.toLong()) { List(eventCount) { readEventHeader() } }
-
-    // Parameter lengths are not stored: an event's parameters run from its data block to whatever
-    // comes next, so every offset that could be "next" is collected and the nearest one wins.
-    // Deriving it from the following event instead would assume the blocks are laid out in the
-    // same order the headers list them, which nothing in the file promises
-    val fileEnd = size.toInt()
-    val boundaries = buildList {
-        headers.forEach { add(it.dataOffset) }
-        listOf(eventGroupsOffset, timesOffset, sourceOffset).forEach { if (it > 0) add(it) }
-        add(fileEnd)
-    }.distinct().sorted()
-
-    val (source, fileName) = readSource(sourceOffset)
-
-    TaeAnimation(
-        id = id,
-        source = source,
-        fileName = fileName,
-        events = headers.map { header ->
-            readEvent(header, boundaries)
-        }
-    )
-}
-
-private class EventHeader(val startTimeOffset: Int, val endTimeOffset: Int, val dataOffset: Int)
-
-
-private fun BinaryReader.readEventHeader() = EventHeader(
-    startTimeOffset = readInt(),
-    endTimeOffset = readInt(),
-    dataOffset = readInt()
-)
-
-private fun BinaryReader.readEvent(header: EventHeader, boundaries: List<Int>): TaeEvent {
-    val start = header.dataOffset + EVENT_DATA_HEADER
-    val end = boundaries.firstAbove(start) ?: start
-
-    return TaeEvent(
-        type = at(header.dataOffset.toLong()) { readInt() },
-        startTime = at(header.startTimeOffset.toLong()) { readFloat() },
-        endTime = at(header.endTimeOffset.toLong()) { readFloat() },
-        params = if (end <= start) EventParams.Empty else {
-            EventParams(at(start.toLong()) { readBytes(end - start) })
-        }
-    )
-}
-
-private fun BinaryReader.readSource(offset: Int): Pair<AnimationSource, String?> {
-    if (offset <= 0) return AnimationSource.Own(false, false, false, 0) to null
-
-    return at(offset.toLong()) {
-        val kind = readInt()
-        val dataOffset = readInt()
-
-        when {
-            dataOffset <= 0 && kind == SOURCE_IMPORTED -> AnimationSource.Imported(0, 0) to null
-            dataOffset <= 0 -> AnimationSource.Own(false, false, false, 0) to null
-            else -> at(dataOffset.toLong()) { readSourceData(kind, offset) }
-        }
-    }
-}
-
-/**
- * The data block opens with the offset of the '.hkx' name. An import still writes one, but it points
- * just past its own block, at the next animation's source or the end of the file, so it is not read
- */
-private fun BinaryReader.readSourceData(kind: Int, sourceOffset: Int): Pair<AnimationSource, String?> {
-    val fileNameOffset = readInt()
-
-    return when (kind) {
-        SOURCE_IMPORTED -> AnimationSource.Imported(fromAnimationId = readInt(), unknown = readInt()) to null
-        SOURCE_OWN -> AnimationSource.Own(
-            loopsByDefault = readBoolean(),
-            importsHkx = readBoolean(),
-            allowsDelayLoad = readBoolean(),
-            hkxSourceAnimationId = skip(1).readInt()
-        ) to if (fileNameOffset > 0) at(fileNameOffset.toLong()) { readUTF16() } else null
-        else -> throw BinaryFormatException("Unknown animation source $kind", sourceOffset.toLong())
-    }
-}
-
-/** The smallest entry greater than [value] over a sorted list */
-private fun List<Int>.firstAbove(value: Int): Int? {
-    var low = 0
-    var high = size
-
-    while (low < high) {
-        val middle= (low + high) / 2
-        if (this[middle] > value) high = middle else low = middle + 1
-    }
-
-    return getOrNull(low)
 }

@@ -24,8 +24,10 @@ private const val TIMES = 0xF8
 private const val EVENT_HEADERS = 0x104
 private const val FIRST_EVENT = 0x11C
 private const val SECOND_EVENT = 0x134
-private const val FIRST_SOURCE = 0x140
-private const val SECOND_SOURCE = 0x154
+// The second animation's source comes first, so the first animation's last event is bounded by a
+// block of another animation
+private const val SECOND_SOURCE = 0x140
+private const val FIRST_SOURCE = 0x154
 private const val ANIMATION_FILE_NAME = 0x168
 private const val SKELETON_NAME = 0x182
 private const val SIB_NAME = 0x196
@@ -57,7 +59,8 @@ internal const val WEAPON_STYLE = 7
 internal fun ptdeTae(
     version: Int = 0x1000B,
     magic: String = "TAE ",
-    wide: Boolean = false
+    wide: Boolean = false,
+    secondEventHasParams: Boolean = true
 ): BinaryReader {
     val bytes = ByteBuffer.allocate(SIZE).order(ByteOrder.LITTLE_ENDIAN)
 
@@ -105,7 +108,7 @@ internal fun ptdeTae(
     bytes.putShort(FIRST_EVENT + 22, FLAG_ARG_E)
 
     bytes.putInt(SECOND_EVENT, WEAPON_STYLE_EVENT)
-    bytes.putInt(SECOND_EVENT + 4, SECOND_EVENT + 8)
+    bytes.putInt(SECOND_EVENT + 4, if (secondEventHasParams) SECOND_EVENT + 8 else 0)
     bytes.putInt(SECOND_EVENT + 8, WEAPON_STYLE)
 
     // Its own motion, looping, naming the '.hkx' it plays

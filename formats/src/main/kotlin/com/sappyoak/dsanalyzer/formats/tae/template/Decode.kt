@@ -50,8 +50,9 @@ public data class DecodedEvent(
 ) {
     public val label: String get() = definition?.name ?: "Event ${event.type}"
 
+    /** An event written without parameters has none to disagree with */
     public val sizeMismatch: Boolean
-        get() = definition != null && event.params.size != definition.packedSize
+        get() = definition != null && event.params.size > 0 && event.params.size != definition.packedSize
 }
 
 public fun Tae.decode(

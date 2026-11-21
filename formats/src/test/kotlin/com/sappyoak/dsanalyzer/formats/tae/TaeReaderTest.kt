@@ -36,8 +36,8 @@ class TaeReaderTest : FunSpec({
 
     /**
      * Nothing in the file says how long an event's parameters are, so the reader works it out from
-     * whatever block comes next. This animation has no event groups, which is the case where the
-     * last event has to be bounded by something else entirely
+     * whatever block comes next. This animation has no event groups, and the block after its last
+     * event belongs to the other animation, so the boundaries have to span the whole file
      */
     test("parameter lengths are derived from the next block along") {
         val events = checkNotNull(TAE[OWN_ANIMATION]).events
@@ -46,6 +46,11 @@ class TaeReaderTest : FunSpec({
             events[0].params.size shouldBe FLAG_PARAM_BYTES
             events[1].params.size shouldBe WEAPON_STYLE_PARAM_BYTES
         }
+    }
+
+    test("an event whose parameter pointer is null has no parameters") {
+        val events = checkNotNull(readTae(ptdeTae(secondEventHasParams = false))[OWN_ANIMATION]).events
+        events[1].params.size shouldBe 0
     }
 
     test("an animation with its own motion carries its flags and the file it plays") {

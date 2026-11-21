@@ -6,11 +6,14 @@ import com.sappyoak.dsanalyzer.formats.emevd.ArgData
 import com.sappyoak.dsanalyzer.formats.emevd.Instruction
 import com.sappyoak.dsanalyzer.formats.emevd.Parameter
 import com.sappyoak.dsanalyzer.formats.emevd.ScriptEvent
+import com.sappyoak.dsanalyzer.formats.emevd.asEventCall
 import com.sappyoak.dsanalyzer.shared.binary.BinaryReader
 import com.sappyoak.dsanalyzer.shared.binary.at
 import com.sappyoak.dsanalyzer.shared.binary.readUByte
 import com.sappyoak.dsanalyzer.shared.binary.readUInt
 import com.sappyoak.dsanalyzer.shared.binary.readUShort
+/** Every instruction's arguments fill whole words */
+private const val WORD = 4
 
 public sealed interface ArgValue {
     /** A value written into the instruction itself */
@@ -41,8 +44,13 @@ public data class DecodedInstruction(
     public val definition: InstructionDefinition?,
     public val args: List<DecodedArg>
 ) {
+    /**
+     * More bytes than the definition explains. The arguments are padded out to a whole word, and an
+     * instruction starting an event hands it however many arguments it takes, so neither counts
+     */
     public val sizeMismatch: Boolean
-        get() = definition != null && instruction.args.size > definition.packedSize
+        get() = definition != null && instruction.asEventCall() == null &&
+                instruction.args.size > (definition.packedSize + WORD - 1) / WORD * WORD
 }
 
 /** Decoded every instruction in the event, applying the arguments its callers pass in */
