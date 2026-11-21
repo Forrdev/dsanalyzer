@@ -8,17 +8,12 @@ internal const val OBJECT_DIRECTORY = "/obj/"
 internal const val CHARACTER_BINDER_EXTENSION = ".anibnd.dcx"
 internal const val OBJECT_BINDER_EXTENSION = ".objbnd.dcx"
 
-/** The DLC weapons gave the player animations that did not fit in the binder he already had */
-private const val DLC_SUFFIX = "_dlc01"
-
-public val AnimationSetId.animationPaths: List<GamePath>
+/**
+ * The binder holding a set's TAE files. The player's DLC timings are in his main binder too; his other
+ * binders (`c0000_dlc`, `c0000_a0x` and the like) hold only the motions
+ */
+public val AnimationSetId.animationPath: GamePath
     get() = when (this) {
-        is AnimationSetId.Character -> buildList {
-            add(GamePath.of("$CHARACTER_DIRECTORY$label$CHARACTER_BINDER_EXTENSION"))
-            if (isPlayer) {
-                add(GamePath.of("$CHARACTER_DIRECTORY$label$DLC_SUFFIX$CHARACTER_BINDER_EXTENSION"))
-            }
-        }
-
-        is AnimationSetId.Object -> listOf(GamePath.of("$OBJECT_DIRECTORY$label$OBJECT_BINDER_EXTENSION"))
+        is AnimationSetId.Character -> GamePath.of("$CHARACTER_DIRECTORY$label$CHARACTER_BINDER_EXTENSION")
+        is AnimationSetId.Object -> GamePath.of("$OBJECT_DIRECTORY$label$OBJECT_BINDER_EXTENSION")
     }

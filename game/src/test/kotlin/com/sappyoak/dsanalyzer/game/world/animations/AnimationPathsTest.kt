@@ -7,7 +7,7 @@ import io.kotest.matchers.shouldBe
 import com.sappyoak.dsanalyzer.formats.tae.template.EventBank
 import com.sappyoak.dsanalyzer.game.files.GamePath
 
-private fun paths(set: AnimationSetId) = set.animationPaths.map { it.value }
+private fun path(set: AnimationSetId) = set.animationPath.value
 
 class AnimationPathsTest : FunSpec({
     test("a set is named the way the game names its files") {
@@ -26,20 +26,19 @@ class AnimationPathsTest : FunSpec({
     }
 
     test("a character's animations are a binder beside the model") {
-        paths(AnimationSetId.Character(2230)) shouldBe listOf("/chr/c2230.anibnd.dcx")
+        path(AnimationSetId.Character(2230)) shouldBe "/chr/c2230.anibnd.dcx"
     }
 
-    test("the player's animations span two binders") {
-        paths(AnimationSetId.Character(0)) shouldBe
-                listOf("/chr/c0000.anibnd.dcx", "/chr/c0000_dlc01.anibnd.dcx")
+    test("the player's timings, the DLC's included, are in his main binder") {
+        path(AnimationSetId.Character(0)) shouldBe "/chr/c0000.anibnd.dcx"
     }
 
     test("an object's animations are in its object binder") {
-        paths(AnimationSetId.Object(10)) shouldBe listOf("/obj/o0010.objbnd.dcx")
+        path(AnimationSetId.Object(10)) shouldBe "/obj/o0010.objbnd.dcx"
     }
 
     test("the paths are the ones the archive indexes") {
-        AnimationSetId.Character(0).animationPaths.first() shouldBe
+        AnimationSetId.Character(0).animationPath shouldBe
                 GamePath.of("/CHR/C0000.ANIBND.DCX")
     }
 })

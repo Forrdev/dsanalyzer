@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 
 import com.sappyoak.dsanalyzer.app.analysis.ui.AnalysisNavigator
 import com.sappyoak.dsanalyzer.app.analysis.ui.LeadsPane
+import com.sappyoak.dsanalyzer.app.data.ai.ui.AiDetail
 import com.sappyoak.dsanalyzer.app.data.animations.ui.AnimationsPane
 import com.sappyoak.dsanalyzer.app.data.esd.ui.EsdDetail
 import com.sappyoak.dsanalyzer.app.data.flags.flagLive
@@ -22,6 +23,7 @@ import com.sappyoak.dsanalyzer.app.data.params.ui.ParamsDetail
 import com.sappyoak.dsanalyzer.app.data.scripts.ui.FlagPane
 import com.sappyoak.dsanalyzer.app.data.scripts.ui.ScriptsDetail
 import com.sappyoak.dsanalyzer.app.data.ui.DataNavigator
+import com.sappyoak.dsanalyzer.app.data.ui.NavigatorContents
 import com.sappyoak.dsanalyzer.app.nav.Resolution
 import com.sappyoak.dsanalyzer.app.nav.View
 import com.sappyoak.dsanalyzer.app.runtime.RuntimeMessage
@@ -40,10 +42,11 @@ internal fun ColumnScope.NavigatorPane(view: View, stores: WorkspaceStores, onFo
             val maps by stores.maps.state.collectAsState()
             val scripts by stores.scripts.state.collectAsState()
             val animations by stores.animations.state.collectAsState()
-            DataNavigator(
-                params.catalog, esds.sources, maps.maps, scripts.scripts, scripts.flagCatalog, animations,
-                view, onFollow
+            val ai by stores.ai.state.collectAsState()
+            val contents = NavigatorContents(
+                params.catalog, esds.sources, maps.maps, scripts.scripts, scripts.flagCatalog, animations, ai
             )
+            DataNavigator(contents, view, onFollow)
         }
         is View.Live -> {
             val runtime by stores.runtime.state.collectAsState()
@@ -86,6 +89,16 @@ internal fun DetailPane(
         is View.Data.Animation -> {
             val state by stores.animations.state.collectAsState()
             AnimationsPane(state, view, onFollow)
+        }
+
+        is View.Data.AiList,
+        is View.Data.AiGoal,
+        is View.Data.AiLogic,
+        is View.Data.LuaFiles,
+        is View.Data.LuaScript -> {
+            val state by stores.ai.state.collectAsState()
+            val params by stores.params.state.collectAsState()
+            AiDetail(state, params, view, onFollow)
         }
 
         is View.Data.Esd,

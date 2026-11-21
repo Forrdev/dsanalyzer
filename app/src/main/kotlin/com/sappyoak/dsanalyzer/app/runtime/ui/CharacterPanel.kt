@@ -16,12 +16,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.sappyoak.dsanalyzer.app.nav.View
 import com.sappyoak.dsanalyzer.app.runtime.living
 import com.sappyoak.dsanalyzer.app.runtime.planLine
 import com.sappyoak.dsanalyzer.app.runtime.timing.TimingLibrary
 import com.sappyoak.dsanalyzer.app.runtime.timing.countdownOf
 import com.sappyoak.dsanalyzer.app.runtime.timing.describe
 
+import com.sappyoak.dsanalyzer.game.world.params.GameParam
 import com.sappyoak.dsanalyzer.runtime.session.BlockRoster
 import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
 import com.sappyoak.dsanalyzer.runtime.session.PlacedEnemy
@@ -50,7 +52,8 @@ internal fun LazyListScope.characterItems(
     timings: TimingLibrary,
     placed: List<BlockRoster>?,
     onReadPlaced: () -> Unit,
-    onReadEffects: () -> Unit
+    onReadEffects: () -> Unit,
+    onFollow: (View) -> Unit
 ) {
     val others = list.shown
     val dead = others.count { !it.alive }
@@ -90,7 +93,7 @@ internal fun LazyListScope.characterItems(
         key = { "character-${it.handle}" },
         contentType = { CHARACTER_ROW }
     ) { character ->
-        CharacterRow(character, list.effectsOf(character), timings)
+        CharacterRow(character, list.effectsOf(character), timings, onFollow)
     }
 
 
@@ -139,7 +142,12 @@ internal fun LazyListScope.characterItems(
 }
 
 @Composable
-private fun CharacterRow(character: CharacterSnapshot, effects: SpecialEffectSnapshot?, timings: TimingLibrary) {
+private fun CharacterRow(
+    character: CharacterSnapshot,
+    effects: SpecialEffectSnapshot?,
+    timings: TimingLibrary,
+    onFollow: (View) -> Unit
+) {
     var open by remember(character.handle) { mutableStateOf(false) }
     val windows = timings[character.modelId]
     val countdown = timings.countdownOf(character)?.let { " - ${it.describe()}" }.orEmpty()
@@ -148,6 +156,12 @@ private fun CharacterRow(character: CharacterSnapshot, effects: SpecialEffectSna
     Column {
         Row(modifier = ROW_PADDING, verticalAlignment = Alignment.CenterVertically) {
             Field(character.modelName, character.describe() + countdown + effectCount, Modifier.weight(1f))
+            // The think param names the goals and logic that run the character's AI
+            character.ai?.let { ai ->
+                TextButton(onClick = { onFollow(View.Data.ParamRow(GameParam.NpcThinkParam.fileName, ai.thinkId)) }) {
+                    Text("Think")
+                }
+            }
             TextButton(onClick = { open = !open }) { Text(if (open) "Less" else "More") }
         }
         character.ai?.goals?.let { goals ->

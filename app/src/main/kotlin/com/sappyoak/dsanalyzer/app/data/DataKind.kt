@@ -6,5 +6,6 @@ public enum class DataKind(public val label: String) {
     Scripts("Scripts"),
     Esd("ESD"),
     Animations("Animations"),
+    AiScripts("AI Scripts"),
     EventFlags("Event Flags");
 }

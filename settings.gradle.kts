@@ -30,6 +30,7 @@ rootProject.name = "dsanalysis"
 include(":shared")
 include(":formats")
 include(":native")
+include(":lua")
 include(":game")
 include(":runtime")
 include(":tas")

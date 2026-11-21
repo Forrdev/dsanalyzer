@@ -16,10 +16,7 @@ private val OBJECT_BINDER =
     Regex("""^\Q$OBJECT_DIRECTORY\Eo(\d+)\Q$OBJECT_BINDER_EXTENSION\E$""")
 
 /** The animation timings for one character or object */
-public fun GameFiles.loadTae(set: AnimationSetId): List<Tae> =
-    set.animationPaths.flatMap { path ->
-        openBinder(path)?.allTae().orEmpty()
-    }
+public fun GameFiles.loadTae(set: AnimationSetId): List<Tae> = openBinder(set.animationPath)?.allTae().orEmpty()
 
 /**
  * The characters and objects this installation has animations for
@@ -27,7 +24,7 @@ public fun GameFiles.loadTae(set: AnimationSetId): List<Tae> =
 public fun GameFiles.availableAnimationSets(manifest: FileManifest): List<AnimationSetId> = manifest.paths
     .asSequence()
     .mapNotNull { it.value.toAnimationSet() }
-    .filter { set -> set.animationPaths.any { exists(it) } }
+    .filter { set -> exists(set.animationPath) }
     .sortedBy { it.label }
     .toList()
 

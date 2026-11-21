@@ -19,11 +19,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 import com.sappyoak.dsanalyzer.app.data.DataKind
-import com.sappyoak.dsanalyzer.app.data.animations.AnimationsState
+import com.sappyoak.dsanalyzer.app.data.ai.ui.aiChildren
 import com.sappyoak.dsanalyzer.app.data.esd.title
-import com.sappyoak.dsanalyzer.app.data.flags.FlagCatalog
 import com.sappyoak.dsanalyzer.app.data.kind
-import com.sappyoak.dsanalyzer.app.data.params.ParamSummary
 import com.sappyoak.dsanalyzer.app.data.shownAnimationSet
 import com.sappyoak.dsanalyzer.app.data.shownEsd
 import com.sappyoak.dsanalyzer.app.data.shownFlagGroup
@@ -32,25 +30,13 @@ import com.sappyoak.dsanalyzer.app.data.shownParam
 import com.sappyoak.dsanalyzer.app.data.shownScript
 import com.sappyoak.dsanalyzer.app.nav.View
 import com.sappyoak.dsanalyzer.app.ui.theme.AnalyzerTheme
-import com.sappyoak.dsanalyzer.game.world.esd.EsdSource
-import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.game.world.maps.label
-import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
 import com.sappyoak.dsanalyzer.game.world.scripts.title
 
 private val TRACKING = 0.8.sp
 
 @Composable
-public fun ColumnScope.DataNavigator(
-    params: List<ParamSummary>,
-    esds: List<EsdSource>,
-    maps: List<MapId>,
-    scripts: List<ScriptId>,
-    flags: FlagCatalog,
-    animations: AnimationsState,
-    view: View.Data,
-    onFollow: (View) -> Unit
-) {
+public fun ColumnScope.DataNavigator(contents: NavigatorContents, view: View.Data, onFollow: (View) -> Unit) {
     var expanded by remember { mutableStateOf(view.kind) }
 
     LaunchedEffect(view) {
@@ -71,28 +57,24 @@ public fun ColumnScope.DataNavigator(
             item(key = kind.name) {
                 KindRow(
                     kind = kind,
-                    count = kind.countIn(params, esds, maps, scripts, flags, animations),
+                    count = contents.countOf(kind),
                     open = open,
                     onClick = { expanded = if (open) null else kind }
                 )
             }
 
-            if (open) children(kind, params, esds, maps, scripts, flags, animations, view, onFollow)
+            if (open) children(kind, contents, view, onFollow)
         }
     }
 }
 
 private fun LazyListScope.children(
     kind: DataKind,
-    params: List<ParamSummary>,
-    esds: List<EsdSource>,
-    maps: List<MapId>,
-    scripts: List<ScriptId>,
-    flags: FlagCatalog,
-    animations: AnimationsState,
+    contents: NavigatorContents,
     view: View.Data,
     onFollow: (View) -> Unit
 ) {
+    val (params, esds, maps, scripts, flags, animations) = contents
     when (kind) {
         DataKind.Params -> {
             item(key = "param:search") {
@@ -161,10 +143,14 @@ private fun LazyListScope.children(
                     onClick = { onFollow(View.Data.AnimationSet(set)) }
                 )
             }
+
+        DataKind.AiScripts ->
+            if (contents.ai.binders.isEmpty()) note(kind, "Listed once the installation is read")
+            else aiChildren(contents.ai, view, onFollow)
     }
 }
 
-private fun LazyListScope.note(kind: DataKind, text: String) {
+internal fun LazyListScope.note(kind: DataKind, text: String) {
     item(key = "${kind.name}:none") {
         Text(
             text = text,
@@ -173,20 +159,4 @@ private fun LazyListScope.note(kind: DataKind, text: String) {
             modifier = Modifier.padding(start = CHILD_INDENT, top = 4.dp, bottom = 6.dp)
         )
     }
-}
-
-private fun DataKind.countIn(
-    params: List<ParamSummary>,
-    esds: List<EsdSource>,
-    maps: List<MapId>,
-    scripts: List<ScriptId>,
-    flags: FlagCatalog,
-    animations: AnimationsState
-): Int? = when (this) {
-    DataKind.Params -> params.size
-    DataKind.Maps -> maps.size
-    DataKind.Scripts -> scripts.size
-    DataKind.Esd -> esds.size
-    DataKind.EventFlags -> flags.size.takeIf { it > 0 }
-    DataKind.Animations -> animations.sets.size.takeIf { it > 0 }
 }

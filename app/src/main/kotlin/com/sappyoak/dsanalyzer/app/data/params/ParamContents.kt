@@ -1,5 +1,6 @@
 package com.sappyoak.dsanalyzer.app.data.params
 
+import com.sappyoak.dsanalyzer.app.data.ai.aiLinksOf
 import com.sappyoak.dsanalyzer.app.nav.View
 import com.sappyoak.dsanalyzer.app.nav.toDataAddress
 import com.sappyoak.dsanalyzer.formats.param.ParamRow
@@ -37,10 +38,13 @@ public fun ParamEntry.summaries(naming: RowNaming): List<RowSummary> = table.row
 /** The row a view of [id] opens: the first in file order, since which one the game finds is unconfirmed */
 public fun TypedParam<*>.indexOf(id: Int): Int? = rows.indexOfFirst { it.id == id }.takeIf { it >= 0 }
 
-/** Each field of [row] that names another row, by property name, as the address of the row it names */
+/**
+ * Each field of [row] that names another row, by property name, as the address of the row it names;
+ * NpcThinkParam's goal and logic ids lead to the AI that runs them
+ */
 public fun ParamEntry.linksOf(row: ParamRow): Map<String, Address> = row.references.mapValues { (_, ref) ->
     checkNotNull(View.Data.ParamRow(ref.kind.paramFor(param.side).fileName, ref.id).toDataAddress())
-}
+} + aiLinksOf(row)
 
 public fun paramAddress(param: GameParam<*>, id: Int): Address =
     checkNotNull(View.Data.ParamRow(param.fileName, id).toDataAddress())

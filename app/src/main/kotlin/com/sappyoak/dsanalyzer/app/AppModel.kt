@@ -1,15 +1,17 @@
 package com.sappyoak.dsanalyzer.app
 
-import com.sappyoak.dsanalyzer.app.analysis.AnalysisEffects
-import com.sappyoak.dsanalyzer.app.analysis.AnalysisStore
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 
+import com.sappyoak.dsanalyzer.app.analysis.AnalysisEffects
+import com.sappyoak.dsanalyzer.app.analysis.AnalysisStore
 import com.sappyoak.dsanalyzer.app.connection.ConnectionEffects
 import com.sappyoak.dsanalyzer.app.connection.ConnectionMessage
 import com.sappyoak.dsanalyzer.app.connection.ConnectionStore
 import com.sappyoak.dsanalyzer.app.data.IndexQueue
+import com.sappyoak.dsanalyzer.app.data.ai.AiEffects
+import com.sappyoak.dsanalyzer.app.data.ai.AiStore
 import com.sappyoak.dsanalyzer.app.data.animations.AnimationsEffects
 import com.sappyoak.dsanalyzer.app.data.animations.AnimationsStore
 import com.sappyoak.dsanalyzer.app.data.esd.EsdsEffects
@@ -80,7 +82,7 @@ public fun createAppModel(
     val settings = SettingsStore(scope, SettingsEffects(SettingsFile(paths.settings, jsonSerializer)))
     val workspaces = WorkspaceDirectory(paths.workspaces, jsonSerializer)
     val installationFiles = InstallationFiles(scope)
-    val data = InstallationData(installationFiles, scope)
+    val data = InstallationData(installationFiles, scope, paths.installations)
     val indexes = IndexQueue()
     val link = GameLink(scope, processes = { Processes.Current })
     val translatedNames = settings.state.map { it.settings.tool.translatedNames }.distinctUntilChanged()
@@ -92,6 +94,7 @@ public fun createAppModel(
             params = ParamsStore(scope, ParamsEffects(data, translatedNames)),
             esds = EsdsStore(scope, EsdsEffects(data, indexes)),
             animations = AnimationsStore(scope, AnimationsEffects(data, indexes)),
+            ai = AiStore(scope, AiEffects(data, indexes)),
             maps = MapsStore(scope, MapsEffects(data, indexes)),
             scripts = ScriptsStore(scope, ScriptsEffects(data, indexes, translatedNames)),
             runtime = RuntimeStore(scope, RuntimeEffects(

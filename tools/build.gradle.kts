@@ -124,3 +124,19 @@ tasks.register<JavaExec>("esdCensus") {
         listOf(root.orNull ?: error("Pass the installation's directory"))
     }
 }
+
+
+tasks.register<JavaExec>("extractLuaNames") {
+    group = "tools"
+    description = "Writes the Lua parameter and local names Remastered keeps, for Prepare to Die's stripped scripts"
+    mainClass.set("com.sappyoak.dsanalyzer.tools.lua.ExtractLuaNamesKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    useModuleToolchain()
+
+    val dsr = providers.gradleProperty("dsr")
+    val bundled = rootProject.layout.projectDirectory.file("game/src/main/resources/definitions/ds1-lua-names.json")
+    val out = providers.gradleProperty("out").orElse(bundled.asFile.path)
+    argumentProviders.add {
+        listOf(dsr.orNull ?: error("Pass the Remastered installation's directory as -Pdsr=<path>"), out.get())
+    }
+}

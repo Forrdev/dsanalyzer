@@ -9,7 +9,7 @@ import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
 
 public fun View.Data.toDataAddress(): DataAddress? = when (this) {
     // A navigator grouping, not a thing in the game's data
-    is View.Data.Overview, is View.Data.FlagList, is View.Data.AnimationSet, is View.Data.Animation -> null
+    is View.Data.Overview, is View.Data.FlagList, is View.Data.AiList -> null
 
     is View.Data.ParamSearch -> DataAddress(DataSpace.Param.token)
     is View.Data.Param ->
@@ -29,6 +29,20 @@ public fun View.Data.toDataAddress(): DataAddress? = when (this) {
     is View.Data.EventFlag ->
         DataAddress(DataSpace.Flag.token, listOf("$flagId" + (seenIn?.let { "$SEEN_IN$it" } ?: "")))
 
+    is View.Data.AnimationSet ->
+        DataAddress(DataSpace.Animation.token, listOf(set.label))
+    is View.Data.Animation ->
+        DataAddress(DataSpace.Animation.token, listOf(set.label, animationId.toString()))
+
+    is View.Data.AiGoal ->
+        DataAddress(DataSpace.Goal.token, listOf(goalId.toString()))
+    is View.Data.AiLogic ->
+        DataAddress(DataSpace.Goal.token, listOf(LOGIC, logicId.toString()))
+    is View.Data.LuaFiles ->
+        DataAddress(DataSpace.Lua.token, listOf(binder.label))
+    is View.Data.LuaScript ->
+        DataAddress(DataSpace.Lua.token, listOf(script.binder.label, script.name), function)
+
     is View.Data.Esd ->
         DataAddress(DataSpace.Esd.token, source.segments)
     is View.Data.EsdState ->
@@ -36,6 +50,9 @@ public fun View.Data.toDataAddress(): DataAddress? = when (this) {
 }
 
 internal const val EVENT: String = "event"
+
+/** Logic shares the goal space, under its own segment */
+internal const val LOGIC: String = "logic"
 
 /** Separates a flag's id from the map a citation saw it in */
 internal const val SEEN_IN: Char = '@'

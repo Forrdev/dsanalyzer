@@ -2,7 +2,10 @@ package com.sappyoak.dsanalyzer.app.nav
 
 import com.sappyoak.dsanalyzer.analysis.FindingId
 import com.sappyoak.dsanalyzer.analysis.InvestigationId
+import com.sappyoak.dsanalyzer.app.data.ai.AiListKind
 import com.sappyoak.dsanalyzer.app.data.flags.FlagGroup
+import com.sappyoak.dsanalyzer.game.world.ai.LuaBinder
+import com.sappyoak.dsanalyzer.game.world.ai.LuaScriptId
 import com.sappyoak.dsanalyzer.game.world.animations.AnimationSetId
 import com.sappyoak.dsanalyzer.game.world.esd.EsdSource
 import com.sappyoak.dsanalyzer.game.world.maps.EntryKind
@@ -56,6 +59,14 @@ public sealed interface View {
         /** The animation ids of one character or object */
         public data class AnimationSet(public val set: AnimationSetId) : Data
         public data class Animation(public val set: AnimationSetId, public val animationId: Long) : Data
+
+        public data class AiList(public val kind: AiListKind) : Data
+        public data class AiGoal(public val goalId: Int) : Data
+        public data class AiLogic(public val logicId: Int) : Data
+
+        public data class LuaFiles(public val binder: LuaBinder) : Data
+
+        public data class LuaScript(public val script: LuaScriptId, public val function: String? = null) : Data
 
         public data class Esd(public val source: EsdSource) : Data
         public data class EsdState(

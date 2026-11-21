@@ -140,7 +140,8 @@ public fun RuntimeDetail(
                         state.timings,
                         state.placedEnemies,
                         onReadPlacedEnemies,
-                        onReadCharacterEffects
+                        onReadCharacterEffects,
+                        onFollow
                     )
                     RuntimePanel.Animation -> animationItems(
                         snapshot,

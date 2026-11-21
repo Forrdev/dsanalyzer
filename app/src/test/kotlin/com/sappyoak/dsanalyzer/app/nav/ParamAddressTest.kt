@@ -8,7 +8,9 @@ import io.kotest.matchers.types.shouldBeInstanceOf
 import com.sappyoak.dsanalyzer.game.ref.parseAddress
 
 private val WITH_WEAPONS =
-    WorkspaceResolveContext(emptySet(), emptySet(), setOf("EquipParamWeapon"), { false }, { null })
+    WorkspaceResolveContext(
+        emptySet(), emptySet(), setOf("EquipParamWeapon"), { false }, { false }, emptySet(), { null }
+    )
 
 private fun WorkspaceResolveContext.roundTrip(view: View.Data): Resolution =
     resolve(checkNotNull(parseAddress(checkNotNull(view.toDataAddress()).toAddress())))
