@@ -1,10 +1,9 @@
 package com.sappyoak.dsanalyzer.runtime.write.debugdraw
 
 import com.sappyoak.dsanalyzer.formats.msb.part.CollisionHitFilter
-import com.sappyoak.dsanalyzer.runtime.session.CollisionDrawSettings
-import com.sappyoak.dsanalyzer.runtime.session.DrawMode
-import com.sappyoak.dsanalyzer.runtime.session.FilterColors
-import com.sappyoak.dsanalyzer.shared.math.Vec4
+import com.sappyoak.dsanalyzer.runtime.snapshot.CollisionDrawSettings
+import com.sappyoak.dsanalyzer.runtime.snapshot.DrawMode
+import com.sappyoak.dsanalyzer.runtime.snapshot.FilterColors
 import com.sappyoak.dsanalyzer.shared.binary.littleEndian
 import com.sappyoak.dsanalyzer.shared.binary.putVec4
 

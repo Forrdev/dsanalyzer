@@ -2,14 +2,14 @@ package com.sappyoak.dsanalyzer.runtime.write.debugdraw
 
 import java.util.concurrent.atomic.AtomicReference
 
-import com.sappyoak.dsanalyzer.runtime.sampling.SessionContext
-import com.sappyoak.dsanalyzer.runtime.sampling.SessionExtension
-import com.sappyoak.dsanalyzer.runtime.session.CollisionDrawSettings
-import com.sappyoak.dsanalyzer.runtime.session.DrawInstall
-import com.sappyoak.dsanalyzer.runtime.session.EngineDraw
-import com.sappyoak.dsanalyzer.runtime.session.EngineDrawRequest
-import com.sappyoak.dsanalyzer.runtime.session.EngineDrawStatus
-import com.sappyoak.dsanalyzer.runtime.session.WorldPlace
+import com.sappyoak.dsanalyzer.runtime.write.SessionContext
+import com.sappyoak.dsanalyzer.runtime.write.SessionExtension
+import com.sappyoak.dsanalyzer.runtime.snapshot.CollisionDrawSettings
+import com.sappyoak.dsanalyzer.runtime.snapshot.DrawInstall
+import com.sappyoak.dsanalyzer.runtime.snapshot.EngineDraw
+import com.sappyoak.dsanalyzer.runtime.snapshot.EngineDrawRequest
+import com.sappyoak.dsanalyzer.runtime.snapshot.EngineDrawStatus
+import com.sappyoak.dsanalyzer.runtime.snapshot.WorldPlace
 
 /** A 30 Hz tick: tags about four times a second, retries an install every two seconds */
 private const val TAG_TICKS = 8

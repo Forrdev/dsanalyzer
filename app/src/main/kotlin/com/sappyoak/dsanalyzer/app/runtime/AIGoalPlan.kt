@@ -4,7 +4,7 @@ import kotlin.math.floor
 
 import com.sappyoak.dsanalyzer.app.runtime.timing.AttackWindow
 import com.sappyoak.dsanalyzer.app.runtime.timing.word
-import com.sappyoak.dsanalyzer.runtime.session.ai.GoalSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.ai.GoalSnapshot
 
 private const val TOP_GOAL = 0
 

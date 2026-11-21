@@ -8,8 +8,8 @@ import kotlinx.coroutines.flow.map
 import com.sappyoak.dsanalyzer.app.store.EffectRunner
 import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
-import com.sappyoak.dsanalyzer.runtime.session.EngineDrawRequest
-import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
+import com.sappyoak.dsanalyzer.runtime.snapshot.EngineDrawRequest
+import com.sappyoak.dsanalyzer.runtime.snapshot.animation.AnimationTarget
 
 public class RuntimeEffects(
     private val link: GameLink,
@@ -23,9 +23,11 @@ public class RuntimeEffects(
         RuntimeEffect.Observe -> link.state.map(RuntimeMessage::LinkChanged)
         RuntimeEffect.RequestPlacedEnemies -> flow { link.requestPlacedEnemies() }
         RuntimeEffect.RequestCharacterEffects -> flow { link.requestCharacterEffects() }
-        RuntimeEffect.FollowAITracking -> flow { aiTracking.collect { link.setAIScope(it.scope) } }
-        is RuntimeEffect.Animate -> flow { link.setAnimationTarget(effect.target) }
-        is RuntimeEffect.WatchFlag -> flow { link.watchFlag(effect.flagId) }
+        RuntimeEffect.FollowAITracking -> flow {
+            aiTracking.collect { tracking -> link.sampleWith { it.copy(aiScope = tracking.scope) } }
+        }
+        is RuntimeEffect.Animate -> flow { link.sampleWith { it.copy(animation = effect.target) } }
+        is RuntimeEffect.WatchFlag -> flow { link.sampleWith { it.copy(watchedFlag = effect.flagId) } }
         RuntimeEffect.FollowTimingsWanted -> timingsWanted.map(RuntimeMessage::TimingsWanted)
 
         is RuntimeEffect.InstallEngineDraw -> flow { link.installEngineDraw(effect.install) }

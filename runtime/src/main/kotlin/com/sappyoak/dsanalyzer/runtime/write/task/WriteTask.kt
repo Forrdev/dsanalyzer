@@ -1,7 +1,8 @@
 package com.sappyoak.dsanalyzer.runtime.write.task
 
+import com.sappyoak.dsanalyzer.runtime.layout.CallArch
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
-import com.sappyoak.dsanalyzer.runtime.session.WorldPlace
+import com.sappyoak.dsanalyzer.runtime.snapshot.WorldPlace
 import com.sappyoak.dsanalyzer.runtime.write.GameWriter
 import com.sappyoak.dsanalyzer.runtime.write.mailbox.CallOutcome
 import com.sappyoak.dsanalyzer.runtime.write.mailbox.GameCall
@@ -32,6 +33,8 @@ public class TaskContext internal constructor(
     /** The world is up and the player can be read, which is when the mailbox sends calls */
     public val inWorld: Boolean,
     public val place: WorldPlace,
+    /** The calling convention the game's functions use, for building calls and the data they read */
+    public val arch: CallArch,
     private val submit: (GameCall) -> Submission,
     private val submitRemote: (GameCall) -> Submission,
     private val outcomes: Map<Long, CallOutcome>

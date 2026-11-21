@@ -10,7 +10,7 @@ import com.sappyoak.dsanalyzer.runtime.inject.Reg.ECX
 import com.sappyoak.dsanalyzer.runtime.inject.Reg.ESI
 import com.sappyoak.dsanalyzer.runtime.inject.X86
 import com.sappyoak.dsanalyzer.runtime.inject.bt
-import com.sappyoak.dsanalyzer.runtime.inject.cave.X86Cave
+import com.sappyoak.dsanalyzer.runtime.inject.X86Cave
 import com.sappyoak.dsanalyzer.runtime.inject.movzxByte
 import com.sappyoak.dsanalyzer.runtime.inject.pop
 import com.sappyoak.dsanalyzer.runtime.inject.test
@@ -21,8 +21,8 @@ import com.sappyoak.dsanalyzer.runtime.ptde.ChrPosData
 import com.sappyoak.dsanalyzer.runtime.ptde.DisplayTest
 import com.sappyoak.dsanalyzer.runtime.ptde.HitIns
 import com.sappyoak.dsanalyzer.runtime.ptde.WorldChrMan
-import com.sappyoak.dsanalyzer.runtime.session.DrawMode
-import com.sappyoak.dsanalyzer.runtime.write.WriteKey
+import com.sappyoak.dsanalyzer.runtime.snapshot.DrawMode
+import com.sappyoak.dsanalyzer.runtime.snapshot.WriteKey
 import com.sappyoak.dsanalyzer.runtime.write.debugdraw.DrawControl
 import com.sappyoak.dsanalyzer.runtime.write.debugdraw.FILTER_BITS
 import com.sappyoak.dsanalyzer.runtime.write.debugdraw.TAGGED

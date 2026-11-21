@@ -4,7 +4,7 @@ import com.sappyoak.dsanalyzer.app.runtime.timing.ModelTimings
 import com.sappyoak.dsanalyzer.app.store.FrequentMessage
 import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
-import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
+import com.sappyoak.dsanalyzer.runtime.snapshot.animation.AnimationTarget
 
 public sealed interface RuntimeMessage {
     public data class Opened(public val installation: Installation) : RuntimeMessage

@@ -6,7 +6,7 @@ import com.sappyoak.dsanalyzer.native.memory.AddressRange
 import com.sappyoak.dsanalyzer.native.process.ProcessMemory
 import com.sappyoak.dsanalyzer.runtime.inject.SiteLookup
 import com.sappyoak.dsanalyzer.runtime.inject.X86
-import com.sappyoak.dsanalyzer.runtime.inject.cave.CodeCave
+import com.sappyoak.dsanalyzer.runtime.inject.CodeCave
 import com.sappyoak.dsanalyzer.runtime.inject.locate
 
 private val logger = KotlinLogging.logger {  }

@@ -1,7 +1,7 @@
 package com.sappyoak.dsanalyzer.app.runtime.timing
 
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
-import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.RuntimeSnapshot
 
 internal sealed interface TimingRequest {
     data class ForMap(val map: MapId, val known: Set<Int>) : TimingRequest

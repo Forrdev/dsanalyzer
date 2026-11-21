@@ -1,9 +1,11 @@
 package com.sappyoak.dsanalyzer.runtime.write
 
+
 import com.sappyoak.dsanalyzer.runtime.layout.WriteLayout
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
-import com.sappyoak.dsanalyzer.runtime.session.CheatFlag
-import com.sappyoak.dsanalyzer.runtime.session.CheatWord
+import com.sappyoak.dsanalyzer.runtime.snapshot.CheatFlag
+import com.sappyoak.dsanalyzer.runtime.snapshot.CheatWord
+import com.sappyoak.dsanalyzer.runtime.snapshot.WriteKey
 
 internal class CheatWriter(private val layout: WriteLayout) {
     fun set(flag: CheatFlag, on: Boolean, memory: GameMemory, writer: GameWriter): Boolean {

@@ -9,6 +9,7 @@ import com.sappyoak.dsanalyzer.native.process.CodeMemory
 import com.sappyoak.dsanalyzer.native.process.CodePatch
 import com.sappyoak.dsanalyzer.runtime.pointers.FakeGame
 import com.sappyoak.dsanalyzer.runtime.pointers.Lifetime
+import com.sappyoak.dsanalyzer.runtime.snapshot.WriteKey
 
 private const val DATA = 0x100
 private const val SITE_A = 0x200

@@ -5,9 +5,9 @@ import com.sappyoak.dsanalyzer.runtime.layout.SpecialEffectLayout
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.pointers.StructView
 import com.sappyoak.dsanalyzer.runtime.pointers.TableView
-import com.sappyoak.dsanalyzer.runtime.session.effects.ActiveEffect
-import com.sappyoak.dsanalyzer.runtime.session.effects.SpecialEffectSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.effects.StateInfoCounters
+import com.sappyoak.dsanalyzer.runtime.snapshot.effects.ActiveEffect
+import com.sappyoak.dsanalyzer.runtime.snapshot.effects.SpecialEffectSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.effects.StateInfoCounters
 
 internal class SpecialEffectReader(private val layout: SpecialEffectLayout) {
     private val holder = StructView(layout.holderSize)

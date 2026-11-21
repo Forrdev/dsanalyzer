@@ -1,13 +1,7 @@
 package com.sappyoak.dsanalyzer.game.data
 
 import java.nio.file.Path
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
-import com.sappyoak.dsanalyzer.game.Installation
-import com.sappyoak.dsanalyzer.game.files.GameFiles
-import com.sappyoak.dsanalyzer.game.files.InstallationFiles
 import com.sappyoak.dsanalyzer.game.world.ai.AiIndex
 import com.sappyoak.dsanalyzer.game.world.ai.LuaBinder
 import com.sappyoak.dsanalyzer.game.world.ai.LuaCache
@@ -32,27 +26,25 @@ private const val CACHE_DIRECTORY = "lua"
  * Building the AI index decompiles every AI script, so it fills the cache with their source on the way
  */
 internal class LuaData(
-    private val installation: Installation,
-    private val files: InstallationFiles,
+    private val data: DataScope,
     private val installationDirectory: Path?,
-    private val maps: suspend () -> List<MapId>,
-    scope: CoroutineScope
+    private val maps: suspend () -> List<MapId>
 ) {
-    private val caches = Memo<Unit, LuaCache?>("lua cache", scope)
-    private val catalog = Memo<Unit, Map<LuaBinder, List<String>>>("lua catalog", scope)
-    private val sources = Memo<LuaScriptId, LuaSource?>("lua", scope, KEPT_LUA)
-    private val aiIndexes = Memo<Unit, AiIndex>("ai index", scope)
+    private val caches = data.memo<Unit, LuaCache?>("lua cache")
+    private val catalog = data.memo<Unit, Map<LuaBinder, List<String>>>("lua catalog")
+    private val sources = data.memo<LuaScriptId, LuaSource?>("lua", KEPT_LUA)
+    private val aiIndexes = data.memo<Unit, AiIndex>("ai index")
 
     suspend fun scripts(): Map<LuaBinder, List<String>> = catalog.get(Unit) {
         cached({ it.catalog() }, { cache, value -> cache.saveCatalog(value) }) {
             val maps = maps()
-            parse { it.availableLua(maps) }
+            data.parse { it.availableLua(maps) }
         }
     }
 
     suspend fun source(script: LuaScriptId): LuaSource? = sources.get(script) {
         cached({ it.source(script) }, { cache, value -> cache.saveSource(script, value) }) {
-            parse { game -> game.loadLua(script)?.let { LuaSource.of(decompileScript(it)) } }
+            data.parse { game -> game.loadLua(script)?.let { LuaSource.of(decompileScript(it)) } }
         }
     }
 
@@ -61,7 +53,7 @@ internal class LuaData(
         cached({ it.aiIndex() }, { cache, value -> cache.saveAiIndex(value) }) {
             val binders = scripts().keys
             val cache = cache()
-            parse { game ->
+            data.parse { game ->
                 val mains = binders.flatMap { binder ->
                     game.loadLuaBinder(binder).map { (name, chunk) ->
                         val script = LuaScriptId(binder, name)
@@ -76,10 +68,9 @@ internal class LuaData(
         }
     }
 
-    fun clear() = listOf(caches, catalog, sources, aiIndexes).forEach(Memo<*, *>::clear)
-
     private suspend fun cache(): LuaCache? = caches.get(Unit) {
-        installationDirectory?.let { io { LuaCache.open(it.resolve(CACHE_DIRECTORY), LuaCacheStamp.of(installation)) } }
+        val directory = installationDirectory?.resolve(CACHE_DIRECTORY) ?: return@get null
+        data.io { LuaCache.open(directory, LuaCacheStamp.of(data.installation)) }
     }
 
     /** What [read] finds in the cache, or else [compute]'s result, which [save] then keeps unless it is null */
@@ -89,14 +80,9 @@ internal class LuaData(
         compute: suspend () -> T
     ): T {
         val cache = cache()
-        cache?.let { io { read(it) } }?.let { return it }
+        cache?.let { data.io { read(it) } }?.let { return it }
         val value = compute()
-        if (value != null && cache != null) io { save(cache, value) }
+        if (value != null && cache != null) data.io { save(cache, value) }
         return value
     }
-
-    private suspend fun <T> io(block: () -> T): T = withContext(Dispatchers.IO) { block() }
-
-    private suspend fun <T> parse(block: (GameFiles) -> T): T =
-        files.use(installation) { game -> withContext(Dispatchers.Default) { block(game) } }
 }

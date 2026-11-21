@@ -1,7 +1,7 @@
 package com.sappyoak.dsanalyzer.app.runtime
 
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
-import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.RuntimeSnapshot
 
 internal class MapFollower {
     private var current: MapId? = null

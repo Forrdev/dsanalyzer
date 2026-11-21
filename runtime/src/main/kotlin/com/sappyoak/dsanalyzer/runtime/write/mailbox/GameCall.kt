@@ -2,18 +2,16 @@ package com.sappyoak.dsanalyzer.runtime.write.mailbox
 
 import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.runtime.layout.CallArch
+import com.sappyoak.dsanalyzer.runtime.layout.CallRegister
 
-public enum class CallRegister(internal val arch: CallArch, internal val offset: Int) {
-    Eax(CallArch.X86, 0x18),
-    Ecx(CallArch.X86, 0x20),
-    Edx(CallArch.X86, 0x28),
-    Ebx(CallArch.X86, 0x30),
-    Esi(CallArch.X86, 0x38),
-    Edi(CallArch.X86, 0x40),
-    Rcx(CallArch.X64, 0x18),
-    Rdx(CallArch.X64, 0x20),
-    R8(CallArch.X64, 0x28),
-    R9(CallArch.X64, 0x30)
+/** Where the mailbox's request block keeps [this] register's value; each architecture's start at 0x18 */
+internal val CallRegister.slot: Int get() = when (this) {
+    CallRegister.Eax, CallRegister.Rcx -> 0x18
+    CallRegister.Ecx, CallRegister.Rdx -> 0x20
+    CallRegister.Edx, CallRegister.R8 -> 0x28
+    CallRegister.Ebx, CallRegister.R9 -> 0x30
+    CallRegister.Esi -> 0x38
+    CallRegister.Edi -> 0x40
 }
 
 /**
@@ -21,7 +19,7 @@ public enum class CallRegister(internal val arch: CallArch, internal val offset:
  * On x86 the cave restores ESP after the call, so cdecl and stdcall both work.
  * On x64 the cave adds the shadow space
  */
-public data class GameCall(
+public class GameCall(
     public val target: Address,
     public val label: String,
     public val registers: Map<CallRegister, Long> = emptyMap(),

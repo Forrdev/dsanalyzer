@@ -24,12 +24,12 @@ import com.sappyoak.dsanalyzer.app.runtime.timing.countdownOf
 import com.sappyoak.dsanalyzer.app.runtime.timing.describe
 
 import com.sappyoak.dsanalyzer.game.world.params.GameParam
-import com.sappyoak.dsanalyzer.runtime.session.BlockRoster
-import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.PlacedEnemy
-import com.sappyoak.dsanalyzer.runtime.session.ai.AISnapshot
-import com.sappyoak.dsanalyzer.runtime.session.ai.AITarget
-import com.sappyoak.dsanalyzer.runtime.session.effects.SpecialEffectSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.BlockRoster
+import com.sappyoak.dsanalyzer.runtime.snapshot.CharacterSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.PlacedEnemy
+import com.sappyoak.dsanalyzer.runtime.snapshot.ai.AISnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.ai.AITarget
+import com.sappyoak.dsanalyzer.runtime.snapshot.effects.SpecialEffectSnapshot
 
 private const val CHARACTER_ROW = "character"
 private val DETAIL_INDENT = Modifier.padding(start = 32.dp, end = 16.dp)

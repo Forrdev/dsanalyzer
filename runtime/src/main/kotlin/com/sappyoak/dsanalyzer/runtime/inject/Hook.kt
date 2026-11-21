@@ -6,10 +6,10 @@ import com.sappyoak.dsanalyzer.native.memory.Signature
 import com.sappyoak.dsanalyzer.native.memory.SignatureScan
 import com.sappyoak.dsanalyzer.native.memory.resolve
 import com.sappyoak.dsanalyzer.native.process.ProcessMemory
+import com.sappyoak.dsanalyzer.runtime.snapshot.WriteKey
 import com.sappyoak.dsanalyzer.runtime.write.CodeEdit
 import com.sappyoak.dsanalyzer.runtime.write.GameMutation
 import com.sappyoak.dsanalyzer.runtime.write.GameWriter
-import com.sappyoak.dsanalyzer.runtime.write.WriteKey
 
 /** One page holds any stub written so far */
 private const val BLOCK_SIZE = 0x1000

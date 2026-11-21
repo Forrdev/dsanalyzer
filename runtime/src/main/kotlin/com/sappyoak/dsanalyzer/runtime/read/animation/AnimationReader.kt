@@ -6,9 +6,9 @@ import com.sappyoak.dsanalyzer.runtime.layout.AnimRequestLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimationLayout
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.pointers.StructView
-import com.sappyoak.dsanalyzer.runtime.session.animation.AnimSlotSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
+import com.sappyoak.dsanalyzer.runtime.snapshot.animation.AnimSlotSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.animation.AnimationSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.animation.AnimationTarget
 
 /** Where one character keeps its animation */
 internal data class AnimationSource(val pool: Address, val requests: Address)

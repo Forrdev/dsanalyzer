@@ -130,10 +130,6 @@ class PTDETablesTest : FunSpec({
         }
     }
 
-    test("the two map bytes read as the map id the rest of the tool uses") {
-        WorldArea.mapId(world = 10, area = 2) shouldBe checkNotNull(MapId.parse("m10_02_00_00"))
-    }
-
     test("a build is named by its version word, and an unknown one is not guessed at") {
         assertSoftly {
             PTDEVersion.of(0x54B6EFC0u, 0u) shouldBe PTDEVersion.SteamworksBeta

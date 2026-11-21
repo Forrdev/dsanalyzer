@@ -1,6 +1,6 @@
 package com.sappyoak.dsanalyzer.app.runtime.timing
 
-import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.CharacterSnapshot
 
 /** [character]'s next window in its current action, when its AI is tracked and its model's are read */
 public fun TimingLibrary.countdownOf(character: CharacterSnapshot): Countdown? {

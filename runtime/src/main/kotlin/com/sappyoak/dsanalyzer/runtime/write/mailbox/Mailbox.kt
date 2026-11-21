@@ -7,9 +7,9 @@ import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.native.memory.AddressRange
 import com.sappyoak.dsanalyzer.native.process.ProcessMemory
 import com.sappyoak.dsanalyzer.runtime.layout.MailboxLayout
+import com.sappyoak.dsanalyzer.runtime.snapshot.WriteKey
 import com.sappyoak.dsanalyzer.runtime.write.GameMutation
 import com.sappyoak.dsanalyzer.runtime.write.GameWriter
-import com.sappyoak.dsanalyzer.runtime.write.WriteKey
 
 public val MAILBOX_KEY: WriteKey = WriteKey("hook:mailbox")
 

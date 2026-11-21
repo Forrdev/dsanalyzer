@@ -3,7 +3,7 @@ package com.sappyoak.dsanalyzer.runtime.read.target
 import com.sappyoak.dsanalyzer.runtime.layout.LockOnLayout
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.pointers.StructView
-import com.sappyoak.dsanalyzer.runtime.session.PlayerSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.PlayerSnapshot
 
 /** A list longer than this is taken for a loop read mid-update */
 private const val MAX_CANDIDATES = 64

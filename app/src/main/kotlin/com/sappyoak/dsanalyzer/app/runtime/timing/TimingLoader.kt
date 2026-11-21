@@ -4,10 +4,9 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 
 import com.sappyoak.dsanalyzer.formats.msb.model.ModelType
 import com.sappyoak.dsanalyzer.game.Installation
+import com.sappyoak.dsanalyzer.game.data.GameData
 import com.sappyoak.dsanalyzer.game.data.InstallationData
-import com.sappyoak.dsanalyzer.game.files.GameFiles
 import com.sappyoak.dsanalyzer.game.world.animations.AnimationSetId
-import com.sappyoak.dsanalyzer.game.world.animations.loadTae
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
 import com.sappyoak.dsanalyzer.shared.binary.BinaryFormatException
 
@@ -29,15 +28,16 @@ public class TimingLoader(private val data: InstallationData) {
             .mapNotNull { ENEMY_MODEL.matchEntire(it.name)?.groupValues?.get(1)?.toIntOrNull() }
             .filterNot { it == HUMAN_MODEL || it in known }
             .toSet()
-        return game.read { it.read(models) }
+        return game.timings(models)
     }
 
     public suspend fun forModels(installation: Installation, models: Set<Int>): Map<Int, ModelTimings> =
-        data.of(installation).read { it.read(models) }
+        data.of(installation).timings(models)
 
-    private fun GameFiles.read(models: Set<Int>): Map<Int, ModelTimings> = models.associateWith { model ->
+    /** Through the animations [GameData] keeps, so the animations view and this parse each file once */
+    private suspend fun GameData.timings(models: Set<Int>): Map<Int, ModelTimings> = models.associateWith { model ->
         try {
-            timingsOf(loadTae(AnimationSetId.Character(model)))
+            timingsOf(animations(AnimationSetId.Character(model)))
         } catch (failure: BinaryFormatException) {
             logger.warn(failure) { "Could not read the animations of c$model" }
             ModelTimings.None

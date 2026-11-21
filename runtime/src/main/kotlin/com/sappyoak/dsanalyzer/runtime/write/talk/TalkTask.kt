@@ -2,7 +2,6 @@ package com.sappyoak.dsanalyzer.runtime.write.talk
 
 import com.sappyoak.dsanalyzer.native.memory.intAt
 import com.sappyoak.dsanalyzer.native.memory.pointerAt
-import com.sappyoak.dsanalyzer.runtime.layout.CallArch
 import com.sappyoak.dsanalyzer.runtime.layout.TalkLayout
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.pointers.TableView
@@ -28,8 +27,7 @@ private enum class Phase { Owner, Send }
  */
 public class TalkTask internal constructor(
     private val command: TalkCommand,
-    private val layout: TalkLayout,
-    private val arch: CallArch
+    private val layout: TalkLayout
 ) : WriteTask {
     override val label: String get() = "Talk command ${command.id}"
 
@@ -45,14 +43,17 @@ public class TalkTask internal constructor(
         sent?.let { id -> return outcome(context, id) }
         return when (phase) {
             Phase.Owner -> tryOwner(context, targets)
-            Phase.Send -> submit(context, dispatchCall(command, data(targets, owner), layout, targets, arch))
+            Phase.Send -> {
+                val call = dispatchCall(command, data(context, targets, owner), layout, targets, context.arch)
+                submit(context, call)
+            }
         }
     }
 
     private fun tryOwner(context: TaskContext, targets: TalkTargets): TaskStep {
         val queue = candidates ?: ArrayDeque(entityIds(context.memory)).also { candidates = it }
         trying = queue.removeFirstOrNull() ?: return TaskStep.Failed("No loaded character could own $label")
-        return submit(context, ownerLookupCall(data(targets, trying), layout, targets, arch))
+        return submit(context, ownerLookupCall(data(context, targets, trying), layout, targets, context.arch))
     }
 
     private fun submit(context: TaskContext, call: GameCall): TaskStep = when (val submission = context.call(call)) {
@@ -78,7 +79,8 @@ public class TalkTask internal constructor(
         }
     }
 
-    private fun data(targets: TalkTargets, ownerId: Int): ByteArray = talkData(command, layout, targets, ownerId, arch)
+    private fun data(context: TaskContext, targets: TalkTargets, ownerId: Int): ByteArray =
+        talkData(command, layout, targets, ownerId, context.arch)
 
     private fun targets(memory: GameMemory): TalkTargets? {
         val dispatcher = memory.addressOf(layout.dispatcher).takeUnless { it.isNull } ?: return null

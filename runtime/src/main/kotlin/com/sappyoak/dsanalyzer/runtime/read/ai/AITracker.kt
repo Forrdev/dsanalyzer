@@ -1,15 +1,13 @@
 package com.sappyoak.dsanalyzer.runtime.read.ai
 
 import com.sappyoak.dsanalyzer.native.process.ProcessMemory
-import com.sappyoak.dsanalyzer.runtime.layout.GameLayout
 import com.sappyoak.dsanalyzer.runtime.read.character.CharacterReading
-import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.ai.AIScope
-import com.sappyoak.dsanalyzer.runtime.session.ai.AITarget
+import com.sappyoak.dsanalyzer.runtime.snapshot.CharacterSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.ai.AIScope
+import com.sappyoak.dsanalyzer.runtime.snapshot.ai.AITarget
 
 
-internal class AITracker(gracePeriod: Int, layout: GameLayout) {
-    private val reader = AIReader(layout)
+internal class AITracker(gracePeriod: Int, private val reader: AIReader) {
     private val selection = AISelection(gracePeriod)
 
     fun read(
@@ -36,11 +34,6 @@ internal class AITracker(gracePeriod: Int, layout: GameLayout) {
         }
         val selected = selection.select(scope, targets, reading.playerHandle) + listOfNotNull(focus)
         return found.filter { it.handle in selected }
-    }
-
-    /* Drops what is kept between reads, for a load that rebuilds every AI */
-    fun forget() {
-        reader.forget()
     }
 }
 

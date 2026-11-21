@@ -31,4 +31,4 @@ private val SITES: List<Pair<Int, FlagSite>> by lazy {
 }
 
 /** Every place the executable sets or reads a flag by a fixed id */
-internal fun engineFlagSites(): List<Pair<Int, FlagSite>> = SITES
+internal val EngineOrigin: FlagOrigin = FlagOrigin { OriginReading(sites = SITES) }

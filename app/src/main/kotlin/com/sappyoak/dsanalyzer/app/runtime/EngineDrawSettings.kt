@@ -5,10 +5,10 @@ import kotlinx.serialization.Serializable
 import com.sappyoak.dsanalyzer.app.settings.Settings
 import com.sappyoak.dsanalyzer.app.settings.SettingsEdit
 import com.sappyoak.dsanalyzer.formats.msb.part.CollisionHitFilter
-import com.sappyoak.dsanalyzer.runtime.session.CollisionDrawSettings
-import com.sappyoak.dsanalyzer.runtime.session.DrawMode
-import com.sappyoak.dsanalyzer.runtime.session.EngineDrawRequest
-import com.sappyoak.dsanalyzer.runtime.session.FilterColors
+import com.sappyoak.dsanalyzer.runtime.snapshot.CollisionDrawSettings
+import com.sappyoak.dsanalyzer.runtime.snapshot.DrawMode
+import com.sappyoak.dsanalyzer.runtime.snapshot.EngineDrawRequest
+import com.sappyoak.dsanalyzer.runtime.snapshot.FilterColors
 import com.sappyoak.dsanalyzer.shared.math.Vec4
 
 /** The game's colors bloom above about half brightness */

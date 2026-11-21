@@ -10,7 +10,7 @@ import com.sappyoak.dsanalyzer.runtime.inject.Reg.ESI
 import com.sappyoak.dsanalyzer.runtime.inject.Reg.ESP
 import com.sappyoak.dsanalyzer.runtime.inject.X86
 import com.sappyoak.dsanalyzer.runtime.inject.Xmm.XMM0
-import com.sappyoak.dsanalyzer.runtime.inject.cave.X86Cave
+import com.sappyoak.dsanalyzer.runtime.inject.X86Cave
 import com.sappyoak.dsanalyzer.runtime.inject.lea
 import com.sappyoak.dsanalyzer.runtime.inject.movups
 import com.sappyoak.dsanalyzer.runtime.inject.movzxByte
@@ -18,7 +18,7 @@ import com.sappyoak.dsanalyzer.runtime.inject.test
 import com.sappyoak.dsanalyzer.runtime.ptde.PTDEHookSites
 import com.sappyoak.dsanalyzer.runtime.ptde.HitResDraw
 import com.sappyoak.dsanalyzer.runtime.ptde.HitIns
-import com.sappyoak.dsanalyzer.runtime.write.WriteKey
+import com.sappyoak.dsanalyzer.runtime.snapshot.WriteKey
 import com.sappyoak.dsanalyzer.runtime.write.debugdraw.DrawControl
 import com.sappyoak.dsanalyzer.runtime.write.debugdraw.FILTER_BITS
 

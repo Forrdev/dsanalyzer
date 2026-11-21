@@ -8,14 +8,14 @@ import com.sappyoak.dsanalyzer.runtime.inject.Reg.EAX
 import com.sappyoak.dsanalyzer.runtime.inject.Reg.EBP
 import com.sappyoak.dsanalyzer.runtime.inject.Reg.EDI
 import com.sappyoak.dsanalyzer.runtime.inject.X86
-import com.sappyoak.dsanalyzer.runtime.inject.cave.X86Cave
-import com.sappyoak.dsanalyzer.runtime.inject.cave.callTarget
+import com.sappyoak.dsanalyzer.runtime.inject.X86Cave
+import com.sappyoak.dsanalyzer.runtime.inject.callTarget
 import com.sappyoak.dsanalyzer.runtime.inject.push
 import com.sappyoak.dsanalyzer.runtime.inject.pushDword
 import com.sappyoak.dsanalyzer.runtime.ptde.D3D9Device
 import com.sappyoak.dsanalyzer.runtime.ptde.PTDEHookSites
 import com.sappyoak.dsanalyzer.runtime.ptde.EzDrawFlush
-import com.sappyoak.dsanalyzer.runtime.write.WriteKey
+import com.sappyoak.dsanalyzer.runtime.snapshot.WriteKey
 import com.sappyoak.dsanalyzer.runtime.write.debugdraw.DrawControl
 
 /**

@@ -15,7 +15,7 @@ import com.sappyoak.dsanalyzer.tas.Mailbox.Field
  *   pushfd / pushad
  *   edx = PadMode ; if edx == Off goto done
  *   if EDI != PadDevice or device.XInputUser != 0 goto done
- *   if PadEpoch != PadSeen: PadSeen = PadEpoch ; PadCursor = 0
+ *   if PadEpoch != PadSeen: PadFirstFrame = Frame ; PadCursor = 0 ; PadSeen = PadEpoch
  *   eax = PadCursor ; if eax >= PadLimit goto done
  *   eax = ring + (eax & mask) << shift
  *   if edx == Play: copy record -> device   else: copy device -> record
@@ -23,6 +23,8 @@ import com.sappyoak.dsanalyzer.tas.Mailbox.Field
  * done:
  *   popad / popfd
  * ```
+ * `PadSeen` is written last on a new epoch: once the tool reads it as current, the first frame and
+ * the cursor beside it are this epoch's too
  */
 internal fun X86.padOverride(mailbox: Mailbox) {
     val done = label()
@@ -45,8 +47,10 @@ internal fun X86.padOverride(mailbox: Mailbox) {
     mov(Reg.EAX, mailbox.operand(Field.PadEpoch))
     cmp(Reg.EAX, mailbox.operand(Field.PadSeen))
     jz(current)
-    mov(mailbox.operand(Field.PadSeen), Reg.EAX)
+    mov(Reg.ECX, mailbox.operand(Field.Frame))
+    mov(mailbox.operand(Field.PadFirstFrame), Reg.ECX)
     mov(mailbox.operand(Field.PadCursor), 0)
+    mov(mailbox.operand(Field.PadSeen), Reg.EAX)
     bind(current)
 
     mov(Reg.EAX, mailbox.operand(Field.PadCursor))

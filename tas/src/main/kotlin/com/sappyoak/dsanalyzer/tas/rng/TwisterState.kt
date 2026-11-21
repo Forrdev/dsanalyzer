@@ -9,7 +9,8 @@ public const val TWISTER_WORDS: Int = 624
 
 /**
  * `GameMan`'s MT19937, kept with its cursor as an **index**: in the game the cursor is a pointer
- * into the instance's own state, and `GameMan` moves on every load, so an address would not survive
+ * into the instance's own state, and `GameMan` sits somewhere else in every process, so an address
+ * would not survive a restart of the game
  */
 public class TwisterState(
     public val seed: Int,

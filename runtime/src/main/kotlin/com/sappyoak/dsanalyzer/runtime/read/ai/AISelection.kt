@@ -1,6 +1,6 @@
 package com.sappyoak.dsanalyzer.runtime.read.ai
 
-import com.sappyoak.dsanalyzer.runtime.session.ai.AIScope
+import com.sappyoak.dsanalyzer.runtime.snapshot.ai.AIScope
 
 internal class AISelection(private val gracePeriod: Int) {
     private var reads: Int = 0

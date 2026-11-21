@@ -6,14 +6,12 @@ import com.sappyoak.dsanalyzer.runtime.layout.LoadQueueLayout
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.pointers.StructView
 import com.sappyoak.dsanalyzer.runtime.pointers.TableView
-import com.sappyoak.dsanalyzer.runtime.ptde.LoadStage
-import com.sappyoak.dsanalyzer.runtime.ptde.NO_MAP
-import com.sappyoak.dsanalyzer.runtime.session.BlockLoad
-import com.sappyoak.dsanalyzer.runtime.session.BlockMasks
-import com.sappyoak.dsanalyzer.runtime.session.BlockState
-import com.sappyoak.dsanalyzer.runtime.session.GroupMask
-import com.sappyoak.dsanalyzer.runtime.session.HeldBy
-import com.sappyoak.dsanalyzer.runtime.session.LoadQueueSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.BlockLoad
+import com.sappyoak.dsanalyzer.runtime.snapshot.BlockMasks
+import com.sappyoak.dsanalyzer.runtime.snapshot.BlockState
+import com.sappyoak.dsanalyzer.runtime.snapshot.GroupMask
+import com.sappyoak.dsanalyzer.runtime.snapshot.HeldBy
+import com.sappyoak.dsanalyzer.runtime.snapshot.LoadQueueSnapshot
 
 private const val NO_MAP: Int = -1
 
@@ -123,6 +121,19 @@ internal class LoadQueueReader(private val layout: LoadQueueLayout) {
         if (slot == NO_MAP) return null
         return MapId.of(area = (slot ushr 24) and 0xFF, block = (slot ushr 16) and 0xFF)
     }
+}
+
+private object LoadStage {
+    const val IDLE: Int = 0
+    const val LOADED: Int = 7
+
+    private val LOADING = setOf(1, 2, 3, 4, 6)
+    private val UNLOADING = setOf(5, 8, 9)
+
+    fun isIdle(stage: Int): Boolean = stage == IDLE
+    fun isLoading(stage: Int): Boolean = stage in LOADING
+    fun isResident(stage: Int): Boolean = stage == LOADED
+    fun isUnloading(stage: Int): Boolean = stage in UNLOADING
 }
 
 internal fun blockStateOf(stage: Int): BlockState = when {

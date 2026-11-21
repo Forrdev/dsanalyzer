@@ -3,7 +3,7 @@ package com.sappyoak.dsanalyzer.runtime.read
 import com.sappyoak.dsanalyzer.runtime.layout.CameraLayout
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.pointers.StructView
-import com.sappyoak.dsanalyzer.runtime.session.CameraSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.CameraSnapshot
 import com.sappyoak.dsanalyzer.shared.math.Frustum
 
 internal class CameraReader(private val layout: CameraLayout) {

@@ -11,10 +11,11 @@ import com.sappyoak.dsanalyzer.native.process.CodeMemory
 import com.sappyoak.dsanalyzer.native.process.CodePatch
 import com.sappyoak.dsanalyzer.runtime.inject.HookSite
 import com.sappyoak.dsanalyzer.runtime.inject.X86
-import com.sappyoak.dsanalyzer.runtime.inject.cave.X86Cave
-import com.sappyoak.dsanalyzer.runtime.inject.cave.callTarget
+import com.sappyoak.dsanalyzer.runtime.inject.X86Cave
+import com.sappyoak.dsanalyzer.runtime.inject.callTarget
 import com.sappyoak.dsanalyzer.runtime.inject.code
 import com.sappyoak.dsanalyzer.runtime.pointers.FakeGame
+import com.sappyoak.dsanalyzer.runtime.snapshot.WriteKey
 
 private const val SITE_A = 0x100
 private const val SITE_B = 0x200

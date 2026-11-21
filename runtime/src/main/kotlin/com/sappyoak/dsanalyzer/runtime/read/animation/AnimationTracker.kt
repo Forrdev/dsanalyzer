@@ -1,13 +1,11 @@
 package com.sappyoak.dsanalyzer.runtime.read.animation
 
-import com.sappyoak.dsanalyzer.runtime.layout.GameLayout
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.read.character.CharacterRef
-import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
+import com.sappyoak.dsanalyzer.runtime.snapshot.animation.AnimationSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.animation.AnimationTarget
 
-internal class AnimationTracker(layout: GameLayout) {
-    private val reader = AnimationReader(layout.animation, layout.animRequest)
+internal class AnimationTracker(private val reader: AnimationReader) {
 
     fun read(
         game: GameMemory,

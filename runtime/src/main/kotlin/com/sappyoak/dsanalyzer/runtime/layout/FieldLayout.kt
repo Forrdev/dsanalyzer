@@ -1,8 +1,8 @@
 package com.sappyoak.dsanalyzer.runtime.layout
 
 import com.sappyoak.dsanalyzer.runtime.pointers.GamePointer
-import com.sappyoak.dsanalyzer.runtime.session.CheatBit
-import com.sappyoak.dsanalyzer.runtime.session.CheatFlag
+import com.sappyoak.dsanalyzer.runtime.snapshot.CheatBit
+import com.sappyoak.dsanalyzer.runtime.snapshot.CheatFlag
 
 /** One field of a structure the tool reaches by pointer */
 public data class FieldLayout(

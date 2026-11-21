@@ -1,7 +1,6 @@
 package com.sappyoak.dsanalyzer.runtime.dsr
 
 import com.sappyoak.dsanalyzer.runtime.pointers.GamePointer
-import com.sappyoak.dsanalyzer.runtime.EditionTables
 
 public val DSRPointers: List<GamePointer> = listOf(
     FieldArea.Pointer,
@@ -32,9 +31,4 @@ public val DSRPointers: List<GamePointer> = listOf(
     DSRFunctions.SetEvent,
     DSRFunctions.GetEvent,
     DSRFunctions.EventFlagMan
-)
-
-public val DSREdition: EditionTables = EditionTables(
-    pointers = DSRPointers,
-    layoutFor = { module -> dsrLayout(DSRVersion.from(module.size.toInt())) }
 )

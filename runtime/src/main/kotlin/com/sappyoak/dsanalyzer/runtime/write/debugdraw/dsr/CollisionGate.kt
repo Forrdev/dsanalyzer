@@ -4,8 +4,8 @@ import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.runtime.dsr.DisplayTest
 import com.sappyoak.dsanalyzer.runtime.inject.CaveTemplate
 import com.sappyoak.dsanalyzer.runtime.inject.CaveTemplate.Hole
-import com.sappyoak.dsanalyzer.runtime.session.DrawMode
-import com.sappyoak.dsanalyzer.runtime.write.WriteKey
+import com.sappyoak.dsanalyzer.runtime.snapshot.DrawMode
+import com.sappyoak.dsanalyzer.runtime.snapshot.WriteKey
 import com.sappyoak.dsanalyzer.runtime.write.debugdraw.bits
 
 private const val CONTROL = "control"

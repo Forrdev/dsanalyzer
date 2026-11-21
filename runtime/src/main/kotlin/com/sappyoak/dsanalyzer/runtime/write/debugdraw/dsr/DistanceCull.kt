@@ -4,7 +4,7 @@ import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.runtime.dsr.DSRHookSites
 import com.sappyoak.dsanalyzer.runtime.inject.CaveTemplate
 import com.sappyoak.dsanalyzer.runtime.inject.CaveTemplate.Hole
-import com.sappyoak.dsanalyzer.runtime.write.WriteKey
+import com.sappyoak.dsanalyzer.runtime.snapshot.WriteKey
 
 private const val CONTROL = "control"
 

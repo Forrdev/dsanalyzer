@@ -13,12 +13,12 @@ import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.game.InstallationId
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
-import com.sappyoak.dsanalyzer.runtime.session.FlagChange
-import com.sappyoak.dsanalyzer.runtime.session.RuntimeFeature
-import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.SampleCost
-import com.sappyoak.dsanalyzer.runtime.session.WatchedFlag
-import com.sappyoak.dsanalyzer.runtime.session.WorldPlace
+import com.sappyoak.dsanalyzer.runtime.snapshot.FlagChange
+import com.sappyoak.dsanalyzer.runtime.snapshot.RuntimeFeature
+import com.sappyoak.dsanalyzer.runtime.snapshot.RuntimeSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.SampleCost
+import com.sappyoak.dsanalyzer.runtime.snapshot.WatchedFlag
+import com.sappyoak.dsanalyzer.runtime.snapshot.WorldPlace
 import java.nio.file.Files
 
 private val GAME = AttachedGame(

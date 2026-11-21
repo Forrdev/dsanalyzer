@@ -11,8 +11,10 @@ private const val MENU_FOLLOWS_FLAG = 49
 private const val GET_EVENT_FLAG = 15
 
 /** Every flag an NPC's talk script sets, reads, or ties a menu option to, by the state that does it */
-internal fun NamingContext.talkSites(scripts: List<TalkScript>): List<Pair<Int, FlagSite>> = scripts.flatMap { talk ->
-    val npc = speaker(talk).first
+internal fun talkSites(scripts: List<Pair<TalkScript, Speaker>>): List<Pair<Int, FlagSite>> =
+    scripts.flatMap { (talk, speaker) -> talkSites(talk, speaker.name) }
+
+private fun talkSites(talk: TalkScript, npc: String): List<Pair<Int, FlagSite>> =
     talk.esd.groups.values.flatMap { group ->
         group.states.values.flatMap { state ->
             val source = FlagSource.Talk(EsdSource.Talk(talk.map, talk.talkId), group.id, state.id)
@@ -33,7 +35,6 @@ internal fun NamingContext.talkSites(scripts: List<TalkScript>): List<Pair<Int, 
             sets + menus + reads
         }
     }
-}
 
 /** The flags `GetEventFlag` reads anywhere in this expression */
 private fun EsdExpression.flagsRead(): List<Int> {

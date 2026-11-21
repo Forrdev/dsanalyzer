@@ -1,13 +1,10 @@
 package com.sappyoak.dsanalyzer.runtime.write.debugdraw
 
-import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.native.memory.AddressRange
-import com.sappyoak.dsanalyzer.runtime.inject.cave.CodeCave
-import com.sappyoak.dsanalyzer.runtime.sampling.SessionContext
-import com.sappyoak.dsanalyzer.runtime.session.EngineDraw
-import com.sappyoak.dsanalyzer.runtime.write.debugdraw.dsr.DSRDrawBackend
-import com.sappyoak.dsanalyzer.runtime.write.debugdraw.ptde.PTDEDrawBackend
+import com.sappyoak.dsanalyzer.runtime.inject.CodeCave
+import com.sappyoak.dsanalyzer.runtime.write.SessionContext
+import com.sappyoak.dsanalyzer.runtime.snapshot.EngineDraw
 
 internal class DrawEdit(val address: Address, val bytes: ByteArray)
 
@@ -28,11 +25,5 @@ internal fun interface DrawBackend {
     fun route(context: SessionContext, control: Address): DrawRoute
 }
 
-public fun engineDrawFor(context: SessionContext): EngineDraw? {
-    val layout = context.layout.debugDraw ?: return null
-    val backend = when (context.edition) {
-        GameEdition.PrepareToDie -> PTDEDrawBackend
-        GameEdition.Remastered -> DSRDrawBackend
-    }
-    return EngineDrawWriter(context, layout, backend)
-}
+public fun engineDrawFor(context: SessionContext): EngineDraw =
+    EngineDrawWriter(context, context.layout.debugDraw, context.draw)

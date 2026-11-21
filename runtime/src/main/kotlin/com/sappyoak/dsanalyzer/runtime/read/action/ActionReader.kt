@@ -2,12 +2,13 @@ package com.sappyoak.dsanalyzer.runtime.read.action
 
 import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.native.process.ProcessMemory
+import com.sappyoak.dsanalyzer.runtime.layout.ActionLayout
 import com.sappyoak.dsanalyzer.runtime.layout.EsdStateLayout
 import com.sappyoak.dsanalyzer.runtime.layout.EventFieldsLayout
-import com.sappyoak.dsanalyzer.runtime.layout.GameLayout
 import com.sappyoak.dsanalyzer.runtime.pointers.StructView
-import com.sappyoak.dsanalyzer.runtime.session.action.ActionSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.action.EventActionSnapshot
+import com.sappyoak.dsanalyzer.runtime.read.character.CharacterView
+import com.sappyoak.dsanalyzer.runtime.snapshot.action.ActionSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.action.EventActionSnapshot
 
 private const val NONE = -1
 
@@ -18,9 +19,7 @@ private const val NO_ANIMATION = 99999
 private const val POINTER_ROOM = 8
 
 /** A character's ESD machines, the action it plays, the hit it last took, and its event fields */
-internal class ActionReader(layout: GameLayout) {
-    private val action = layout.action
-    private val chrControl = layout.characters.chr.control
+internal class ActionReader(private val action: ActionLayout) {
     private val events: EventFieldsLayout? = action.events
 
     private val actions = StructView(action.size)
@@ -28,12 +27,9 @@ internal class ActionReader(layout: GameLayout) {
     private val pointer = StructView(POINTER_ROOM)
     private val word = StructView(Int.SIZE_BYTES)
 
-    fun read(memory: ProcessMemory, character: StructView): ActionSnapshot? {
-        val controller = character.pointer(chrControl)
-        if (controller.isNull) return null
-
-        val actionCtrl = pointer.pointerAt(memory, controller + action.fromControl.toLong())
-        if (actionCtrl.isNull || !actions.refresh(memory, actionCtrl)) return null
+    fun read(memory: ProcessMemory, character: CharacterView): ActionSnapshot? {
+        if (!actions.refresh(memory, action.ctrlOf(memory, character.controller, pointer))) return null
+        val fields = character.fields
 
         return ActionSnapshot(
             esdStates = List(action.slotCount) { stateOf(memory, it) },
@@ -43,9 +39,9 @@ internal class ActionReader(layout: GameLayout) {
             ladderState = actions.byte(action.ladderState).toInt().takeIf { it != NONE },
             damageAnimation = actions.int(action.damageAnimation).takeIf { it != NO_ANIMATION },
             damageLevel = actions.int(action.damageLevel),
-            eventCommands = events?.let { e -> List(e.commandCount) { character.int(e.commands + it * Int.SIZE_BYTES) } }.orEmpty(),
-            eventMessage = events?.let { character.int(it.message) },
-            eventAction = events?.let { eventActionOf(memory, character.pointer(it.actionPointer), it) }
+            eventCommands = events?.let { e -> List(e.commandCount) { fields.int(e.commands + it * Int.SIZE_BYTES) } }.orEmpty(),
+            eventMessage = events?.let { fields.int(it.message) },
+            eventAction = events?.let { eventActionOf(memory, fields.pointer(it.actionPointer), it) }
         )
     }
 
@@ -73,3 +69,7 @@ internal class ActionReader(layout: GameLayout) {
         )
     }
 }
+
+/** The ActionCtrl the ChrCtrl at [controller] points to, read through [via]; null when either is missing */
+internal fun ActionLayout.ctrlOf(memory: ProcessMemory, controller: Address, via: StructView): Address =
+    if (controller.isNull) Address.Null else via.pointerAt(memory, controller + fromControl.toLong())

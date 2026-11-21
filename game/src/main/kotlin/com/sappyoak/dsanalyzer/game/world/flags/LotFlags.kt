@@ -14,7 +14,9 @@ import com.sappyoak.dsanalyzer.game.world.params.GameParam
 import com.sappyoak.dsanalyzer.game.world.text.TextCategory
 
 /** Item lots and limited shop stock: each row carries the flag the game sets when it is taken */
-internal fun NamingContext.lotFlags(): List<Pair<Int, FlagEvidence>> {
+internal val LotOrigin: FlagOrigin = FlagOrigin { it.lotFlags().withSites() }
+
+private fun NamingContext.lotFlags(): List<Pair<Int, FlagEvidence>> {
     val places = lotPlaces()
     val lots = params[GameParam.ItemLotParam].rows.flatMap { lot ->
         val where = places[lot.id]?.let { " ($it)" }.orEmpty()

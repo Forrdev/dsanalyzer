@@ -2,9 +2,9 @@ package com.sappyoak.dsanalyzer.runtime.read.character
 
 import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
-import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.PlayerSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.WorldSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.CharacterSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.PlayerSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.WorldSnapshot
 
 internal data class CharacterRef(
     val handle: Int,

@@ -13,11 +13,7 @@ import com.sappyoak.dsanalyzer.formats.esd.EsdCondition
 import com.sappyoak.dsanalyzer.formats.esd.EsdState
 import com.sappyoak.dsanalyzer.formats.esd.StateGroup
 import com.sappyoak.dsanalyzer.game.world.esd.EsdSource
-import com.sappyoak.dsanalyzer.game.world.maps.CharacterModels
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
-import com.sappyoak.dsanalyzer.game.world.params.GameParams
-import com.sappyoak.dsanalyzer.game.world.params.ParamNames
-import com.sappyoak.dsanalyzer.game.world.params.RowNameTranslations
 
 private const val END = 0xA1
 private const val BIAS = 64
@@ -33,10 +29,6 @@ private const val CHECKED = 11010702
 private const val MENU = 11010703
 
 private val MAP = MapId.of(10, 1)
-private val CONTEXT = NamingContext(
-    GameParams(emptyMap()), ParamNames.None, emptyMap(), emptyMap(), CharacterModels(emptyMap()),
-    RowNameTranslations.None
-)
 
 private fun int(value: Int): Bytecode = Bytecode(
     ByteBuffer.allocate(6).order(ByteOrder.LITTLE_ENDIAN).put(PUSH_INT.toByte()).putInt(value).put(END.toByte()).array()
@@ -69,7 +61,7 @@ class TalkSitesTest : FunSpec({
     test("a talk state's sets, clears, reads and menu gates are each a site, citing the state") {
         val source = FlagSource.Talk(EsdSource.Talk(MAP, TALK), 1, 3)
 
-        CONTEXT.talkSites(listOf(SCRIPT)) shouldContainExactlyInAnyOrder listOf(
+        TalkOrigin(listOf(SCRIPT)).read(EMPTY_CONTEXT).sites shouldContainExactlyInAnyOrder listOf(
             SET to FlagSite(FlagAccess.Writes, "talk $TALK: turns it on", source),
             CLEARED to FlagSite(FlagAccess.Writes, "talk $TALK: turns it off", source),
             MENU to FlagSite(FlagAccess.Reads, "talk $TALK: shows a menu option by it", source),

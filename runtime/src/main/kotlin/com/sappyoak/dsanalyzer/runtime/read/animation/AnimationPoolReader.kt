@@ -4,10 +4,10 @@ import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.native.process.ProcessMemory
 import com.sappyoak.dsanalyzer.runtime.layout.AnimationLayout
 import com.sappyoak.dsanalyzer.runtime.pointers.StructView
-import com.sappyoak.dsanalyzer.runtime.session.animation.AnimControlSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.animation.AnimHandle
-import com.sappyoak.dsanalyzer.runtime.session.animation.AnimSlotSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.animation.SlotState
+import com.sappyoak.dsanalyzer.runtime.snapshot.animation.AnimControlSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.animation.AnimHandle
+import com.sappyoak.dsanalyzer.runtime.snapshot.animation.AnimSlotSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.animation.SlotState
 
 internal class AnimationPool(val playSpeed: Float, val slots: List<AnimSlotSnapshot>)
 

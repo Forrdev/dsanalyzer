@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.RuntimeSnapshot
 
 @Composable
 internal fun PlayerPanel(snapshot: RuntimeSnapshot) {

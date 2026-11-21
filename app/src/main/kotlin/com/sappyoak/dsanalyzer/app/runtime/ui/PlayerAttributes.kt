@@ -8,8 +8,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 import com.sappyoak.dsanalyzer.runtime.layout.Stat
-import com.sappyoak.dsanalyzer.runtime.session.AttributeSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.PlayerSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.AttributeSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.PlayerSnapshot
 
 /** A section title inside a panel's own padding */
 @Composable

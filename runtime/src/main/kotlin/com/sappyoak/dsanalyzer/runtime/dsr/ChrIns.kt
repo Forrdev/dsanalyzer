@@ -2,10 +2,10 @@ package com.sappyoak.dsanalyzer.runtime.dsr
 
 import com.sappyoak.dsanalyzer.runtime.pointers.GamePointer
 import com.sappyoak.dsanalyzer.runtime.pointers.Lifetime
-import com.sappyoak.dsanalyzer.runtime.session.CHEAT_BITS
-import com.sappyoak.dsanalyzer.runtime.session.CheatBit
-import com.sappyoak.dsanalyzer.runtime.session.CheatFlag
-import com.sappyoak.dsanalyzer.runtime.session.CheatWord
+import com.sappyoak.dsanalyzer.runtime.snapshot.CHEAT_BITS
+import com.sappyoak.dsanalyzer.runtime.snapshot.CheatBit
+import com.sappyoak.dsanalyzer.runtime.snapshot.CheatFlag
+import com.sappyoak.dsanalyzer.runtime.snapshot.CheatWord
 
 internal const val CHR_INS_SIZE: Int = 0x530
 

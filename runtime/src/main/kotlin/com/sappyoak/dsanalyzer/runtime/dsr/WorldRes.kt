@@ -53,27 +53,3 @@ public object WorldBlockRes {
 
     public const val PinLoaded: Int = 0x26D
 }
-
-/**
- * Values of [WorldBlockRes.Stage]
- *
- * Loading runs '0 -> 1 -> 2 -> 3 -> 4 -> 6 -> 7' with [Loaded] being terminal and
- * [WorldBlockInfo.Loaded] flipping in the same frame.
- *
- * Unloading runs '7 -> 8 -> 5 -> 0' and '7 -> 9 -> 5 -> 0' so both 8 and 9 are unload
- * entry points and 5 seems to be the common late step
- *
- * An ordering caveat, on every unload the latch bytes cleared one sample *before*
- * [WorldBlockRes.Stage] left [Loaded], so the two momentarily disagree
- */
-public object LoadStage {
-    public const val Idle: Int = 0
-    public const val Loaded: Int = 7
-
-    private val LOADING = setOf(1, 2, 3, 4, 6)
-    private val UNLOADING = setOf(5, 8, 9)
-
-    public fun isLoading(stage: Int): Boolean = stage in LOADING
-    public fun isUnloading(stage: Int): Boolean = stage in UNLOADING
-    public fun isResident(stage: Int): Boolean = stage == Loaded
-}

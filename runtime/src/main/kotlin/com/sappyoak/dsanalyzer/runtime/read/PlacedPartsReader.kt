@@ -6,9 +6,9 @@ import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.pointers.StructView
 import com.sappyoak.dsanalyzer.runtime.pointers.TableView
 import com.sappyoak.dsanalyzer.runtime.read.ai.POINTER_ROOM
-import com.sappyoak.dsanalyzer.runtime.session.BONFIRE_PART_PREFIX
-import com.sappyoak.dsanalyzer.runtime.session.BlockRoster
-import com.sappyoak.dsanalyzer.runtime.session.PlacedEnemy
+import com.sappyoak.dsanalyzer.runtime.snapshot.BONFIRE_PART_PREFIX
+import com.sappyoak.dsanalyzer.runtime.snapshot.BlockRoster
+import com.sappyoak.dsanalyzer.runtime.snapshot.PlacedEnemy
 
 private const val NAME_LIMIT = 32
 

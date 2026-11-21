@@ -11,7 +11,7 @@ import com.sappyoak.dsanalyzer.runtime.pointers.FakeGame
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.pointers.resolvePointers
 import com.sappyoak.dsanalyzer.runtime.ptde.EventFlags
-import com.sappyoak.dsanalyzer.runtime.session.FlagChange
+import com.sappyoak.dsanalyzer.runtime.snapshot.FlagChange
 
 private const val SIGNATURE_AT = 0x200
 private const val STATIC_AT = 0x1000

@@ -3,13 +3,13 @@ package com.sappyoak.dsanalyzer.app.runtime
 import com.sappyoak.dsanalyzer.app.runtime.timing.TimingLibrary
 import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.game.Installation
-import com.sappyoak.dsanalyzer.runtime.session.BlockRoster
-import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.EngineDrawStatus
-import com.sappyoak.dsanalyzer.runtime.session.RuntimeFeature
-import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.WorldPlace
-import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
+import com.sappyoak.dsanalyzer.runtime.snapshot.BlockRoster
+import com.sappyoak.dsanalyzer.runtime.snapshot.CharacterSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.EngineDrawStatus
+import com.sappyoak.dsanalyzer.runtime.snapshot.RuntimeFeature
+import com.sappyoak.dsanalyzer.runtime.snapshot.RuntimeSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.WorldPlace
+import com.sappyoak.dsanalyzer.runtime.snapshot.animation.AnimationTarget
 
 public data class RuntimeState(
     public val attached: AttachedGame? = null,

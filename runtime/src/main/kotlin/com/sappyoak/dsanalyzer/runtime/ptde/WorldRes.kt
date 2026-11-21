@@ -140,24 +140,3 @@ public object WorldBlockRes {
 public object WorldBlockInfo {
     public const val PackedMapId: Int = 0x04
 }
-
-/**
- * Values of [WorldBlockRes.Stage]
- *
- * Only the three that are pinned from both ends are named. [Loading] is set by the function
- * that issues the file requests, and [Loaded] is what a wait helper polls for. [Idle] is what
- * the unload-all path spins until every block reports. The intermediate stages are real but their order is inferred
- * from one switch statement, so they are deliberately not given names that would imply more confidence
- */
-public object LoadStage {
-    public const val Idle: Int = 0
-    public const val Loaded: Int = 7
-
-    private val LOADING = setOf(1, 2, 3, 4, 6)
-    private val UNLOADING = setOf(5, 8, 9)
-
-    public fun isIdle(stage: Int): Boolean = stage == Idle
-    public fun isLoading(stage: Int): Boolean = stage in LOADING
-    public fun isResident(stage: Int): Boolean = stage == Loaded
-    public fun isUnloading(stage: Int): Boolean = stage in UNLOADING
-}

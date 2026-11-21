@@ -36,8 +36,6 @@ internal class Memo<K : Any, V>(
         }
     }
 
-    fun clear() = synchronized(entries) { entries.clear() }
-
     private suspend fun timed(key: K, load: suspend () -> V): V {
         val (value, took) = measureTimedValue { load() }
         logger.timing("load $name", took, if (key == Unit) emptyMap() else mapOf("key" to key))
@@ -48,7 +46,7 @@ internal class Memo<K : Any, V>(
         val limit = capacity ?: return
         val iterator = entries.keys.iterator()
         while (entries.size > limit) {
-            val unused = iterator.next()
+            iterator.next()
             iterator.remove()
         }
     }

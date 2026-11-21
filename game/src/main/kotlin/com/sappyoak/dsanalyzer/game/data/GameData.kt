@@ -2,11 +2,11 @@ package com.sappyoak.dsanalyzer.game.data
 
 import com.sappyoak.dsanalyzer.formats.emevd.EventNames
 import com.sappyoak.dsanalyzer.formats.esd.Esd
+import com.sappyoak.dsanalyzer.formats.fmg.Fmg
 import com.sappyoak.dsanalyzer.formats.msb.MSB
 import com.sappyoak.dsanalyzer.formats.tae.Tae
 import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.game.files.GameFiles
-import com.sappyoak.dsanalyzer.game.files.InstallationFiles
 import com.sappyoak.dsanalyzer.game.files.exists
 import com.sappyoak.dsanalyzer.game.verification.loadFileManifest
 import com.sappyoak.dsanalyzer.game.world.ai.AiIndex
@@ -34,37 +34,39 @@ import com.sappyoak.dsanalyzer.game.world.scripts.loadInstructionDefinitions
 import com.sappyoak.dsanalyzer.game.world.scripts.loadScript
 import com.sappyoak.dsanalyzer.game.world.scripts.loadScriptNames
 import com.sappyoak.dsanalyzer.game.world.scripts.translatedBy
+import com.sappyoak.dsanalyzer.game.world.scripts.index.ScriptIndex
+import com.sappyoak.dsanalyzer.game.world.scripts.index.indexScripts
+import com.sappyoak.dsanalyzer.game.world.text.TextCategory
 import com.sappyoak.dsanalyzer.game.world.text.TextLanguage
+import com.sappyoak.dsanalyzer.game.world.text.loadText
 import java.nio.file.Path
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 private const val KEPT_LAYOUTS = 8
 private const val KEPT_ESDS = 6
 private const val KEPT_ANIMATION_SETS = 6
 
-/** [installationDirectory] is where this installation's derived data is kept between sessions, if anywhere */
-public class GameData internal constructor(
-    public val installation: Installation,
-    private val files: InstallationFiles,
-    installationDirectory: Path?,
-    scope: CoroutineScope
-) {
+/**
+ * One installation's parsed data, each piece loaded once and shared. [installationDirectory] is where its derived
+ * data is kept between sessions, if anywhere. Lives until [InstallationData] retires or replaces it
+ */
+public class GameData internal constructor(private val data: DataScope, installationDirectory: Path?) {
+    public val installation: Installation get() = data.installation
     private val edition get() = installation.build.edition
 
-    private val catalogs = Memo<Unit, GameCatalog>("catalog", scope)
-    private val talkIds = Memo<Unit, Map<MapId, List<Int>>>("talk catalog", scope)
-    private val gameParams = Memo<Unit, GameParams?>("params", scope)
-    private val names = Memo<TextLanguage, ParamNames>("param names", scope)
-    private val scripts = Memo<ScriptId, DecodedScript?>("script", scope)
-    private val eventNames = Memo<ScriptId, EventNames>("script names", scope)
-    private val layouts = Memo<MapId, MSB?>("layout", scope, KEPT_LAYOUTS)
-    private val esds = Memo<EsdSource, Esd?>("esd", scope, KEPT_ESDS)
-    private val animationSets = Memo<Unit, List<AnimationSetId>>("animation sets", scope)
-    private val animations = Memo<AnimationSetId, List<Tae>>("animations", scope, KEPT_ANIMATION_SETS)
-    private val thinkCharacters = Memo<Unit, Map<Int, Set<AnimationSetId>>>("think characters", scope)
-    private val lua = LuaData(installation, files, installationDirectory, { catalog().maps }, scope)
+    private val catalogs = data.memo<Unit, GameCatalog>("catalog")
+    private val talkIds = data.memo<Unit, Map<MapId, List<Int>>>("talk catalog")
+    private val gameParams = data.memo<Unit, GameParams?>("params")
+    private val names = data.memo<TextLanguage, ParamNames>("param names")
+    private val texts = data.memo<Pair<TextLanguage, Set<TextCategory>>, Map<TextCategory, Fmg>>("text")
+    private val scripts = data.memo<ScriptId, DecodedScript?>("script")
+    private val eventNames = data.memo<ScriptId, EventNames>("script names")
+    private val scriptIndexes = data.memo<Unit, ScriptIndex>("script index")
+    private val layouts = data.memo<MapId, MSB?>("layout", KEPT_LAYOUTS)
+    private val esds = data.memo<EsdSource, Esd?>("esd", KEPT_ESDS)
+    private val animationSets = data.memo<Unit, List<AnimationSetId>>("animation sets")
+    private val animations = data.memo<AnimationSetId, List<Tae>>("animations", KEPT_ANIMATION_SETS)
+    private val thinkCharacters = data.memo<Unit, Map<Int, Set<AnimationSetId>>>("think characters")
+    private val lua = LuaData(data, installationDirectory) { catalog().maps }
 
     public suspend fun catalog(): GameCatalog = catalogs.get(Unit) {
         parse { game ->
@@ -86,9 +88,16 @@ public class GameData internal constructor(
             parse { it.loadParamNames(language, params) }
         }
 
+    /** [categories] of [language]'s text, read together so each container opens once */
+    public suspend fun text(language: TextLanguage, categories: Set<TextCategory>): Map<TextCategory, Fmg> =
+        texts.get(language to categories) { parse { it.loadText(language, categories) } }
+
     public suspend fun script(script: ScriptId): DecodedScript? = scripts.get(script) {
         parse { it.loadScript(script)?.decoded(script, loadInstructionDefinitions()) }
     }
+
+    /** Every script indexed together; built once, since flag reading and the scripts view both need it */
+    public suspend fun scriptIndex(): ScriptIndex = scriptIndexes.get(Unit) { indexScripts() }
 
     public suspend fun scriptNames(script: ScriptId): EventNames = eventNames.get(script) {
         parse { it.loadScriptNames(script)?.translatedBy(loadEventNameTranslations()) ?: EventNames.Empty }
@@ -114,21 +123,12 @@ public class GameData internal constructor(
     /** The characters placed with each NpcThinkParam row, across every map */
     public suspend fun thinkCharacters(): Map<Int, Set<AnimationSetId>> = thinkCharacters.get(Unit) {
         val maps = catalog().maps
-        parse { game -> charactersByThink(maps.mapNotNull { game.loadMSB(it) }) }
+        charactersByThink(maps.mapNotNull { msb(it) })
     }
 
-    public suspend fun holds(path: String): Boolean = files.use(installation) { it.exists(path) }
+    public suspend fun holds(path: String): Boolean = data.files { it.exists(path) }
 
-    public suspend fun <T> read(block: suspend (GameFiles) -> T): T = files.use(installation, block)
+    internal fun close(): Unit = data.close()
 
-    internal fun clear() {
-        listOf(
-            catalogs, talkIds, gameParams, names, scripts, eventNames, layouts, esds, animationSets, animations,
-            thinkCharacters
-        ).forEach(Memo<*, *>::clear)
-        lua.clear()
-    }
-
-    private suspend fun <T> parse(block: (GameFiles) -> T): T =
-        files.use(installation) { game -> withContext(Dispatchers.Default) { block(game)} }
+    private suspend fun <T> parse(block: (GameFiles) -> T): T = data.parse(block)
 }

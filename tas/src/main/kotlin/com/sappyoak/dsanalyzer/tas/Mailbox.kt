@@ -1,19 +1,19 @@
 package com.sappyoak.dsanalyzer.tas
 
 import com.sappyoak.dsanalyzer.native.memory.Address
+import com.sappyoak.dsanalyzer.native.memory.intAt
 import com.sappyoak.dsanalyzer.native.process.ProcessMemory
 import com.sappyoak.dsanalyzer.runtime.inject.Mem
 import com.sappyoak.dsanalyzer.runtime.write.GameWriter
-import com.sappyoak.dsanalyzer.native.memory.intAt
 
 /**
- * The block of game memory the subs and the tool share
+ * The block of game memory the stubs and the tool share
  *
  * Every field is a little-endian dword with **one writer**, either a stub or the tool,
  * so neither side ever does a read-modify-write the other could interleave with.
  * Fresh allocations are zeroed, which is every field's starting state
  *
- * After the fields come to the two trigger banks, the pad ring ([RING_CAPACITY] records of
+ * After the fields come the two trigger banks, the pad ring ([RING_CAPACITY] records of
  * [RECORD_SIZE] bytes, each belonging to whichever side the pad cursor and limit hand it to, see
  * [PadOverride]) and the gate's RNG log
  */
@@ -80,7 +80,7 @@ public class Mailbox private constructor(
         /** The cursor may not reach this: records below it are the stub's to use */
         PadLimit(0x18, Writer.Tool),
 
-        /** The epoch the stub last reset its cursor for */
+        /** The epoch the stub last reset its cursor for; written last, so it vouches for the two below */
         PadSeen(0x1C, Writer.Stub),
 
         /** Records the stub has played or recorded this epoch */
@@ -108,7 +108,10 @@ public class Mailbox private constructor(
         TriggerSeen(0x38, Writer.Stub),
 
         /** Non-zero holds each frame until every requested file read has completed (plan 32) */
-        LoadBarrier(0x3C, Writer.Tool)
+        LoadBarrier(0x3C, Writer.Tool),
+
+        /** [Frame] when this epoch's record 0 was used: record `n` belongs to frame `PadFirstFrame + n` */
+        PadFirstFrame(0x40, Writer.Stub)
     }
 
     /** A dword in a trigger condition bank, which belongs to the tool */
@@ -137,10 +140,12 @@ public class Mailbox private constructor(
         internal const val RING_MASK = RING_CAPACITY - 1
         internal const val RECORD_SIZE = 32
         internal const val RECORD_SHIFT = 5
-        internal const val BANKS_OFFSET = 0x40
+
+        /** The fields get the first 0x80 bytes: 32 dwords, 17 in use */
+        internal const val BANKS_OFFSET = 0x80
         internal const val BANK_SIZE = 0x40
         internal const val BANK_SHIFT = 6
-        private const val RING_OFFSET = 0xC0
+        private const val RING_OFFSET = BANKS_OFFSET + 2 * BANK_SIZE
         internal const val LOG_ENTRIES = 256
         internal const val LOG_MASK = LOG_ENTRIES - 1
         internal const val LOG_ENTRY_SIZE = 16

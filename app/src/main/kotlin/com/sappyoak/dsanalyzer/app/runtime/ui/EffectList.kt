@@ -7,8 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 import com.sappyoak.dsanalyzer.app.ui.theme.AnalyzerTheme
-import com.sappyoak.dsanalyzer.runtime.session.effects.ActiveEffect
-import com.sappyoak.dsanalyzer.runtime.session.effects.SpecialEffectSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.effects.ActiveEffect
+import com.sappyoak.dsanalyzer.runtime.snapshot.effects.SpecialEffectSnapshot
 
 /** A character's active effects, named where the names file knows them; the same list for the player and anyone else */
 @Composable

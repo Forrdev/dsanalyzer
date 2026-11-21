@@ -9,11 +9,13 @@ import com.sappyoak.dsanalyzer.runtime.layout.AnimRequestEntryLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimRequestLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimSlotLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimationLayout
+import com.sappyoak.dsanalyzer.runtime.layout.CallRegister
 import com.sappyoak.dsanalyzer.runtime.layout.CameraLayout
 import com.sappyoak.dsanalyzer.runtime.layout.CharacterLayout
 import com.sappyoak.dsanalyzer.runtime.layout.CharacterSlotLayout
 import com.sappyoak.dsanalyzer.runtime.layout.ChrCtrlLayout
 import com.sappyoak.dsanalyzer.runtime.layout.ChrInsLayout
+import com.sappyoak.dsanalyzer.runtime.layout.ClockLayout
 import com.sappyoak.dsanalyzer.runtime.layout.DebugDrawLayout
 import com.sappyoak.dsanalyzer.runtime.layout.EntityTableLayout
 import com.sappyoak.dsanalyzer.runtime.layout.EsdStateLayout
@@ -36,6 +38,7 @@ import com.sappyoak.dsanalyzer.runtime.layout.LockOnNodeLayout
 import com.sappyoak.dsanalyzer.runtime.layout.MailboxLayout
 import com.sappyoak.dsanalyzer.runtime.layout.MenuLayout
 import com.sappyoak.dsanalyzer.runtime.layout.PartFilterLayout
+import com.sappyoak.dsanalyzer.runtime.layout.PlaceLayout
 import com.sappyoak.dsanalyzer.runtime.layout.PlacedPartsLayout
 import com.sappyoak.dsanalyzer.runtime.layout.PlayerGameDataLayout
 import com.sappyoak.dsanalyzer.runtime.layout.PointWarpLayout
@@ -54,8 +57,8 @@ import com.sappyoak.dsanalyzer.runtime.layout.ThinkLayout
 import com.sappyoak.dsanalyzer.runtime.layout.VitalsLayout
 import com.sappyoak.dsanalyzer.runtime.layout.WarpLayout
 import com.sappyoak.dsanalyzer.runtime.layout.WriteLayout
-import com.sappyoak.dsanalyzer.runtime.session.CHEAT_BITS
-import com.sappyoak.dsanalyzer.runtime.write.mailbox.CallRegister
+import com.sappyoak.dsanalyzer.runtime.snapshot.CHEAT_BITS
+
 
 private const val CHARACTER_POSITION_STRIDE: Int = 0x10
 
@@ -70,6 +73,12 @@ internal fun ptdeLayout(): GameLayout = GameLayout(
         smoothedPosition = FollowCam.PosX,
         orientation = FollowCam.Orientation,
         targetPitch = FollowCam.TargetPitch
+    ),
+    clock = ClockLayout(GameDataMan.Pointer, GameDataMan.InGameTimeMillis),
+    place = PlaceLayout(
+        pointer = WorldArea.Pointer,
+        area = WorldArea.World,
+        block = WorldArea.Area
     ),
     characters = CharacterLayout(
         manager = WorldChrMan.Pointer,

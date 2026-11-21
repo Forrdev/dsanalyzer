@@ -3,7 +3,7 @@ package com.sappyoak.dsanalyzer.tas
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.ptde.ChrCtrl
 import com.sappyoak.dsanalyzer.runtime.ptde.ChrPosData
-import com.sappyoak.dsanalyzer.runtime.session.WorldPlace
+import com.sappyoak.dsanalyzer.runtime.snapshot.WorldPlace
 import com.sappyoak.dsanalyzer.runtime.write.GameWriter
 import com.sappyoak.dsanalyzer.shared.math.Vec3
 import com.sappyoak.dsanalyzer.shared.binary.littleEndian

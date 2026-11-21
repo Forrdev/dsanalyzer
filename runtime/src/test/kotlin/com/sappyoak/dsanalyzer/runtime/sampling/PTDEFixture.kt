@@ -1,0 +1,173 @@
+package com.sappyoak.dsanalyzer.runtime.sampling
+
+import com.sappyoak.dsanalyzer.game.GameEdition
+import com.sappyoak.dsanalyzer.native.memory.Signature
+import com.sappyoak.dsanalyzer.native.process.ProcessInfo
+import com.sappyoak.dsanalyzer.runtime.GameConnection
+import com.sappyoak.dsanalyzer.runtime.GameProcess
+import com.sappyoak.dsanalyzer.runtime.pointers.FakeGame
+import com.sappyoak.dsanalyzer.runtime.ptde.AnimData
+import com.sappyoak.dsanalyzer.runtime.ptde.ChrPosData
+import com.sappyoak.dsanalyzer.runtime.ptde.CharacterSlot
+import com.sappyoak.dsanalyzer.runtime.ptde.ChrCtrl
+import com.sappyoak.dsanalyzer.runtime.ptde.ChrIns
+import com.sappyoak.dsanalyzer.runtime.ptde.EventFlags
+import com.sappyoak.dsanalyzer.runtime.ptde.FollowCam
+import com.sappyoak.dsanalyzer.runtime.ptde.GameDataMan
+import com.sappyoak.dsanalyzer.runtime.ptde.GameMan
+import com.sappyoak.dsanalyzer.runtime.ptde.PlayerGameData
+import com.sappyoak.dsanalyzer.runtime.edition.PTDEEdition
+import com.sappyoak.dsanalyzer.runtime.ptde.PTDEPointers
+import com.sappyoak.dsanalyzer.runtime.ptde.PTDESignatures
+import com.sappyoak.dsanalyzer.runtime.ptde.WorldArea
+import com.sappyoak.dsanalyzer.runtime.ptde.WorldChrMan
+import com.sappyoak.dsanalyzer.runtime.read.EventFlagIds
+
+
+internal val PTDE_PROCESS = GameProcess(ProcessInfo(4242, "DARKSOULS.exe"), GameEdition.PrepareToDie)
+
+/** The Rich header marker sits at a fixed distance into the module */
+private const val VERSION_AT = 0x80
+
+/** Where the signatures are planted, then the globals their operands name */
+private const val SIGNATURES_AT = 0x1000
+private const val STATICS_AT = 0x2000
+
+private const val TITLE_SCREEN_WORLD = 255
+
+/** Intermediate links, then the structure bodies themselves */
+private const val LINKS_AT = 0x3000
+internal const val CHARACTER_AT = 0x4000
+internal const val PLACEMENT_AT = 0x5000
+internal const val POSITION_AT = 0x6000
+internal const val ANIMATION_AT = 0x6100
+internal const val ATTRIBUTES_AT = 0x7000
+internal const val WORLD_AT = 0x8000
+internal const val AREA_AT = 0x9000
+internal const val GAME_DATA_AT = 0xA100
+internal const val FLAGS_AT = 0x20000
+internal const val FOLLOW_CAM_AT = 0xC000
+internal const val WORLD_CHR_MAN_AT = 0xD000
+internal const val PLAYER_SLOTS_AT = 0xD100
+
+/** A second character structure, for proving a reload re-resolves the walk to it */
+internal const val RELOADED_CHARACTER_AT = 0xB000
+
+/**
+ * A synthetic PTDE process laid out from the tables themselves.
+ *
+ * The signature bytes are planted by rendering each pattern back out, so the fixture cannot drift
+ * away from the table it is testing, changing a pattern changes what gets planted
+ */
+internal class PTDEFixture {
+    val game: FakeGame = FakeGame()
+
+    init {
+        game.int(VERSION_AT, STEAM_VERSION)
+        plantWalks(game.plantSignatures(PTDEPointers.map { it.base }.distinct(), SIGNATURES_AT, STATICS_AT))
+    }
+
+    fun session(): GameSession = connection().openSession(PTDEEdition)
+
+    /** The same process behind a connection, for anything testing the watch rather than a tick */
+    fun connection(game: GameProcess = PTDE_PROCESS): GameConnection =
+        GameConnection(game, this.game.module, FakeAttached(game.process, this.game))
+
+    /** Fills the structures with values a running game would have */
+    fun populate() {
+        map(world = 10, area = 2)
+        game.int(CHARACTER_AT + ChrIns.Health, 837)
+        game.int(CHARACTER_AT + ChrIns.Stamina, 92)
+        game.int(CHARACTER_AT + ChrIns.ChrType, 0)
+        game.int(CHARACTER_AT + ChrIns.TeamType, 1)
+        game.int(CHARACTER_AT + ChrIns.PlayRegion, 1_002_600)
+        game.float(POSITION_AT + ChrPosData.Position, 12.5f)
+        game.float(POSITION_AT + ChrPosData.Position + 4, -30f)
+        game.float(POSITION_AT + ChrPosData.Position + 8, 44f)
+        game.float(POSITION_AT + ChrPosData.Angle, 1.25f)
+        game.float(ANIMATION_AT + AnimData.PlaySpeed, 2f)
+        game.int(ATTRIBUTES_AT + PlayerGameData.MaxHp, 1000)
+        game.int(ATTRIBUTES_AT + PlayerGameData.SoulLevel, 42)
+        game.int(ATTRIBUTES_AT + PlayerGameData.Souls, 55_000)
+        game.write(ATTRIBUTES_AT + PlayerGameData.Covenant, 3)
+        game.float(WORLD_AT + GameMan.StablePosition, 12.5f)
+        game.float(WORLD_AT + GameMan.StablePosition + 4, -30f)
+        game.float(WORLD_AT + GameMan.StablePosition + 8, 44f)
+        game.int(WORLD_AT + GameMan.LastBonfire, 1_012_960)
+        game.int(GAME_DATA_AT + GameDataMan.InGameTimeMillis, 66_000)
+    }
+
+    /** Breaks the last link of the character walk, the way a load frees it */
+    fun deallocateCharacter() {
+        game.nullPointer(WORLD_CHR_MAN_AT + WorldChrMan.PlayerPointer)
+        game.nullPointer(PLAYER_SLOTS_AT + CharacterSlot.Character)
+    }
+
+    /**
+     * Drops the follow cam and parks the area on the sentinel
+     * The character structures are left exactly as they were on purpose as this is what the real game does
+     */
+    fun quitToMenu() {
+        game.nullPointer(LINKS_AT + 0x500 + 0x60)
+        map(world = TITLE_SCREEN_WORLD, area = TITLE_SCREEN_WORLD)
+    }
+
+    fun loadInto(world: Int, area: Int) {
+        game.pointer(LINKS_AT + 0x500 + 0x60, FOLLOW_CAM_AT)
+        map(world, area)
+    }
+
+    /** Points the character walk at [RELOADED_CHARACTER_AT], the way a load reallocates it */
+    fun reallocateCharacter() {
+        game.pointer(WORLD_CHR_MAN_AT + WorldChrMan.PlayerPointer, RELOADED_CHARACTER_AT)
+        game.pointer(PLAYER_SLOTS_AT + CharacterSlot.Character, RELOADED_CHARACTER_AT)
+        game.pointer(RELOADED_CHARACTER_AT + ChrIns.ChrCtrlPointer, PLACEMENT_AT)
+    }
+
+    fun map(world: Int, area: Int) {
+        game.write(AREA_AT + WorldArea.World, world)
+        game.write(AREA_AT + WorldArea.Area, area)
+    }
+
+    fun setFlag(flagId: Int, set: Boolean) {
+        val at = checkNotNull(EventFlagIds.locate(flagId))
+        game.int(FLAGS_AT + at.byteOffset, if (set) at.mask.toInt() else 0)
+    }
+
+    /** Each walk laid out link by link, so the offsets in the tables are the ones exercised */
+    private fun plantWalks(statics: Map<Signature, Int>) {
+        // ChrIns1: static -> +0 -> +4 -> +0
+        game.pointer(statics.getValue(PTDESignatures.WorldChrMan), WORLD_CHR_MAN_AT)
+        game.pointer(WORLD_CHR_MAN_AT + WorldChrMan.PlayerPointer, CHARACTER_AT)
+        game.int(WORLD_CHR_MAN_AT + WorldChrMan.PlayerSlotCount, 1)
+        game.pointer(WORLD_CHR_MAN_AT + WorldChrMan.PlayerSlotsPointer, PLAYER_SLOTS_AT)
+        game.pointer(PLAYER_SLOTS_AT + CharacterSlot.Character, CHARACTER_AT)
+        game.pointer(CHARACTER_AT + ChrIns.ChrCtrlPointer, PLACEMENT_AT)
+        game.pointer(PLACEMENT_AT + ChrCtrl.PositionPointer, POSITION_AT)
+        game.pointer(PLACEMENT_AT + ChrCtrl.AnimDataPointer, ANIMATION_AT)
+
+        // CharData2: static -> +0 -> +8
+        game.pointer(statics.getValue(PlayerGameData.Pointer.base), LINKS_AT + 0x200)
+        game.pointer(LINKS_AT + 0x208, ATTRIBUTES_AT)
+
+        game.pointer(statics.getValue(GameMan.Pointer.base), WORLD_AT)
+        game.pointer(statics.getValue(WorldArea.Pointer.base), AREA_AT)
+        game.pointer(statics.getValue(GameDataMan.Pointer.base), GAME_DATA_AT)
+
+        game.pointer(GAME_DATA_AT + GameDataMan.PlayerGameDataPointer, ATTRIBUTES_AT)
+
+        // EventFlags: static -> +0 -> +0
+        game.pointer(statics.getValue(EventFlags.Pointer.base), LINKS_AT + 0x300)
+        game.pointer(LINKS_AT + 0x300, FLAGS_AT)
+
+        // ChrFollowCam: static -> +0 -> +0x3C -> +0x60
+        game.pointer(statics.getValue(FollowCam.Pointer.base), LINKS_AT + 0x400)
+        game.pointer(LINKS_AT + 0x400 + 0x3C, LINKS_AT + 0x500)
+        game.pointer(LINKS_AT + 0x500 + 0x60, FOLLOW_CAM_AT)
+    }
+
+    private companion object {
+        /** The Rich marker the Steam build carries, which [PTDEVersion.of] recognizes */
+        val STEAM_VERSION: Int = 0xFC293654.toInt()
+    }
+}

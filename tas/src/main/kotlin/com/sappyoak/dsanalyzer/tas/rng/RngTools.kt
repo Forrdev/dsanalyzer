@@ -4,20 +4,20 @@ import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.native.process.ProcessMemory
 import com.sappyoak.dsanalyzer.runtime.ptde.GameMan
 import com.sappyoak.dsanalyzer.runtime.write.GameWriter
-import com.sappyoak.dsanalyzer.tas.FrameGate
-import com.sappyoak.dsanalyzer.tas.Mailbox
 import com.sappyoak.dsanalyzer.shared.binary.littleEndian
 import com.sappyoak.dsanalyzer.shared.binary.toInts
+import com.sappyoak.dsanalyzer.tas.FrameGate
+import com.sappyoak.dsanalyzer.tas.Mailbox
 
 /** Upcoming AI-generator floats a view carries */
 private const val LOOKAHEAD = 16
 
-/** The most draws one frame is searched for; a populated area makes ~30 */
+/** The most draws one frame is searched for; measured frames made 14 idle and up to 67 in combat */
 private const val MAX_DRAWS_PER_FRAME = 4096
 
 /**
- * Reads, pins and logs the gameplay RNG. `GameMan` is found through its global every time, because
- * it is rebuilt on every load
+ * Reads, pins and logs the gameplay RNG. `GameMan` is built once per process and never moves, but
+ * it is null until then, so it is found through its global every time
  */
 public class RngTools internal constructor(
     private val memory: ProcessMemory,

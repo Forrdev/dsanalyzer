@@ -4,9 +4,8 @@ import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.runtime.ptde.Graphics
 import com.sappyoak.dsanalyzer.runtime.ptde.PTDEHookSites
 import com.sappyoak.dsanalyzer.runtime.ptde.WorldChrMan
-import com.sappyoak.dsanalyzer.runtime.read.debugdraw.PTDEDrawPlanReader
-import com.sappyoak.dsanalyzer.runtime.sampling.SessionContext
-import com.sappyoak.dsanalyzer.runtime.session.DrawMode
+import com.sappyoak.dsanalyzer.runtime.write.SessionContext
+import com.sappyoak.dsanalyzer.runtime.snapshot.DrawMode
 import com.sappyoak.dsanalyzer.runtime.write.debugdraw.DrawBackend
 import com.sappyoak.dsanalyzer.runtime.write.debugdraw.DrawEdit
 import com.sappyoak.dsanalyzer.runtime.write.debugdraw.DrawRoute

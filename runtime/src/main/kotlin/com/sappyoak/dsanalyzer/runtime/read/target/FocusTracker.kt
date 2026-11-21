@@ -1,7 +1,7 @@
 package com.sappyoak.dsanalyzer.runtime.read.target
 
-import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.FocusRequest
+import com.sappyoak.dsanalyzer.runtime.snapshot.CharacterSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.FocusRequest
 import com.sappyoak.dsanalyzer.shared.math.Vec3
 
 /** The character being followed, and whether the player is locked onto it right now */
@@ -38,10 +38,5 @@ internal class FocusTracker {
             return null
         }
         return Focus(handle, locked = false)
-    }
-
-    /** For a load, which rebuilds every character under new handles */
-    fun forget() {
-        kept = null
     }
 }

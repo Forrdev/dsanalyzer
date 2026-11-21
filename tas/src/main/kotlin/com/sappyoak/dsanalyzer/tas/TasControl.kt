@@ -4,8 +4,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-import com.sappyoak.dsanalyzer.runtime.sampling.SessionContext
-import com.sappyoak.dsanalyzer.runtime.sampling.SessionExtension
+import com.sappyoak.dsanalyzer.runtime.write.SessionContext
+import com.sappyoak.dsanalyzer.runtime.write.SessionExtension
 
 /** Where the TAS tools stand, published after every sample */
 public sealed interface TasState {
@@ -15,12 +15,16 @@ public sealed interface TasState {
     public data class Off(override val start: StartState? = null) : TasState
     public data class Unavailable(public val reason: String, override val start: StartState?) : TasState
 
-    /** [run] is null unless a run is playing; [recorded] is the last movie a stopped recording made */
+    /**
+     * [run] is null unless a run is playing; [recorded] is the last movie a stopped recording made;
+     * [padFault] is why the last playback or recording lost step with the game, if it did
+     */
     public data class On(
         public val frame: Int?,
         public val paused: Boolean,
         public val triggered: Boolean,
         public val pad: PadProgress,
+        public val padFault: PadFault?,
         public val run: RunProgress?,
         public val recorded: Movie?,
         override val start: StartState?
@@ -119,7 +123,16 @@ public class TasControl : SessionExtension {
     private fun publish() {
         mutableState.value = tas?.let {
             val gate = it.gate
-            TasState.On(gate.frame, gate.isPaused, gate.isTriggered, it.pad.progress, it.runs.progress, recorded, start)
+            TasState.On(
+                frame = gate.frame,
+                paused = gate.isPaused,
+                triggered = gate.isTriggered,
+                pad = it.pad.progress,
+                padFault = it.pad.fault,
+                run = it.runs.progress,
+                recorded = recorded,
+                start = start
+            )
         } ?: unavailable?.let { TasState.Unavailable(it, start) } ?: TasState.Off(start)
     }
 }

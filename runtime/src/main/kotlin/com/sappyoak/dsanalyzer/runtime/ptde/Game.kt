@@ -1,12 +1,6 @@
 package com.sappyoak.dsanalyzer.runtime.ptde
 
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
-import com.sappyoak.dsanalyzer.native.memory.Address
-import com.sappyoak.dsanalyzer.native.memory.AddressRange
-import com.sappyoak.dsanalyzer.native.process.ProcessMemory
 import com.sappyoak.dsanalyzer.runtime.pointers.GamePointer
 import com.sappyoak.dsanalyzer.runtime.pointers.Lifetime
 
@@ -65,13 +59,6 @@ public object WorldArea {
 
     public const val Area: Int = 0xA12
     public const val World: Int = 0xA13
-
-    /**
-     * The two bytes as the map id the rest of the tool addresses things by.
-     *
-     * [world] is taken as the leading number and [area] as the second, so 10 and 2 is m10_02_00_00
-     */
-    public fun mapId(world: Int, area: Int): MapId = MapId.of(area = world, block = area)
 }
 
 /** Where a module image identifies its build, from the image base */

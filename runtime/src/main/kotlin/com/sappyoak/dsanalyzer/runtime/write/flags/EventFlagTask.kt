@@ -1,8 +1,6 @@
 package com.sappyoak.dsanalyzer.runtime.write.flags
 
-import com.sappyoak.dsanalyzer.runtime.layout.CallArch
 import com.sappyoak.dsanalyzer.runtime.layout.FlagCallLayout
-import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.write.found
 import com.sappyoak.dsanalyzer.runtime.write.mailbox.GameCall
 import com.sappyoak.dsanalyzer.runtime.write.mailbox.conventionalCall
@@ -20,20 +18,20 @@ private const val FLAG_BIT: Long = 1
 public class EventFlagTask internal constructor(
     private val flag: Int,
     private val value: Boolean?,
-    private val layout: FlagCallLayout,
-    private val arch: CallArch
+    private val layout: FlagCallLayout
 ) : WriteTask {
     override val label: String get() = if (value == null) "Read flag $flag" else "Set flag $flag to $value"
 
     private var call: CallTask? = null
 
     override fun step(context: TaskContext): TaskStep {
-        val running = call ?: CallTask(flagCall(context.memory)).also { call = it }
+        val running = call ?: CallTask(flagCall(context)).also { call = it }
         val step = running.step(context)
         return if (step is TaskStep.Done && value == null) TaskStep.Done(step.value and FLAG_BIT) else step
     }
 
-    private fun flagCall(memory: GameMemory): GameCall {
+    private fun flagCall(context: TaskContext): GameCall {
+        val memory = context.memory
         val owner = memory.found(layout.owner).value
         val register = layout.ownerRegister
         val operands = listOf(flag.toLong()) + listOfNotNull(value?.let { if (it) 1L else 0L })
@@ -43,6 +41,6 @@ public class EventFlagTask internal constructor(
             put(layout.kindRegister, 0L)
         }
         val function = memory.found(if (value == null) layout.get else layout.set)
-        return conventionalCall(arch, function, label, arguments, registers)
+        return conventionalCall(context.arch, function, label, arguments, registers)
     }
 }

@@ -6,11 +6,12 @@ import com.sappyoak.dsanalyzer.native.process.CodePatch
 import com.sappyoak.dsanalyzer.native.process.ProcessMemory
 import com.sappyoak.dsanalyzer.native.process.patch
 import com.sappyoak.dsanalyzer.runtime.pointers.Lifetime
-import com.sappyoak.dsanalyzer.runtime.session.RevertPolicy
-import com.sappyoak.dsanalyzer.runtime.session.WriteEntry
+import com.sappyoak.dsanalyzer.runtime.snapshot.RevertPolicy
+import com.sappyoak.dsanalyzer.runtime.snapshot.WriteEntry
 import com.sappyoak.dsanalyzer.runtime.write.task.WriteTask
 import com.sappyoak.dsanalyzer.shared.binary.toLittleEndian
 import com.sappyoak.dsanalyzer.native.memory.intAt
+import com.sappyoak.dsanalyzer.runtime.snapshot.WriteKey
 
 public class GameWriter internal constructor(
     private val memory: ProcessMemory,

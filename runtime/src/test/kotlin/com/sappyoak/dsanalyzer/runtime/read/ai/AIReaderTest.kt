@@ -14,8 +14,8 @@ import com.sappyoak.dsanalyzer.runtime.ptde.TargetNode
 import com.sappyoak.dsanalyzer.runtime.ptde.TargetingSystem
 import com.sappyoak.dsanalyzer.runtime.ptde.ptdeLayout
 import com.sappyoak.dsanalyzer.runtime.read.character.CharacterRef
-import com.sappyoak.dsanalyzer.runtime.session.ai.AISnapshot
-import com.sappyoak.dsanalyzer.runtime.session.ai.AITarget
+import com.sappyoak.dsanalyzer.runtime.snapshot.ai.AISnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.ai.AITarget
 
 private const val MANIPULATOR = 0x1000
 private const val THINK = 0x2000
@@ -24,6 +24,7 @@ private const val CONTROLLER = 0x4000
 private const val ACTIONS = 0x5000
 private const val NODES = 0x6000
 private const val NODE_STRIDE = 0x80
+private const val CHARACTER = 0x7000
 
 private const val KNIGHT = 0x10030035
 private const val PLAYER = 0x10044000
@@ -63,16 +64,16 @@ private fun FakeGame.known(vararg entries: Entry) {
     }
 }
 
-private fun FakeGame.ref() = CharacterRef(KNIGHT, address(MANIPULATOR), address(CONTROLLER))
+private fun FakeGame.ref() = CharacterRef(KNIGHT, address(CHARACTER), address(MANIPULATOR), address(CONTROLLER))
 
 private fun FakeGame.readOnce(): AISnapshot? {
-    val reader = AIReader(PTDELayout)
+    val reader = AIReader(PTDELayout.ai, PTDELayout.action)
     val source = reader.locate(this, ref()) ?: return null
     return reader.read(this, source)
 }
 
 private fun FakeGame.target(): AITarget? {
-    val reader = AIReader(PTDELayout)
+    val reader = AIReader(PTDELayout.ai, PTDELayout.action)
     return reader.locate(this, ref())?.let { reader.targetOf(this, it) }
 }
 
@@ -110,7 +111,7 @@ class AIReaderTest : FunSpec({
 
     test("an AI that no longer points back at its owner is refused, found or already in hand") {
         val game = knight()
-        val reader = AIReader(PTDELayout)
+        val reader = AIReader(PTDELayout.ai, PTDELayout.action)
         val source = checkNotNull(reader.locate(game, game.ref()))
 
         // What a freed and reused allocation looks like: the same address, someone else's contents
@@ -170,7 +171,7 @@ class AIReaderTest : FunSpec({
     test("a character no AI drives is not located") {
         val game = knight().apply { nullPointer(MANIPULATOR + ComManipulator.AIThinkPointer) }
 
-        AIReader(PTDELayout).locate(game, game.ref()) shouldBe null
+        AIReader(PTDELayout.ai, PTDELayout.action).locate(game, game.ref()) shouldBe null
         knight().readOnce() shouldNotBe null
     }
 })

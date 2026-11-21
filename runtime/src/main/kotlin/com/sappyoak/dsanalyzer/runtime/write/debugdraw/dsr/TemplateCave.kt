@@ -3,8 +3,8 @@ package com.sappyoak.dsanalyzer.runtime.write.debugdraw.dsr
 import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.runtime.inject.CaveTemplate
 import com.sappyoak.dsanalyzer.runtime.inject.HookSite
-import com.sappyoak.dsanalyzer.runtime.inject.cave.CodeCave
-import com.sappyoak.dsanalyzer.runtime.write.WriteKey
+import com.sappyoak.dsanalyzer.runtime.inject.CodeCave
+import com.sappyoak.dsanalyzer.runtime.snapshot.WriteKey
 
 /** The hole every DSR cave leaves by: a `JMP rel32` back to the site's next instruction */
 internal const val BACK = "back"

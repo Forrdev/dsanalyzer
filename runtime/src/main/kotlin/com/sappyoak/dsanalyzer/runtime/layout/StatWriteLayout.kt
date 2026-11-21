@@ -1,7 +1,6 @@
 package com.sappyoak.dsanalyzer.runtime.layout
 
 import com.sappyoak.dsanalyzer.runtime.pointers.GamePointer
-import com.sappyoak.dsanalyzer.runtime.write.mailbox.CallRegister
 
 public sealed interface LevelUpLayout {
     public val function: GamePointer

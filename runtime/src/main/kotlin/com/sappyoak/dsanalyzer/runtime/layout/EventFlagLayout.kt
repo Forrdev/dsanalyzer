@@ -1,7 +1,6 @@
 package com.sappyoak.dsanalyzer.runtime.layout
 
 import com.sappyoak.dsanalyzer.runtime.pointers.GamePointer
-import com.sappyoak.dsanalyzer.runtime.write.mailbox.CallRegister
 
 /** The flag block, which is laid out the same in both editions */
 public data class EventFlagLayout(public val pointer: GamePointer)

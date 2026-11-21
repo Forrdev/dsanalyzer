@@ -2,16 +2,13 @@ package com.sappyoak.dsanalyzer.runtime.write
 
 import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.runtime.pointers.Lifetime
-import com.sappyoak.dsanalyzer.runtime.session.RevertPolicy
-import com.sappyoak.dsanalyzer.runtime.session.WriteEntry
+import com.sappyoak.dsanalyzer.runtime.snapshot.RevertPolicy
+import com.sappyoak.dsanalyzer.runtime.snapshot.WriteEntry
 import com.sappyoak.dsanalyzer.runtime.write.task.WriteTask
+import com.sappyoak.dsanalyzer.runtime.snapshot.WriteKey
 
 /** The most edits kept for undo; the oldest go first */
 internal const val EDIT_LIMIT: Int = 100
-
-public data class WriteKey(public val name: String) {
-    override fun toString(): String = name
-}
 
 public sealed interface UndoResult {
     public data object Done : UndoResult

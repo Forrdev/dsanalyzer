@@ -3,7 +3,7 @@ package com.sappyoak.dsanalyzer.runtime.read
 import com.sappyoak.dsanalyzer.runtime.layout.EventFlagLayout
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.pointers.StructView
-import com.sappyoak.dsanalyzer.runtime.session.FlagChange
+import com.sappyoak.dsanalyzer.runtime.snapshot.FlagChange
 
 /** The high bit of a word, which is where a flag's bit zero sits */
 private const val HIGH_BIT: Int = Int.MIN_VALUE

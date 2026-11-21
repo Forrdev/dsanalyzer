@@ -5,9 +5,9 @@ import com.sappyoak.dsanalyzer.runtime.layout.PlayerGameDataLayout
 import com.sappyoak.dsanalyzer.runtime.layout.Stat
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.pointers.StructView
-import com.sappyoak.dsanalyzer.runtime.write.WriteKey
+import com.sappyoak.dsanalyzer.runtime.snapshot.WriteKey
 import com.sappyoak.dsanalyzer.runtime.write.mailbox.CallOutcome
-import com.sappyoak.dsanalyzer.runtime.write.mailbox.CallRegister
+import com.sappyoak.dsanalyzer.runtime.layout.CallRegister
 import com.sappyoak.dsanalyzer.runtime.write.mailbox.GameCall
 import com.sappyoak.dsanalyzer.runtime.write.mailbox.Submission
 import com.sappyoak.dsanalyzer.runtime.write.task.TaskContext

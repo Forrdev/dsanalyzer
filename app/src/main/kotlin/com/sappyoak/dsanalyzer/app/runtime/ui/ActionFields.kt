@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
-import com.sappyoak.dsanalyzer.runtime.session.action.ActionSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.action.ActionSnapshot
 
 private const val EMPTY_SLOT = -1
 

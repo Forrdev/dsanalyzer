@@ -31,7 +31,10 @@ public data class GameRngState(public val s1: Int, public val s2: Int) {
     }
 
     public companion object {
-        /** What `GameMan_ctor` seeds it with, on every load */
+        /**
+         * What `GameMan_ctor` seeds it with. That runs once per process, so this is the state of a
+         * fresh boot only: loads and quitouts carry the stream on (`ptde-rng-update.md`)
+         */
         public val Seed: GameRngState = GameRngState(0x74915435, 0xE8353554.toInt())
     }
 }

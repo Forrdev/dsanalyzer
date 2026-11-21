@@ -24,7 +24,7 @@ import com.sappyoak.dsanalyzer.app.runtime.GameCollisionMode
 import com.sappyoak.dsanalyzer.app.runtime.KILL_PLANES
 import com.sappyoak.dsanalyzer.app.settings.SettingsEdit
 import com.sappyoak.dsanalyzer.formats.msb.part.CollisionHitFilter
-import com.sappyoak.dsanalyzer.runtime.session.DrawMode
+import com.sappyoak.dsanalyzer.runtime.snapshot.DrawMode
 
 /** The top of the range stands for no limit */
 private val DISTANCE = 10f..500f

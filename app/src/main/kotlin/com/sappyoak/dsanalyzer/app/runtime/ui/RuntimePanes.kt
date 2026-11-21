@@ -26,7 +26,7 @@ import com.sappyoak.dsanalyzer.app.ui.theme.AnalyzerTheme
 import com.sappyoak.dsanalyzer.app.ui.theme.Indicator
 import com.sappyoak.dsanalyzer.app.ui.theme.of
 import com.sappyoak.dsanalyzer.game.world.flags.FlagNames
-import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
+import com.sappyoak.dsanalyzer.runtime.snapshot.animation.AnimationTarget
 
 @Composable
 public fun ColumnScope.RuntimeNavigator(

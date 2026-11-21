@@ -10,12 +10,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-import com.sappyoak.dsanalyzer.runtime.session.BlockLoad
-import com.sappyoak.dsanalyzer.runtime.session.BlockMasks
-import com.sappyoak.dsanalyzer.runtime.session.BlockState
-import com.sappyoak.dsanalyzer.runtime.session.GroupMask
-import com.sappyoak.dsanalyzer.runtime.session.HeldBy
-import com.sappyoak.dsanalyzer.runtime.session.LoadQueueSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.BlockLoad
+import com.sappyoak.dsanalyzer.runtime.snapshot.BlockMasks
+import com.sappyoak.dsanalyzer.runtime.snapshot.BlockState
+import com.sappyoak.dsanalyzer.runtime.snapshot.GroupMask
+import com.sappyoak.dsanalyzer.runtime.snapshot.HeldBy
+import com.sappyoak.dsanalyzer.runtime.snapshot.LoadQueueSnapshot
 
 @Composable
 internal fun LoadQueuePanel(queue: LoadQueueSnapshot?) {

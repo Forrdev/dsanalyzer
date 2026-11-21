@@ -1,9 +1,9 @@
 package com.sappyoak.dsanalyzer.tas
 
 import com.sappyoak.dsanalyzer.native.memory.Address
+import com.sappyoak.dsanalyzer.runtime.snapshot.WriteKey
 import com.sappyoak.dsanalyzer.runtime.write.CodeEdit
 import com.sappyoak.dsanalyzer.runtime.write.GameWriter
-import com.sappyoak.dsanalyzer.runtime.write.WriteKey
 import com.sappyoak.dsanalyzer.tas.Mailbox.Field
 
 private val BUDGET_PATCH = WriteKey("tas:load-budget")

@@ -4,7 +4,7 @@ import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.shouldBe
-import com.sappyoak.dsanalyzer.runtime.session.ai.AIScope
+import com.sappyoak.dsanalyzer.runtime.snapshot.ai.AIScope
 
 private const val PLAYER = 0x10044000
 private const val KNIGHT = 0x10030035

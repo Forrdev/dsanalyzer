@@ -9,7 +9,7 @@ import com.sappyoak.dsanalyzer.app.runtime.GameLink
 import com.sappyoak.dsanalyzer.app.settings.SettingsAccess
 import com.sappyoak.dsanalyzer.app.settings.SettingsEdit
 import com.sappyoak.dsanalyzer.app.store.EffectRunner
-import com.sappyoak.dsanalyzer.runtime.session.RuntimeEvent
+import com.sappyoak.dsanalyzer.runtime.snapshot.RuntimeEvent
 
 private val WATCH_KEY = "watch"
 

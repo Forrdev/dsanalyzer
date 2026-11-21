@@ -5,8 +5,8 @@ import kotlinx.serialization.Serializable
 import com.sappyoak.dsanalyzer.app.settings.Settings
 import com.sappyoak.dsanalyzer.app.settings.SettingsEdit
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
-import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.SavedPosition
+import com.sappyoak.dsanalyzer.runtime.snapshot.RuntimeSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.SavedPosition
 import com.sappyoak.dsanalyzer.runtime.write.warp.WarpDestination
 import com.sappyoak.dsanalyzer.shared.math.Vec3
 

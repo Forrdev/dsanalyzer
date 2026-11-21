@@ -5,7 +5,7 @@ import java.nio.ByteBuffer
 import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.runtime.layout.CallArch
 import com.sappyoak.dsanalyzer.runtime.layout.TalkLayout
-import com.sappyoak.dsanalyzer.runtime.write.mailbox.CallRegister
+import com.sappyoak.dsanalyzer.runtime.layout.CallRegister
 import com.sappyoak.dsanalyzer.runtime.write.mailbox.GameCall
 import com.sappyoak.dsanalyzer.shared.binary.littleEndian
 

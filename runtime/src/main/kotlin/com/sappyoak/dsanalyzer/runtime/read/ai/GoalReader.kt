@@ -4,7 +4,7 @@ import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.native.process.ProcessMemory
 import com.sappyoak.dsanalyzer.runtime.layout.AILayout
 import com.sappyoak.dsanalyzer.runtime.pointers.StructView
-import com.sappyoak.dsanalyzer.runtime.session.ai.GoalSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.ai.GoalSnapshot
 
 private const val DEPTH_LIMIT = 8
 private const val SUBGOAL_LIMIT = 16
@@ -32,10 +32,6 @@ internal class GoalReader(layout: AILayout) {
         top: Address,
         think: Address
     ): GoalSnapshot? = node(memory, top, think, 0)
-
-    fun forget() {
-        kinds.clear()
-    }
 
     private fun node(
         memory: ProcessMemory,

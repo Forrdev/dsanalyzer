@@ -3,13 +3,13 @@ package com.sappyoak.dsanalyzer.runtime.write.debugdraw
 import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.runtime.layout.DebugDrawLayout
 import com.sappyoak.dsanalyzer.runtime.pointers.Lifetime
-import com.sappyoak.dsanalyzer.runtime.sampling.SessionContext
-import com.sappyoak.dsanalyzer.runtime.session.CollisionDrawSettings
-import com.sappyoak.dsanalyzer.runtime.session.DrawInstall
-import com.sappyoak.dsanalyzer.runtime.session.EngineDraw
+import com.sappyoak.dsanalyzer.runtime.write.SessionContext
+import com.sappyoak.dsanalyzer.runtime.snapshot.CollisionDrawSettings
+import com.sappyoak.dsanalyzer.runtime.snapshot.DrawInstall
+import com.sappyoak.dsanalyzer.runtime.snapshot.EngineDraw
+import com.sappyoak.dsanalyzer.runtime.snapshot.WriteKey
 import com.sappyoak.dsanalyzer.runtime.write.CaveResult
 import com.sappyoak.dsanalyzer.runtime.write.GameMutation
-import com.sappyoak.dsanalyzer.runtime.write.WriteKey
 import com.sappyoak.dsanalyzer.runtime.write.addressOf
 import com.sappyoak.dsanalyzer.runtime.write.installCaves
 

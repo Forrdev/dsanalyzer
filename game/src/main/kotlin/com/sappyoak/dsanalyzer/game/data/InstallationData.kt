@@ -1,18 +1,18 @@
 package com.sappyoak.dsanalyzer.game.data
 
 import java.nio.file.Path
-
-import com.sappyoak.dsanalyzer.game.Installation
-import com.sappyoak.dsanalyzer.game.InstallationId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.plus
 
+import com.sappyoak.dsanalyzer.game.Installation
+import com.sappyoak.dsanalyzer.game.InstallationId
 import com.sappyoak.dsanalyzer.game.files.InstallationFiles
 
-/** Each installation's data; [directory] holds a folder per installation for what is kept between sessions */
+/**
+ * Each installation's data; [directory] holds a folder per installation for what is kept between sessions.
+ * Data for an installation that changed or retired is closed, cancelling anything still loading
+ */
 public class InstallationData(
     public val files: InstallationFiles,
     scope: CoroutineScope,
@@ -22,13 +22,15 @@ public class InstallationData(
     private val held = mutableMapOf<InstallationId, GameData>()
 
     public fun of(installation: Installation): GameData = synchronized(held) {
-        held[installation.id]?.takeIf { it.installation == installation }
-            ?: GameData(installation, files, directory?.resolve(installation.id.value), scope)
-                .also { held[installation.id] = it }
+        val current = held[installation.id]
+        if (current?.installation == installation) return current
+        current?.close()
+        GameData(DataScope(installation, files, scope), directory?.resolve(installation.id.value))
+            .also { held[installation.id] = it }
     }
 
     public fun retire(id: InstallationId): Unit = synchronized(held) {
-        held.remove(id)?.clear()
+        held.remove(id)?.close()
         files.retire(id)
     }
 }

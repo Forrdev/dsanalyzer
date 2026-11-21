@@ -9,8 +9,8 @@ internal fun requestBytes(call: GameCall, arch: CallArch, data: Address): ByteAr
     val request = littleEndian(MailboxSlot.RETURN + Long.SIZE_BYTES - MailboxSlot.TARGET)
     fun at(offset: Int) = offset - MailboxSlot.TARGET
     request.putLong(at(MailboxSlot.TARGET), call.target.value)
-    call.registers.forEach { (register, value) -> request.putLong(at(register.offset), value) }
-    call.dataPointers.forEach { (register, offset) -> request.putLong(at(register.offset), data.value + offset) }
+    call.registers.forEach { (register, value) -> request.putLong(at(register.slot), value) }
+    call.dataPointers.forEach { (register, offset) -> request.putLong(at(register.slot), data.value + offset) }
     request.putInt(at(MailboxSlot.argCount(arch)), call.stack.size)
     call.stack.forEachIndexed { i, value ->
         val argument = call.stackData[i]?.let { data.value + it } ?: value

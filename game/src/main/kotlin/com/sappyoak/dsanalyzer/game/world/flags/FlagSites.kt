@@ -40,14 +40,3 @@ public class FlagSites private constructor(private val byFlag: Map<Int, List<Fla
             FlagSites(found.groupBy({ it.first }, { it.second }).mapValues { (_, sites) -> sites.distinct() })
     }
 }
-
-/** What the game data says of flags beside the event scripts: what each means, and where else it is used */
-public data class FlagReading(public val names: FlagNames, public val sites: FlagSites) {
-    public companion object {
-        public val Empty: FlagReading = FlagReading(FlagNames.Empty, FlagSites.Empty)
-    }
-}
-
-/** A direct reading from a row or an entry is also where the game sets the flag */
-internal fun Pair<Int, FlagEvidence>.asSite(): Pair<Int, FlagSite> =
-    first to FlagSite(FlagAccess.Writes, second.label, FlagSource.World(second.source))

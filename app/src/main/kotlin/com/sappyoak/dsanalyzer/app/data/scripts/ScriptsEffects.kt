@@ -1,15 +1,11 @@
 package com.sappyoak.dsanalyzer.app.data.scripts
 
+import com.sappyoak.dsanalyzer.app.data.IndexQueue
 import io.github.oshai.kotlinlogging.KotlinLogging
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 
-import com.sappyoak.dsanalyzer.app.data.IndexQueue
 import com.sappyoak.dsanalyzer.app.store.EffectRunner
 import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.game.data.GameData
@@ -18,13 +14,7 @@ import com.sappyoak.dsanalyzer.game.world.flags.readFlags
 import com.sappyoak.dsanalyzer.game.world.params.RowNameTranslations
 import com.sappyoak.dsanalyzer.game.world.params.loadRowNameTranslations
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
-import com.sappyoak.dsanalyzer.game.world.scripts.index.EventCallIndex
-import com.sappyoak.dsanalyzer.game.world.scripts.index.EventKey
-import com.sappyoak.dsanalyzer.game.world.scripts.index.FlagIndex
-import com.sappyoak.dsanalyzer.game.world.scripts.index.ScriptIndexing
-import com.sappyoak.dsanalyzer.game.world.scripts.index.indexed
 import com.sappyoak.dsanalyzer.game.world.text.TextLanguage
-import com.sappyoak.dsanalyzer.shared.binary.BinaryFormatException
 
 private val logger = KotlinLogging.logger {  }
 
@@ -59,42 +49,19 @@ public class ScriptsEffects(
                 checkNotNull(game.script(effect.script)) { "${effect.script} has no event script" }
                     .summarize(game.scriptNames(effect.script))
             )
-            is ScriptsEffect.IndexScripts -> queue.run("scripts") { game.indexScripts(effect.scripts) }
-            is ScriptsEffect.ReadFlags -> queue.run("flags") { game.flagReading(effect.calls) }
+            is ScriptsEffect.IndexScripts -> queue.run("scripts") { game.indexing() }
+            is ScriptsEffect.ReadFlags -> queue.run("flags") { game.flagReading() }
         }
     }
 
-    private suspend fun GameData.indexScripts(scripts: List<ScriptId>): ScriptsMessage.ScriptsIndexed {
-        val read = coroutineScope {
-            scripts.map { script -> async(Dispatchers.Default) { script to indexingOf(script) } }.awaitAll().toMap()
-        }
-        val built = read.values.filterNotNull()
-
-        val calls = EventCallIndex.of(
-            found = built.flatMap { it.calls },
-            needs = built.fold(emptyMap<EventKey, Int>()) { all, one -> all + one.needs },
-            scripts = built.size
-        )
-
-        logger.atInfo {
-            message = "Scripts indexed"
-            payload = mapOf(
-                "scripts" to built.size,
-                "callSites" to calls.sites,
-                "callerArgumentOffset" to calls.base
-            )
-        }
-
-        return ScriptsMessage.ScriptsIndexed(
-            flags = FlagIndex.of(found = built.flatMap { it.flagUses }, scripts = built.size),
-            calls = calls,
-            unreadable = read.filterValues { it == null }.keys.toList()
-        )
+    private suspend fun GameData.indexing(): ScriptsMessage.ScriptsIndexed {
+        val index = scriptIndex()
+        return ScriptsMessage.ScriptsIndexed(flags = index.flags, calls = index.calls, unreadable = index.unreadable)
     }
 
-    private suspend fun GameData.flagReading(calls: EventCallIndex): ScriptsMessage.FlagsRead {
+    private suspend fun GameData.flagReading(): ScriptsMessage.FlagsRead {
         val rowNames = if (translated.first()) loadRowNameTranslations() else RowNameTranslations.None
-        val reading = readFlags(NAME_LANGUAGE, calls, rowNames)
+        val reading = readFlags(NAME_LANGUAGE, rowNames)
         logger.atInfo {
             message = "Flags read"
             payload = mapOf(
@@ -105,18 +72,9 @@ public class ScriptsEffects(
         }
         return ScriptsMessage.FlagsRead(reading)
     }
-
-    private suspend fun GameData.indexingOf(script: ScriptId): ScriptIndexing? = try {
-        this.script(script)?.indexed()
-    } catch (err: BinaryFormatException) {
-        logger.atWarn {
-            message = "Script left out of index"
-            cause = err
-            payload = mapOf("script" to  script.label)
-        }
-        null
-    }
 }
+
+
 
 public sealed interface ScriptsEffect {
     public val installation: Installation
@@ -128,14 +86,9 @@ public sealed interface ScriptsEffect {
         public val script: ScriptId
     ) : ScriptsEffect
 
-    /** Names every flag and finds where else each is used, reading what [calls] says common events are handed */
-    public data class ReadFlags(
-        override val installation: Installation,
-        public val calls: EventCallIndex
-    ) : ScriptsEffect
+    /** Names every flag and finds where else each is used */
+    public data class ReadFlags(override val installation: Installation) : ScriptsEffect
 
-    public data class IndexScripts(
-        override val installation: Installation,
-        public val scripts: List<ScriptId>
-    ) : ScriptsEffect
+    /** Indexes every script of the installation, for flag uses and event calls */
+    public data class IndexScripts(override val installation: Installation) : ScriptsEffect
 }

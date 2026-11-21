@@ -1,13 +1,10 @@
 package com.sappyoak.dsanalyzer.runtime.ptde
 
-import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.pointers.GamePointer
 import com.sappyoak.dsanalyzer.runtime.pointers.GameTable
 import com.sappyoak.dsanalyzer.runtime.pointers.Lifetime
-import com.sappyoak.dsanalyzer.runtime.pointers.StructView
 import com.sappyoak.dsanalyzer.runtime.pointers.TableElements
 import com.sappyoak.dsanalyzer.runtime.pointers.TableShape
-import com.sappyoak.dsanalyzer.runtime.session.FlagChange
 
 /**
  * 'NS_FRPG::EmevdMan' which holds one event script slot per map block

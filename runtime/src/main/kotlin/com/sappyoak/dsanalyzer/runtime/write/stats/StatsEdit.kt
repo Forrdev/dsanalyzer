@@ -3,7 +3,7 @@ package com.sappyoak.dsanalyzer.runtime.write.stats
 import com.sappyoak.dsanalyzer.runtime.layout.FieldLayout
 import com.sappyoak.dsanalyzer.runtime.layout.PlayerGameDataLayout
 import com.sappyoak.dsanalyzer.runtime.layout.StatWriteLayout
-import com.sappyoak.dsanalyzer.runtime.write.WriteKey
+import com.sappyoak.dsanalyzer.runtime.snapshot.WriteKey
 import com.sappyoak.dsanalyzer.runtime.write.task.FieldEditTask
 import com.sappyoak.dsanalyzer.runtime.write.task.WriteTask
 import com.sappyoak.dsanalyzer.shared.binary.toLittleEndian

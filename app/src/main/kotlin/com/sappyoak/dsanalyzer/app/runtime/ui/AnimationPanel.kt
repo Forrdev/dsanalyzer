@@ -23,13 +23,13 @@ import com.sappyoak.dsanalyzer.app.nav.View
 import com.sappyoak.dsanalyzer.app.runtime.living
 import com.sappyoak.dsanalyzer.app.ui.theme.AnalyzerTheme
 import com.sappyoak.dsanalyzer.game.world.animations.AnimationSetId
-import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.animation.AnimChannelSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.animation.AnimRequestSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.animation.AnimSlotSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
+import com.sappyoak.dsanalyzer.runtime.snapshot.CharacterSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.RuntimeSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.animation.AnimChannelSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.animation.AnimRequestSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.animation.AnimSlotSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.animation.AnimationSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.animation.AnimationTarget
 
 /** The player's model, whose animations are c0000's */
 private const val PLAYER_MODEL = 0

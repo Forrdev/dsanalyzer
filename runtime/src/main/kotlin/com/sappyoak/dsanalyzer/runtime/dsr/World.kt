@@ -92,11 +92,6 @@ public object WorldInfoOwner {
         elements = TableElements.Inline(WORLD_BLOCK_INFO_SIZE),
         limit = 64
     )
-
-    public fun mapOf(slot: Int): MapId? {
-        if (slot == NO_MAP) return null
-        return MapId.of(area = (slot ushr 24) and 0xFF, block = (slot ushr 16) and 0xFF)
-    }
 }
 
 /** One 'NS_FRPG::WorldAreaInfo' */

@@ -3,9 +3,9 @@ package com.sappyoak.dsanalyzer.runtime.read
 import com.sappyoak.dsanalyzer.runtime.layout.MenuLayout
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.pointers.StructView
-import com.sappyoak.dsanalyzer.runtime.session.MenuOpenMask
-import com.sappyoak.dsanalyzer.runtime.session.MenuScript
-import com.sappyoak.dsanalyzer.runtime.session.MenuSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.MenuOpenMask
+import com.sappyoak.dsanalyzer.runtime.snapshot.MenuScript
+import com.sappyoak.dsanalyzer.runtime.snapshot.MenuSnapshot
 
 internal class MenuReader(private val layout: MenuLayout) {
     private val view = StructView(layout.pointer)

@@ -1,50 +1,50 @@
 package com.sappyoak.dsanalyzer.runtime.read.character
 
-import com.sappyoak.dsanalyzer.native.memory.Address
-import com.sappyoak.dsanalyzer.runtime.layout.GameLayout
+import com.sappyoak.dsanalyzer.runtime.layout.CharacterLayout
+import com.sappyoak.dsanalyzer.runtime.layout.PlayerGameDataLayout
 import com.sappyoak.dsanalyzer.runtime.layout.Stat
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.pointers.StructView
-import com.sappyoak.dsanalyzer.runtime.session.AttributeSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.PlayerSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.ResistSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.WorldSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.cheatsIn
+import com.sappyoak.dsanalyzer.runtime.snapshot.AttributeSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.CheatBit
+import com.sappyoak.dsanalyzer.runtime.snapshot.CheatFlag
+import com.sappyoak.dsanalyzer.runtime.snapshot.CharacterSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.PlayerSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.ResistSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.WorldSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.cheatsIn
 
-
-internal class PlayerDetailsReader(layout: GameLayout) {
-    private val sheet = layout.playerGameData
-    private val chars = layout.characters
-    private val cheatBits = layout.writes.cheatBits
-
+/** The player's own fields on top of its [CharacterSnapshot], and the world state around it */
+internal class PlayerDetailsReader(
+    private val chars: CharacterLayout,
+    private val sheet: PlayerGameDataLayout,
+    private val cheatBits: Map<CheatFlag, CheatBit>
+) {
     private val attributes = StructView(sheet.pointer)
     private val worldState = StructView(chars.world.pointer)
-    private val control = StructView(chars.control.size)
-    private val position = StructView(chars.pose.size)
-    private val animation = StructView(chars.control.playSpeed + Float.SIZE_BYTES)
 
     val structures: Int = 5
     var present: Int = 0
         private set
 
-    fun read(game: GameMemory, character: StructView, base: CharacterSnapshot): PlayerSnapshot {
+    /** [player] already refreshed, so its ChrCtrl and pose are shared with [base]'s reading */
+    fun read(game: GameMemory, player: CharacterView, base: CharacterSnapshot): PlayerSnapshot {
         val sheetRead = attributes.refresh(game)
-        val controlRead = refreshAt(game, control, character.pointer(chars.chr.control))
-        val positionRead = controlRead && refreshAt(game, position, control.pointer(chars.control.position))
-        val animationRead = controlRead && refreshAt(game, animation, control.pointer(chars.control.animData))
-        present = listOf(sheetRead, worldState.isPresent, controlRead, positionRead, animationRead).count { it }
+        val control = player.control()
+        val pose = player.pose()
+        val animation = player.animData()
+        present = listOf(sheetRead, worldState.isPresent, control != null, pose != null, animation != null).count { it }
 
         return PlayerSnapshot(
             character = base,
-            angle = if (positionRead) position.float(chars.pose.angle) else 0f,
-            playRegion = character.int(chars.chr.playRegion),
-            animationSpeed = if (animationRead) animation.float(chars.control.playSpeed) else null,
+            angle = pose?.float(chars.pose.angle) ?: 0f,
+            playRegion = player.fields.int(chars.chr.playRegion),
+            animationSpeed = animation?.float(chars.control.playSpeed),
             cheats = cheatsIn(
                 bits = cheatBits,
-                flags1 = character.int(chars.chr.flags1),
-                flags2 = character.int(chars.chr.flags2),
-                mapFlags = if (controlRead) control.int(chars.control.flags) else 0
+                flags1 = player.fields.int(chars.chr.flags1),
+                flags2 = player.fields.int(chars.chr.flags2),
+                mapFlags = control?.int(chars.control.flags) ?: 0
             ),
             attributes = if (sheetRead) attributesOf(attributes) else null
         )
@@ -92,7 +92,4 @@ internal class PlayerDetailsReader(layout: GameLayout) {
             )
         )
     }
-
-    private fun refreshAt(game: GameMemory, view: StructView, at: Address): Boolean =
-        !at.isNull && view.refresh(game.memory, at)
 }

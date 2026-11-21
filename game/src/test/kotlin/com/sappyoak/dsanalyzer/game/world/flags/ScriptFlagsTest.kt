@@ -6,26 +6,18 @@ import io.kotest.matchers.shouldBe
 
 import com.sappyoak.dsanalyzer.formats.emevd.EventNames
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.Opcode
-import com.sappyoak.dsanalyzer.game.world.maps.CharacterModels
-import com.sappyoak.dsanalyzer.game.world.params.GameParams
-import com.sappyoak.dsanalyzer.game.world.params.ParamNames
-import com.sappyoak.dsanalyzer.game.world.params.RowNameTranslations
 import com.sappyoak.dsanalyzer.game.world.scripts.ScriptId
 
 private const val EVENT = 11010900L
 private const val KNIGHT = 1010700
 private const val FLAG = 11010700
 
-private val CONTEXT = NamingContext(
-    GameParams(emptyMap()), ParamNames.None, emptyMap(), emptyMap(), CharacterModels(emptyMap()), RowNameTranslations.None
-)
-
 private fun instruction(bank: Int, id: Int, vararg values: Long?) = BoundInstruction(Opcode(bank, id), values.toList())
 
 private fun named(vararg instructions: BoundInstruction, name: String? = null): FlagNames {
     val event = BoundEvent(ScriptId.Common, EVENT, instructions.toList())
     val names = EventNames(listOfNotNull(name?.let { EVENT to it }).toMap())
-    return FlagNames.of(CONTEXT.scriptFlags(listOf(event)) { names })
+    return FlagNames.of(ScriptOrigin(listOf(event)) { names }.read(EMPTY_CONTEXT).names)
 }
 
 class ScriptFlagsTest : FunSpec({

@@ -22,7 +22,7 @@ public fun reduceScripts(
             next.with()
         } else {
             next.copy(indexing = true)
-                .with(ScriptsEffect.IndexScripts(installation, message.scripts))
+                .with(ScriptsEffect.IndexScripts(installation))
         }
     }
 
@@ -36,7 +36,7 @@ public fun reduceScripts(
         unreadable = message.unreadable,
         problem = null
     ).let { next ->
-        next.installation?.let { next.copy(naming = true).with(ScriptsEffect.ReadFlags(it, message.calls)) }
+        next.installation?.let { next.copy(naming = true).with(ScriptsEffect.ReadFlags(it)) }
             ?: next.with()
     }
 

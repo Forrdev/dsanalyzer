@@ -8,7 +8,7 @@ import com.sappyoak.dsanalyzer.runtime.pointers.FakeGame
 import com.sappyoak.dsanalyzer.runtime.ptde.Goal
 import com.sappyoak.dsanalyzer.runtime.ptde.GoalType
 import com.sappyoak.dsanalyzer.runtime.ptde.ptdeLayout
-import com.sappyoak.dsanalyzer.runtime.session.ai.GoalSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.ai.GoalSnapshot
 
 private const val THINK = 0x1000
 private const val GOALS = 0x2000
@@ -121,7 +121,7 @@ class GoalReaderTest : FunSpec({
         }
     }
 
-    test("a goal type is read once, and read again after a load") {
+    test("a goal type is read once per reader, and a new world's reader reads it again") {
         val game = FakeGame().apply { plan(COMBAT) }
         val reader = GoalReader(PTDELayout.ai)
         game.read(reader)
@@ -129,8 +129,7 @@ class GoalReaderTest : FunSpec({
 
         game.read(reader)
         val cached = game.reads - reads
-        reader.forget()
-        game.read(reader)
+        game.read(GoalReader(PTDELayout.ai))
 
         (game.reads - reads - cached > cached) shouldBe true
     }

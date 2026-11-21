@@ -1,9 +1,7 @@
 package com.sappyoak.dsanalyzer.runtime.write.items
 
 import com.sappyoak.dsanalyzer.game.world.items.ItemCategory
-import com.sappyoak.dsanalyzer.runtime.layout.CallArch
 import com.sappyoak.dsanalyzer.runtime.layout.ItemLayout
-import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.write.addressOf
 import com.sappyoak.dsanalyzer.runtime.write.found
 import com.sappyoak.dsanalyzer.runtime.write.mailbox.GameCall
@@ -24,8 +22,7 @@ public class SpawnItemTask internal constructor(
     private val category: ItemCategory,
     private val id: Int,
     private val count: Int,
-    private val layout: ItemLayout,
-    private val arch: CallArch
+    private val layout: ItemLayout
 ) : WriteTask {
     override val label: String get() = "Spawn ${category.name.lowercase()} $id x$count"
 
@@ -38,27 +35,29 @@ public class SpawnItemTask internal constructor(
             val step = showing.step(context)
             return if (step is TaskStep.Done) TaskStep.Done(slot) else step
         }
-        val adding = add ?: CallTask(addCall(context.memory), remote = true).also { add = it }
+        val adding = add ?: CallTask(addCall(context), remote = true).also { add = it }
         val step = adding.step(context)
         if (step !is TaskStep.Done) return step
         if (step.value and NO_ROOM == NO_ROOM) return TaskStep.Failed("The inventory has no room for $label")
         slot = step.value
-        popup = CallTask(popupCall(context.memory), remote = true)
+        popup = CallTask(popupCall(context), remote = true)
         return TaskStep.Continue
     }
 
-    private fun addCall(memory: GameMemory): GameCall {
+    private fun addCall(context: TaskContext): GameCall {
+        val memory = context.memory
         val inventory = memory.addressOf(layout.inventory) ?: error("The inventory could not be found")
         val arguments = listOf(inventory.value, category.code.toLong(), id.toLong(), count.toLong()) + layout.addFlags
-        return conventionalCall(arch, memory.found(layout.add), label, arguments)
+        return conventionalCall(context.arch, memory.found(layout.add), label, arguments)
     }
 
-    private fun popupCall(memory: GameMemory): GameCall {
+    private fun popupCall(context: TaskContext): GameCall {
+        val memory = context.memory
         val owner = memory.found(layout.popupOwner).value
         val item = listOf(category.code.toLong(), id.toLong(), count.toLong())
         val register = layout.popupOwnerRegister
         val arguments = if (register == null) listOf(owner) + item else item
         val registers = if (register == null) emptyMap() else mapOf(register to owner)
-        return conventionalCall(arch, memory.found(layout.popup), "$label popup", arguments, registers)
+        return conventionalCall(context.arch, memory.found(layout.popup), "$label popup", arguments, registers)
     }
 }

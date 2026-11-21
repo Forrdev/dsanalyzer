@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-import com.sappyoak.dsanalyzer.runtime.session.CameraSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.CameraSnapshot
 
 @Composable
 internal fun CameraPanel(camera: CameraSnapshot?) {

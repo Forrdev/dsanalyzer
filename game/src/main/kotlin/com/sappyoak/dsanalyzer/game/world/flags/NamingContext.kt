@@ -15,16 +15,16 @@ import com.sappyoak.dsanalyzer.game.world.text.TextCategory
 import com.sappyoak.dsanalyzer.game.world.text.TextTags
 
 /** The text categories naming reads, beside the item names [ParamNames] covers */
-internal val NAMING_TEXT: List<TextCategory> =
-    listOf(TextCategory.EventText, TextCategory.Conversations, TextCategory.NpcNames, TextCategory.SystemMessages)
+internal val NAMING_TEXT: Set<TextCategory> =
+    setOf(TextCategory.EventText, TextCategory.Conversations, TextCategory.NpcNames, TextCategory.SystemMessages)
 
-/** Everything the sources read, loaded once */
-public class NamingContext(
-    public val params: GameParams,
+/** Everything the flag origins read, loaded once */
+internal class NamingContext(
+    val params: GameParams,
     private val items: ParamNames,
     private val text: Map<TextCategory, Fmg>,
-    public val maps: Map<MapId, MSB>,
-    public val models: CharacterModels,
+    val maps: Map<MapId, MSB>,
+    val models: CharacterModels,
     /** English for row names, for characters the game's text does not name; none when they are off */
     private val rowNames: RowNameTranslations
 ) {
@@ -34,18 +34,26 @@ public class NamingContext(
     )
 
     /** Built last: naming a character reads [text], which needs [tags] */
-    public val entities: PlacedEntities = PlacedEntities.of(maps, models, ::npcName)
+    val entities: PlacedEntities = PlacedEntities.of(maps, models, ::npcName)
 
     /** The item's name, or its kind and id where the text has none */
-    public fun item(ref: ParamRef): String =
+    fun item(ref: ParamRef): String =
         items.nameOf(ref.kind.paramFor(ParamSide.Npc), ref.id) ?: "${ref.kind} ${ref.id}"
 
     /** One string, its tags filled in and trimmed to its first line; null for an id the category does not hold */
-    public fun text(category: TextCategory, id: Int): String? =
+    fun text(category: TextCategory, id: Int): String? =
         text[category]?.get(id)?.lineSequence()?.firstOrNull { it.isNotBlank() }?.trim()?.let(tags::resolve)
 
+    /** The line a TalkParam row speaks */
+    fun spokenLine(talkParamId: Int): String? =
+        params[GameParam.TalkParam][talkParamId]?.let { text(TextCategory.Conversations, it.msgId) }
+
+    /** The prompt an ObjAct shows when the player can use it */
+    fun objActVerb(objActParamId: Int): String? =
+        params[GameParam.ObjActParam][objActParamId]?.let { text(TextCategory.EventText, it.actionEnableMsgId) }
+
     /** A character's name: the game's text where it gives one, else the translation of its NpcParam row's name */
-    public fun npcName(npcParamId: Int): String? {
+    fun npcName(npcParamId: Int): String? {
         val row = params[GameParam.NpcParam][npcParamId] ?: return null
         return text(TextCategory.NpcNames, row.nameId) ?: rowNames[row.name]?.english
     }

@@ -4,9 +4,9 @@ import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.native.process.ProcessMemory
 import com.sappyoak.dsanalyzer.runtime.layout.AnimRequestLayout
 import com.sappyoak.dsanalyzer.runtime.pointers.StructView
-import com.sappyoak.dsanalyzer.runtime.session.animation.AnimChannelSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.animation.AnimHandle
-import com.sappyoak.dsanalyzer.runtime.session.animation.AnimRequestSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.animation.AnimChannelSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.animation.AnimHandle
+import com.sappyoak.dsanalyzer.runtime.snapshot.animation.AnimRequestSnapshot
 
 internal class AnimationRequests(
     /** The pool the manager points at, which has to be the one read beside it */

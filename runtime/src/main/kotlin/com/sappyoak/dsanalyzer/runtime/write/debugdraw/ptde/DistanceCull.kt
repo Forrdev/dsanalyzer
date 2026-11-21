@@ -11,7 +11,7 @@ import com.sappyoak.dsanalyzer.runtime.inject.Xmm
 import com.sappyoak.dsanalyzer.runtime.inject.Xmm.XMM0
 import com.sappyoak.dsanalyzer.runtime.inject.Xmm.XMM1
 import com.sappyoak.dsanalyzer.runtime.inject.addss
-import com.sappyoak.dsanalyzer.runtime.inject.cave.X86Cave
+import com.sappyoak.dsanalyzer.runtime.inject.X86Cave
 import com.sappyoak.dsanalyzer.runtime.inject.comiss
 import com.sappyoak.dsanalyzer.runtime.inject.jbe
 import com.sappyoak.dsanalyzer.runtime.inject.movss
@@ -20,7 +20,7 @@ import com.sappyoak.dsanalyzer.runtime.inject.pop
 import com.sappyoak.dsanalyzer.runtime.inject.subss
 import com.sappyoak.dsanalyzer.runtime.ptde.AddTriangleArgs
 import com.sappyoak.dsanalyzer.runtime.ptde.PTDEHookSites
-import com.sappyoak.dsanalyzer.runtime.write.WriteKey
+import com.sappyoak.dsanalyzer.runtime.snapshot.WriteKey
 import com.sappyoak.dsanalyzer.runtime.write.debugdraw.DrawControl
 
 /** The cave's own `PUSH EAX` moves every argument down a slot */

@@ -12,9 +12,9 @@ import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.native.memory.intAt
 import com.sappyoak.dsanalyzer.native.process.ProcessMemory
 import com.sappyoak.dsanalyzer.runtime.layout.CallArch
+import com.sappyoak.dsanalyzer.runtime.snapshot.WriteKey
 import com.sappyoak.dsanalyzer.runtime.write.GameMutation
 import com.sappyoak.dsanalyzer.runtime.write.GameWriter
-import com.sappyoak.dsanalyzer.runtime.write.WriteKey
 import com.sappyoak.dsanalyzer.shared.binary.littleEndian
 
 internal val DEFAULT_TIMEOUT: Duration = 10.seconds

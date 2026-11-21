@@ -87,7 +87,7 @@ class ScriptsReducerTest : FunSpec({
                 state.shown shouldBe null
                 state.loading shouldBe false
             }
-            effects shouldContainExactly listOf(ScriptsEffect.IndexScripts(INSTALLATION, catalog))
+            effects shouldContainExactly listOf(ScriptsEffect.IndexScripts(INSTALLATION))
         }
     }
 
@@ -100,7 +100,7 @@ class ScriptsReducerTest : FunSpec({
         val failed = reduceScripts(indexed, ScriptsMessage.NamingFailed("no params")).state
 
         assertSoftly {
-            effects shouldContainExactly listOf(ScriptsEffect.ReadFlags(INSTALLATION, calls))
+            effects shouldContainExactly listOf(ScriptsEffect.ReadFlags(INSTALLATION))
             failed.namingProblem shouldBe "Flags could not be named: no params"
             failed.problem shouldBe null
         }

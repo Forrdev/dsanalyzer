@@ -6,7 +6,6 @@ import com.sappyoak.dsanalyzer.formats.msb.part.Part
 import com.sappyoak.dsanalyzer.game.ref.WorldRef
 import com.sappyoak.dsanalyzer.game.world.maps.EntryKind
 import com.sappyoak.dsanalyzer.game.world.maps.MapId
-import com.sappyoak.dsanalyzer.game.world.params.GameParam
 import com.sappyoak.dsanalyzer.game.world.text.TextCategory
 
 private const val TALK_TO_PLAYER = 1
@@ -14,13 +13,26 @@ private const val TALK_TO_PLAYER = 1
 /** One map's talk script, by the talk id its NPC parts state */
 public data class TalkScript(public val map: MapId, public val talkId: Int, public val esd: Esd)
 
+/** Who speaks a talk script, and the placed part to cite; the map itself where no part is placed */
+internal data class Speaker(val name: String, val ref: WorldRef)
+
+/** Talk scripts both name the flags they turn on and are places that set and read flags */
+internal class TalkOrigin(private val scripts: List<TalkScript>) : FlagOrigin {
+    override fun read(context: NamingContext): OriginReading {
+        val spoken = scripts.map { it to context.speaker(it) }
+        return OriginReading(names = context.talkFlags(spoken), sites = talkSites(spoken))
+    }
+}
+
 /**
  * Flags an NPC's talk script turns on, named by the NPC and by what leads to them: a line spoken or an
  * option offered in the same state, else the menu choice that leads there, else a line spoken just
  * before, else the state itself
  */
-internal fun NamingContext.talkFlags(scripts: List<TalkScript>): List<Pair<Int, FlagEvidence>> = scripts.flatMap { talk ->
-    val (npc, source) = speaker(talk)
+private fun NamingContext.talkFlags(scripts: List<Pair<TalkScript, Speaker>>): List<Pair<Int, FlagEvidence>> =
+    scripts.flatMap { (talk, speaker) -> talkFlags(talk, speaker) }
+
+private fun NamingContext.talkFlags(talk: TalkScript, speaker: Speaker): List<Pair<Int, FlagEvidence>> =
     talk.esd.groups.values.flatMap { group ->
         val graph = TalkGraph(group)
         group.states.values.flatMap { state ->
@@ -32,29 +44,29 @@ internal fun NamingContext.talkFlags(scripts: List<TalkScript>): List<Pair<Int, 
                 ?: graph.choiceInto(state.id)?.let { text(TextCategory.EventText, it) }?.let { "chose \"$it\"" }
                 ?: graph.before(state.id).firstNotNullOfOrNull { group.states[it]?.let { before -> saying(before.calls()) } }?.let { "after $it" }
                 ?: "talk state ${group.id}/${state.id}"
-            flags.map { flag -> flag namedBy FlagEvidence(FlagKind.NpcState, "$npc: $said", source, direct = true) }
+            flags.map { flag ->
+                flag namedBy FlagEvidence(FlagKind.NpcState, "${speaker.name}: $said", speaker.ref, direct = true)
+            }
         }
     }
-}
 
-/** The NPC placed with this talk id, and the part to cite; the map itself where none is */
-internal fun NamingContext.speaker(talk: TalkScript): Pair<String, WorldRef> {
-    val msb = maps[talk.map] ?: return "talk ${talk.talkId}" to WorldRef.Map(talk.map)
+/** The NPC placed with this talk id */
+private fun NamingContext.speaker(talk: TalkScript): Speaker {
+    val unplaced = Speaker("talk ${talk.talkId}", WorldRef.Map(talk.map))
+    val msb = maps[talk.map] ?: return unplaced
     val index = msb.parts.indexOfFirst { it is Part.Enemy && it.data.talkId == talk.talkId }
-    if (index < 0) return "talk ${talk.talkId}" to WorldRef.Map(talk.map)
+    if (index < 0) return unplaced
 
     val part = msb.parts[index] as Part.Enemy
     val name = npcName(part.data.npcParamId)
         ?: part.header.entityId?.let(entities::label)
         ?: part.header.name
-    return name to WorldRef.Entry(talk.map, EntryKind.Part, index)
+    return Speaker(name, WorldRef.Entry(talk.map, EntryKind.Part, index))
 }
 
 /** The first line spoken in the state, else the first menu option it offers */
 private fun NamingContext.saying(calls: List<CommandCall>): String? {
-    val line = calls.firstOrNull { it.isTalk(TALK_TO_PLAYER) }?.int(0)
-        ?.let { params[GameParam.TalkParam][it] }
-        ?.let { text(TextCategory.Conversations, it.msgId) }
+    val line = calls.firstOrNull { it.isTalk(TALK_TO_PLAYER) }?.int(0)?.let(::spokenLine)
     if (line != null) return "\"$line\""
 
     return calls.firstOrNull { it.isTalk(ADD_TALK_LIST) }?.int(1)

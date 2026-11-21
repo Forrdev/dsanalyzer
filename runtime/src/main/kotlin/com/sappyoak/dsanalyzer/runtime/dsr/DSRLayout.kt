@@ -9,11 +9,13 @@ import com.sappyoak.dsanalyzer.runtime.layout.AnimRequestEntryLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimRequestLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimSlotLayout
 import com.sappyoak.dsanalyzer.runtime.layout.AnimationLayout
+import com.sappyoak.dsanalyzer.runtime.layout.CallRegister
 import com.sappyoak.dsanalyzer.runtime.layout.CameraLayout
 import com.sappyoak.dsanalyzer.runtime.layout.CharacterLayout
 import com.sappyoak.dsanalyzer.runtime.layout.CharacterSlotLayout
 import com.sappyoak.dsanalyzer.runtime.layout.ChrCtrlLayout
 import com.sappyoak.dsanalyzer.runtime.layout.ChrInsLayout
+import com.sappyoak.dsanalyzer.runtime.layout.ClockLayout
 import com.sappyoak.dsanalyzer.runtime.layout.DebugDrawLayout
 import com.sappyoak.dsanalyzer.runtime.layout.EntityTableLayout
 import com.sappyoak.dsanalyzer.runtime.layout.EsdStateLayout
@@ -33,8 +35,10 @@ import com.sappyoak.dsanalyzer.runtime.layout.LoadQueueLayout
 import com.sappyoak.dsanalyzer.runtime.layout.LockOnLayout
 import com.sappyoak.dsanalyzer.runtime.layout.MailboxLayout
 import com.sappyoak.dsanalyzer.runtime.layout.MenuLayout
+import com.sappyoak.dsanalyzer.runtime.layout.NoMapLayout
 import com.sappyoak.dsanalyzer.runtime.layout.OwnerLinkLayout
 import com.sappyoak.dsanalyzer.runtime.layout.PartFilterLayout
+import com.sappyoak.dsanalyzer.runtime.layout.PlaceLayout
 import com.sappyoak.dsanalyzer.runtime.layout.PlacedPartsLayout
 import com.sappyoak.dsanalyzer.runtime.layout.PlayerGameDataLayout
 import com.sappyoak.dsanalyzer.runtime.layout.PointWarpLayout
@@ -53,7 +57,6 @@ import com.sappyoak.dsanalyzer.runtime.layout.ThinkLayout
 import com.sappyoak.dsanalyzer.runtime.layout.VitalsLayout
 import com.sappyoak.dsanalyzer.runtime.layout.WarpLayout
 import com.sappyoak.dsanalyzer.runtime.layout.WriteLayout
-import com.sappyoak.dsanalyzer.runtime.write.mailbox.CallRegister
 
 internal fun dsrLayout(version: DSRVersion): GameLayout = GameLayout(
     camera = CameraLayout(
@@ -66,6 +69,13 @@ internal fun dsrLayout(version: DSRVersion): GameLayout = GameLayout(
         smoothedPosition = null,
         orientation = null,
         targetPitch = null
+    ),
+    clock = ClockLayout(GameDataMan.Pointer, GameDataMan.InGameTimeMillis),
+    place = PlaceLayout(
+      pointer = WorldInfoOwner.Pointer,
+        area = WorldInfoOwner.CurrentMap + 3,
+        block = WorldInfoOwner.CurrentMap + 2,
+        noMap = NoMapLayout(WorldInfoOwner.CurrentMap, NO_MAP)
     ),
     characters = CharacterLayout(
         manager = WorldChrMan.Pointer,

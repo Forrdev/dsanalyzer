@@ -2,7 +2,6 @@ package com.sappyoak.dsanalyzer.runtime.ptde
 
 import com.sappyoak.dsanalyzer.runtime.pointers.GamePointer
 import com.sappyoak.dsanalyzer.runtime.pointers.GameTable
-import com.sappyoak.dsanalyzer.runtime.EditionTables
 
 public val PTDEPointers: List<GamePointer> = listOf(
     FollowCam.Pointer,
@@ -50,9 +49,4 @@ public val PTDETables: List<Pair<GamePointer, GameTable>> = listOf(
     WorldRes.Pointer to WorldRes.Blocks,
     WorldRes.Pointer to WorldRes.BlockInfos,
     EmevdMan.Pointer to EmevdMan.Scripts
-)
-
-public val PTDEEdition: EditionTables = EditionTables(
-    pointers = PTDEPointers,
-    layoutFor = { ptdeLayout() }
 )

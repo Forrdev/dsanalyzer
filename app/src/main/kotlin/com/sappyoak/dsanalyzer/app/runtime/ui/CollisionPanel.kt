@@ -13,7 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-import com.sappyoak.dsanalyzer.runtime.session.EngineDrawStatus
+import com.sappyoak.dsanalyzer.runtime.snapshot.EngineDrawStatus
 
 /** The state of the game's own debug draw. What it draws is set in the settings */
 @Composable

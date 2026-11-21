@@ -10,10 +10,10 @@ import com.sappyoak.dsanalyzer.runtime.dsr.Graphics
 import com.sappyoak.dsanalyzer.runtime.dsr.HitColors
 import com.sappyoak.dsanalyzer.runtime.dsr.WorldChrMan
 import com.sappyoak.dsanalyzer.runtime.inject.SiteLookup
-import com.sappyoak.dsanalyzer.runtime.inject.cave.callTarget
+import com.sappyoak.dsanalyzer.runtime.inject.callTarget
 import com.sappyoak.dsanalyzer.runtime.inject.locate
-import com.sappyoak.dsanalyzer.runtime.sampling.SessionContext
-import com.sappyoak.dsanalyzer.runtime.session.DrawMode
+import com.sappyoak.dsanalyzer.runtime.write.SessionContext
+import com.sappyoak.dsanalyzer.runtime.snapshot.DrawMode
 import com.sappyoak.dsanalyzer.runtime.write.debugdraw.DrawBackend
 import com.sappyoak.dsanalyzer.runtime.write.debugdraw.DrawControl
 import com.sappyoak.dsanalyzer.runtime.write.debugdraw.DrawEdit

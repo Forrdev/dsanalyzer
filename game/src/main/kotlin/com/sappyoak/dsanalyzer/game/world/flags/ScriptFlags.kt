@@ -26,6 +26,14 @@ private const val DEAD = 1
 private const val DESTROYED = 1
 private const val INSIDE = 1
 
+/** Event scripts, bound to what their callers hand them, named by the game's own event names */
+internal class ScriptOrigin(
+    private val events: List<BoundEvent>,
+    private val names: (BoundEvent) -> EventNames
+) : FlagOrigin {
+    override fun read(context: NamingContext): OriginReading = OriginReading(names = context.scriptFlags(events, names))
+}
+
 /**
  * Flags the event scripts give a meaning to. Registrations name their flag directly; every other flag
  * an event turns on takes the event's strongest trigger, and its name where the game's own list has one

@@ -16,7 +16,10 @@ public data class RunProgress(
  * first frame is the first frame after the point. The player's own pad passes through while waiting.
  *
  * A chunk's RNG is pinned just before its movie is queued, while the gate holds the frame: the
- * run's own start (begin it paused) or the sync point it waited for
+ * run's own start (begin it paused) or the sync point it waited for.
+ *
+ * A chunk the pad stopped with a [PadFault] ends the run: what follows was authored against frames
+ * the game no longer has
  */
 public class RunPlayer internal constructor(
     private val gate: FrameGate,
@@ -63,7 +66,10 @@ public class RunPlayer internal constructor(
                 waiting = false
                 if (!start(chunks[index]) || !gate.resume()) stop()
             }
-            !waiting && pad.progress.mode == PadMode.Off -> if (index + 1 < chunks.size) begin(index + 1) else stop()
+            !waiting && pad.progress.mode == PadMode.Off -> {
+                val more = pad.fault == null && index + 1 < chunks.size
+                if (more) begin(index + 1) else stop()
+            }
         }
     }
 

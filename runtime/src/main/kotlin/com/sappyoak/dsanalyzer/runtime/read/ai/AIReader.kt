@@ -2,12 +2,14 @@ package com.sappyoak.dsanalyzer.runtime.read.ai
 
 import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.native.process.ProcessMemory
-import com.sappyoak.dsanalyzer.runtime.layout.GameLayout
+import com.sappyoak.dsanalyzer.runtime.layout.AILayout
+import com.sappyoak.dsanalyzer.runtime.layout.ActionLayout
 import com.sappyoak.dsanalyzer.runtime.layout.TargetKinds
 import com.sappyoak.dsanalyzer.runtime.pointers.StructView
+import com.sappyoak.dsanalyzer.runtime.read.action.ctrlOf
 import com.sappyoak.dsanalyzer.runtime.read.character.CharacterRef
-import com.sappyoak.dsanalyzer.runtime.session.ai.AISnapshot
-import com.sappyoak.dsanalyzer.runtime.session.ai.AITarget
+import com.sappyoak.dsanalyzer.runtime.snapshot.ai.AISnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.ai.AITarget
 
 private const val NONE = -1
 
@@ -25,16 +27,15 @@ internal data class AISource(
     val actions: Address
 )
 
-internal class AIReader(layout: GameLayout) {
-    private val think = layout.ai.think
-    private val targeting = layout.ai.targeting
-    private val action = layout.action
+internal class AIReader(ai: AILayout, private val action: ActionLayout) {
+    private val think = ai.think
+    private val targeting = ai.targeting
 
     private val pointer = StructView(POINTER_ROOM)
     private val thinkView = StructView(think.size)
     private val actions = StructView(action.size)
     private val node = StructView(targeting.nodeSize)
-    private val goals = GoalReader(layout.ai)
+    private val goals = GoalReader(ai)
 
     fun read(memory: ProcessMemory, source: AISource): AISnapshot? {
         if (!readThink(memory, source.think, source.owner)) return null
@@ -60,7 +61,7 @@ internal class AIReader(layout: GameLayout) {
         if (at.isNull || !readThink(memory, at, owner)) return null
 
         val targets = thinkView.pointer(think.targeting)
-        val actionCtrl = pointer.pointerAt(memory, character.controller + action.fromControl.toLong())
+        val actionCtrl = action.ctrlOf(memory, character.controller, pointer)
         if (targets.isNull || actionCtrl.isNull) return null
 
         return AISource(character.handle, at, owner, targets, actionCtrl)
@@ -88,10 +89,6 @@ internal class AIReader(layout: GameLayout) {
         }
 
         return alert ?: combat ?: sound ?: AITarget.None
-    }
-
-    fun forget() {
-        goals.forget()
     }
 
     private fun entryTarget(): AITarget = when (node.int(targeting.nodeShape)) {

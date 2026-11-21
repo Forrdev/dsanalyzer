@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.sappyoak.dsanalyzer.app.nav.View
 import com.sappyoak.dsanalyzer.app.runtime.FlagEntry
 import com.sappyoak.dsanalyzer.game.world.flags.FlagNames
-import com.sappyoak.dsanalyzer.runtime.session.loadedMap
+import com.sappyoak.dsanalyzer.runtime.snapshot.loadedMap
 
 private val FRAME_WIDTH = 96.dp
 private val STATE_WIDTH = 56.dp

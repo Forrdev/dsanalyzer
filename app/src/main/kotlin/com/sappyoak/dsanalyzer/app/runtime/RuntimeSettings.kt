@@ -2,8 +2,8 @@ package com.sappyoak.dsanalyzer.app.runtime
 
 import com.sappyoak.dsanalyzer.app.settings.Settings
 import com.sappyoak.dsanalyzer.app.settings.SettingsEdit
-import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.ai.AIScope
+import com.sappyoak.dsanalyzer.runtime.snapshot.CharacterSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.ai.AIScope
 import kotlinx.serialization.Serializable
 
 @Serializable

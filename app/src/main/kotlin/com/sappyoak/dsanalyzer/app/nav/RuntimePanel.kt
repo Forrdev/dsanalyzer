@@ -1,6 +1,6 @@
 package com.sappyoak.dsanalyzer.app.nav
 
-import com.sappyoak.dsanalyzer.runtime.session.RuntimeFeature
+import com.sappyoak.dsanalyzer.runtime.snapshot.RuntimeFeature
 
 public enum class RuntimePanel(
     public val label: String,

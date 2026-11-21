@@ -1,7 +1,7 @@
 package com.sappyoak.dsanalyzer.runtime.write.task
 
 import com.sappyoak.dsanalyzer.runtime.layout.FieldLayout
-import com.sappyoak.dsanalyzer.runtime.write.WriteKey
+import com.sappyoak.dsanalyzer.runtime.snapshot.WriteKey
 
 /** A kept, undoable write of one field, run on the sampling thread so nothing else reads it half done */
 public class FieldEditTask internal constructor(

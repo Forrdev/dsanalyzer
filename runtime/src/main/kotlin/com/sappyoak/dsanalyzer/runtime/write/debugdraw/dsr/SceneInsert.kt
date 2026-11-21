@@ -5,7 +5,7 @@ import com.sappyoak.dsanalyzer.runtime.dsr.DSRHookSites
 import com.sappyoak.dsanalyzer.runtime.dsr.Graphics
 import com.sappyoak.dsanalyzer.runtime.inject.CaveTemplate
 import com.sappyoak.dsanalyzer.runtime.inject.CaveTemplate.Hole
-import com.sappyoak.dsanalyzer.runtime.write.WriteKey
+import com.sappyoak.dsanalyzer.runtime.snapshot.WriteKey
 
 private const val GRAPHICS = "graphics"
 private const val EMIT = "emit"

@@ -2,7 +2,7 @@ package com.sappyoak.dsanalyzer.runtime.write.warp
 
 import com.sappyoak.dsanalyzer.native.memory.Address
 import com.sappyoak.dsanalyzer.runtime.layout.WarpLayout
-import com.sappyoak.dsanalyzer.runtime.session.SavedPosition
+import com.sappyoak.dsanalyzer.runtime.snapshot.SavedPosition
 import com.sappyoak.dsanalyzer.runtime.write.GameMutation
 import com.sappyoak.dsanalyzer.runtime.write.GameWriter
 import com.sappyoak.dsanalyzer.runtime.write.mailbox.CallOutcome

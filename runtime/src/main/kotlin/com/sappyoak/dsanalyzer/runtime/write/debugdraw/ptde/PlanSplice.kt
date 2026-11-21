@@ -9,8 +9,8 @@ import com.sappyoak.dsanalyzer.runtime.inject.Reg.EBX
 import com.sappyoak.dsanalyzer.runtime.inject.Reg.EDX
 import com.sappyoak.dsanalyzer.runtime.inject.Reg.ESP
 import com.sappyoak.dsanalyzer.runtime.inject.X86
-import com.sappyoak.dsanalyzer.runtime.inject.cave.X86Cave
-import com.sappyoak.dsanalyzer.runtime.inject.cave.callTarget
+import com.sappyoak.dsanalyzer.runtime.inject.X86Cave
+import com.sappyoak.dsanalyzer.runtime.inject.callTarget
 import com.sappyoak.dsanalyzer.runtime.inject.cmp
 import com.sappyoak.dsanalyzer.runtime.inject.lea
 import com.sappyoak.dsanalyzer.runtime.inject.pop
@@ -20,7 +20,7 @@ import com.sappyoak.dsanalyzer.runtime.ptde.DrawHandles
 import com.sappyoak.dsanalyzer.runtime.ptde.PTDEHookSites
 import com.sappyoak.dsanalyzer.runtime.ptde.Graphics
 import com.sappyoak.dsanalyzer.runtime.ptde.PlanWalker
-import com.sappyoak.dsanalyzer.runtime.write.WriteKey
+import com.sappyoak.dsanalyzer.runtime.snapshot.WriteKey
 
 /**
  * Moves the retargeted plan to the end of the frame: the walker skips it where it would run, and

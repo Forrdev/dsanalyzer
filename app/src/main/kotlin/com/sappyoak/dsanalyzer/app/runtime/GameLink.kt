@@ -20,20 +20,19 @@ import com.sappyoak.dsanalyzer.app.logging.LogContextKey
 import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.native.process.Processes
 import com.sappyoak.dsanalyzer.runtime.pointers.ResolvedPointers
-import com.sappyoak.dsanalyzer.runtime.session.BlockRoster
-import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.RuntimeEvent
-import com.sappyoak.dsanalyzer.runtime.session.RuntimeSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.BlockRoster
+import com.sappyoak.dsanalyzer.runtime.snapshot.CharacterSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.RuntimeEvent
+import com.sappyoak.dsanalyzer.runtime.snapshot.RuntimeSnapshot
+import com.sappyoak.dsanalyzer.runtime.sampling.SampleOptions
 import com.sappyoak.dsanalyzer.runtime.sampling.SampleRequests
-import com.sappyoak.dsanalyzer.runtime.session.ai.AIScope
-import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
+import com.sappyoak.dsanalyzer.runtime.write.request.WriteRequest
 import com.sappyoak.dsanalyzer.runtime.sampling.sampling
-import com.sappyoak.dsanalyzer.runtime.session.EngineDrawRequest
-import com.sappyoak.dsanalyzer.runtime.session.EngineDrawStatus
+import com.sappyoak.dsanalyzer.runtime.snapshot.EngineDrawRequest
+import com.sappyoak.dsanalyzer.runtime.snapshot.EngineDrawStatus
 import com.sappyoak.dsanalyzer.runtime.watchForGame
 import com.sappyoak.dsanalyzer.runtime.write.debugdraw.EngineDrawExtension
 import com.sappyoak.dsanalyzer.runtime.write.debugdraw.EngineDrawRequests
-
 private val logger = KotlinLogging.logger {  }
 
 /** Room for the occasional status change, since ticks do not travel this way */
@@ -107,16 +106,12 @@ public class GameLink(
         requests.requestCharacterEffects()
     }
 
-    public fun setAIScope(scope: AIScope) {
-        requests.setAIScope(scope)
-    }
+    /** Queues [request] for the game; its result comes back under the ticket in a later snapshot */
+    public fun write(request: WriteRequest): Long = requests.writes.submit(request)
 
-    public fun watchFlag(flagId: Int?) {
-        requests.watchFlag(flagId)
-    }
-
-    public fun setAnimationTarget(target: AnimationTarget) {
-        requests.setAnimationTarget(target)
+    /** Changes what the next samples read */
+    public fun sampleWith(change: (SampleOptions) -> SampleOptions) {
+        requests.sampleWith(change)
     }
 
     public fun installEngineDraw(enabled: Boolean) {
@@ -128,8 +123,8 @@ public class GameLink(
     }
 
     private suspend fun record(event: RuntimeEvent) {
-        if (event is RuntimeEvent.Attached) event.log()
-        mutableState.update { it.after(event) }
+        val before = mutableState.getAndUpdate { it.after(event) }
+        event.logChange(before, mutableState.value)
         if (event is RuntimeEvent.Sampled && maps.entered(event.snapshot)) readWorldAgain()
         if (event is RuntimeEvent.Attached || event == RuntimeEvent.Searching) maps.forget()
         if (event.changesConnection) mutableEvents.emit(event)
@@ -142,20 +137,6 @@ public class GameLink(
 
     private fun drawChanged(status: EngineDrawStatus) {
         mutableState.update { it.copy(engineDraw = status) }
-    }
-
-    private fun RuntimeEvent.Attached.log() {
-        val attached = describe()
-        logger.atInfo {
-            message = "Attached to the game"
-            payload = mapOf(
-                "pid" to attached.pid,
-                "executable" to attached.executableName,
-                "build" to attached.build.orEmpty(),
-                "supports" to attached.supports,
-                "unresolved" to attached.unresolved.size
-            )
-        }
     }
 }
 
@@ -185,7 +166,6 @@ private fun RuntimeEvent.Attached.describe(): AttachedGame = AttachedGame(
 )
 
 private val ResolvedPointers.unresolvedNames: List<String> get() = unresolved.map { it.signature }
-
 private fun RuntimeEvent.logChange(before: LinkState, after: LinkState) {
     when (this) {
         is RuntimeEvent.Attached -> attached(after.attached ?: return)

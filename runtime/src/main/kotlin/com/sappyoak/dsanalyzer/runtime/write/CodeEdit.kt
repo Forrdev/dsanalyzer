@@ -1,6 +1,7 @@
 package com.sappyoak.dsanalyzer.runtime.write
 
 import com.sappyoak.dsanalyzer.native.memory.Address
+import com.sappyoak.dsanalyzer.runtime.snapshot.WriteKey
 
 /**
  * Code at [address] that must read [expected] before it is replaced with [bytes]. A mismatch means

@@ -1,24 +1,23 @@
 package com.sappyoak.dsanalyzer.runtime.read.target
 
-import com.sappyoak.dsanalyzer.runtime.layout.GameLayout
+import com.sappyoak.dsanalyzer.runtime.layout.LockOnLayout
 import com.sappyoak.dsanalyzer.runtime.pointers.GameMemory
 import com.sappyoak.dsanalyzer.runtime.read.animation.AnimationTracker
 import com.sappyoak.dsanalyzer.runtime.read.character.CharacterRef
-import com.sappyoak.dsanalyzer.runtime.session.CharacterSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.FocusRequest
-import com.sappyoak.dsanalyzer.runtime.session.FocusSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.PlayerSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationSnapshot
-import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
+import com.sappyoak.dsanalyzer.runtime.snapshot.CharacterSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.FocusRequest
+import com.sappyoak.dsanalyzer.runtime.snapshot.FocusSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.PlayerSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.animation.AnimationSnapshot
+import com.sappyoak.dsanalyzer.runtime.snapshot.animation.AnimationTarget
 
 /**
  * Picks the character to follow from the lock-on state, then reads it and its animation.
  * [select] runs before the characters are read, so their AI can include the focus
  */
-internal class FocusReader(layout: GameLayout) {
-    private val lockOn = LockOnReader(layout.lockOn)
+internal class FocusReader(lockOn: LockOnLayout, private val animations: AnimationTracker) {
+    private val lockOn = LockOnReader(lockOn)
     private val tracker = FocusTracker()
-    private val animations = AnimationTracker(layout)
 
     fun select(
         game: GameMemory,
@@ -47,9 +46,5 @@ internal class FocusReader(layout: GameLayout) {
             locked = focus.locked,
             animation = shared?.takeIf { it.target == target } ?: animations.read(game, target, others)
         )
-    }
-
-    fun forget() {
-        tracker.forget()
     }
 }
