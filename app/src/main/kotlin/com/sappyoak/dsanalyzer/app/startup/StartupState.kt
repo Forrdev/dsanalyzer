@@ -42,3 +42,10 @@ public sealed interface StartupPhase {
     /** A workspace is open and the rest of the application is usable */
     public data class Ready(public val workspace: Workspace) : StartupPhase
 }
+
+/** The installation of the workspace that is open */
+public val StartupState.openInstallation: Installation?
+    get() {
+        val ready = phase as? StartupPhase.Ready ?: return null
+        return installations.firstOrNull { it.id == ready.workspace.installationId }
+    }

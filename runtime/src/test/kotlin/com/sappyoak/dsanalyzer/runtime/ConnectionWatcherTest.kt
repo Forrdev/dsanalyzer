@@ -13,18 +13,16 @@ import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.time.Duration.Companion.seconds
 
-import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.native.process.ProcessInfo
 
 private val GAME = ProcessInfo(10, "DARKSOULS.exe")
-private val EDITIONS = setOf(GameEdition.PrepareToDie)
 private val INTERVAL = 1.seconds
 
 /** Collects the watch in the background of [runTest], so tests step time and inspect what arrived */
 private fun TestScope.watch(processes: FakeProcesses): List<ConnectionEvent> {
     val events = mutableListOf<ConnectionEvent>()
     backgroundScope.launch {
-        processes.watchForGame(EDITIONS, INTERVAL, EmptyCoroutineContext).collect(events::add)
+        processes.watchForGame(PTDE_INSTALLATION, INTERVAL, EmptyCoroutineContext).collect(events::add)
     }
     runCurrent()
     return events
@@ -83,7 +81,7 @@ class ConnectionWatcherTest : FunSpec({
             val processes = FakeProcesses().apply { running.add(GAME) }
             val events = mutableListOf<ConnectionEvent>()
             val job = launch {
-                processes.watchForGame(EDITIONS, INTERVAL, EmptyCoroutineContext).collect(events::add)
+                processes.watchForGame(PTDE_INSTALLATION, INTERVAL, EmptyCoroutineContext).collect(events::add)
             }
 
             runCurrent()

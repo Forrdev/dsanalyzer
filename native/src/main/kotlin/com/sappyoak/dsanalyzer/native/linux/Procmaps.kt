@@ -41,7 +41,7 @@ internal fun mappedModules(pid: Int): List<ModuleInfo> = mappings(pid)
     .map { (path, parts) ->
         val start = parts.minOf { it.range.start.value }
         val end = parts.maxOf { it.range.end.value }
-        ModuleInfo(name = path.substringAfterLast('/'), range = AddressRange(Address(start), end - start))
+        ModuleInfo(name = path.substringAfterLast('/'), range = AddressRange(Address(start), end - start), path = path)
     }
 
 private fun parse(line: String): ProcMapping? {

@@ -5,7 +5,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 import com.sappyoak.dsanalyzer.app.analysis.AnalysisEffects
 import com.sappyoak.dsanalyzer.app.analysis.AnalysisStore
@@ -51,6 +52,7 @@ import com.sappyoak.dsanalyzer.app.verification.VerificationMessage
 import com.sappyoak.dsanalyzer.app.verification.VerificationStore
 import com.sappyoak.dsanalyzer.app.workspace.WorkspaceDirectory
 import com.sappyoak.dsanalyzer.app.workspace.WorkspaceStores
+import com.sappyoak.dsanalyzer.app.startup.openInstallation
 import com.sappyoak.dsanalyzer.game.data.InstallationData
 import com.sappyoak.dsanalyzer.game.files.InstallationFiles
 import com.sappyoak.dsanalyzer.native.process.Processes
@@ -64,13 +66,18 @@ public class AppModel(
     public val verification: VerificationStore,
     public val connection: ConnectionStore,
     private val link: GameLink,
-    private val installationFiles: InstallationFiles
+    private val installationFiles: InstallationFiles,
+    private val scope: CoroutineScope
 ) : AutoCloseable {
     public fun start() {
         settings.dispatch(SettingsMessage.Load)
         startup.dispatch(StartupMessage.Start)
         verification.dispatch(VerificationMessage.Start)
         connection.dispatch(ConnectionMessage.Start)
+        startup.state.map { it.openInstallation }
+            .distinctUntilChanged()
+            .onEach { connection.dispatch(ConnectionMessage.TargetChanged(it)) }
+            .launchIn(scope)
         workspace.logs.dispatch(LogsMessage.Start)
     }
 
@@ -130,6 +137,7 @@ public fun createAppModel(
             ConnectionEffects(settings, link)
         ),
         link = link,
-        installationFiles = installationFiles
+        installationFiles = installationFiles,
+        scope = scope
     )
 }

@@ -2,6 +2,7 @@ package com.sappyoak.dsanalyzer.runtime
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -15,9 +16,20 @@ private val DSR = ProcessInfo(11, "DarkSoulsRemastered.exe")
 private val OTHER = ProcessInfo(12, "explorer.exe")
 
 class GameConnectionTest : FunSpec({
-    test("finds only the requested editions, ignoring executable case") {
-        val processes = FakeProcesses().apply { running.addAll(listOf(PTDE, DSR, OTHER)) }
-        processes.findGames(setOf(GameEdition.PrepareToDie)).shouldContainExactly(GameProcess(PTDE, GameEdition.PrepareToDie))
+    test("finds only the workspace's installation") {
+        val processes = FakeProcesses(paths = mapOf(PTDE.pid to "game/DARKSOULS.exe"))
+            .apply { running.addAll(listOf(PTDE, DSR, OTHER)) }
+        processes.findGames(PTDE_INSTALLATION).shouldContainExactly(GameProcess(PTDE, GameEdition.PrepareToDie))
+    }
+
+    test("the same edition run from another installation is left alone") {
+        val processes = FakeProcesses(paths = mapOf(PTDE.pid to "elsewhere/DARKSOULS.exe")).apply { running.add(PTDE) }
+        processes.findGames(PTDE_INSTALLATION).shouldBeEmpty()
+    }
+
+    test("a process whose modules cannot be read is kept, for attaching to decide") {
+        val processes = FakeProcesses().apply { running.add(PTDE) }
+        processes.findGames(PTDE_INSTALLATION).shouldContainExactly(GameProcess(PTDE, GameEdition.PrepareToDie))
     }
 
     test("connects when the pointer width matches the edition") {

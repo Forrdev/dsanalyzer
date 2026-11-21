@@ -10,6 +10,7 @@ import com.sappyoak.dsanalyzer.app.settings.SettingsAccess
 import com.sappyoak.dsanalyzer.app.settings.SettingsEdit
 import com.sappyoak.dsanalyzer.app.store.EffectRunner
 import com.sappyoak.dsanalyzer.runtime.snapshot.RuntimeEvent
+import com.sappyoak.dsanalyzer.game.Installation
 
 private val WATCH_KEY = "watch"
 
@@ -19,7 +20,7 @@ public class ConnectionEffects(
 ) : EffectRunner<ConnectionEffect, ConnectionMessage> {
     /** Starting and stopping share a key, so either one cancels a running watch */
     override fun keyOf(effect: ConnectionEffect): Any? = when (effect) {
-        ConnectionEffect.Watch, ConnectionEffect.StopWatching -> WATCH_KEY
+        is ConnectionEffect.Watch, ConnectionEffect.StopWatching -> WATCH_KEY
         else -> null
     }
 
@@ -28,7 +29,7 @@ public class ConnectionEffects(
             if (settings.loaded().connection.autoConnect) emit(ConnectionMessage.ConnectRequested)
         }
 
-        ConnectionEffect.Watch -> link.events.onStart { link.start() }.mapNotNull(::toMessage)
+        is ConnectionEffect.Watch -> link.events.onStart { link.start(effect.target) }.mapNotNull(::toMessage)
         ConnectionEffect.StopWatching -> flow { link.stop() }
         is ConnectionEffect.EditSettings -> flow { settings.edit(effect.edit) }
     }
@@ -62,7 +63,7 @@ public class ConnectionEffects(
 
 public sealed interface ConnectionEffect {
     public data object CheckAutoConnect : ConnectionEffect
-    public data object Watch : ConnectionEffect
+    public data class Watch(public val target: Installation) : ConnectionEffect
     public data object StopWatching : ConnectionEffect
 
     public data class EditSettings(public val edit: SettingsEdit) : ConnectionEffect

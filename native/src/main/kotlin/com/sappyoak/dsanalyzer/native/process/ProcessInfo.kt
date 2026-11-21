@@ -9,5 +9,6 @@ public data class ProcessInfo(
 
 public data class ModuleInfo(
     public val name: String,
-    public val range: AddressRange
+    public val range: AddressRange,
+    public val path: String? = null
 )

@@ -11,7 +11,7 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-import com.sappyoak.dsanalyzer.game.GameEdition
+import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.native.process.Processes
 
 private val logger = KotlinLogging.logger {  }
@@ -27,7 +27,7 @@ public sealed interface ConnectionEvent {
 }
 
 /**
- * Keeps a connection to whichever of [editions] is running, for as long as the flow is collected.
+ * Keeps a connection to [target] while it runs, for as long as the flow is collected
  *
  * Searches every [interval] until a game appears, holds the connection while it runs, and goes back
  * to searching when it exists. Cancelling the collection closes any open connection, so disconnecting
@@ -36,7 +36,7 @@ public sealed interface ConnectionEvent {
  * Process calls block, so the watch runs on [context]
  */
 public fun Processes.watchForGame(
-    editions: Set<GameEdition>,
+    target: Installation,
     interval: Duration = 1.seconds,
     context: CoroutineContext = Dispatchers.IO
 ): Flow<ConnectionEvent> = flow {
@@ -44,7 +44,7 @@ public fun Processes.watchForGame(
     emit(ConnectionEvent.Searching)
 
     while (true) {
-        val games = findGames(editions)
+        val games = findGames(target)
         if (refused.retainAll(games.map { it.process.pid }.toSet())) {
             emit(ConnectionEvent.Searching)
         }

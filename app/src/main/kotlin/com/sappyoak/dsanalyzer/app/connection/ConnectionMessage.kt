@@ -1,12 +1,15 @@
 package com.sappyoak.dsanalyzer.app.connection
 
 import com.sappyoak.dsanalyzer.game.GameEdition
+import com.sappyoak.dsanalyzer.game.Installation
 
 public sealed interface ConnectionMessage {
     public data object Start : ConnectionMessage
 
     public data object ConnectRequested : ConnectionMessage
     public data object DisconnectRequested : ConnectionMessage
+
+    public data class TargetChanged(public val installation: Installation?) : ConnectionMessage
     public data class AutoConnectChanged(public val enabled: Boolean) : ConnectionMessage
 
     public data object GameSearching : ConnectionMessage

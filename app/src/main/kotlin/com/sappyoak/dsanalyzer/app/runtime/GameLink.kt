@@ -22,6 +22,7 @@ import kotlin.time.Duration.Companion.seconds
 import com.sappyoak.dsanalyzer.app.logging.LogContext
 import com.sappyoak.dsanalyzer.app.logging.LogContextKey
 import com.sappyoak.dsanalyzer.game.GameEdition
+import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.native.process.Processes
 import com.sappyoak.dsanalyzer.runtime.pointers.ResolvedPointers
 import com.sappyoak.dsanalyzer.runtime.snapshot.BlockRoster
@@ -37,6 +38,7 @@ import com.sappyoak.dsanalyzer.runtime.snapshot.EngineDrawStatus
 import com.sappyoak.dsanalyzer.runtime.watchForGame
 import com.sappyoak.dsanalyzer.runtime.write.debugdraw.EngineDrawExtension
 import com.sappyoak.dsanalyzer.runtime.write.debugdraw.EngineDrawRequests
+
 private val logger = KotlinLogging.logger {  }
 
 /** How long closing waits for the session to put back what the tool wrote into the game */
@@ -70,17 +72,20 @@ public class GameLink(
     public val events: SharedFlow<RuntimeEvent> = mutableEvents.asSharedFlow()
 
     private var watch: Job? = null
+    private var target: Installation? = null
     private val requests = SampleRequests()
     private val draws = EngineDrawRequests()
     private val maps = MapFollower()
 
     /** Begins watching */
-    public fun start() {
-        if (watch?.isActive == true) return
+    public fun start(target: Installation) {
+        if (watch?.isActive == true && this.target == target) return
+        stop()
+        this.target = target
 
         watch = scope.launch {
             try {
-                processes().watchForGame(editions)
+                processes().watchForGame(target)
                     .sampling(requests, extensions = { listOf(EngineDrawExtension(draws, ::drawChanged)) })
                     .collect(::record)
             } catch (cancellation: CancellationException) {
@@ -99,6 +104,7 @@ public class GameLink(
     public fun stop() {
         watch?.cancel()
         watch = null
+        target = null
         mutableState.value = LinkState()
     }
 

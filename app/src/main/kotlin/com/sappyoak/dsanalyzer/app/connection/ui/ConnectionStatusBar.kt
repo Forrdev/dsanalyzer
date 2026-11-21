@@ -22,6 +22,7 @@ public fun ConnectionStatusBar(status: ConnectionStatus) {
 private fun ConnectionStatus.describe(): String = when (this) {
     ConnectionStatus.Off -> "Not connected"
     ConnectionStatus.Searching -> "Waiting for the game to start"
+    ConnectionStatus.NoWorkspace -> "Open a workspace to connect to its game"
     is ConnectionStatus.Connected -> "Connected to ${edition.name} (pid $pid)"
     is ConnectionStatus.Refused -> "Found $executableName but could not connect: $reason"
     is ConnectionStatus.Unavailable -> "Connecting is unavailable: $reason"

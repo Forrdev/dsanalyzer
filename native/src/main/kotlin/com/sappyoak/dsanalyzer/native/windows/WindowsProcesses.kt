@@ -22,6 +22,8 @@ private const val ERROR_ACCESS_DENIED = 5
 private const val ERROR_BAD_LENGTH = 24
 private const val SNAPSHOT_ATTEMPTS = 5
 
+private const val SNAPSHOT_BACKOFF_MS = 5L
+
 private const val PROCESS_CREATE_THREAD = 0x0002
 private const val PROCESS_VM_OPERATION = 0x0008
 private const val PROCESS_VM_READ = 0x0010
@@ -65,6 +67,7 @@ internal class WindowsProcesses : Processes {
         if (!Kernel32.module32(handle, entry, first)) return@snapshot null
         ModuleInfo(
             name = entry.wideString(MODULE_ENTRY, "szModule"),
+            path = entry.wideString(MODULE_ENTRY, "szExePath"),
             range = AddressRange(
                 Address(entry.addressField(MODULE_ENTRY, "modBaseAddr")),
                 entry.intField(MODULE_ENTRY, "modBaseSize").toUInt().toLong()
@@ -92,11 +95,12 @@ internal class WindowsProcesses : Processes {
     }
 
     private fun openSnapshot(flags: Int, pid: Int): MemorySegment {
-        repeat(SNAPSHOT_ATTEMPTS - 1) {
+        repeat(SNAPSHOT_ATTEMPTS - 1) { attempt ->
             try {
                 return Kernel32.createSnapshot(flags, pid)
             } catch (failure: ProcessAccessException) {
                 if (failure.nativeCode != ERROR_BAD_LENGTH) throw failure
+                Thread.sleep(SNAPSHOT_BACKOFF_MS shl attempt)
             }
         }
 
