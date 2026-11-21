@@ -39,8 +39,8 @@ public fun GameWriter.installCaves(memory: ProcessMemory, module: AddressRange, 
                 payload = mapOf("caves" to keys)
             }
             is CaveResult.Failed -> logger.atWarn {
-               message = "Code caves not installed"
-               payload = mapOf("caves" to keys, "reason" to result.reason)
+                message = "Code caves not installed"
+                payload = mapOf("caves" to keys, "reason" to result.reason)
             }
         }
     }
@@ -52,7 +52,7 @@ private fun GameWriter.install(
     caves: List<CodeCave>
 ): CaveResult {
     val sites = caves.map { cave ->
-        when (val lookup = memory.locate(cave.site, module)) {
+        when (val lookup = reclaim(memory, module, cave)) {
             is SiteLookup.Found -> lookup.address
             is SiteLookup.Missing -> return CaveResult.Failed("${cave.key}: ${lookup.reason}")
         }
@@ -61,6 +61,7 @@ private fun GameWriter.install(
     val block = allocate(CAVE_BLOCK_SIZE, module.start) ?: return CaveResult.Failed("No memory could be allocated in the game")
     val code = ArrayList<Byte>(CAVE_BLOCK_SIZE)
     val edits = caves.mapIndexed { i, cave ->
+        code += CAVE_MARK.asList()
         val origin = block + code.size.toLong()
         code += cave.assemble(origin, sites[i]).asList()
         CodeEdit(cave.key, sites[i], cave.site.expected, X86.jumpPatch(sites[i], origin, cave.site.displaced))
@@ -72,4 +73,19 @@ private fun GameWriter.install(
         !patchCode(edits) -> CaveResult.Failed("The cave sites could not be patched")
         else -> CaveResult.Installed
     }
+}
+
+/** [cave]'s site, first putting back the original bytes where an earlier session's jump is still in place */
+@GameMutation
+private fun GameWriter.reclaim(memory: ProcessMemory, module: AddressRange, cave: CodeCave): SiteLookup {
+    val lookup = memory.locate(cave.site, module)
+    if (lookup is SiteLookup.Found) return lookup
+
+    val left = memory.leftoverCave(cave.site, module) ?: return lookup
+    if (!restoreCode(left, cave.site.expected)) return lookup
+    logger.atInfo {
+        message = "Removed a cave an earlier session left in the game"
+        payload = mapOf("cave" to cave.key.name, "site" to left.toString())
+    }
+    return memory.locate(cave.site, module)
 }

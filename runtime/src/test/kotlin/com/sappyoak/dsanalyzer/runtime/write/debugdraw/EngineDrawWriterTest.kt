@@ -1,5 +1,6 @@
 package com.sappyoak.dsanalyzer.runtime.write.debugdraw
 
+import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.shouldBe
@@ -33,7 +34,7 @@ private class ArenaMemory(private val game: FakeGame) : CodeMemory {
     override fun patch(patches: List<CodePatch>): Boolean = patches.all { game.write(it.address, it.bytes) }
 }
 
-private class Engine(backend: (FakeGame) -> DrawRoute) {
+private class Engine(rerouting: Boolean = false, backend: (FakeGame) -> DrawRoute) {
     val game = FakeGame().apply {
         pointer(ATTACK_GLOBAL, ATTACK_MAN)
         write(SETUP, 1, 2, 3, 4)
@@ -43,7 +44,10 @@ private class Engine(backend: (FakeGame) -> DrawRoute) {
     private val context = SessionContext(
         GameEdition.PrepareToDie, GameMemory(game, pointers), writer, game.module, ptdeLayout(), PTDEDrawBackend
     ) { null }
-    val draw = EngineDrawWriter(context, checkNotNull(ptdeLayout().debugDraw)) { _, _ -> backend(game) }
+    val draw = EngineDrawWriter(context, checkNotNull(ptdeLayout().debugDraw), object : DrawBackend {
+        override val reroutes: Boolean = rerouting
+        override fun route(context: SessionContext, control: Address): DrawRoute = backend(game)
+    })
 
     fun bytes(offset: Int, length: Int): List<Byte> = game.read(game.address(offset), length)!!.toList()
 }
@@ -51,9 +55,18 @@ private class Engine(backend: (FakeGame) -> DrawRoute) {
 private fun retarget(game: FakeGame): DrawRoute =
     DrawRoute.Ready(listOf(DrawEdit(game.address(SETUP), byteArrayOf(9, 9, 9, 9))), caves = emptyList())
 
+/** A route whose handle the game remakes, as PTDE's scene camera and post chain are on a load screen */
+private class Remade(var handle: Byte = 7) {
+    fun route(game: FakeGame): DrawRoute = DrawRoute.Ready(
+        edits = listOf(DrawEdit(game.address(SETUP), byteArrayOf(handle, 0, 0, 0))),
+        caves = emptyList(),
+        words = listOf(ControlWord(DrawControl.Edition, handle.toInt()))
+    )
+}
+
 class EngineDrawWriterTest : FunSpec({
     test("a backend's edits go in on install and back on uninstall") {
-        with(Engine(::retarget)) {
+        with(Engine(backend = ::retarget)) {
             draw.install() shouldBe DrawInstall.Installed
             draw.installed shouldBe true
             bytes(SETUP, 4) shouldBe listOf<Byte>(9, 9, 9, 9)
@@ -72,8 +85,35 @@ class EngineDrawWriterTest : FunSpec({
         }
     }
 
+    test("a rerouting backend's remade handles are rewritten, and the game's own bytes still go back") {
+        val remade = Remade()
+        with(Engine(rerouting = true, backend = remade::route)) {
+            draw.install() shouldBe DrawInstall.Installed
+            remade.handle = 8
+            draw.refresh() shouldBe true
+
+            assertSoftly {
+                bytes(SETUP, 4) shouldBe listOf<Byte>(8, 0, 0, 0)
+                bytes(ARENA + DrawControl.Edition, 4) shouldBe listOf<Byte>(8, 0, 0, 0)
+            }
+
+            draw.uninstall() shouldBe true
+            bytes(SETUP, 4) shouldBe listOf<Byte>(1, 2, 3, 4)
+        }
+    }
+
+    test("a route the game has not remade is not written again") {
+        val remade = Remade()
+        with(Engine(rerouting = true, backend = remade::route)) {
+            draw.install()
+            game.write(SETUP, 1)
+            draw.refresh() shouldBe true
+            bytes(SETUP, 1) shouldBe listOf<Byte>(1)
+        }
+    }
+
     test("the hitbox draw is a journaled byte that needs no install") {
-        with(Engine(::retarget)) {
+        with(Engine(backend = ::retarget)) {
             draw.setHitboxes(true) shouldBe true
             bytes(ATTACK_MAN + AttackMan.HitboxDraw, 1) shouldBe listOf<Byte>(1)
             draw.setHitboxes(false) shouldBe true

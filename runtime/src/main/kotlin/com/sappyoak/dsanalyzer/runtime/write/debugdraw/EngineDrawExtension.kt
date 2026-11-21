@@ -11,7 +11,10 @@ import com.sappyoak.dsanalyzer.runtime.snapshot.EngineDrawRequest
 import com.sappyoak.dsanalyzer.runtime.snapshot.EngineDrawStatus
 import com.sappyoak.dsanalyzer.runtime.snapshot.WorldPlace
 
-/** A 30 Hz tick: tags about four times a second, retries an install every two seconds */
+/**
+ * A 30 Hz tick: tags about four times a second; retries an install, and re-reads what a load screen remakes,
+ * every two seconds
+ */
 private const val TAG_TICKS = 8
 private const val RETRY_TICKS = 60
 
@@ -105,6 +108,7 @@ public class EngineDrawExtension(
         lastPlace = now
         val before = applied
 
+        if (moved || tick % RETRY_TICKS == 0) draw.refresh()
         if (before == null || before.collision != req.collision) draw.apply(req.collision ?: NO_COLLISION)
         if (before == null || before.hitboxes != req.hitboxes || moved) draw.setHitboxes(req.hitboxes)
         applied = req
@@ -119,5 +123,4 @@ public class EngineDrawExtension(
         status = next
         report(next)
     }
-
 }

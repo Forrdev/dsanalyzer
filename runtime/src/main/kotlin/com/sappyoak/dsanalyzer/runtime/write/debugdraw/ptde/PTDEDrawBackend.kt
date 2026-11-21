@@ -6,10 +6,15 @@ import com.sappyoak.dsanalyzer.runtime.ptde.PTDEHookSites
 import com.sappyoak.dsanalyzer.runtime.ptde.WorldChrMan
 import com.sappyoak.dsanalyzer.runtime.write.SessionContext
 import com.sappyoak.dsanalyzer.runtime.snapshot.DrawMode
+import com.sappyoak.dsanalyzer.runtime.write.debugdraw.ControlWord
 import com.sappyoak.dsanalyzer.runtime.write.debugdraw.DrawBackend
+import com.sappyoak.dsanalyzer.runtime.write.debugdraw.DrawControl
 import com.sappyoak.dsanalyzer.runtime.write.debugdraw.DrawEdit
 import com.sappyoak.dsanalyzer.runtime.write.debugdraw.DrawRoute
 import com.sappyoak.dsanalyzer.shared.binary.toLittleEndian
+
+/** The post chain's handle, in PTDE's part of the control block, which [PlanSplice] compares against */
+internal const val POST_CHAIN: Int = DrawControl.Edition
 
 /**
  * PTDE's route to the screen: layer 1's plan retargeted onto the scene and spliced in after the
@@ -17,6 +22,9 @@ import com.sappyoak.dsanalyzer.shared.binary.toLittleEndian
  * colors and the draw distance
  */
 internal object PTDEDrawBackend : DrawBackend {
+    /** The scene camera and post chain are remade under new handles on every load screen */
+    override val reroutes: Boolean = true
+
     override fun route(context: SessionContext, control: Address): DrawRoute {
         val characters = context.memory.baseOf(WorldChrMan.Pointer)
         if (characters.isNull) return DrawRoute.Unavailable("WorldChrMan not found")
@@ -26,7 +34,7 @@ internal object PTDEDrawBackend : DrawBackend {
         return DrawRoute.Ready(
             edits = plan.edits.map { DrawEdit(it.address, it.value.toLittleEndian()) },
             caves = listOf(
-                PlanSplice(plan.postChain),
+                PlanSplice(control),
                 DepthBiasOn(control),
                 DepthBiasOff(control),
                 CollisionGate(PTDEHookSites.LoDisplay, DrawMode.Lo, control, characters),
@@ -34,7 +42,8 @@ internal object PTDEDrawBackend : DrawBackend {
                 FilterColor(PTDEHookSites.LoColor, "lo", control),
                 FilterColor(PTDEHookSites.HiColor, "hi", control),
                 DistanceCull(control)
-            )
+            ),
+            words = listOf(ControlWord(POST_CHAIN, plan.postChain))
         )
     }
 }

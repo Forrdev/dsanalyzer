@@ -63,6 +63,7 @@ public class AppModel(
     public val startup: StartupStore,
     public val verification: VerificationStore,
     public val connection: ConnectionStore,
+    private val link: GameLink,
     private val installationFiles: InstallationFiles
 ) : AutoCloseable {
     public fun start() {
@@ -74,6 +75,7 @@ public class AppModel(
     }
 
     override fun close() {
+        link.close()
         runCatching {
             runBlocking { settings.flush() }
         }.onFailure { logger.error(it) { "Settings were not saved on exit" } }
@@ -127,6 +129,7 @@ public fun createAppModel(
             scope,
             ConnectionEffects(settings, link)
         ),
+        link = link,
         installationFiles = installationFiles
     )
 }

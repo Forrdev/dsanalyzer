@@ -35,6 +35,8 @@ public interface EngineDraw {
     public fun install(): DrawInstall
     public fun uninstall(): Boolean
 
+    public fun refresh(): Boolean
+
     public fun apply(settings: CollisionDrawSettings): Boolean
     public fun tag(): Int
     public fun setHitboxes(enabled: Boolean): Boolean

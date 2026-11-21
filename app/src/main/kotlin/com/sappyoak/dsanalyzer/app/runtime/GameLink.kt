@@ -4,6 +4,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,6 +15,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeoutOrNull
+import kotlin.time.Duration.Companion.seconds
 
 import com.sappyoak.dsanalyzer.app.logging.LogContext
 import com.sappyoak.dsanalyzer.app.logging.LogContextKey
@@ -34,6 +38,9 @@ import com.sappyoak.dsanalyzer.runtime.watchForGame
 import com.sappyoak.dsanalyzer.runtime.write.debugdraw.EngineDrawExtension
 import com.sappyoak.dsanalyzer.runtime.write.debugdraw.EngineDrawRequests
 private val logger = KotlinLogging.logger {  }
+
+/** How long closing waits for the session to put back what the tool wrote into the game */
+private val CLOSE_TIMEOUT = 3.seconds
 
 /** Room for the occasional status change, since ticks do not travel this way */
 private const val EVENT_BUFFER = 16
@@ -93,6 +100,16 @@ public class GameLink(
         watch?.cancel()
         watch = null
         mutableState.value = LinkState()
+    }
+
+    /**
+     * Stops watching and waits, up to [CLOSE_TIMEOUT], for the session to revert its writes, so the game
+     * is left as the tool found it: caves left behind would also stop the next launch finding its sites
+     */
+    public fun close() {
+        val running = watch ?: return
+        watch = null
+        runBlocking { withTimeoutOrNull(CLOSE_TIMEOUT) { running.cancelAndJoin() } }
     }
 
     /**

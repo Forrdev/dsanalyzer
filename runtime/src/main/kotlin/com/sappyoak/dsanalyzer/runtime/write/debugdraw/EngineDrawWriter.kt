@@ -35,6 +35,9 @@ internal class EngineDrawWriter(
     private var control: Address? = null
     private var keys: List<WriteKey> = emptyList()
 
+    /** What the edits and words last written say, so [refresh] writes only when the game has moved on */
+    private var routed: String? = null
+
     override val installed: Boolean get() = keys.isNotEmpty()
 
     override fun install(): DrawInstall {
@@ -47,6 +50,7 @@ internal class EngineDrawWriter(
             is DrawRoute.Unavailable -> return DrawInstall.Failed(found.reason)
         }
 
+        if (!writeWords(block, route.words)) return DrawInstall.Failed("the control block could not be written")
         if (!route.writable.all { writer.makeWritable(it.start, it.size) }) {
             return DrawInstall.Failed("game data the caves change could not be made writable")
         }
@@ -54,7 +58,7 @@ internal class EngineDrawWriter(
         val before = writer.active
         var reason = "a draw setup write failed"
         val done = writer.allOrNothing {
-            route.edits.all { writeBytes(WriteKey("debugdraw:data@${it.address}"), it.address, Lifetime.Session, it.bytes) } &&
+            route.edits.all { writeEdit(it) } &&
                     when (val caves = installCaves(memory, context.module, route.caves)) {
                         CaveResult.Installed -> true
                         is CaveResult.Failed -> false.also { reason = caves.reason }
@@ -63,6 +67,7 @@ internal class EngineDrawWriter(
         if (!done) return DrawInstall.Failed(reason)
 
         keys = writer.active.filterNot { it in before }
+        routed = route.stamp()
         tag()
         return DrawInstall.Installed
     }
@@ -73,6 +78,19 @@ internal class EngineDrawWriter(
         val reverted = keys.asReversed().map(writer::revert).all { it }
         keys = emptyList()
         return reverted
+    }
+
+    /** Rewrites edits under the keys they went in with, so the game's own values still go back on uninstall */
+    override fun refresh(): Boolean {
+        val block = control
+        if (!installed || block == null || !backend.reroutes) return true
+        val route = backend.route(context, block) as? DrawRoute.Ready ?: return false
+        val stamp = route.stamp()
+        if (stamp == routed) return true
+
+        val written = writeWords(block, route.words) && route.edits.all { writeEdit(it) }
+        if (written) routed = stamp
+        return written
     }
 
     override fun apply(settings: CollisionDrawSettings): Boolean {
@@ -92,6 +110,18 @@ internal class EngineDrawWriter(
     private fun writeSettings(block: Address): Boolean =
         writer.fill(block + DrawControl.Mask.toLong(), settings.header()) &&
                 writer.fill(block + DrawControl.Colors.toLong(), settings.colorTable())
+
+    private fun writeEdit(edit: DrawEdit): Boolean =
+        writer.writeBytes(WriteKey("debugdraw:data@${edit.address}"), edit.address, Lifetime.Session, edit.bytes)
+
+    private fun writeWords(block: Address, words: List<ControlWord>): Boolean =
+        words.all { writer.fillDword(block + it.offset.toLong(), it.value) }
+
+    private fun DrawRoute.Ready.stamp(): String {
+        val words = words.map { "${it.offset}=${it.value}" }
+        val edits = edits.map { "${it.address}=${it.bytes.contentToString()}" }
+        return (words + edits).joinToString()
+    }
 
     private fun manager(): Address? = context.memory.addressOf(layout.hitIns.manager).takeIf { !it.isNull }
 }

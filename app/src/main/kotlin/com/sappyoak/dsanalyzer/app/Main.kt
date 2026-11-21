@@ -54,9 +54,9 @@ fun main() {
 
     val scope = CoroutineScope(
         SupervisorJob() +
-        Dispatchers.Default +
-        CoroutineName("RootAppCoroutine") +
-        coroutineErrorLogging()
+                Dispatchers.Default +
+                CoroutineName("RootAppCoroutine") +
+                coroutineErrorLogging()
     )
 
     val model = createAppModel(scope, paths)
@@ -71,7 +71,7 @@ fun main() {
         }
 
         Window(
-            onCloseRequest = ::exitApplication,
+            onCloseRequest = onQuit,
             title = "dsanalyzer",
             state = rememberWindowState(size = DpSize(1280.dp, 800.dp))
         ) {

@@ -3,6 +3,7 @@ package com.sappyoak.dsanalyzer.runtime.write
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 
 import com.sappyoak.dsanalyzer.native.memory.Address
@@ -22,6 +23,10 @@ private const val SITE_B = 0x200
 private const val ARENA = 0x30000
 
 private val PROLOGUE = code(0x55, 0x8B, 0xEC, 0x83, 0xEC, 0x10)
+
+/** The mark ahead of every cave, and the first cave's mark and code together: the prologue then a jump back */
+private val MARK = CAVE_MARK.size
+private val MARKED_A = MARK + PROLOGUE.size + 5
 
 /** Allocates from one arena at the end of the fake game, and patches straight into it */
 private class ArenaCode(private val game: FakeGame) : CodeMemory {
@@ -66,7 +71,8 @@ class CaveInstallTest : FunSpec({
             writer.installCaves(game, game.module, listOf(Passthrough("a", 1), Passthrough("b", 2))) shouldBe CaveResult.Installed
             code.batches shouldBe 1
             bytes(SITE_A + 3, 1) shouldBe listOf(0xE9.toByte())
-            bytes(SITE_B + 3, 6) shouldBe X86.jumpPatch(game.address(SITE_B + 3), game.address(ARENA + 11), 6).toList()
+            val caveB = game.address(ARENA + MARKED_A + MARK)
+            bytes(SITE_B + 3, 6) shouldBe X86.jumpPatch(game.address(SITE_B + 3), caveB, 6).toList()
             writer.revertAll() shouldBe 2
             bytes(SITE_A + 3, 6) shouldBe PROLOGUE.toList()
         }
@@ -80,6 +86,33 @@ class CaveInstallTest : FunSpec({
             code.batches shouldBe 0
             bytes(SITE_A + 3, 6) shouldBe PROLOGUE.toList()
             writer.active.shouldBeEmpty()
+        }
+    }
+
+    test("caves a session left in the game are taken back by the next, which installs its own") {
+        with(CaveFixture()) {
+            val caves = listOf(Passthrough("a", 1), Passthrough("b", 2))
+            writer.installCaves(game, game.module, caves) shouldBe CaveResult.Installed
+            val left = bytes(SITE_A + 3, 6)
+
+            val next = GameWriter(game, code)
+            next.installCaves(game, game.module, caves) shouldBe CaveResult.Installed
+            bytes(SITE_A + 3, 1) shouldBe listOf(0xE9.toByte())
+            bytes(SITE_A + 3, 6) shouldNotBe left
+
+            next.revertAll() shouldBe 2
+            bytes(SITE_A + 3, 6) shouldBe PROLOGUE.toList()
+        }
+    }
+
+    test("another tool's hook at a site is left where it is") {
+        with(CaveFixture()) {
+            val foreign = X86.jumpPatch(game.address(SITE_A + 3), game.address(ARENA + 0x800), 6)
+            game.write(game.address(SITE_A + 3), foreign)
+
+            writer.installCaves(game, game.module, listOf(Passthrough("a", 1)))
+                .shouldBeInstanceOf<CaveResult.Failed>()
+            bytes(SITE_A + 3, 6) shouldBe foreign.toList()
         }
     }
 

@@ -92,6 +92,11 @@ public class GameWriter internal constructor(
     @GameMutation
     public fun fillDword(address: Address, value: Int): Boolean = fill(address, value.toLittleEndian())
 
+    /** Puts [bytes] back over code an earlier session patched and never reverted; not journaled */
+    @GameMutation
+    public fun restoreCode(address: Address, bytes: ByteArray): Boolean =
+        code?.patch(listOf(CodePatch(address, bytes))) ?: false
+
     @GameMutation
     public fun free(address: Address): Boolean = code?.free(address) ?: false
 
