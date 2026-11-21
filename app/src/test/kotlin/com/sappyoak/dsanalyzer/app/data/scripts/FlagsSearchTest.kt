@@ -10,7 +10,9 @@ import io.kotest.matchers.string.shouldContain
 import java.nio.file.Path
 
 import com.sappyoak.dsanalyzer.app.store.Transition
+import com.sappyoak.dsanalyzer.formats.emevd.emedf.ArgType
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.FlagAccess
+import com.sappyoak.dsanalyzer.formats.emevd.emedf.FlagAddressing
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.FlagTarget
 import com.sappyoak.dsanalyzer.formats.emevd.emedf.FlagUse
 import com.sappyoak.dsanalyzer.game.GameBuild
@@ -47,13 +49,16 @@ private fun found(
     label: String
 ) = FoundFlagUse(script, eventId, FlagUse(target, access, label))
 
+/** A flag the caller hands in, with no caller in this index to follow */
+private val PASSED = FlagTarget.FromCaller(0, ArgType.Int, FlagAddressing.Absolute)
+
 private val INDEX = FlagIndex.of(
     found = listOf(
         found(FIRELINK, 700L, FlagTarget.One(FLAG), FlagAccess.Reads, "IfFlagState"),
         found(ScriptId.Common, 800L, FlagTarget.One(FLAG), FlagAccess.Reads, "AwaitFlagState"),
         found(IZALITH, 900L, FlagTarget.One(FLAG), FlagAccess.Writes, "RegisterBonfire"),
         found(IZALITH, 950L, FlagTarget.Span(11_020_000, 11_020_099), FlagAccess.Writes, "SetFlagRangeState"),
-        found(FIRELINK, 960L, FlagTarget.FromCaller, FlagAccess.Writes, "SetFlagState")
+        found(FIRELINK, 960L, PASSED, FlagAccess.Writes, "SetFlagState")
     ),
     scripts = 3
 )
@@ -123,7 +128,7 @@ class FlagSearchTest : FunSpec({
         }
     }
 
-    test("a flag no script names says so, and admits what it could not read") {
+    test("a flag no script names is no problem, and the search admits what it could not follow") {
         val (state, effects) = follow(READY, UNKNOWN_FLAG, seenIn = FIRELINK_MAP)
 
         assertSoftly {
@@ -131,9 +136,9 @@ class FlagSearchTest : FunSpec({
                 state.findings?.flagId shouldBe UNKNOWN_FLAG
                 state.findings?.references?.shouldBeEmpty()
             }
-            state.problem shouldContain "No script names flag $UNKNOWN_FLAG"
-            state.problem shouldContain "searched 3"
-            state.problem shouldContain "1 flag references are passed in by their callers"
+            state.problem shouldBe null
+            state.searchGaps() shouldContain "Searched 3 scripts"
+            state.searchGaps() shouldContain "1 flag reference from callers that could not be followed"
             effects.shouldBeEmpty()
         }
     }

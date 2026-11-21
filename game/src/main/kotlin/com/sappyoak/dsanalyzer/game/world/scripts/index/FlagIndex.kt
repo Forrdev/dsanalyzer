@@ -21,7 +21,9 @@ public data class FlagReference(
     public val label: String,
     public val access: FlagAccess,
     /** Named as part of a span of flags rather than on its own */
-    public val viaSpan: Boolean
+    public val viaSpan: Boolean,
+    /** The event that passed the flag in, for one read off a caller's arguments */
+    public val caller: EventKey? = null
 )
 
 /**
@@ -36,9 +38,8 @@ public class FlagIndex private constructor(
     private val spans: List<SpannedReference>,
     public val scripts: Int,
     /**
-     * References whose flag the event's caller passes in
-     *
-     * They cannot be looked up by flag id, so they are counted rather than indexed
+     * References whose flag comes from the event's caller but no caller could be read for, so they cannot
+     * be looked up by flag id and are counted rather than indexed
      */
     public val parameterized: Int
 ) {
@@ -71,7 +72,12 @@ public class FlagIndex private constructor(
     public companion object {
         public val Empty: FlagIndex = FlagIndex(emptyMap(), emptyList(), scripts = 0, parameterized = 0)
 
-        public fun of(found: List<FoundFlagUse>, scripts: Int): FlagIndex {
+        /** [calls] fills in the flags events are handed by their callers */
+        public fun of(
+            found: List<FoundFlagUse>,
+            scripts: Int,
+            calls: EventCallIndex = EventCallIndex.Empty
+        ): FlagIndex {
             val byFlag = mutableMapOf<Int, MutableList<FlagReference>>()
             val spans = mutableListOf<SpannedReference>()
             var parameterized = 0
@@ -80,8 +86,13 @@ public class FlagIndex private constructor(
                 when (val target = entry.use.target) {
                     is FlagTarget.One -> byFlag.getOrPut(target.flagId) { mutableListOf() }.add(entry.reference())
                     is FlagTarget.Span -> spans.add(SpannedReference(target, entry.reference(viaSpan = true)))
-                    FlagTarget.FromCaller -> parameterized++
-                    is FlagTarget.SlotRelative -> parameterized++
+                    is FlagTarget.FromCaller, is FlagTarget.SlotRelative -> {
+                        val passed = calls.flagsOf(entry)
+                        if (passed.isEmpty()) parameterized++
+                        passed.forEach {
+                            byFlag.getOrPut(it.flagId) { mutableListOf() }.add(entry.reference(caller = it.caller))
+                        }
+                    }
                 }
             }
 
@@ -90,12 +101,13 @@ public class FlagIndex private constructor(
     }
 }
 
-private fun FoundFlagUse.reference(viaSpan: Boolean = false) = FlagReference(
+private fun FoundFlagUse.reference(viaSpan: Boolean = false, caller: EventKey? = null) = FlagReference(
     script = script,
     eventId = eventId,
     label = use.label,
     access = use.access,
-    viaSpan = viaSpan
+    viaSpan = viaSpan,
+    caller = caller
 )
 /** How near a script is to where the flag was seen */
 private fun ScriptId.closeness(seenIn: MapId?): Int = when {

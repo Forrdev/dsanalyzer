@@ -15,6 +15,9 @@ public data class FlagUse(
 /** Whether a script reads a flag or writes one */
 public enum class FlagAccess { Reads, Writes; }
 
+/** What a flag argument is counted from. Either nothing, the event's id, or the event's id and its slow */
+public enum class FlagAddressing { Absolute, ByEvent, BySlot; }
+
 public sealed interface FlagTarget {
     public data class One(public val flagId: Int) : FlagTarget
 
@@ -32,13 +35,15 @@ public sealed interface FlagTarget {
     public data class SlotRelative(public val offset: Int) : FlagTarget
 
     /**
-     * A flag the event's caller passes in, so the instruction itself does not name one
-     *
-     * The value is in whichever 'InitializeEvent' started this event, and following that is currently
-     * not implemented yet. Recorded so a search can say it is incomplete rather than imply the flag is set
-     * by nothing
+     * A flag the event's caller passes in, so the instruction itself does not name one. [start] bytes into
+     * the caller's arguments, read as [type] and then addressed as [addressing] says. Which flag it is
+     * comes from following the 'InitializeEvent' that started it
      */
-    public data object FromCaller : FlagTarget
+    public data class FromCaller(
+        public val start: Int,
+        public val type: ArgType,
+        public val addressing: FlagAddressing
+    ) : FlagTarget
 }
 
 /**
@@ -61,7 +66,12 @@ public fun DecodedInstruction.flagUses(eventId: Long): List<FlagUse> {
         ?.toInt()
 
     return flags.map { arg ->
-        val raw = arg.literal() ?: return@map use(FlagTarget.FromCaller)
+        val raw = when (val value = arg.value) {
+            is ArgValue.Literal -> value.raw
+            is ArgValue.FromCaller ->
+                return@map use(FlagTarget.FromCaller(value.sourceStartByte, arg.definition.type, addressing.mode()))
+            ArgValue.Omitted -> arg.definition.default.toLong()
+        }
         use(
             when (addressing) {
                 ADDRESSED_BY_EVENT -> FlagTarget.One((eventId + raw).toInt())
@@ -77,6 +87,12 @@ private fun List<DecodedArg>.span(): FlagTarget.Span? {
     val last = firstOrNull { it.definition.reference == ArgReference.EventFlagRangeEnd }?.literal()
 
     return if (first == null || last == null) null else FlagTarget.Span(first.toInt(), last.toInt())
+}
+
+private fun Int?.mode(): FlagAddressing = when (this) {
+    ADDRESSED_BY_EVENT -> FlagAddressing.ByEvent
+    ADDRESSED_BY_SLOT -> FlagAddressing.BySlot
+    else -> FlagAddressing.Absolute
 }
 
 private fun DecodedArg.literal(): Long? = (value as? ArgValue.Literal)?.raw

@@ -95,7 +95,7 @@ class FlagUseTest : FunSpec({
             STATE to literal(1)
         )
 
-        use.flagUses(EVENT).single().target shouldBe FlagTarget.FromCaller
+        use.flagUses(EVENT).single().target shouldBe FlagTarget.FromCaller(0, ArgType.Int, FlagAddressing.Absolute)
     }
 
     test("an instruction with no flag argument names no flags") {

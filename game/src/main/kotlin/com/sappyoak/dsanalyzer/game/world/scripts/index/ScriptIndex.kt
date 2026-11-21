@@ -29,13 +29,14 @@ public data class ScriptIndex(
         /** Merges each script's indexing; a null indexing is a script that could not be read */
         public fun of(indexings: Map<ScriptId, ScriptIndexing?>): ScriptIndex {
             val built = indexings.values.filterNotNull()
+            val calls = EventCallIndex.of(
+                found = built.flatMap { it.calls },
+                needs = built.fold(emptyMap()) { all, one -> all + one.needs },
+                scripts = built.size
+            )
             return ScriptIndex(
-                flags = FlagIndex.of(found = built.flatMap { it.flagUses }, scripts = built.size),
-                calls = EventCallIndex.of(
-                    found = built.flatMap { it.calls },
-                    needs = built.fold(emptyMap()) { all, one -> all + one.needs },
-                    scripts = built.size
-                ),
+                flags = FlagIndex.of(found = built.flatMap { it.flagUses }, scripts = built.size, calls = calls),
+                calls = calls,
                 unreadable = indexings.filterValues { it == null }.keys.toList()
             )
         }

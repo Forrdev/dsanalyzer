@@ -86,10 +86,7 @@ private fun ScriptsState.findFlag(
 ): Transition<ScriptsState, ScriptsEffect> = when {
     flagIndex.built -> {
         val references = flagIndex.explain(flagId, seenIn)
-        copy(
-            findings = FlagFindings(flagId, references),
-            problem = if (references.isEmpty()) nothingNames(flagId) else null
-        ).with()
+        copy(findings = FlagFindings(flagId, references), problem = null).with()
     }
 
     indexing -> copy(
@@ -104,16 +101,18 @@ private fun ScriptsState.findFlag(
     ).with()
 }
 
-private fun ScriptsState.nothingNames(flagId: Int): String = buildString {
-    append("No script names flag $flagId")
-    append(" (searched ${flagIndex.scripts})")
-
-    if (flagIndex.parameterized > 0) {
-        append(", though ${flagIndex.parameterized} flag references are passed in by their")
-        append(" callers and could not be read")
-    }
-
-    if (unreadable.isNotEmpty()) {
-        append(". Could not read ${unreadable.joinToString { it.title }}")
-    }
+/**
+ * What the script search could not see, so finding nothing is not read as certain: references whose flag
+ * comes from a caller none of the scripts start, and scripts that did not parse. Null when it saw everything
+ */
+internal fun ScriptsState.searchGaps(): String? {
+    val gaps = listOfNotNull(
+        flagIndex.parameterized.takeIf { it > 0 }?.let {
+            "$it flag reference${plural(it)} from callers that could not be followed"
+        },
+        unreadable.takeIf { it.isNotEmpty() }?.let { scripts -> "could not read ${scripts.joinToString { it.title }}" }
+    )
+    return if (gaps.isEmpty()) null else "Searched ${flagIndex.scripts} scripts; ${gaps.joinToString("; ")}"
 }
+
+private fun plural(count: Int): String = if (count == 1) "" else "s"

@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 
 import com.sappyoak.dsanalyzer.app.data.flags.FlagLive
 import com.sappyoak.dsanalyzer.app.data.scripts.ScriptsState
+import com.sappyoak.dsanalyzer.app.data.scripts.searchGaps
 import com.sappyoak.dsanalyzer.app.nav.View
 import com.sappyoak.dsanalyzer.app.nav.view
 import com.sappyoak.dsanalyzer.app.ui.theme.AnalyzerTheme
@@ -24,6 +25,8 @@ import com.sappyoak.dsanalyzer.game.world.flags.FlagName
 import com.sappyoak.dsanalyzer.game.world.flags.FlagSite
 import com.sappyoak.dsanalyzer.game.world.scripts.index.FlagReference
 import com.sappyoak.dsanalyzer.game.world.scripts.title
+
+private const val NOWHERE = "Used nowhere the game data shows"
 
 /**
  * One flag: its live value, what the game data says it means, then every place that sets or reads it, the
@@ -44,11 +47,13 @@ public fun FlagPane(state: ScriptsState, flagId: Int, live: FlagLive, onFollow: 
             )
             state.flagNames[flagId]?.let { Meaning(it, onFollow) }
             state.namingProblem?.let { Text(it, style = AnalyzerTheme.text.label, color = AnalyzerTheme.colors.failed) }
-            Text(
-                text = summarize(references, sites) ?: state.describeWait(),
-                style = AnalyzerTheme.text.label,
-                color = AnalyzerTheme.colors.textLo
-            )
+            val summary = summarize(references, sites) ?: state.describeWait()
+            Text(text = summary, style = AnalyzerTheme.text.label, color = AnalyzerTheme.colors.textLo)
+            if (summary == NOWHERE) {
+                state.searchGaps()?.let { gaps ->
+                    Text(gaps, style = AnalyzerTheme.text.label, color = AnalyzerTheme.colors.textLo)
+                }
+            }
         }
         HorizontalDivider()
 
@@ -95,7 +100,7 @@ private fun Meaning(name: FlagName, onFollow: (View) -> Unit) {
 
 private fun ScriptsState.describeWait(): String = when {
     indexing -> "Reading every script"
-    flagIndex.built -> "Used nowhere the game data shows"
+    flagIndex.built -> NOWHERE
     else -> "Scripts have not been searched"
 }
 
@@ -103,7 +108,7 @@ private fun ScriptsState.describeWait(): String = when {
 private fun summarize(references: List<FlagReference>?, sites: List<FlagSite>): String? {
     if (references == null && sites.isEmpty()) return null
     val accesses = references.orEmpty().map { it.access } + sites.map { it.access }
-    if (accesses.isEmpty()) return "Used nowhere the game data shows"
+    if (accesses.isEmpty()) return NOWHERE
 
     val writes = accesses.count { it == FlagAccess.Writes }
     val reads = accesses.size - writes
@@ -122,4 +127,5 @@ private fun FlagReference.describe(): String = buildString {
     append(" · event ")
     append(eventId)
     if (viaSpan) append(" (range)")
+    caller?.let { append(" · passed in by ${it.script.title} event ${it.eventId}") }
 }

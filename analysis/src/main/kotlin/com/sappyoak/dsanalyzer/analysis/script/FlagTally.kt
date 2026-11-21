@@ -39,7 +39,7 @@ internal class FlagTally private constructor(
                             }
                             is FlagTarget.Span ->
                                 if (use.access == FlagAccess.Reads) readSpans += target else spanWrites++
-                            is FlagTarget.SlotRelative, FlagTarget.FromCaller -> unpinned++
+                            is FlagTarget.SlotRelative, is FlagTarget.FromCaller -> unpinned++
                         }
                     }
                 }
