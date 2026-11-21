@@ -79,4 +79,8 @@ public sealed interface View {
     public data class Live(public val panel: RuntimePanel) : View {
         override val section: Section = Section.Runtime
     }
+
+    public data class Logs(public val tab: LogTab) : View {
+        override val section: Section = Section.Logs
+    }
 }

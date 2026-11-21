@@ -25,7 +25,7 @@ public class AnimationsEffects(
 
     private suspend fun perform(effect: AnimationsEffect): AnimationsMessage = when (effect) {
         is AnimationsEffect.LoadCatalog -> AnimationsMessage.CatalogLoaded(
-            sets = queue.run { data.of(effect.installation).animationSets() },
+            sets = queue.run("animation sets") { data.of(effect.installation).animationSets() },
             models = loadCharacterModels()
         )
 

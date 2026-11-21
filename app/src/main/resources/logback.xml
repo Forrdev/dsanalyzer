@@ -1,5 +1,5 @@
 <configuration>
-    <define name="logDirectory" class="com.sappyoak.dsanalyzer.app.logging.LogDirectory" />
+    <define name="logDirectory" scope="local" class="com.sappyoak.dsanalyzer.app.logging.LogDirectory" />
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -20,7 +20,7 @@
         <encoder class="ch.qos.logback.classic.encoder.JsonEncoder">
             <withSequenceNumber>false</withSequenceNumber>
             <withNanoseconds>false</withNanoseconds>
-            <withContext>false</withContext>
+            <withContext>true</withContext>
             <withMessage>false</withMessage>
             <withArguments>false</withArguments>
             <withFormattedMessage>true</withFormattedMessage>

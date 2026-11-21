@@ -34,4 +34,5 @@ public val Section.landing: View
         Section.Analysis -> View.Analysis.Leads
         Section.Data -> View.Data.Overview
         Section.Runtime -> View.Live(RuntimePanel.Attachment)
+        Section.Logs -> View.Logs(LogTab.Log)
     }

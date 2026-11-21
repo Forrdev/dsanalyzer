@@ -1,11 +1,15 @@
 package com.sappyoak.dsanalyzer.runtime.write
 
+import io.github.oshai.kotlinlogging.KotlinLogging
+
 import com.sappyoak.dsanalyzer.native.memory.AddressRange
 import com.sappyoak.dsanalyzer.native.process.ProcessMemory
 import com.sappyoak.dsanalyzer.runtime.inject.SiteLookup
 import com.sappyoak.dsanalyzer.runtime.inject.X86
 import com.sappyoak.dsanalyzer.runtime.inject.cave.CodeCave
 import com.sappyoak.dsanalyzer.runtime.inject.locate
+
+private val logger = KotlinLogging.logger {  }
 
 /** One page holds every cave of a set */
 public const val CAVE_BLOCK_SIZE: Int = 0x1000
@@ -26,7 +30,27 @@ public sealed interface CaveResult {
  * on its way back to it from a call it made, and nothing can tell when the last one has left
  */
 @GameMutation
-public fun GameWriter.installCaves(memory: ProcessMemory, module: AddressRange, caves: List<CodeCave>): CaveResult {
+public fun GameWriter.installCaves(memory: ProcessMemory, module: AddressRange, caves: List<CodeCave>): CaveResult =
+    install(memory, module, caves).also { result ->
+        val keys = caves.joinToString { it.key.name }
+        when (result) {
+            CaveResult.Installed -> logger.atInfo {
+                message = "Code caves installed"
+                payload = mapOf("caves" to keys)
+            }
+            is CaveResult.Failed -> logger.atWarn {
+               message = "Code caves not installed"
+               payload = mapOf("caves" to keys, "reason" to result.reason)
+            }
+        }
+    }
+
+@GameMutation
+private fun GameWriter.install(
+    memory: ProcessMemory,
+    module: AddressRange,
+    caves: List<CodeCave>
+): CaveResult {
     val sites = caves.map { cave ->
         when (val lookup = memory.locate(cave.site, module)) {
             is SiteLookup.Found -> lookup.address
@@ -49,4 +73,3 @@ public fun GameWriter.installCaves(memory: ProcessMemory, module: AddressRange, 
         else -> CaveResult.Installed
     }
 }
-

@@ -1,5 +1,6 @@
 package com.sappyoak.dsanalyzer.overlay
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -15,6 +16,8 @@ import com.sappyoak.dsanalyzer.native.windows.OverlaySurface
 import com.sappyoak.dsanalyzer.native.windows.Viewport
 import com.sappyoak.dsanalyzer.native.windows.ViewportSource
 
+private val logger = KotlinLogging.logger {  }
+
 @Composable
 public fun GameOverlay(source: ViewportSource, scene: OverlayScene, enabled: Boolean) {
     if (!enabled) return
@@ -27,6 +30,13 @@ public fun GameOverlay(source: ViewportSource, scene: OverlayScene, enabled: Boo
     }
 
     val current = viewport ?: return
+    LaunchedEffect(current.state) {
+        logger.atInfo {
+            message = "Game display changed"
+            payload = mapOf("state" to current.state.name, "bounds" to current.bounds.toString())
+        }
+    }
+
     if (current.state == DisplayState.NotForeground) return
 
     Window(

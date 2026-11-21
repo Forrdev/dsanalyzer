@@ -18,11 +18,14 @@ import com.sappyoak.dsanalyzer.app.data.esd.EsdsMessage
 import com.sappyoak.dsanalyzer.app.data.maps.MapsMessage
 import com.sappyoak.dsanalyzer.app.data.params.ParamsMessage
 import com.sappyoak.dsanalyzer.app.data.scripts.ScriptsMessage
+import com.sappyoak.dsanalyzer.app.logging.LogContext
+import com.sappyoak.dsanalyzer.app.logging.LogContextKey
 import com.sappyoak.dsanalyzer.app.nav.Navigator
 import com.sappyoak.dsanalyzer.app.nav.ResolveContext
 import com.sappyoak.dsanalyzer.app.nav.View
 import com.sappyoak.dsanalyzer.app.nav.WorkspaceResolveContext
 import com.sappyoak.dsanalyzer.app.nav.resolve
+import com.sappyoak.dsanalyzer.app.nav.toDataAddress
 import com.sappyoak.dsanalyzer.app.runtime.RuntimeMessage
 import com.sappyoak.dsanalyzer.app.settings.Settings
 import com.sappyoak.dsanalyzer.app.settings.SettingsEdit
@@ -43,6 +46,8 @@ public fun WorkspaceShell(
     var settingsOpen by remember { mutableStateOf(false) }
 
     LaunchedEffect(installation?.id) {
+        LogContext.set(LogContextKey.Edition, installation?.build?.edition?.name)
+        LogContext.set(LogContextKey.Installation, installation?.root?.toString())
         installation?.let {
             stores.analysis.dispatch(AnalysisMessage.Opened(it))
             stores.params.dispatch(ParamsMessage.Opened(it))
@@ -67,6 +72,10 @@ public fun WorkspaceShell(
         stores.sync(navigator.current)
     }
 
+    LaunchedEffect(navigator.current) {
+        LogContext.set(LogContextKey.View, navigator.current.contextLabel())
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         Shell(
             workspace = workspace.name,
@@ -88,6 +97,9 @@ public fun WorkspaceShell(
     }
 }
 
+/** A data view by its address, anything else by its name and what it shows */
+private fun View.contextLabel(): String = (this as? View.Data)?.toDataAddress()?.toAddress() ?: toString()
+
 private fun WorkspaceStores.sync(view: View) {
     runtime.dispatch(RuntimeMessage.FlagShown((view as? View.Data.EventFlag)?.flagId))
     when (view) {
@@ -104,6 +116,6 @@ private fun WorkspaceStores.sync(view: View) {
         is View.Data.Esd -> esds.dispatch(EsdsMessage.SourceSelected(view.source))
         is View.Data.EsdState -> esds.dispatch(EsdsMessage.SourceSelected(view.source))
         is View.Data.Overview, is View.Data.ParamSearch, is View.Data.Param, is View.Data.ParamRow,
-        is View.Data.FlagList, is View.Analysis, is View.Live -> Unit
+        is View.Data.FlagList, is View.Analysis, is View.Live, is View.Logs -> Unit
     }
 }

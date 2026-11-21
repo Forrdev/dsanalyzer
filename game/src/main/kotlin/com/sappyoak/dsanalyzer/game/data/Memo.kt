@@ -7,6 +7,8 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlin.time.measureTimedValue
 
+import com.sappyoak.dsanalyzer.shared.logging.timing
+
 private val logger = KotlinLogging.logger {  }
 
 internal class Memo<K : Any, V>(
@@ -38,7 +40,7 @@ internal class Memo<K : Any, V>(
 
     private suspend fun timed(key: K, load: suspend () -> V): V {
         val (value, took) = measureTimedValue { load() }
-        logger.debug { "Loaded $name $key in ${took.inWholeMilliseconds}ms" }
+        logger.timing("load $name", took, if (key == Unit) emptyMap() else mapOf("key" to key))
         return value
     }
 

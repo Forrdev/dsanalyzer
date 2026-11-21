@@ -3,6 +3,9 @@ package com.sappyoak.dsanalyzer.app
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+
 
 import com.sappyoak.dsanalyzer.app.analysis.AnalysisEffects
 import com.sappyoak.dsanalyzer.app.analysis.AnalysisStore
@@ -28,6 +31,11 @@ import com.sappyoak.dsanalyzer.app.runtime.wantsTimings
 import com.sappyoak.dsanalyzer.app.runtime.timing.TimingLoader
 import com.sappyoak.dsanalyzer.app.data.scripts.ScriptsEffects
 import com.sappyoak.dsanalyzer.app.data.scripts.ScriptsStore
+import com.sappyoak.dsanalyzer.app.logging.CURRENT_LOG_FILE
+import com.sappyoak.dsanalyzer.app.logs.LogFollower
+import com.sappyoak.dsanalyzer.app.logs.LogsEffects
+import com.sappyoak.dsanalyzer.app.logs.LogsMessage
+import com.sappyoak.dsanalyzer.app.logs.LogsStore
 import com.sappyoak.dsanalyzer.app.runtime.engineDrawRequest
 import com.sappyoak.dsanalyzer.app.serialization.jsonSerializer
 import com.sappyoak.dsanalyzer.app.settings.SettingsEffects
@@ -46,8 +54,6 @@ import com.sappyoak.dsanalyzer.app.workspace.WorkspaceStores
 import com.sappyoak.dsanalyzer.game.data.InstallationData
 import com.sappyoak.dsanalyzer.game.files.InstallationFiles
 import com.sappyoak.dsanalyzer.native.process.Processes
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
 
 private val logger = KotlinLogging.logger {  }
 
@@ -64,6 +70,7 @@ public class AppModel(
         startup.dispatch(StartupMessage.Start)
         verification.dispatch(VerificationMessage.Start)
         connection.dispatch(ConnectionMessage.Start)
+        workspace.logs.dispatch(LogsMessage.Start)
     }
 
     override fun close() {
@@ -102,7 +109,8 @@ public fun createAppModel(
                 timingsWanted = settings.state.map { it.settings.wantsTimings }.distinctUntilChanged(),
                 engineDraw = settings.state.map { it.settings.engineDrawRequest }.distinctUntilChanged(),
                 timings = TimingLoader(data)
-            ))
+            )),
+            logs = LogsStore(scope, LogsEffects(LogFollower(paths.logs.resolve(CURRENT_LOG_FILE))))
         ),
         startup = StartupStore(
             scope,

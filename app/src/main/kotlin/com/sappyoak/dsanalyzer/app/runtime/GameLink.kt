@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+import com.sappyoak.dsanalyzer.app.logging.LogContext
+import com.sappyoak.dsanalyzer.app.logging.LogContextKey
 import com.sappyoak.dsanalyzer.game.GameEdition
 import com.sappyoak.dsanalyzer.native.process.Processes
 import com.sappyoak.dsanalyzer.runtime.pointers.ResolvedPointers
@@ -31,6 +33,7 @@ import com.sappyoak.dsanalyzer.runtime.session.EngineDrawStatus
 import com.sappyoak.dsanalyzer.runtime.watchForGame
 import com.sappyoak.dsanalyzer.runtime.write.debugdraw.EngineDrawExtension
 import com.sappyoak.dsanalyzer.runtime.write.debugdraw.EngineDrawRequests
+
 private val logger = KotlinLogging.logger {  }
 
 /** Room for the occasional status change, since ticks do not travel this way */
@@ -182,3 +185,45 @@ private fun RuntimeEvent.Attached.describe(): AttachedGame = AttachedGame(
 )
 
 private val ResolvedPointers.unresolvedNames: List<String> get() = unresolved.map { it.signature }
+
+private fun RuntimeEvent.logChange(before: LinkState, after: LinkState) {
+    when (this) {
+        is RuntimeEvent.Attached -> attached(after.attached ?: return)
+        is RuntimeEvent.Resolved -> if (after.attached?.unresolved.orEmpty().isNotEmpty()) logger.atWarn {
+            message = "Signatures still unresolved after a rescan"
+            payload = mapOf("unresolved" to after.attached?.unresolved?.joinToString())
+        }
+        RuntimeEvent.Searching -> if (before.attached != null) {
+            LogContext.set(LogContextKey.GameBuild, null)
+            logger.atInfo { message = "The game closed; searching for it again" }
+        }
+        is RuntimeEvent.Refused -> logger.atWarn {
+            message = "Refused to attach"
+            payload = mapOf("executable" to game.process.executableName, "reason" to reason)
+        }
+        is RuntimeEvent.Unsupported -> logger.atInfo {
+            message = "Found a game this tool does not read yet"
+            payload = mapOf("edition" to game.edition.name, "executable" to game.process.executableName)
+        }
+        is RuntimeEvent.Failed, is RuntimeEvent.Sampled, is RuntimeEvent.PlacedEnemies,
+        is RuntimeEvent.CharacterEffects -> Unit
+    }
+}
+
+private fun attached(game: AttachedGame) {
+    LogContext.set(LogContextKey.GameBuild, listOfNotNull(game.edition.name, game.build).joinToString(" "))
+    logger.atInfo {
+        message = "Attached to the game"
+        payload = mapOf(
+            "pid" to game.pid,
+            "executable" to game.executableName,
+            "build" to game.build.orEmpty(),
+            "supports" to game.supports,
+            "unresolved" to game.unresolved.size
+        )
+    }
+    if (game.unresolved.isNotEmpty()) logger.atWarn {
+        message = "Signatures not found on attach"
+        payload = mapOf("unresolved" to game.unresolved.joinToString())
+    }
+}

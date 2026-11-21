@@ -29,7 +29,7 @@ public class EsdsEffects(
         EsdsMessage.Failed(failure.message ?: failure.toString())
 
     private suspend fun perform(effect: EsdsEffect): EsdsMessage = when (effect) {
-        is EsdsEffect.LoadCatalog -> EsdsMessage.CatalogLoaded(queue.run {
+        is EsdsEffect.LoadCatalog -> EsdsMessage.CatalogLoaded(queue.run("talk catalog") {
             data.of(effect.installation).talk()
         })
 

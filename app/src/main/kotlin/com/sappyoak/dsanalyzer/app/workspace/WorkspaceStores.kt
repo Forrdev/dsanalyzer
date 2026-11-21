@@ -6,6 +6,7 @@ import com.sappyoak.dsanalyzer.app.data.animations.AnimationsStore
 import com.sappyoak.dsanalyzer.app.data.esd.EsdsStore
 import com.sappyoak.dsanalyzer.app.data.maps.MapsStore
 import com.sappyoak.dsanalyzer.app.data.params.ParamsStore
+import com.sappyoak.dsanalyzer.app.logs.LogsStore
 import com.sappyoak.dsanalyzer.app.runtime.RuntimeStore
 import com.sappyoak.dsanalyzer.app.data.scripts.ScriptsStore
 
@@ -20,5 +21,6 @@ public class WorkspaceStores(
     public val ai: AiStore,
     public val maps: MapsStore,
     public val scripts: ScriptsStore,
-    public val runtime: RuntimeStore
+    public val runtime: RuntimeStore,
+    public val logs: LogsStore
 )

@@ -15,6 +15,7 @@ import kotlinx.coroutines.SupervisorJob
 
 import com.sappyoak.dsanalyzer.app.connection.ConnectionStatus
 import com.sappyoak.dsanalyzer.app.connection.ui.ConnectionStatusBar
+import com.sappyoak.dsanalyzer.app.logging.LAUNCH_MESSAGE
 import com.sappyoak.dsanalyzer.app.logging.coroutineErrorLogging
 import com.sappyoak.dsanalyzer.app.logging.installCrashLogging
 import com.sappyoak.dsanalyzer.app.paths.ToolPaths
@@ -40,10 +41,14 @@ fun main() {
 
     val logger = KotlinLogging.logger("com.sappyoak.dsanalyzer.app.Main")
     logger.atInfo {
-        message = "dsanalyzer start"
+        message = LAUNCH_MESSAGE
         payload = mapOf(
             "root" to paths.root.toString(),
-            "logs" to paths.logs.toString()
+            "logs" to paths.logs.toString(),
+            "java" to System.getProperty("java.runtime.version"),
+            "os" to "${System.getProperty("os.name")} ${System.getProperty("os.version")}",
+            "cores" to Runtime.getRuntime().availableProcessors(),
+            "heapMb" to Runtime.getRuntime().maxMemory() / (1024 * 1024)
         )
     }
 

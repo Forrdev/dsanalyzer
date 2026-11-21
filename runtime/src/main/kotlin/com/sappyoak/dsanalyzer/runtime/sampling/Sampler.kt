@@ -23,6 +23,7 @@ import com.sappyoak.dsanalyzer.runtime.session.RuntimeEvent
 import com.sappyoak.dsanalyzer.runtime.session.ai.AIScope
 import com.sappyoak.dsanalyzer.runtime.session.animation.AnimationTarget
 import com.sappyoak.dsanalyzer.runtime.tablesFor
+import kotlin.time.TimeSource
 
 
 private val logger = KotlinLogging.logger {  }
@@ -85,12 +86,13 @@ public fun Flow<ConnectionEvent>.sampling(
     extensions: () -> List<SessionExtension> = ::emptyList,
     period: (GameEdition) -> Duration = ::tickPeriod,
     tables: (GameEdition) -> EditionTables? = ::tablesFor,
-    context: CoroutineContext = Dispatchers.IO
+    context: CoroutineContext = Dispatchers.IO,
+    clock: TimeSource = TimeSource.Monotonic
 ): Flow<RuntimeEvent> = transformLatest { event ->
     when (event) {
         ConnectionEvent.Searching -> emit(RuntimeEvent.Searching)
         is ConnectionEvent.Refused -> emit(RuntimeEvent.Refused(event.game, event.reason))
-        is ConnectionEvent.Connected -> sampleWhileConnected(event.connection, requests, extensions, period, tables)
+        is ConnectionEvent.Connected -> sampleWhileConnected(event.connection, requests, extensions, period, tables, clock)
     }
 }.flowOn(context)
 
@@ -101,7 +103,8 @@ private suspend fun FlowCollector<RuntimeEvent>.sampleWhileConnected(
     requests: SampleRequests,
     extensions: () -> List<SessionExtension>,
     period: (GameEdition) -> Duration,
-    tables: (GameEdition) -> EditionTables?
+    tables: (GameEdition) -> EditionTables?,
+    clock: TimeSource
 ) {
     val game = connection.game
     val edition = tables(game.edition)
@@ -113,16 +116,21 @@ private suspend fun FlowCollector<RuntimeEvent>.sampleWhileConnected(
     val session = connection.openSession(edition, extensions())
     val build = readBuild(game.edition, connection.memory, connection.mainModule)
 
-
     emit(RuntimeEvent.Attached(game, build, session.pointers, session.supports))
 
-    val wait = period(game.edition)
+    val pacer = TickPacer(period(game.edition), clock)
     val retry = SignatureRetry()
 
     try {
-        sampleUntilCancelled(connection, session, edition, requests, wait, retry)
+        sampleUntilCancelled(connection, session, edition, requests, pacer, retry)
     } finally {
-        if (connection.isRunning) session.revertAll()
+        if (connection.isRunning) {
+            val reverted = session.revertAll()
+            logger.atInfo {
+                message = "Reverted the tool's writes on detach"
+                payload = mapOf("reverted" to reverted)
+            }
+        }
     }
 }
 
@@ -131,11 +139,20 @@ private suspend fun FlowCollector<RuntimeEvent>.sampleUntilCancelled(
     session: GameSession,
     edition: EditionTables,
     requests: SampleRequests,
-    wait: Duration,
+    pacer: TickPacer,
     retry: SignatureRetry
 ) {
+    val watch = SampleWatch(pacer.period)
+
     while (true) {
-        emit(RuntimeEvent.Sampled(session.sample(requests.aiScope, requests.animationTarget)))
+        val snapshot = session.sample(
+            aiScope = requests.aiScope,
+            animation = requests.animationTarget,
+            focusRequest = requests.focus,
+            watchedFlag = requests.watchedFlag
+        )
+        watch.record(snapshot.cost.elapsed)
+        emit(RuntimeEvent.Sampled(snapshot))
         requests.writes.applyTo(session)
         session.afterSample()
 
@@ -153,6 +170,6 @@ private suspend fun FlowCollector<RuntimeEvent>.sampleUntilCancelled(
             emit(RuntimeEvent.CharacterEffects(session.readCharacterEffects()))
         }
 
-        delay(wait)
+        pacer.awaitNext()
     }
 }

@@ -40,7 +40,13 @@ private fun TestScope.sample(
 ): List<RuntimeEvent> {
     val events = mutableListOf<RuntimeEvent>()
     backgroundScope.launch {
-        upstream.sampling(SampleRequests(), period = { TICK }, tables = tables, context = EmptyCoroutineContext)
+        upstream.sampling(
+            SampleRequests(),
+            period = { TICK },
+            tables = tables,
+            context = EmptyCoroutineContext,
+            clock = testScheduler.timeSource
+        )
             .collect(events::add)
     }
     runCurrent()

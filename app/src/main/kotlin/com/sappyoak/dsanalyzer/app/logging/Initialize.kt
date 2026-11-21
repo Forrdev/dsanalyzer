@@ -3,6 +3,8 @@ package com.sappyoak.dsanalyzer.app.logging
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.CoroutineExceptionHandler
 
+public const val LAUNCH_MESSAGE: String = "dsanalyzer start"
+
 private const val CRASH_LOGGER = "com.sappyoak.dsanalyzer.app.CrashHandler"
 private const val COROUTINE_LOGGER = "com.sappyoak.dsanalyzer.app.CoroutineErrors"
 

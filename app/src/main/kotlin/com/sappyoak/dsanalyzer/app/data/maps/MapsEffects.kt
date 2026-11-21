@@ -38,7 +38,7 @@ public class MapsEffects(
                 MapsMessage.MapLoaded(msb.summarize(effect.map, loadCharacterModels()))
             }
 
-            is MapsEffect.IndexEntities -> queue.run {
+            is MapsEffect.IndexEntities -> queue.run("map entities") {
                 val read = effect.maps.associateWith { game.msb(it)?.summarize(it, loadCharacterModels()) }
                 MapsMessage.EntitiesIndexed(
                     index = EntityIndex.of(read.values.filterNotNull()),

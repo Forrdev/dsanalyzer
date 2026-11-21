@@ -27,6 +27,12 @@ import com.sappyoak.dsanalyzer.app.data.ui.NavigatorContents
 import com.sappyoak.dsanalyzer.app.nav.Resolution
 import com.sappyoak.dsanalyzer.app.nav.View
 import com.sappyoak.dsanalyzer.app.runtime.RuntimeMessage
+import com.sappyoak.dsanalyzer.app.logs.LogsMessage
+import com.sappyoak.dsanalyzer.app.logs.ui.LogListPane
+import com.sappyoak.dsanalyzer.app.logs.ui.LogsNavigator
+import com.sappyoak.dsanalyzer.app.logs.ui.ProblemsPane
+import com.sappyoak.dsanalyzer.app.logs.ui.TimingsPane
+import com.sappyoak.dsanalyzer.app.nav.LogTab
 import com.sappyoak.dsanalyzer.app.runtime.ui.RuntimeDetail
 import com.sappyoak.dsanalyzer.app.runtime.ui.RuntimeNavigator
 import com.sappyoak.dsanalyzer.app.ui.theme.AnalyzerTheme
@@ -58,6 +64,10 @@ internal fun ColumnScope.NavigatorPane(view: View, stores: WorkspaceStores, onFo
             AnalysisNavigator(analysis, stores.analysis)
         }
         is View.Analysis -> Unbuilt("Investigations not yet built")
+        is View.Logs -> {
+            val logs by stores.logs.state.collectAsState()
+            LogsNavigator(logs, view, onFollow) { stores.logs.dispatch(LogsMessage.FilterChanged(it)) }
+        }
     }
 }
 
@@ -143,6 +153,19 @@ internal fun DetailPane(
             LeadsPane(state, resolve, onFollow)
         }
         is View.Analysis -> Unbuilt("Investigations not yet built")
+
+        is View.Logs -> {
+            val logs by stores.logs.state.collectAsState()
+            when (view.tab) {
+                LogTab.Log -> LogListPane(
+                    state = logs,
+                    onFilter = { stores.logs.dispatch(LogsMessage.FilterChanged(it)) },
+                    onSelect = { stores.logs.dispatch(LogsMessage.EntrySelected(it)) }
+                )
+                LogTab.Problems -> ProblemsPane(logs) { stores.logs.dispatch(LogsMessage.ProblemSelected(it)) }
+                LogTab.Timings -> TimingsPane(logs.slowest)
+            }
+        }
     }
 }
 

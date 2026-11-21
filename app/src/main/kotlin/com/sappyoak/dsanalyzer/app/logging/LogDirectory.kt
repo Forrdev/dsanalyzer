@@ -8,6 +8,8 @@ import com.sappyoak.dsanalyzer.app.paths.defaultToolRoot
 
 private const val LOGS_DIRECTORY = "logs"
 
+public const val CURRENT_LOG_FILE: String = "dsanalyzer.jsonl"
+
 internal fun defaultLogDirectory(): Path = defaultToolRoot().resolve(LOGS_DIRECTORY)
 
 public class LogDirectory : PropertyDefinerBase() {

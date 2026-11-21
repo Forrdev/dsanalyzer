@@ -122,4 +122,5 @@ private fun View.describe(): String = when (this) {
     is View.Analysis.Investigations -> "investigations"
     is View.Analysis.Investigation -> "investigation ${id.value}"
     is View.Analysis.Finding -> "finding ${id.value}"
+    is View.Logs -> "logs · ${tab.label.lowercase()}"
 }

@@ -25,11 +25,11 @@ public class AiEffects(
         is AiEffect.LoadCatalog -> AiMessage.CatalogLoaded(data.of(effect.installation).luaScripts())
 
         // Decompiling every AI script waits its turn behind the other indexes
-        is AiEffect.Index -> AiMessage.Indexed(queue.run { data.of(effect.installation).aiIndex() })
+        is AiEffect.Index -> AiMessage.Indexed(queue.run("ai") { data.of(effect.installation).aiIndex() })
 
         // Every map's layout is read to find which characters each think row is placed with
         is AiEffect.FindCharacters ->
-            AiMessage.CharactersFound(queue.run { data.of(effect.installation).thinkCharacters() })
+            AiMessage.CharactersFound(queue.run("think characters") { data.of(effect.installation).thinkCharacters() })
 
         is AiEffect.Load -> AiMessage.Loaded(
             script = effect.script,

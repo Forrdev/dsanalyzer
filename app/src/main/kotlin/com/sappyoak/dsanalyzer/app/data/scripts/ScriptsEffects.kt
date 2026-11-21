@@ -1,6 +1,5 @@
 package com.sappyoak.dsanalyzer.app.data.scripts
 
-import com.sappyoak.dsanalyzer.app.data.IndexQueue
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -10,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 
+import com.sappyoak.dsanalyzer.app.data.IndexQueue
 import com.sappyoak.dsanalyzer.app.store.EffectRunner
 import com.sappyoak.dsanalyzer.game.Installation
 import com.sappyoak.dsanalyzer.game.data.GameData
@@ -59,8 +59,8 @@ public class ScriptsEffects(
                 checkNotNull(game.script(effect.script)) { "${effect.script} has no event script" }
                     .summarize(game.scriptNames(effect.script))
             )
-            is ScriptsEffect.IndexScripts -> queue.run { game.indexScripts(effect.scripts) }
-            is ScriptsEffect.ReadFlags -> queue.run { game.flagReading(effect.calls) }
+            is ScriptsEffect.IndexScripts -> queue.run("scripts") { game.indexScripts(effect.scripts) }
+            is ScriptsEffect.ReadFlags -> queue.run("flags") { game.flagReading(effect.calls) }
         }
     }
 
